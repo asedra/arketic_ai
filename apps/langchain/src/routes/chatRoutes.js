@@ -175,7 +175,7 @@ router.get('/api/chat/:chatId/history', authMiddleware, async (req, res) => {
     
     // Verify chat belongs to user
     const chatCheck = await query(
-      'SELECT id FROM chats WHERE id = $1 AND user_id = $2',
+      'SELECT id FROM chats WHERE id = $1 AND creator_id = $2',
       [chatId, userId]
     );
     
@@ -274,7 +274,7 @@ router.delete('/api/chat/:chatId/clear', authMiddleware, async (req, res) => {
     
     // Verify chat belongs to user
     const chatCheck = await query(
-      'SELECT id FROM chats WHERE id = $1 AND user_id = $2',
+      'SELECT id FROM chats WHERE id = $1 AND creator_id = $2',
       [chatId, userId]
     );
     
@@ -310,7 +310,7 @@ router.get('/api/chat/:chatId/summary', authMiddleware, async (req, res) => {
     
     // Verify chat belongs to user
     const chatCheck = await query(
-      'SELECT id FROM chats WHERE id = $1 AND user_id = $2',
+      'SELECT id FROM chats WHERE id = $1 AND creator_id = $2',
       [chatId, userId]
     );
     

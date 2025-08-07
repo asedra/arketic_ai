@@ -83,7 +83,7 @@ const OptimizedPersonCard = memo(({
             </div>
           </div>
           <Badge 
-            variant={person.role === "Admin" ? "default" : "secondary"}
+            variant={person.role === "ADMIN" ? "default" : "secondary"}
             className="text-xs"
           >
             {person.role}

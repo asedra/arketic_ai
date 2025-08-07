@@ -58,7 +58,6 @@ class Chat(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     
     # Foreign keys
-    organization_id = Column(UUID(as_uuid=True), ForeignKey('organizations.id', ondelete='CASCADE'), nullable=True)
     creator_id = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
     
     # Chat details
@@ -99,7 +98,7 @@ class Chat(Base):
     
     # Indexes for better query performance
     __table_args__ = (
-        Index('idx_chat_org_type', 'organization_id', 'chat_type'),
+        Index('idx_chat_creator_type', 'creator_id', 'chat_type'),
         Index('idx_chat_creator', 'creator_id'),
         Index('idx_chat_activity', 'last_activity_at', 'is_archived'),  # Composite for common queries
         Index('idx_chat_archived', 'is_archived'),

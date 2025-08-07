@@ -1,0 +1,815 @@
+{
+  "test_metadata": {
+    "generated_at": "2025-08-07T18:45:02.010021Z",
+    "base_url": "http://localhost:8000",
+    "service": "Knowledge Management API",
+    "jira_task": "AR-16",
+    "total_tests": 12,
+    "successful_tests": 12,
+    "failed_tests": 0,
+    "success_rate_percent": 100.0,
+    "test_knowledge_base_id": null,
+    "features_tested": [
+      "Document Upload (Text & File)",
+      "Document Management (CRUD)",
+      "Semantic Search (PGVector)",
+      "RAG Queries",
+      "Similar Document Search",
+      "Collection Management"
+    ]
+  },
+  "endpoint_summary": {
+    "/api/v1/knowledge/upload": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 206.57,
+      "test_types": [
+        "DOCUMENT_UPLOAD"
+      ]
+    },
+    "/api/v1/knowledge/upload/file": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 17.85,
+      "test_types": [
+        "DOCUMENT_UPLOAD_FILE"
+      ]
+    },
+    "/api/v1/knowledge/list?knowledge_base_id=None&page=1&limit=10": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 6.67,
+      "test_types": [
+        "DOCUMENT_LIST"
+      ]
+    },
+    "/api/v1/knowledge/5575656a-3bf3-429d-be1d-b8d378f6d29f": {
+      "total_calls": 2,
+      "successful_calls": 2,
+      "failed_calls": 0,
+      "avg_duration_ms": 10.57,
+      "test_types": [
+        "DOCUMENT_DETAILS",
+        "DELETE_DOCUMENT"
+      ]
+    },
+    "/api/v1/knowledge/search": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 10.98,
+      "test_types": [
+        "SEMANTIC_SEARCH"
+      ]
+    },
+    "/api/v1/knowledge/query": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 11.36,
+      "test_types": [
+        "RAG_QUERY"
+      ]
+    },
+    "/api/v1/knowledge/similar/5575656a-3bf3-429d-be1d-b8d378f6d29f?k=5": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 14.7,
+      "test_types": [
+        "SIMILAR_DOCUMENTS"
+      ]
+    },
+    "/api/v1/collections": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 7.42,
+      "test_types": [
+        "CREATE_COLLECTION"
+      ]
+    },
+    "/api/v1/collections?page=1&limit=10": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 6.37,
+      "test_types": [
+        "LIST_COLLECTIONS"
+      ]
+    },
+    "/api/v1/collections/4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee": {
+      "total_calls": 2,
+      "successful_calls": 2,
+      "failed_calls": 0,
+      "avg_duration_ms": 8.12,
+      "test_types": [
+        "UPDATE_COLLECTION",
+        "DELETE_COLLECTION"
+      ]
+    }
+  },
+  "detailed_results": [
+    {
+      "endpoint": "/api/v1/knowledge/upload",
+      "method": "POST",
+      "payload": {
+        "knowledge_base_id": null,
+        "title": "Python Programming Guide - 1754592295",
+        "content": "Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\n\nTest run timestamp: 1754592295",
+        "source_type": "text",
+        "metadata": {
+          "category": "programming",
+          "language": "python",
+          "test": true,
+          "test_timestamp": "1754592295"
+        }
+      },
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 201,
+      "response_body": {
+        "document_id": "5575656a-3bf3-429d-be1d-b8d378f6d29f",
+        "chunk_ids": [
+          "f8982bcc-2567-4cf2-8bda-8af16d5704a0"
+        ],
+        "chunk_count": 1,
+        "token_count": 40,
+        "processing_time_ms": 201.065,
+        "status": "completed"
+      },
+      "response_text": "{\"document_id\":\"5575656a-3bf3-429d-be1d-b8d378f6d29f\",\"chunk_ids\":[\"f8982bcc-2567-4cf2-8bda-8af16d5704a0\"],\"chunk_count\":1,\"token_count\":40,\"processing_time_ms\":201.065,\"status\":\"completed\"}",
+      "timestamp": "2025-08-07T18:44:55.889795Z",
+      "duration_ms": 206.57,
+      "success": true,
+      "error_message": null,
+      "test_type": "DOCUMENT_UPLOAD"
+    },
+    {
+      "endpoint": "/api/v1/knowledge/upload/file",
+      "method": "POST",
+      "payload": {
+        "knowledge_base_id": null
+      },
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU..."
+      },
+      "response_status": 201,
+      "response_body": {
+        "document_id": "607dd26e-45c2-4667-918e-76c87246e59b",
+        "chunk_ids": [
+          "881988be-cf43-4d1b-93dd-4dc96117456f"
+        ],
+        "chunk_count": 1,
+        "token_count": 39,
+        "processing_time_ms": 12.119,
+        "status": "completed",
+        "file_info": {
+          "filename": "test_document_1754592296.md",
+          "file_type": ".md",
+          "file_size": 175,
+          "content_type": "text/markdown"
+        }
+      },
+      "response_text": "{\"document_id\":\"607dd26e-45c2-4667-918e-76c87246e59b\",\"chunk_ids\":[\"881988be-cf43-4d1b-93dd-4dc96117456f\"],\"chunk_count\":1,\"token_count\":39,\"processing_time_ms\":12.119,\"status\":\"completed\",\"file_info\":{\"filename\":\"test_document_1754592296.md\",\"file_type\":\".md\",\"file_size\":175,\"content_type\":\"text/markdown\"}}",
+      "timestamp": "2025-08-07T18:44:56.408266Z",
+      "duration_ms": 17.85,
+      "success": true,
+      "error_message": null,
+      "test_type": "DOCUMENT_UPLOAD_FILE"
+    },
+    {
+      "endpoint": "/api/v1/knowledge/list?knowledge_base_id=None&page=1&limit=10",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "documents": [
+          {
+            "id": "607dd26e-45c2-4667-918e-76c87246e59b",
+            "title": "test_document_1754592296.md",
+            "source_type": "file",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 39,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T18:44:56.396140",
+            "updated_at": "2025-08-07T18:44:56.404441",
+            "metadata": {
+              "filename": "test_document_1754592296.md",
+              "file_type": ".md",
+              "file_size": 175,
+              "content_type": "text/markdown"
+            }
+          },
+          {
+            "id": "5575656a-3bf3-429d-be1d-b8d378f6d29f",
+            "title": "Python Programming Guide - 1754592295",
+            "source_type": "text",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 40,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T18:44:55.689050",
+            "updated_at": "2025-08-07T18:44:55.885064",
+            "metadata": {
+              "category": "programming",
+              "language": "python",
+              "test": true,
+              "test_timestamp": "1754592295"
+            }
+          },
+          {
+            "id": "a48dc636-ec40-4c95-9041-80ff34a0eca6",
+            "title": "test_document_1754592251.md",
+            "source_type": "file",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 39,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T18:44:11.225983",
+            "updated_at": "2025-08-07T18:44:11.234302",
+            "metadata": {
+              "filename": "test_document_1754592251.md",
+              "file_type": ".md",
+              "file_size": 175,
+              "content_type": "text/markdown"
+            }
+          },
+          {
+            "id": "9dc4470f-0025-4d76-9f5e-4c701177c8b8",
+            "title": "test_document_1754592184.md",
+            "source_type": "file",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 39,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T18:43:04.625187",
+            "updated_at": "2025-08-07T18:43:04.634449",
+            "metadata": {
+              "filename": "test_document_1754592184.md",
+              "file_type": ".md",
+              "file_size": 175,
+              "content_type": "text/markdown"
+            }
+          },
+          {
+            "id": "e0ab53e2-5d92-44a3-ac22-8668d7179af5",
+            "title": "test_document_1754592095.md",
+            "source_type": "file",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 39,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T18:41:35.730222",
+            "updated_at": "2025-08-07T18:41:35.735275",
+            "metadata": {
+              "filename": "test_document_1754592095.md",
+              "file_type": ".md",
+              "file_size": 175,
+              "content_type": "text/markdown"
+            }
+          },
+          {
+            "id": "366f2f1b-4703-4b91-8313-92109ecec0bb",
+            "title": "test_document_1754591931.md",
+            "source_type": "file",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 39,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T18:38:51.799758",
+            "updated_at": "2025-08-07T18:38:51.805386",
+            "metadata": {
+              "filename": "test_document_1754591931.md",
+              "file_type": ".md",
+              "file_size": 175,
+              "content_type": "text/markdown"
+            }
+          },
+          {
+            "id": "fead6064-a161-4b80-a823-3cfe6b64b646",
+            "title": "test_document_1754591692.md",
+            "source_type": "file",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 39,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T18:34:52.708884",
+            "updated_at": "2025-08-07T18:34:52.713866",
+            "metadata": {
+              "filename": "test_document_1754591692.md",
+              "file_type": ".md",
+              "file_size": 175,
+              "content_type": "text/markdown"
+            }
+          },
+          {
+            "id": "da6e4beb-7388-4331-addd-d23783eb9602",
+            "title": "Python Programming Guide - 1754591692",
+            "source_type": "text",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 40,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T18:34:52.193116",
+            "updated_at": "2025-08-07T18:34:52.197981",
+            "metadata": {
+              "category": "programming",
+              "language": "python",
+              "test": true,
+              "test_timestamp": "1754591692"
+            }
+          },
+          {
+            "id": "f57a93d0-ba6a-4b48-a778-8f8e808b9cfd",
+            "title": "test_document_1754591661.md",
+            "source_type": "file",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 39,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T18:34:21.111718",
+            "updated_at": "2025-08-07T18:34:21.116866",
+            "metadata": {
+              "filename": "test_document_1754591661.md",
+              "file_type": ".md",
+              "file_size": 175,
+              "content_type": "text/markdown"
+            }
+          },
+          {
+            "id": "e62cdd92-0e9d-45c2-8a18-c63227e647d2",
+            "title": "Python Programming Guide - 1754591660",
+            "source_type": "text",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 40,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T18:34:20.597033",
+            "updated_at": "2025-08-07T18:34:20.601864",
+            "metadata": {
+              "category": "programming",
+              "language": "python",
+              "test": true,
+              "test_timestamp": "1754591660"
+            }
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 16,
+          "total_pages": 2
+        }
+      },
+      "response_text": "{\"documents\":[{\"id\":\"607dd26e-45c2-4667-918e-76c87246e59b\",\"title\":\"test_document_1754592296.md\",\"source_type\":\"file\",\"file_name\":null,\"file_type\":null,\"chunk_count\":1,\"token_count\":39,\"processing_status\":\"completed\",\"created_at\":\"2025-08-07T18:44:56.396140\",\"updated_at\":\"2025-08-07T18:44:56.404441\",\"metadata\":{\"filename\":\"test_document_1754592296.md\",\"file_type\":\".md\",\"file_size\":175,\"content_type\":\"text/markdown\"}},{\"id\":\"5575656a-3bf3-429d-be1d-b8d378f6d29f\",\"title\":\"Python Programming Guide ",
+      "timestamp": "2025-08-07T18:44:56.915573Z",
+      "duration_ms": 6.67,
+      "success": true,
+      "error_message": null,
+      "test_type": "DOCUMENT_LIST"
+    },
+    {
+      "endpoint": "/api/v1/knowledge/5575656a-3bf3-429d-be1d-b8d378f6d29f",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "id": "5575656a-3bf3-429d-be1d-b8d378f6d29f",
+        "knowledge_base_id": "c5a559d9-408f-41c8-af7c-5a84129c4cdf",
+        "title": "Python Programming Guide - 1754592295",
+        "content": "Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\n\nTest run timestamp: 1754592295",
+        "source_type": "text",
+        "source_url": null,
+        "file_name": null,
+        "file_type": null,
+        "file_size": null,
+        "chunk_count": 1,
+        "token_count": 40,
+        "processing_status": "completed",
+        "error_message": null,
+        "tags": null,
+        "metadata": {
+          "category": "programming",
+          "language": "python",
+          "test": true,
+          "test_timestamp": "1754592295"
+        },
+        "created_at": "2025-08-07T18:44:55.689050",
+        "updated_at": "2025-08-07T18:44:55.885064",
+        "processed_at": "2025-08-07T18:44:55.885063",
+        "chunks": [
+          {
+            "id": "f8982bcc-2567-4cf2-8bda-8af16d5704a0",
+            "chunk_index": 0,
+            "content": "Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\n\nTes...",
+            "token_count": 40
+          }
+        ]
+      },
+      "response_text": "{\"id\":\"5575656a-3bf3-429d-be1d-b8d378f6d29f\",\"knowledge_base_id\":\"c5a559d9-408f-41c8-af7c-5a84129c4cdf\",\"title\":\"Python Programming Guide - 1754592295\",\"content\":\"Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\\n\\nTest run timestamp: 1754592295\",\"source_type\":\"text\",\"source_url\":null,\"file_name\":null,\"file_type\":null,\"file_size\":null,\"chunk_count\":1,",
+      "timestamp": "2025-08-07T18:44:57.422854Z",
+      "duration_ms": 6.66,
+      "success": true,
+      "error_message": null,
+      "test_type": "DOCUMENT_DETAILS"
+    },
+    {
+      "endpoint": "/api/v1/knowledge/search",
+      "method": "POST",
+      "payload": {
+        "query": "Python programming features",
+        "knowledge_base_id": null,
+        "k": 5,
+        "score_threshold": 0.7,
+        "search_type": "semantic",
+        "filters": {
+          "category": "programming"
+        }
+      },
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "query": "Python programming features",
+        "results": [
+          {
+            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754592296",
+            "score": 0.48454219102859497,
+            "document_id": "607dd26e-45c2-4667-918e-76c87246e59b",
+            "document_title": "test_document_1754592296.md",
+            "chunk_index": 0,
+            "metadata": {
+              "document_id": "607dd26e-45c2-4667-918e-76c87246e59b",
+              "title": "test_document_1754592296.md",
+              "created_at": "2025-08-07T18:44:56.396140"
+            }
+          },
+          {
+            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754592251",
+            "score": 0.48454219102859497,
+            "document_id": "a48dc636-ec40-4c95-9041-80ff34a0eca6",
+            "document_title": "test_document_1754592251.md",
+            "chunk_index": 0,
+            "metadata": {
+              "document_id": "a48dc636-ec40-4c95-9041-80ff34a0eca6",
+              "title": "test_document_1754592251.md",
+              "created_at": "2025-08-07T18:44:11.225983"
+            }
+          },
+          {
+            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754592184",
+            "score": 0.48454219102859497,
+            "document_id": "9dc4470f-0025-4d76-9f5e-4c701177c8b8",
+            "document_title": "test_document_1754592184.md",
+            "chunk_index": 0,
+            "metadata": {
+              "document_id": "9dc4470f-0025-4d76-9f5e-4c701177c8b8",
+              "title": "test_document_1754592184.md",
+              "created_at": "2025-08-07T18:43:04.625187"
+            }
+          },
+          {
+            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754592095",
+            "score": 0.48454219102859497,
+            "document_id": "e0ab53e2-5d92-44a3-ac22-8668d7179af5",
+            "document_title": "test_document_1754592095.md",
+            "chunk_index": 0,
+            "metadata": {
+              "document_id": "e0ab53e2-5d92-44a3-ac22-8668d7179af5",
+              "title": "test_document_1754592095.md",
+              "created_at": "2025-08-07T18:41:35.730222"
+            }
+          },
+          {
+            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754591931",
+            "score": 0.48454219102859497,
+            "document_id": "366f2f1b-4703-4b91-8313-92109ecec0bb",
+            "document_title": "test_document_1754591931.md",
+            "chunk_index": 0,
+            "metadata": {
+              "document_id": "366f2f1b-4703-4b91-8313-92109ecec0bb",
+              "title": "test_document_1754591931.md",
+              "created_at": "2025-08-07T18:38:51.799758"
+            }
+          }
+        ],
+        "search_type": "semantic",
+        "execution_time_ms": 5.834,
+        "total_results": 5
+      },
+      "response_text": "{\"query\":\"Python programming features\",\"results\":[{\"content\":\"# Python Programming\\n\\n## Introduction\\nPython is a versatile programming language.\\n\\n### Key Features\\n- Easy to learn\\n- Powerful libraries\\n- Cross-platform\\n\\nTest run: 1754592296\",\"score\":0.48454219102859497,\"document_id\":\"607dd26e-45c2-4667-918e-76c87246e59b\",\"document_title\":\"test_document_1754592296.md\",\"chunk_index\":0,\"metadata\":{\"document_id\":\"607dd26e-45c2-4667-918e-76c87246e59b\",\"title\":\"test_document_1754592296.md\",\"cre",
+      "timestamp": "2025-08-07T18:44:57.934452Z",
+      "duration_ms": 10.98,
+      "success": true,
+      "error_message": null,
+      "test_type": "SEMANTIC_SEARCH"
+    },
+    {
+      "endpoint": "/api/v1/knowledge/query",
+      "method": "POST",
+      "payload": {
+        "query": "What are the key features of Python?",
+        "knowledge_base_id": null,
+        "model": "gpt-3.5-turbo",
+        "temperature": 0.7,
+        "max_tokens": 500,
+        "include_sources": true
+      },
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "x-api-key": "sk-proj-1GcPyxWGnE_i...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "query": "What are the key features of Python?",
+        "answer": "I couldn't find relevant information to answer your question.",
+        "sources": [],
+        "model_used": "gpt-3.5-turbo",
+        "tokens_used": {
+          "prompt": 0,
+          "completion": 0,
+          "total": 0
+        },
+        "execution_time_ms": 0.0
+      },
+      "response_text": "{\"query\":\"What are the key features of Python?\",\"answer\":\"I couldn't find relevant information to answer your question.\",\"sources\":[],\"model_used\":\"gpt-3.5-turbo\",\"tokens_used\":{\"prompt\":0,\"completion\":0,\"total\":0},\"execution_time_ms\":0.0}",
+      "timestamp": "2025-08-07T18:44:58.446432Z",
+      "duration_ms": 11.36,
+      "success": true,
+      "error_message": null,
+      "test_type": "RAG_QUERY"
+    },
+    {
+      "endpoint": "/api/v1/knowledge/similar/5575656a-3bf3-429d-be1d-b8d378f6d29f?k=5",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "reference_document": {
+          "id": "5575656a-3bf3-429d-be1d-b8d378f6d29f",
+          "title": "Python Programming Guide - 1754592295"
+        },
+        "similar_documents": [],
+        "total_found": 0
+      },
+      "response_text": "{\"reference_document\":{\"id\":\"5575656a-3bf3-429d-be1d-b8d378f6d29f\",\"title\":\"Python Programming Guide - 1754592295\"},\"similar_documents\":[],\"total_found\":0}",
+      "timestamp": "2025-08-07T18:44:58.961759Z",
+      "duration_ms": 14.7,
+      "success": true,
+      "error_message": null,
+      "test_type": "SIMILAR_DOCUMENTS"
+    },
+    {
+      "endpoint": "/api/v1/collections",
+      "method": "POST",
+      "payload": {
+        "name": "Test Collection for API Testing",
+        "description": "Collection created for testing purposes",
+        "type": "documentation",
+        "is_public": false,
+        "metadata": {
+          "test": true,
+          "created_by": "API Tester"
+        }
+      },
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 201,
+      "response_body": {
+        "collection_id": "4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee",
+        "name": "Test Collection for API Testing",
+        "type": "documentation",
+        "is_public": false,
+        "created_at": "2025-08-07T18:44:59.468721"
+      },
+      "response_text": "{\"collection_id\":\"4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee\",\"name\":\"Test Collection for API Testing\",\"type\":\"documentation\",\"is_public\":false,\"created_at\":\"2025-08-07T18:44:59.468721\"}",
+      "timestamp": "2025-08-07T18:44:59.469798Z",
+      "duration_ms": 7.42,
+      "success": true,
+      "error_message": null,
+      "test_type": "CREATE_COLLECTION"
+    },
+    {
+      "endpoint": "/api/v1/collections?page=1&limit=10",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "collections": [
+          {
+            "id": "4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee",
+            "name": "Test Collection for API Testing",
+            "description": "Collection created for testing purposes",
+            "type": "documentation",
+            "is_public": false,
+            "is_active": true,
+            "total_documents": 0,
+            "total_chunks": 0,
+            "total_tokens": 0,
+            "created_at": "2025-08-07T18:44:59.465832",
+            "updated_at": "2025-08-07T18:44:59.465833"
+          },
+          {
+            "id": "1ac067d6-4e01-4cf1-bcbc-6688758b3669",
+            "name": "Test Collection for API Testing",
+            "description": "Collection created for testing purposes",
+            "type": "documentation",
+            "is_public": false,
+            "is_active": true,
+            "total_documents": 0,
+            "total_chunks": 0,
+            "total_tokens": 0,
+            "created_at": "2025-08-07T18:26:00.254314",
+            "updated_at": "2025-08-07T18:26:00.254315"
+          },
+          {
+            "id": "a6b2dcb2-9dd7-42b0-b446-dd8284f43efd",
+            "name": "Test Collection for API Testing",
+            "description": "Collection created for testing purposes",
+            "type": "documentation",
+            "is_public": false,
+            "is_active": true,
+            "total_documents": 0,
+            "total_chunks": 0,
+            "total_tokens": 0,
+            "created_at": "2025-08-07T18:23:38.637450",
+            "updated_at": "2025-08-07T18:23:38.637451"
+          },
+          {
+            "id": "296764e8-e89e-4999-ab05-f3a7e60d0e1d",
+            "name": "Test Collection for API Testing",
+            "description": "Collection created for testing purposes",
+            "type": "documentation",
+            "is_public": false,
+            "is_active": true,
+            "total_documents": 0,
+            "total_chunks": 0,
+            "total_tokens": 0,
+            "created_at": "2025-08-07T17:29:07.757770",
+            "updated_at": "2025-08-07T17:29:07.757771"
+          },
+          {
+            "id": "fbc6876e-6b6c-42c1-8ab1-0ef8af862a51",
+            "name": "Test Collection for API Testing",
+            "description": "Collection created for testing purposes",
+            "type": "documentation",
+            "is_public": false,
+            "is_active": true,
+            "total_documents": 0,
+            "total_chunks": 0,
+            "total_tokens": 0,
+            "created_at": "2025-08-07T17:25:13.668232",
+            "updated_at": "2025-08-07T17:25:13.668233"
+          },
+          {
+            "id": "09f134c8-0f9f-48e3-a2a1-035ea6d2b562",
+            "name": "Test Collection for API Testing",
+            "description": "Collection created for testing purposes",
+            "type": "documentation",
+            "is_public": false,
+            "is_active": true,
+            "total_documents": 0,
+            "total_chunks": 0,
+            "total_tokens": 0,
+            "created_at": "2025-08-07T17:23:27.416193",
+            "updated_at": "2025-08-07T17:23:27.416194"
+          },
+          {
+            "id": "c5a559d9-408f-41c8-af7c-5a84129c4cdf",
+            "name": "Default Knowledge Base",
+            "description": "Default knowledge base for storing documents",
+            "type": "general",
+            "is_public": false,
+            "is_active": true,
+            "total_documents": 14,
+            "total_chunks": 14,
+            "total_tokens": 551,
+            "created_at": "2025-08-07T16:54:12.061710",
+            "updated_at": "2025-08-07T18:44:56.405253"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 7,
+          "total_pages": 1
+        }
+      },
+      "response_text": "{\"collections\":[{\"id\":\"4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee\",\"name\":\"Test Collection for API Testing\",\"description\":\"Collection created for testing purposes\",\"type\":\"documentation\",\"is_public\":false,\"is_active\":true,\"total_documents\":0,\"total_chunks\":0,\"total_tokens\":0,\"created_at\":\"2025-08-07T18:44:59.465832\",\"updated_at\":\"2025-08-07T18:44:59.465833\"},{\"id\":\"1ac067d6-4e01-4cf1-bcbc-6688758b3669\",\"name\":\"Test Collection for API Testing\",\"description\":\"Collection created for testing purposes\",\"ty",
+      "timestamp": "2025-08-07T18:44:59.976800Z",
+      "duration_ms": 6.37,
+      "success": true,
+      "error_message": null,
+      "test_type": "LIST_COLLECTIONS"
+    },
+    {
+      "endpoint": "/api/v1/collections/4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee",
+      "method": "PUT",
+      "payload": {
+        "name": "Updated Test Collection",
+        "description": "Updated description for testing",
+        "metadata": {
+          "test": true,
+          "updated_by": "API Tester",
+          "updated_at": "2025-08-07T18:45:00.477385"
+        }
+      },
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "collection_id": "4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee",
+        "name": "Updated Test Collection",
+        "updated_at": "2025-08-07T18:45:00.481467"
+      },
+      "response_text": "{\"collection_id\":\"4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee\",\"name\":\"Updated Test Collection\",\"updated_at\":\"2025-08-07T18:45:00.481467\"}",
+      "timestamp": "2025-08-07T18:45:00.485359Z",
+      "duration_ms": 7.94,
+      "success": true,
+      "error_message": null,
+      "test_type": "UPDATE_COLLECTION"
+    },
+    {
+      "endpoint": "/api/v1/collections/4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee",
+      "method": "DELETE",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "message": "Collection deleted successfully",
+        "collection_id": "4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee",
+        "documents_deleted": 0
+      },
+      "response_text": "{\"message\":\"Collection deleted successfully\",\"collection_id\":\"4ed0f596-9dd9-4f56-a9cf-f2f859bce8ee\",\"documents_deleted\":0}",
+      "timestamp": "2025-08-07T18:45:00.994277Z",
+      "duration_ms": 8.31,
+      "success": true,
+      "error_message": null,
+      "test_type": "DELETE_COLLECTION"
+    },
+    {
+      "endpoint": "/api/v1/knowledge/5575656a-3bf3-429d-be1d-b8d378f6d29f",
+      "method": "DELETE",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIU...",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "message": "Document deleted successfully",
+        "document_id": "5575656a-3bf3-429d-be1d-b8d378f6d29f",
+        "chunks_deleted": 1
+      },
+      "response_text": "{\"message\":\"Document deleted successfully\",\"document_id\":\"5575656a-3bf3-429d-be1d-b8d378f6d29f\",\"chunks_deleted\":1}",
+      "timestamp": "2025-08-07T18:45:01.509368Z",
+      "duration_ms": 14.49,
+      "success": true,
+      "error_message": null,
+      "test_type": "DELETE_DOCUMENT"
+    }
+  ]
+}

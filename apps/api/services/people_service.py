@@ -44,7 +44,6 @@ class PeopleService:
 
             # Create person
             person = Person(
-                organization_id=None,  # No organization dependency
                 first_name=person_data.first_name,
                 last_name=person_data.last_name,
                 email=person_data.email.lower(),

@@ -70,7 +70,7 @@ const validPeopleData = [
     email: 'john@example.com',
     avatar: '/avatars/john.jpg',
     initials: 'JD',
-    role: 'Manager',
+    role: 'MANAGER',
     department: 'Engineering',
     title: 'Engineering Manager',
     site: 'San Francisco',
@@ -88,7 +88,7 @@ const peopleDataWithNulls = [
     email: 'john@example.com',
     avatar: '/avatars/john.jpg',
     initials: 'JD',
-    role: 'Manager',
+    role: 'MANAGER',
     department: null, // null department
     title: 'Engineering Manager',
     site: undefined, // undefined site

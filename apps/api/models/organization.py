@@ -28,17 +28,17 @@ class OrganizationRole(str, PyEnum):
 
 class PersonRole(str, PyEnum):
     """Person roles within an organization"""
-    ADMIN = "Admin"
-    USER = "User"
-    MANAGER = "Manager"
-    VIEWER = "Viewer"
+    ADMIN = "ADMIN"
+    USER = "USER"
+    MANAGER = "MANAGER"
+    VIEWER = "VIEWER"
 
 
 class PersonStatus(str, PyEnum):
     """Person status"""
-    ACTIVE = "active"
-    INACTIVE = "inactive"
-    PENDING = "pending"
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+    PENDING = "PENDING"
 
 
 class OrganizationStatus(str, PyEnum):
@@ -224,9 +224,6 @@ class Person(Base):
     # Primary key
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     
-    # Foreign key to organization (optional)
-    organization_id = Column(UUID(as_uuid=True), ForeignKey('organizations.id', ondelete='CASCADE'), nullable=True)
-    
     # Personal information
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
@@ -240,8 +237,8 @@ class Person(Base):
     location = Column(String(200), nullable=True)
     
     # System information
-    role = Column(Enum(PersonRole), default=PersonRole.USER, nullable=False)
-    status = Column(Enum(PersonStatus), default=PersonStatus.ACTIVE, nullable=False)
+    role = Column(Enum(PersonRole), nullable=False)
+    status = Column(Enum(PersonStatus), nullable=False)
     
     # Dates
     hire_date = Column(DateTime, nullable=True)
@@ -258,13 +255,11 @@ class Person(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     
     # Relationships
-    organization = relationship("Organization")
     manager = relationship("Person", remote_side=[id], back_populates="direct_reports")
     direct_reports = relationship("Person", back_populates="manager")
     
     # Constraints and indexes
     __table_args__ = (
-        Index('idx_person_org', 'organization_id'),
         Index('idx_person_email', 'email'),
         Index('idx_person_department', 'department'),
         Index('idx_person_status', 'status'),

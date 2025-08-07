@@ -199,7 +199,7 @@ class PeopleAPITester:
             "department": "Quality Assurance",
             "site": "Test Site",
             "location": "Test City, TC",
-            "role": "User",
+            "role": "USER",
             "manager_id": None,
             "hire_date": (datetime.now() - timedelta(days=30)).isoformat(),
             "notes": "Test person for API validation"
@@ -270,7 +270,7 @@ class PeopleAPITester:
                     "first_name": "Test",
                     "last_name": "Person",
                     "email": "not-an-email",
-                    "role": "User"
+                    "role": "USER"
                 },
                 "expected": [422]
             },
@@ -432,7 +432,7 @@ class PeopleAPITester:
         
         endpoints = [
             ("GET", "/api/v1/organization/people/"),
-            ("POST", "/api/v1/organization/people/", {"first_name": "Test", "last_name": "User", "email": "test@test.com", "role": "User"}),
+            ("POST", "/api/v1/organization/people/", {"first_name": "Test", "last_name": "User", "email": "test@test.com", "role": "USER"}),
             ("GET", f"/api/v1/organization/people/{uuid.uuid4()}"),
             ("PUT", f"/api/v1/organization/people/{uuid.uuid4()}", {"job_title": "Test"}),
             ("DELETE", f"/api/v1/organization/people/{uuid.uuid4()}")

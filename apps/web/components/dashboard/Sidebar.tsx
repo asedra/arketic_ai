@@ -11,7 +11,8 @@ import {
   User,
   BarChart3,
   FileText,
-  Users
+  Users,
+  ClipboardList
 } from 'lucide-react'
 import { useNavigation } from '@/lib/hooks'
 import { useAuth } from '@/lib/auth-context'
@@ -45,6 +46,11 @@ const navigationItems: NavigationItem[] = [
     id: 'knowledge',
     label: 'Knowledge',
     icon: FileText
+  },
+  {
+    id: 'forms',
+    label: 'Forms',
+    icon: ClipboardList
   },
   {
     id: 'assistants',
@@ -179,6 +185,8 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
           const handleNavigation = () => {
             if (item.id === 'chat') {
               router.push('/chat')
+            } else if (item.id === 'forms') {
+              router.push('/forms')
             } else {
               navigateToSection(item.id)
             }

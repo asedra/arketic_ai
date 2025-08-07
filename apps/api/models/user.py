@@ -49,6 +49,7 @@ class User(Base):
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
     
+    
     # Account status
     role = Column(Enum(UserRole), default=UserRole.USER, nullable=False)
     status = Column(Enum(UserStatus), default=UserStatus.PENDING_VERIFICATION, nullable=False)

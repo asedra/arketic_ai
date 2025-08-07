@@ -10,6 +10,7 @@ import DatabaseService from './services/databaseService.js';
 import RedisService from './services/redisService.js';
 import { setupWebSocket } from './websocket/socketServer.js';
 import chatRoutes from './routes/chatRoutes.js';
+import documentsRoutes from './routes/documents.js';
 import { errorHandler, notFoundHandler, requestLogger } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -50,6 +51,7 @@ app.use(requestLogger);
 
 // API routes
 app.use('/', chatRoutes);
+app.use('/api/documents', documentsRoutes);
 
 app.get('/health', async (req, res) => {
   try {
@@ -123,6 +125,12 @@ app.get('/', (req, res) => {
       'POST /api/provider/test - Test provider connection',
       'DELETE /api/chat/:chatId/clear - Clear conversation',
       'GET /api/chat/:chatId/summary - Get conversation summary',
+      'POST /api/documents/process - Process single document',
+      'POST /api/documents/process-batch - Process multiple documents',
+      'GET /api/documents/status/:jobId - Check processing status',
+      'GET /api/documents/chunks/:documentId - Get document chunks',
+      'POST /api/documents/validate - Validate document',
+      'GET /api/documents/metrics - Get processing metrics',
       'GET /metrics - Service metrics'
     ]
   });

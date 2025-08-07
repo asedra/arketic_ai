@@ -100,7 +100,7 @@ const mockFormData = {
   jobTitle: 'Software Engineer',
   department: 'Engineering',
   site: 'San Francisco',
-  role: 'User' as const,
+  role: 'USER' as const,
   hireDate: new Date('2024-01-01'),
   manager: 'manager-1',
   location: 'SF Bay Area',
@@ -115,7 +115,7 @@ const mockExistingPeople = [
     email: 'alice@example.com',
     department: 'Engineering',
     site: 'San Francisco',
-    role: 'Manager',
+    role: 'MANAGER',
     title: 'Engineering Manager'
   },
   {
@@ -124,7 +124,7 @@ const mockExistingPeople = [
     email: 'bob@example.com',
     department: 'Design',
     site: 'New York',
-    role: 'User',
+    role: 'USER',
     title: 'Designer'
   }
 ]
@@ -390,7 +390,7 @@ describe('AddPersonModal', () => {
         job_title: 'Software Engineer',
         department: 'Engineering',
         site: 'San Francisco',
-        role: 'User',
+        role: 'USER',
         hire_date: '2024-01-01',
         manager_id: 'manager-1',
         location: 'SF Bay Area',

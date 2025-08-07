@@ -26,7 +26,7 @@ from core.security import SecurityManager
 from core.dependencies import initialize_dependencies, get_current_user, get_current_user_dict
 
 # Import routers
-from routers import auth, users, health, organization, compliance, people, chat, monitoring, openai_settings
+from routers import auth, users, health, organization, compliance, people, chat, monitoring, openai_settings, vector, knowledge, forms
 from routers import settings as settings_router
 
 # Import middleware
@@ -214,6 +214,29 @@ app.include_router(
     openai_settings.router,
     prefix="/api/v1/openai-settings",
     tags=["OpenAI Settings"]
+)
+
+# Include vector store router (protected)
+app.include_router(
+    vector.router,
+    prefix="/api/v1",
+    tags=["Vector Store"],
+    dependencies=[Depends(get_current_user)]
+)
+
+# Include knowledge management router (protected)
+app.include_router(
+    knowledge.router,
+    tags=["Knowledge Management"]
+    # Dependencies handled in individual endpoints
+)
+
+# Include forms router (protected)
+app.include_router(
+    forms.router,
+    prefix="/api/v1",
+    tags=["Forms"]
+    # Dependencies handled in individual endpoints to avoid conflicts
 )
 
 

@@ -690,10 +690,10 @@ export const knowledgeApi = {
 
 // People API types
 export interface PersonRole {
-  Admin: "Admin",
-  User: "User",
-  Manager: "Manager",
-  Viewer: "Viewer"
+  ADMIN: "ADMIN",
+  USER: "USER",
+  MANAGER: "MANAGER",
+  VIEWER: "VIEWER"
 }
 
 export interface PersonStatus {
@@ -711,7 +711,7 @@ export interface PersonCreateRequest {
   department?: string
   site?: string
   location?: string
-  role: "Admin" | "User" | "Manager" | "Viewer"
+  role: "ADMIN" | "USER" | "MANAGER" | "VIEWER"
   manager_id?: string
   hire_date?: string
   notes?: string
@@ -726,7 +726,7 @@ export interface PersonUpdateRequest {
   department?: string
   site?: string
   location?: string
-  role?: "Admin" | "User" | "Manager" | "Viewer"
+  role?: "ADMIN" | "USER" | "MANAGER" | "VIEWER"
   status?: "active" | "inactive" | "pending"
   manager_id?: string
   hire_date?: string
@@ -744,7 +744,7 @@ export interface PersonResponse {
   department?: string
   site?: string
   location?: string
-  role: "Admin" | "User" | "Manager" | "Viewer"
+  role: "ADMIN" | "USER" | "MANAGER" | "VIEWER"
   status: "active" | "inactive" | "pending"
   full_name: string
   is_active: boolean

@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils'
 // Lazy load content components
 const AnalyticsContent = React.lazy(() => import('./content/AnalyticsContent'))
 const ChatContent = React.lazy(() => import('./content/ChatContent'))
+const FormsContent = React.lazy(() => import('./content/FormsContent'))
 const KnowledgeContent = React.lazy(() => import('./content/KnowledgeContent'))
 const AssistantsContent = React.lazy(() => import('./content/AssistantsContent'))
 const MyOrganizationContent = React.lazy(() => import('./content/MyOrganizationContent'))
@@ -52,6 +53,8 @@ export default function DashboardContainer() {
         return <AnalyticsContent {...contentProps} />
       case 'chat':
         return <ChatContent {...contentProps} />
+      case 'forms':
+        return <FormsContent {...contentProps} />
       case 'knowledge':
         return <KnowledgeContent {...contentProps} />
       case 'assistants':

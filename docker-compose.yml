@@ -2,7 +2,7 @@
 services:
   # PostgreSQL Database
   postgres:
-    image: postgres:15-alpine
+    image: pgvector/pgvector:pg15
     restart: unless-stopped
     environment:
       POSTGRES_DB: arketic_dev
@@ -54,7 +54,7 @@ services:
       - HOST=0.0.0.0
       - PORT=8000
       - CORS_ORIGINS=http://localhost:3000,http://web:3000,http://localhost:80,http://nginx
-      - JWT_SECRET_KEY=dev_secret_key_change_in_production
+      - JWT_SECRET_KEY=arketic-dev-secret-key-change-in-production-32-chars-minimum-for-security
       - LANGCHAIN_INTERNAL_API_KEY=dev_internal_api_key_change_in_production
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
@@ -134,7 +134,7 @@ services:
       - DB_USER=arketic
       - DB_PASSWORD=arketic_dev_password
       - DB_NAME=arketic_dev
-      - JWT_SECRET_KEY=dev_secret_key_change_in_production
+      - JWT_SECRET_KEY=arketic-dev-secret-key-change-in-production-32-chars-minimum-for-security
       - INTERNAL_API_KEY=dev_internal_api_key_change_in_production
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}

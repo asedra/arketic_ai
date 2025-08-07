@@ -291,7 +291,7 @@ export function PeopleTab() {
                       </div>
                     </div>
                     <Badge 
-                      variant={person.role === "Admin" ? "default" : "secondary"}
+                      variant={person.role === "ADMIN" ? "default" : "secondary"}
                       className="text-xs"
                     >
                       {person.role}
@@ -365,7 +365,7 @@ export function PeopleTab() {
         onOpenChange={setIsDetailModalOpen}
         person={selectedPerson}
         onPersonUpdated={handlePersonAdded}
-        managers={peopleData.filter(p => p.role === "Admin" || p.role === "Manager")}
+        managers={peopleData.filter(p => p.role === "ADMIN" || p.role === "MANAGER")}
       />
     </div>
   )

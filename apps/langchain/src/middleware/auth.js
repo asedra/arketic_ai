@@ -25,11 +25,23 @@ export const authMiddleware = async (req, res, next) => {
       });
     }
     
-    console.error('🔑 Token:', token.substring(0, 50) + '...');
-    console.error('🔑 Secret available:', !!process.env.JWT_SECRET_KEY);
-    console.error('🔑 Secret length:', process.env.JWT_SECRET_KEY?.length);
+    // Try different JWT secret environment variables for compatibility
+    const jwtSecret = process.env.JWT_SECRET_KEY || process.env.JWT_SECRET || process.env.SECRET_KEY;
     
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    console.error('🔑 Token:', token.substring(0, 50) + '...');
+    console.error('🔑 Secret available:', !!jwtSecret);
+    console.error('🔑 Secret length:', jwtSecret?.length);
+    console.error('🔑 Using secret from:', process.env.JWT_SECRET_KEY ? 'JWT_SECRET_KEY' : (process.env.JWT_SECRET ? 'JWT_SECRET' : 'SECRET_KEY'));
+    
+    if (!jwtSecret) {
+      console.error('❌ No JWT secret found in environment variables');
+      return res.status(500).json({ 
+        error: 'Server configuration error',
+        code: 'JWT_SECRET_MISSING'
+      });
+    }
+    
+    const decoded = jwt.verify(token, jwtSecret);
     console.error('🔑 JWT decoded successfully:', decoded);
     
     req.user = {
@@ -50,9 +62,7 @@ export const authMiddleware = async (req, res, next) => {
     
     next();
   } catch (error) {
-    const fs = require('fs');
-    fs.appendFileSync('/app/auth-debug.log', `JWT Error: ${error.name} - ${error.message}\n`);
-    fs.appendFileSync('/app/auth-debug.log', `Stack: ${error.stack}\n`);
+    console.error('❌ JWT Verification Error:', error.name, '-', error.message);
     
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({ 

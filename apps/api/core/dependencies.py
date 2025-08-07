@@ -14,7 +14,6 @@ from sqlalchemy import select
 from .security import SecurityManager
 from .database import get_db
 from models.user import User
-from models.organization import Organization, OrganizationMember
 
 logger = logging.getLogger(__name__)
 
@@ -120,54 +119,6 @@ async def get_current_user_dict(credentials: HTTPAuthorizationCredentials = Depe
         )
 
 
-async def get_user_organization(
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-) -> Organization:
-    """Get user's primary organization"""
-    try:
-        # Get user's organization membership
-        stmt = select(OrganizationMember).where(
-            OrganizationMember.user_id == current_user.id,
-            OrganizationMember.is_active == True
-        )
-        result = await db.execute(stmt)
-        membership = result.scalar_one_or_none()
-        
-        if not membership:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="User is not a member of any organization"
-            )
-        
-        stmt = select(Organization).where(
-            Organization.id == membership.organization_id
-        )
-        result = await db.execute(stmt)
-        organization = result.scalar_one_or_none()
-        
-        if not organization:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Organization not found"
-            )
-        
-        if not organization.is_active:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Organization is not active"
-            )
-        
-        return organization
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error getting user organization: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error retrieving organization"
-        )
 
 
 def initialize_dependencies(security_mgr: SecurityManager):
@@ -213,7 +164,6 @@ async def verify_jwt_token(token: str) -> Optional[Dict[str, Any]]:
 __all__ = [
     "get_current_user",
     "get_current_user_dict",
-    "get_user_organization",
     "get_security_manager",
     "initialize_dependencies",
     "verify_jwt_token",

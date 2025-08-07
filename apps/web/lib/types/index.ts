@@ -51,6 +51,7 @@ export interface NavigationItem {
 export type Section = 
   | 'analytics' 
   | 'chat' 
+  | 'forms'
   | 'knowledge' 
   | 'assistants' 
   | 'workflow' 

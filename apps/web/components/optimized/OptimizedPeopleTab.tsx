@@ -69,7 +69,7 @@ const PersonCard = memo(function PersonCard({ person }: { person: Person }) {
             </div>
           </div>
           <Badge 
-            variant={person.role === "Admin" ? "default" : "secondary"}
+            variant={person.role === "ADMIN" ? "default" : "secondary"}
             className="text-xs"
           >
             {person.role}
@@ -194,7 +194,7 @@ export const OptimizedPeopleTab = memo(function OptimizedPeopleTab({ data }: Opt
       header: 'Role',
       width: 100,
       render: (value: string) => (
-        <Badge variant={value === "Admin" ? "default" : "secondary"}>
+        <Badge variant={value === "ADMIN" ? "default" : "secondary"}>
           {value}
         </Badge>
       )

@@ -20,7 +20,7 @@ class PersonBase(BaseModel):
     department: Optional[str] = Field(None, max_length=100, description="Person's department")
     site: Optional[str] = Field(None, max_length=200, description="Person's work site")
     location: Optional[str] = Field(None, max_length=200, description="Person's location")
-    role: PersonRole = Field(PersonRole.USER, description="Person's system role")
+    role: PersonRole = Field(..., description="Person's system role")
     manager_id: Optional[UUID] = Field(None, description="Person's manager ID")
     hire_date: Optional[datetime] = Field(None, description="Person's hire date")
     notes: Optional[str] = Field(None, description="Additional notes about the person")
@@ -97,7 +97,6 @@ class PersonUpdate(BaseModel):
 class PersonResponse(PersonBase):
     """Schema for person response"""
     id: UUID
-    organization_id: Optional[UUID]
     status: PersonStatus
     full_name: str
     is_active: bool

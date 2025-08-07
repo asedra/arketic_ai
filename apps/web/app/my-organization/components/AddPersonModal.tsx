@@ -51,7 +51,7 @@ const addPersonSchema = z.object({
   jobTitle: z.string().min(1, "Job title is required").max(100, "Job title must be less than 100 characters"),
   department: z.string().optional(),
   site: z.string().optional(),
-  role: z.enum(["Admin", "User", "Manager", "Viewer"], {
+  role: z.enum(["ADMIN", "USER", "MANAGER", "VIEWER"], {
     required_error: "Please select a role",
   }),
   hireDate: z.date().optional(),
@@ -95,7 +95,7 @@ export function AddPersonModal({
       jobTitle: "",
       department: "",
       site: "",
-      role: "User",
+      role: "USER",
       employeeId: "",
       location: "",
     },
@@ -105,7 +105,7 @@ export function AddPersonModal({
   const departments = Array.from(new Set(existingPeople.map(p => p.department))).filter(Boolean)
   const sites = Array.from(new Set(existingPeople.map(p => p.site))).filter(Boolean)
   const managers = existingPeople.filter(p => 
-    p.role === "Admin" || p.role === "Manager"
+    p.role === "ADMIN" || p.role === "MANAGER"
   )
 
   // Reset form when modal opens/closes
@@ -535,10 +535,10 @@ export function AddPersonModal({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Admin">Admin</SelectItem>
-                          <SelectItem value="Manager">Manager</SelectItem>
-                          <SelectItem value="User">User</SelectItem>
-                          <SelectItem value="Viewer">Viewer</SelectItem>
+                          <SelectItem value="ADMIN">Admin</SelectItem>
+                          <SelectItem value="MANAGER">Manager</SelectItem>
+                          <SelectItem value="USER">User</SelectItem>
+                          <SelectItem value="VIEWER">Viewer</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

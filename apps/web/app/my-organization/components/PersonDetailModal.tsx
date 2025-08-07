@@ -169,13 +169,13 @@ export function PersonDetailModal({
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
-      case "Admin":
+      case "ADMIN":
         return "default"
-      case "Manager":
+      case "MANAGER":
         return "secondary"
-      case "User":
+      case "USER":
         return "outline"
-      case "Viewer":
+      case "VIEWER":
         return "ghost"
       default:
         return "outline"
@@ -379,7 +379,7 @@ export function PersonDetailModal({
                   {isEditing ? (
                     <Select
                       value={formData.role}
-                      onValueChange={(value: "Admin" | "User" | "Manager" | "Viewer") => 
+                      onValueChange={(value: "ADMIN" | "USER" | "MANAGER" | "VIEWER") => 
                         setFormData({ ...formData, role: value })
                       }
                     >
@@ -387,10 +387,10 @@ export function PersonDetailModal({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Admin">Admin</SelectItem>
-                        <SelectItem value="Manager">Manager</SelectItem>
-                        <SelectItem value="User">User</SelectItem>
-                        <SelectItem value="Viewer">Viewer</SelectItem>
+                        <SelectItem value="ADMIN">Admin</SelectItem>
+                        <SelectItem value="MANAGER">Manager</SelectItem>
+                        <SelectItem value="USER">User</SelectItem>
+                        <SelectItem value="VIEWER">Viewer</SelectItem>
                       </SelectContent>
                     </Select>
                   ) : (

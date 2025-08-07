@@ -76,12 +76,12 @@ class Assistant(Base):
     
     # AI Configuration
     system_prompt = Column(Text, nullable=True)
-    ai_model = Column(Enum(AIModel), default=AIModel.GPT_4O, nullable=False)
+    ai_model = Column(Enum(AIModel, values_callable=lambda x: [e.value for e in x]), default=AIModel.GPT_4O.value, nullable=False)
     temperature = Column(Float, default=0.7, nullable=False)
     max_tokens = Column(Integer, default=2048, nullable=False)
     
     # Status and ownership
-    status = Column(Enum(AssistantStatus), default=AssistantStatus.ACTIVE, nullable=False)
+    status = Column(Enum(AssistantStatus, values_callable=lambda x: [e.value for e in x]), default=AssistantStatus.ACTIVE.value, nullable=False)
     is_public = Column(Boolean, default=False, nullable=False)
     creator_id = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     
@@ -207,7 +207,7 @@ class Assistant(Base):
             "id": str(self.id),
             "name": self.name,
             "description": self.description,
-            "ai_model": self.ai_model,
+            "ai_model": self.ai_model.value if isinstance(self.ai_model, AIModel) else self.ai_model,
             "ai_model_display": self.get_model_display_name(),
             "temperature": self.temperature,
             "max_tokens": self.max_tokens,

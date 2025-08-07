@@ -59,7 +59,7 @@ async def create_assistant(
         logger.error(f"Failed to create assistant: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to create assistant"
+            detail=f"Failed to create assistant: {str(e)}"
         )
 
 

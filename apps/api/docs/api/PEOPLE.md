@@ -24,7 +24,6 @@ Authorization: Bearer <your_jwt_token>
 | Field | Type | Required | Description | Constraints |
 |-------|------|----------|-------------|-------------|
 | `id` | UUID | No (auto-generated) | Unique identifier | Read-only |
-| `organization_id` | UUID | No | Organization identifier | Can be null |
 | `first_name` | string | Yes | Person's first name | Max 100 characters |
 | `last_name` | string | Yes | Person's last name | Max 100 characters |
 | `email` | string | Yes | Person's email address | Valid email format, unique |
@@ -48,7 +47,6 @@ Authorization: Bearer <your_jwt_token>
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
-  "organization_id": null,
   "first_name": "John",
   "last_name": "Doe",
   "email": "john.doe@company.com",
@@ -114,7 +112,6 @@ Create a new person record.
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
-  "organization_id": null,
   "first_name": "John",
   "last_name": "Doe",
   "email": "john.doe@example.com",
@@ -424,12 +421,12 @@ curl -X PUT \
 **Status:** Resolved (2025-08-07)
 
 **Root Cause:** 
-- The `organization_id` field had a NOT NULL constraint in the database
-- The error handling was masking the actual `NotNullViolationError` and returning a misleading "email already exists" message
+- Database constraint violations were being masked
+- The error handling was returning misleading error messages
 
 **Solution:**
-- Made `organization_id` nullable in the database
 - Removed `employee_id` field completely from the schema and database
+- Removed organization_id field entirely from the system
 - Fixed error handling to properly report actual database errors
 - Updated response schemas to match the actual model properties
 
@@ -442,5 +439,4 @@ curl -X PUT \
 - Self-management is prevented (person cannot be their own manager)
 - Timestamps are automatically managed (created_at, updated_at)
 - All datetime fields use ISO 8601 format with UTC timezone
-- The `organization_id` field is optional and can be null
 - Response includes computed fields: `full_name` and `is_active`

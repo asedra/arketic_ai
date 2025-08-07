@@ -811,6 +811,181 @@ export const knowledgeApi = {
     apiClient.post("/api/v1/compliance/sync"),
 }
 
+// Assistant API types
+export interface AssistantCreateRequest {
+  name: string
+  description?: string
+  system_prompt?: string
+  ai_model?: string
+  temperature?: number
+  max_tokens?: number
+  is_public?: boolean
+  knowledge_base_ids?: string[]
+  document_ids?: string[]
+  configuration?: Record<string, any>
+}
+
+export interface AssistantUpdateRequest {
+  name?: string
+  description?: string
+  system_prompt?: string
+  ai_model?: string
+  temperature?: number
+  max_tokens?: number
+  status?: 'active' | 'inactive' | 'draft' | 'archived'
+  is_public?: boolean
+  knowledge_base_ids?: string[]
+  document_ids?: string[]
+  configuration?: Record<string, any>
+}
+
+export interface AssistantResponse {
+  id: string
+  name: string
+  description?: string
+  ai_model: string
+  ai_model_display: string
+  temperature: number
+  max_tokens: number
+  status: string
+  is_public: boolean
+  creator_id: string
+  total_conversations: number
+  total_messages: number
+  total_tokens_used: number
+  knowledge_count: number
+  document_count: number
+  created_at: string
+  updated_at: string
+  last_used_at?: string
+}
+
+export interface AssistantDetailResponse extends AssistantResponse {
+  system_prompt?: string
+  configuration?: Record<string, any>
+  knowledge_bases?: Array<{
+    knowledge_base_id: string
+    name: string
+    description?: string
+  }>
+  documents?: Array<{
+    document_id: string
+    title: string
+    knowledge_base_id: string
+  }>
+}
+
+export interface AssistantListResponse {
+  assistants: AssistantResponse[]
+  total: number
+  page: number
+  limit: number
+  has_next: boolean
+  has_prev: boolean
+}
+
+export interface ManageKnowledgeRequest {
+  knowledge_base_ids?: string[]
+  document_ids?: string[]
+  action: 'add' | 'remove' | 'replace'
+}
+
+export interface AIModel {
+  value: string
+  label: string
+  description: string
+  max_tokens: number
+  cost_per_1k_tokens?: number
+}
+
+export interface ModelsResponse {
+  models: AIModel[]
+  default_model: string
+}
+
+export const assistantApi = {
+  // Core assistant management
+  createAssistant: (data: AssistantCreateRequest) =>
+    apiClient.post<AssistantDetailResponse>("/api/v1/assistants/", data),
+  
+  listAssistants: (params?: {
+    query?: string
+    ai_model?: string
+    status?: string
+    is_public?: boolean
+    creator_id?: string
+    page?: number
+    limit?: number
+    sort_by?: string
+    sort_order?: 'asc' | 'desc'
+  }) => {
+    const queryParams = new URLSearchParams()
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, String(value))
+        }
+      })
+    }
+    const queryString = queryParams.toString()
+    return apiClient.get<AssistantListResponse>(`/api/v1/assistants/${queryString ? `?${queryString}` : ''}`)
+  },
+  
+  getAssistant: (assistantId: string, includeDetails = true) =>
+    apiClient.get<AssistantDetailResponse>(`/api/v1/assistants/${assistantId}?include_details=${includeDetails}`),
+  
+  updateAssistant: (assistantId: string, data: AssistantUpdateRequest) =>
+    apiClient.put<AssistantDetailResponse>(`/api/v1/assistants/${assistantId}`, data),
+  
+  deleteAssistant: (assistantId: string) =>
+    apiClient.delete<{ message: string; assistant_id: string }>(`/api/v1/assistants/${assistantId}`),
+  
+  // Knowledge management
+  manageKnowledge: (assistantId: string, data: ManageKnowledgeRequest) =>
+    apiClient.post<{ message: string; action: string; result: any }>(`/api/v1/assistants/${assistantId}/knowledge`, data),
+  
+  // Chat integration
+  getChatConfig: (assistantId: string) =>
+    apiClient.get<{
+      success: boolean
+      data: {
+        id: string
+        name: string
+        description?: string
+        system_prompt: string
+        ai_model: string
+        temperature: number
+        max_tokens: number
+        knowledge_base_ids: string[]
+        document_ids: string[]
+        configuration?: Record<string, any>
+      }
+      timestamp: string
+    }>(`/api/v1/assistants/${assistantId}/chat-config`),
+  
+  // Usage tracking
+  logUsage: (assistantId: string, action: string, chatId?: string, tokensUsed?: number, processingTimeMs?: number) => {
+    const queryParams = new URLSearchParams({ action })
+    if (chatId) queryParams.append('chat_id', chatId)
+    if (tokensUsed !== undefined) queryParams.append('tokens_used', String(tokensUsed))
+    if (processingTimeMs !== undefined) queryParams.append('processing_time_ms', String(processingTimeMs))
+    return apiClient.post<{ success: boolean; message: string; timestamp: string }>(
+      `/api/v1/assistants/${assistantId}/usage?${queryParams.toString()}`
+    )
+  },
+  
+  // Administrative endpoints
+  getAvailableModels: () =>
+    apiClient.get<ModelsResponse>("/api/v1/assistants/models/available"),
+  
+  getFeaturedAssistants: (limit = 10) =>
+    apiClient.get<AssistantResponse[]>(`/api/v1/assistants/public/featured?limit=${limit}`),
+  
+  // Health check
+  checkHealth: () =>
+    apiClient.get<{ status: string; service: string; timestamp: string; version: string }>("/api/v1/assistants/health")
+}
+
 // People API types
 export interface PersonRole {
   ADMIN: "ADMIN",
@@ -858,7 +1033,6 @@ export interface PersonUpdateRequest {
 
 export interface PersonResponse {
   id: string
-  organization_id?: string
   first_name: string
   last_name: string
   email: string

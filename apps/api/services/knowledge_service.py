@@ -162,11 +162,11 @@ class KnowledgeService:
             doc_query = text("""
                 INSERT INTO knowledge_documents (
                     id, knowledge_base_id, uploader_id, title, source_type,
-                    content, file_hash, processing_status,
+                    content, file_hash, processing_status, chunk_count, token_count,
                     metadata, created_at, updated_at
                 ) VALUES (
                     :id, :knowledge_base_id, :uploader_id, :title, :source_type,
-                    :content, :file_hash, :processing_status,
+                    :content, :file_hash, :processing_status, :chunk_count, :token_count,
                     :metadata, :created_at, :updated_at
                 ) RETURNING id
             """)
@@ -181,6 +181,8 @@ class KnowledgeService:
                 "content": content,
                 "file_hash": content_hash,
                 "processing_status": "processing",
+                "chunk_count": 0,  # Will be updated after processing
+                "token_count": 0,  # Will be updated after processing
                 "metadata": json.dumps(metadata) if metadata else None,
                 "created_at": datetime.utcnow(),
                 "updated_at": datetime.utcnow()
@@ -577,9 +579,6 @@ class KnowledgeService:
             # If knowledge base specified, verify access
             if knowledge_base_id:
                 await self._verify_knowledge_base_access(db, knowledge_base_id, user)
-            else:
-                # No additional filtering needed since organization_id is removed
-                pass
             
             # Perform search based on type
             try:
@@ -891,12 +890,12 @@ class KnowledgeService:
                 id, creator_id, name, description,
                 type, is_public, is_active, embedding_model,
                 embedding_dimensions, total_documents, total_chunks,
-                total_tokens, created_at, updated_at
+                total_tokens, metadata, created_at, updated_at
             ) VALUES (
                 :id, :creator_id, :name, :description,
                 :type, :is_public, :is_active, :embedding_model,
                 :embedding_dimensions, :total_documents, :total_chunks,
-                :total_tokens, :created_at, :updated_at
+                :total_tokens, :metadata, :created_at, :updated_at
             ) RETURNING id
         """)
         

@@ -31,11 +31,22 @@ export interface KnowledgeItem {
 export interface Assistant {
   id: string
   name: string
-  provider: string
-  description: string
-  capabilities: string[]
-  status: 'available' | 'busy' | 'offline'
-  avatar?: string
+  description?: string
+  ai_model: string
+  ai_model_display: string
+  temperature: number
+  max_tokens: number
+  status: 'active' | 'inactive' | 'draft' | 'archived'
+  is_public: boolean
+  creator_id: string
+  total_conversations: number
+  total_messages: number
+  total_tokens_used: number
+  knowledge_count: number
+  document_count: number
+  created_at: string
+  updated_at: string
+  last_used_at?: string
 }
 
 export interface NavigationItem {

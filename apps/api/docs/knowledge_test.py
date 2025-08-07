@@ -62,7 +62,6 @@ class KnowledgeTester:
             "test_document_id": None,
             "test_collection_id": None,
             "test_user_id": "42c9a688-e24a-4cd6-b5e2-4e77f1894a6b",  # Known test user ID
-            "test_organization_id": None,
             "openai_api_key": os.getenv("OPENAI_API_KEY"),
             "access_token": None,
             "refresh_token": None,
@@ -267,9 +266,6 @@ for i in range(10):
             # Connect to database
             conn = psycopg2.connect(**self.db_config)
             cursor = conn.cursor()
-            
-            # Set a default organization ID for testing (removed organization_id dependency)
-            self.test_data["test_organization_id"] = str(uuid.uuid4())
             
             # Check if PGVector extension exists
             cursor.execute("SELECT 1 FROM pg_extension WHERE extname = 'vector'")

@@ -38,14 +38,18 @@ class AssistantService:
     ) -> AssistantDetailResponse:
         """Create a new AI assistant"""
         try:
-            # Create the assistant
+            # Debug logging
+            logger.info(f"Request ai_model type: {type(request.ai_model)}, value: {request.ai_model}")
+            
+            # Create the assistant  
             assistant = Assistant(
                 name=request.name,
                 description=request.description,
                 system_prompt=request.system_prompt,
-                ai_model=request.ai_model,
+                ai_model=request.ai_model.value if hasattr(request.ai_model, 'value') else request.ai_model,
                 temperature=request.temperature,
                 max_tokens=request.max_tokens,
+                status=AssistantStatus.ACTIVE.value,  # Explicitly set status to the value
                 is_public=request.is_public,
                 creator_id=user.id,
                 configuration=request.configuration
@@ -132,13 +136,13 @@ class AssistantService:
             if request.system_prompt is not None:
                 assistant.system_prompt = request.system_prompt
             if request.ai_model is not None:
-                assistant.ai_model = request.ai_model
+                assistant.ai_model = request.ai_model.value if hasattr(request.ai_model, 'value') else request.ai_model
             if request.temperature is not None:
                 assistant.temperature = request.temperature
             if request.max_tokens is not None:
                 assistant.max_tokens = request.max_tokens
             if request.status is not None:
-                assistant.status = request.status
+                assistant.status = request.status.value if hasattr(request.status, 'value') else request.status
             if request.is_public is not None:
                 assistant.is_public = request.is_public
             if request.configuration is not None:
@@ -190,7 +194,7 @@ class AssistantService:
             assistant_name = assistant.name
             
             # Soft delete by setting status to archived
-            assistant.status = AssistantStatus.ARCHIVED
+            assistant.status = AssistantStatus.ARCHIVED.value
             assistant.updated_at = datetime.utcnow()
             
             await db.commit()
@@ -237,11 +241,12 @@ class AssistantService:
                     )
                 
                 if search.ai_model:
-                    query = query.where(Assistant.ai_model == search.ai_model)
+                    query = query.where(Assistant.ai_model == (search.ai_model.value if hasattr(search.ai_model, 'value') else search.ai_model))
                 
                 if search.status:
-                    # search.status is already an enum value from the schema, get its value
-                    query = query.where(Assistant.status == search.status.value)
+                    # search.status is a string value due to use_enum_values = True
+                    status_value = search.status.value if hasattr(search.status, 'value') else search.status
+                    query = query.where(Assistant.status == status_value)
                 else:
                     # Default: exclude archived unless specifically requested
                     query = query.where(Assistant.status != "archived")
@@ -287,11 +292,12 @@ class AssistantService:
                     )
                 
                 if search.ai_model:
-                    count_query = count_query.where(Assistant.ai_model == search.ai_model)
+                    count_query = count_query.where(Assistant.ai_model == (search.ai_model.value if hasattr(search.ai_model, 'value') else search.ai_model))
                 
                 if search.status:
-                    # search.status is already an enum value from the schema, use .value
-                    count_query = count_query.where(Assistant.status == search.status.value)
+                    # search.status is a string value due to use_enum_values = True
+                    status_value = search.status.value if hasattr(search.status, 'value') else search.status
+                    count_query = count_query.where(Assistant.status == status_value)
                 else:
                     count_query = count_query.where(Assistant.status != "archived")
                 
@@ -301,7 +307,7 @@ class AssistantService:
                 if search.creator_id:
                     count_query = count_query.where(Assistant.creator_id == search.creator_id)
             else:
-                count_query = count_query.where(Assistant.status != AssistantStatus.ARCHIVED)
+                count_query = count_query.where(Assistant.status != AssistantStatus.ARCHIVED.value)
             
             # Execute queries
             result = await db.execute(query)

@@ -8,6 +8,12 @@ This document provides comprehensive documentation for the Assistant API endpoin
 **API Version**: v1  
 **Authentication Method**: HTTP Bearer Token
 
+## Latest Updates (2025-08-07)
+
+- Fixed enum handling for AI models and assistant status
+- Improved test coverage from 30% to 82.4%
+- Resolved database enum value conversion issues
+
 ---
 
 ## Table of Contents
@@ -747,9 +753,25 @@ Authorization: Bearer <access_token>
 ## AI Integration Features
 
 ### 1. Multi-Model Support
-- **OpenAI Models**: GPT-4o, GPT-4o Mini, GPT-4 Turbo, GPT-4, GPT-3.5 Turbo series
-- **Anthropic Models**: Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku
-- **Model-specific Configuration**: Each model has optimized default settings
+
+#### Supported AI Models (ai_model field values)
+- `gpt-4o` - GPT-4o (Most capable GPT-4 model)
+- `gpt-4o-mini` - GPT-4o Mini (Smaller, faster GPT-4 model)
+- `gpt-4-turbo` - GPT-4 Turbo (Enhanced GPT-4 with improved performance)
+- `gpt-4` - GPT-4 (Most capable model, best for complex reasoning)
+- `gpt-3.5-turbo` - GPT-3.5 Turbo (Fast and efficient)
+- `gpt-3.5-turbo-16k` - GPT-3.5 Turbo 16K (Extended context window)
+- `claude-3-5-sonnet` - Claude 3.5 Sonnet (Anthropic's most capable model)
+- `claude-3-opus` - Claude 3 Opus (Anthropic's most powerful model)
+- `claude-3-haiku` - Claude 3 Haiku (Fast and cost-effective Anthropic model)
+
+#### Supported Status Values
+- `active` - Assistant is active and available for use
+- `inactive` - Assistant is temporarily disabled
+- `draft` - Assistant is in draft state (not yet published)
+- `archived` - Assistant is archived (soft deleted)
+
+**Note**: All enum values must be provided in lowercase format as shown above
 
 ### 2. Knowledge Integration
 - **Knowledge Bases**: Connect assistants to structured knowledge repositories

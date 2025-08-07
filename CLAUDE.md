@@ -39,10 +39,10 @@ Bu sistem **Docker konteynerlerinde** çalışmaktadır. Aşağıdaki servisleri
 ### ✅ Doğru Kullanım:
 
 Servisleri yönetmek için Docker Compose komutlarını kullanın:
-- `docker-compose up` - Tüm servisleri başlat
-- `docker-compose down` - Tüm servisleri durdur
-- `docker-compose logs [servis-adı]` - Logları görüntüle
-- `docker-compose restart [servis-adı]` - Servisi yeniden başlat
+- `docker compose up` - Tüm servisleri başlat
+- `docker compose down` - Tüm servisleri durdur
+- `docker compose logs [servis-adı]` - Logları görüntüle
+- `docker compose restart [servis-adı]` - Servisi yeniden başlat
 - `docker exec -it [konteyner-adı] bash` - Konteynere bağlan
 
 ### Geliştirme Ortamı:

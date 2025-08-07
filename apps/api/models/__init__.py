@@ -4,7 +4,7 @@ SQLAlchemy models for users, organizations, chat, and more
 """
 
 from .user import User, UserProfile, UserPreferences, UserApiKey, UserRole, UserStatus
-from .organization import Organization, OrganizationMember, OrganizationRole, OrganizationStatus, SubscriptionTier, Person, PersonRole, PersonStatus
+from .organization import Organization, OrganizationStatus, SubscriptionTier, Person, PersonRole, PersonStatus
 from .chat import Chat, ChatMessage, ChatParticipant, ChatType, MessageType, MessageStatus, ParticipantRole
 from .form import Form, FormTemplate, FormSubmission, FormVersion, FormShare, FormStatus, FormVisibility, FormSharePermission
 
@@ -25,8 +25,6 @@ __all__ = [
     
     # Organization models
     "Organization",
-    "OrganizationMember",
-    "OrganizationRole",
     "OrganizationStatus",
     "SubscriptionTier",
     

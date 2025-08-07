@@ -237,7 +237,7 @@ export function addResourceHints() {
   })
 }
 
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 
 // Component for measuring render time
 export function withRenderTimer<P extends object>(
@@ -245,11 +245,11 @@ export function withRenderTimer<P extends object>(
   componentName: string
 ) {
   return function TimedComponent(props: P) {
-    const startTime = performance.now()
+    const startTime = useRef(performance.now())
     
     useEffect(() => {
       const endTime = performance.now()
-      const renderTime = endTime - startTime
+      const renderTime = endTime - startTime.current
       
       console.log(`${componentName} render time: ${renderTime.toFixed(2)}ms`)
       
@@ -266,6 +266,6 @@ export function withRenderTimer<P extends object>(
       }
     })
     
-    return <Component {...props} />
+    return React.createElement(Component, props)
   }
 }

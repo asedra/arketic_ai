@@ -1,14 +1,14 @@
 {
   "test_metadata": {
-    "generated_at": "2025-08-07T20:28:19.958409Z",
+    "generated_at": "2025-08-07T21:33:00.300637Z",
     "base_url": "http://localhost:8000",
     "test_email": "arketic@arketic.com",
-    "test_assistant_id": "6e2bc42c-9302-4a5f-9f7e-d44eb51f417d",
+    "test_assistant_id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
     "total_tests": 17,
-    "successful_tests": 10,
-    "failed_tests": 7,
-    "success_rate_percent": 58.8,
-    "average_duration_ms": 19.0,
+    "successful_tests": 16,
+    "failed_tests": 1,
+    "success_rate_percent": 94.1,
+    "average_duration_ms": 25.3,
     "tested_features": [
       "Assistant Creation",
       "Assistant Listing & Search",
@@ -24,95 +24,95 @@
   },
   "rest_api_summary": {
     "total_calls": 17,
-    "successful_calls": 10,
-    "failed_calls": 7,
-    "success_rate_percent": 58.8,
-    "average_duration_ms": 19.0
+    "successful_calls": 16,
+    "failed_calls": 1,
+    "success_rate_percent": 94.1,
+    "average_duration_ms": 25.3
   },
   "endpoint_summary": {
     "/api/v1/test/create-admin": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 4.345893859863281
+      "avg_duration_ms": 46.2646484375
     },
     "/api/v1/auth/login": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 178.6501407623291
+      "avg_duration_ms": 220.11780738830566
     },
     "/api/v1/assistants/health": {
       "total_calls": 1,
       "successful_calls": 0,
       "failed_calls": 1,
-      "avg_duration_ms": 1.5468597412109375
+      "avg_duration_ms": 1.9185543060302734
     },
     "/api/v1/assistants/models/available": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 47.01590538024902
+      "avg_duration_ms": 1.6493797302246094
     },
     "/api/v1/assistants/": {
       "total_calls": 2,
-      "successful_calls": 1,
-      "failed_calls": 1,
-      "avg_duration_ms": 6.317257881164551
+      "successful_calls": 2,
+      "failed_calls": 0,
+      "avg_duration_ms": 13.611435890197754
     },
     "/api/v1/assistants/?limit=5&page=1": {
       "total_calls": 1,
-      "successful_calls": 0,
-      "failed_calls": 1,
-      "avg_duration_ms": 8.558273315429688
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 18.62931251525879
     },
     "/api/v1/assistants/?sort_by=name&sort_order=asc": {
       "total_calls": 1,
-      "successful_calls": 0,
-      "failed_calls": 1,
-      "avg_duration_ms": 12.18104362487793
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 24.994611740112305
     },
     "/api/v1/assistants/?status=active": {
       "total_calls": 1,
-      "successful_calls": 0,
-      "failed_calls": 1,
-      "avg_duration_ms": 15.021562576293945
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 31.486988067626953
     },
-    "/api/v1/assistants/6e2bc42c-9302-4a5f-9f7e-d44eb51f417d": {
+    "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77": {
       "total_calls": 3,
       "successful_calls": 3,
       "failed_calls": 0,
-      "avg_duration_ms": 5.636771519978841
+      "avg_duration_ms": 6.9967905680338545
     },
-    "/api/v1/assistants/6e2bc42c-9302-4a5f-9f7e-d44eb51f417d/knowledge?action=add": {
+    "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/knowledge?action=add": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 5.1021575927734375
+      "avg_duration_ms": 7.602691650390625
     },
-    "/api/v1/assistants/6e2bc42c-9302-4a5f-9f7e-d44eb51f417d/knowledge?action=replace": {
+    "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/knowledge?action=replace": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 10.992050170898438
+      "avg_duration_ms": 14.26243782043457
     },
-    "/api/v1/assistants/6e2bc42c-9302-4a5f-9f7e-d44eb51f417d/chat-config": {
+    "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/chat-config": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 3.5665035247802734
+      "avg_duration_ms": 4.220247268676758
     },
     "/api/v1/assistants/public/featured": {
       "total_calls": 1,
-      "successful_calls": 0,
-      "failed_calls": 1,
-      "avg_duration_ms": 3.220796585083008
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 4.3506622314453125
     },
     "/api/v1/chat/assistants/available": {
       "total_calls": 1,
-      "successful_calls": 0,
-      "failed_calls": 1,
-      "avg_duration_ms": 2.604246139526367
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 5.951404571533203
     }
   },
   "detailed_results": [
@@ -124,8 +124,8 @@
       "response_status": 200,
       "response_body": null,
       "response_text": "null",
-      "timestamp": "2025-08-07T20:28:19.670189",
-      "duration_ms": 4.345893859863281,
+      "timestamp": "2025-08-07T21:32:59.979713",
+      "duration_ms": 46.2646484375,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -142,12 +142,12 @@
       },
       "response_status": 200,
       "response_body": {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
-        "refresh_token": "DBMGUqcMxMScaTWSQPBx9-G5sm3KPxgkkM0Vmxb1jdg",
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "refresh_token": "I3kjhID0ojX6QkPg4o-R-iqiUf3xKt8Pf6l7zAeUGVU",
         "token_type": "bearer",
         "expires_in": 1800,
         "user": {
-          "id": "55b7f853-2299-4c75-b2b2-f2fec55146a0",
+          "id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
           "email": "arketic@arketic.com",
           "username": "arketic",
           "first_name": "Arketic",
@@ -156,9 +156,9 @@
           "is_verified": true
         }
       },
-      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg\",\"refresh_token\":\"DBMGUqcMxMScaTWSQPBx9-G5sm3KPxgkkM0Vmxb1jdg\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"55b7f853-2299-4c75-b2b2-f2fec55146a0\",\"email\":\"arketic@arketic.com\",\"username\":\"arketic\",\"first_name\":\"Arketic\",\"last_name\":\"Admin\",\"role\":\"admin\",\"is_verified\":true}}",
-      "timestamp": "2025-08-07T20:28:19.848895",
-      "duration_ms": 178.6501407623291,
+      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8\",\"refresh_token\":\"I3kjhID0ojX6QkPg4o-R-iqiUf3xKt8Pf6l7zAeUGVU\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"email\":\"arketic@arketic.com\",\"username\":\"arketic\",\"first_name\":\"Arketic\",\"last_name\":\"Admin\",\"role\":\"admin\",\"is_verified\":true}}",
+      "timestamp": "2025-08-07T21:33:00.199891",
+      "duration_ms": 220.11780738830566,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -173,8 +173,8 @@
         "detail": "Not authenticated"
       },
       "response_text": "{\"detail\":\"Not authenticated\"}",
-      "timestamp": "2025-08-07T20:28:19.850518",
-      "duration_ms": 1.5468597412109375,
+      "timestamp": "2025-08-07T21:33:00.201914",
+      "duration_ms": 1.9185543060302734,
       "success": false,
       "error_message": null,
       "test_type": "REST_API"
@@ -184,7 +184,7 @@
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
@@ -257,8 +257,8 @@
         "default_model": "gpt-4o"
       },
       "response_text": "{\"models\":[{\"value\":\"gpt-4o\",\"label\":\"GPT-4o\",\"description\":\"Most capable GPT-4 model, great for complex tasks\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.03},{\"value\":\"gpt-4o-mini\",\"label\":\"GPT-4o Mini\",\"description\":\"Smaller, faster GPT-4 model, good for simple tasks\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.015},{\"value\":\"gpt-4-turbo\",\"label\":\"GPT-4 Turbo\",\"description\":\"Enhanced GPT-4 with improved performance\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.03},{\"value\":\"gpt-4\",\"label\":\"GPT-4\",\"description\":\"Most capable model, best for complex reasoning\",\"max_tokens\":8192,\"cost_per_1k_tokens\":0.06},{\"value\":\"gpt-3.5-turbo\",\"label\":\"GPT-3.5 Turbo\",\"description\":\"Fast and efficient, good for most tasks\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.002},{\"value\":\"gpt-3.5-turbo-16k\",\"label\":\"GPT-3.5 Turbo 16K\",\"description\":\"GPT-3.5 with extended context window\",\"max_tokens\":16384,\"cost_per_1k_tokens\":0.004},{\"value\":\"claude-3-5-sonnet\",\"label\":\"Claude 3.5 Sonnet\",\"description\":\"Anthropic's most capable model\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.03},{\"value\":\"claude-3-opus\",\"label\":\"Claude 3 Opus\",\"description\":\"Anthropic's most powerful model\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.075},{\"value\":\"claude-3-haiku\",\"label\":\"Claude 3 Haiku\",\"description\":\"Fast and cost-effective Anthropic model\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.0025}],\"default_model\":\"gpt-4o\"}",
-      "timestamp": "2025-08-07T20:28:19.897595",
-      "duration_ms": 47.01590538024902,
+      "timestamp": "2025-08-07T21:33:00.203620",
+      "duration_ms": 1.6493797302246094,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -282,12 +282,12 @@
         }
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
-        "id": "6e2bc42c-9302-4a5f-9f7e-d44eb51f417d",
+        "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
         "name": "Test AI Assistant",
         "description": "A test assistant for API testing purposes",
         "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -297,14 +297,14 @@
         "max_tokens": 2048,
         "status": "active",
         "is_public": false,
-        "creator_id": "55b7f853-2299-4c75-b2b2-f2fec55146a0",
+        "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
         "total_conversations": 0,
         "total_messages": 0,
         "total_tokens_used": 0,
         "knowledge_count": 0,
         "document_count": 0,
-        "created_at": "2025-08-07T20:28:19.900367",
-        "updated_at": "2025-08-07T20:28:19.900368",
+        "created_at": "2025-08-07T21:33:00.208417",
+        "updated_at": "2025-08-07T21:33:00.208418",
         "last_used_at": null,
         "configuration": {
           "test_mode": true,
@@ -313,9 +313,9 @@
         "knowledge_bases": [],
         "documents": []
       },
-      "response_text": "{\"id\":\"6e2bc42c-9302-4a5f-9f7e-d44eb51f417d\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"55b7f853-2299-4c75-b2b2-f2fec55146a0\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T20:28:19.900367\",\"updated_at\":\"2025-08-07T20:28:19.900368\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
-      "timestamp": "2025-08-07T20:28:19.905451",
-      "duration_ms": 7.742404937744141,
+      "response_text": "{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
+      "timestamp": "2025-08-07T21:33:00.218556",
+      "duration_ms": 14.790534973144531,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -325,17 +325,48 @@
       "method": "GET",
       "payload": {},
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
-      "response_status": 500,
+      "response_status": 200,
       "response_body": {
-        "detail": "Failed to list assistants: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedFunctionError'>: operator does not exist: character varying = assistantstatus\nHINT:  No operator matches the given name and argument types. You might need to add explicit type casts.\n[SQL: SELECT assistants.id, assistants.name, assistants.description, assistants.system_prompt, assistants.ai_model, assistants.temperature, assistants.max_tokens, assistants.status, assistants.is_public, assistants.creator_id, assistants.total_conversations, assistants.total_messages, assistants.total_tokens_used, assistants.created_at, assistants.updated_at, assistants.last_used_at, assistants.configuration \nFROM assistants \nWHERE (assistants.creator_id = $1::UUID OR assistants.is_public = true AND assistants.status = $2::assistantstatus) AND assistants.status != $3::assistantstatus ORDER BY assistants.created_at DESC \n LIMIT $4::INTEGER OFFSET $5::INTEGER]\n[parameters: (UUID('55b7f853-2299-4c75-b2b2-f2fec55146a0'), 'ACTIVE', 'ARCHIVED', 20, 0)]\n(Background on this error at: https://sqlalche.me/e/20/f405)"
+        "assistants": [
+          {
+            "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-07T21:33:00.208417",
+            "updated_at": "2025-08-07T21:33:00.208418",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          }
+        ],
+        "total": 1,
+        "page": 1,
+        "limit": 20,
+        "has_next": false,
+        "has_prev": false
       },
-      "response_text": "{\"detail\":\"Failed to list assistants: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedFunctionError'>: operator does not exist: character varying = assistantstatus\\nHINT:  No operator matches the given name and argument types. You might need to add explicit type casts.\\n[SQL: SELECT assistants.id, assistants.name, assistants.description, assistants.system_prompt, assistants.ai_model, assistants.temperature, assistants.max_tokens, assistants.status, assistants.is_public, assistants.creator_id, assistants.total_conversations, assistants.total_messages, assistants.total_tokens_used, assistants.created_at, assistants.updated_at, assistants.last_used_at, assistants.configuration \\nFROM assistants \\nWHERE (assistants.creator_id = $1::UUID OR assistants.is_public = true AND assistants.status = $2::assistantstatus) AND assistants.status != $3::assistantstatus ORDER BY assistants.created_at DESC \\n LIMIT $4::INTEGER OFFSET $5::INTEGER]\\n[parameters: (UUID('55b7f853-2299-4c75-b2b2-f2fec55146a0'), 'ACTIVE', 'ARCHIVED', 20, 0)]\\n(Background on this error at: https://sqlalche.me/e/20/f405)\"}",
-      "timestamp": "2025-08-07T20:28:19.910420",
-      "duration_ms": 4.892110824584961,
-      "success": false,
+      "response_text": "{\"assistants\":[{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":1,\"page\":1,\"limit\":20,\"has_next\":false,\"has_prev\":false}",
+      "timestamp": "2025-08-07T21:33:00.231085",
+      "duration_ms": 12.432336807250977,
+      "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
@@ -347,17 +378,48 @@
         "page": 1
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
-      "response_status": 500,
+      "response_status": 200,
       "response_body": {
-        "detail": "Failed to list assistants: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedFunctionError'>: operator does not exist: character varying = assistantstatus\nHINT:  No operator matches the given name and argument types. You might need to add explicit type casts.\n[SQL: SELECT assistants.id, assistants.name, assistants.description, assistants.system_prompt, assistants.ai_model, assistants.temperature, assistants.max_tokens, assistants.status, assistants.is_public, assistants.creator_id, assistants.total_conversations, assistants.total_messages, assistants.total_tokens_used, assistants.created_at, assistants.updated_at, assistants.last_used_at, assistants.configuration \nFROM assistants \nWHERE (assistants.creator_id = $1::UUID OR assistants.is_public = true AND assistants.status = $2::assistantstatus) AND assistants.status != $3::assistantstatus ORDER BY assistants.created_at DESC \n LIMIT $4::INTEGER OFFSET $5::INTEGER]\n[parameters: (UUID('55b7f853-2299-4c75-b2b2-f2fec55146a0'), 'ACTIVE', 'ARCHIVED', 5, 0)]\n(Background on this error at: https://sqlalche.me/e/20/f405)"
+        "assistants": [
+          {
+            "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-07T21:33:00.208417",
+            "updated_at": "2025-08-07T21:33:00.208418",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          }
+        ],
+        "total": 1,
+        "page": 1,
+        "limit": 5,
+        "has_next": false,
+        "has_prev": false
       },
-      "response_text": "{\"detail\":\"Failed to list assistants: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedFunctionError'>: operator does not exist: character varying = assistantstatus\\nHINT:  No operator matches the given name and argument types. You might need to add explicit type casts.\\n[SQL: SELECT assistants.id, assistants.name, assistants.description, assistants.system_prompt, assistants.ai_model, assistants.temperature, assistants.max_tokens, assistants.status, assistants.is_public, assistants.creator_id, assistants.total_conversations, assistants.total_messages, assistants.total_tokens_used, assistants.created_at, assistants.updated_at, assistants.last_used_at, assistants.configuration \\nFROM assistants \\nWHERE (assistants.creator_id = $1::UUID OR assistants.is_public = true AND assistants.status = $2::assistantstatus) AND assistants.status != $3::assistantstatus ORDER BY assistants.created_at DESC \\n LIMIT $4::INTEGER OFFSET $5::INTEGER]\\n[parameters: (UUID('55b7f853-2299-4c75-b2b2-f2fec55146a0'), 'ACTIVE', 'ARCHIVED', 5, 0)]\\n(Background on this error at: https://sqlalche.me/e/20/f405)\"}",
-      "timestamp": "2025-08-07T20:28:19.914085",
-      "duration_ms": 8.558273315429688,
-      "success": false,
+      "response_text": "{\"assistants\":[{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":1,\"page\":1,\"limit\":5,\"has_next\":false,\"has_prev\":false}",
+      "timestamp": "2025-08-07T21:33:00.237282",
+      "duration_ms": 18.62931251525879,
+      "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
@@ -369,17 +431,48 @@
         "sort_order": "asc"
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
-      "response_status": 500,
+      "response_status": 200,
       "response_body": {
-        "detail": "Failed to list assistants: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedFunctionError'>: operator does not exist: character varying = assistantstatus\nHINT:  No operator matches the given name and argument types. You might need to add explicit type casts.\n[SQL: SELECT assistants.id, assistants.name, assistants.description, assistants.system_prompt, assistants.ai_model, assistants.temperature, assistants.max_tokens, assistants.status, assistants.is_public, assistants.creator_id, assistants.total_conversations, assistants.total_messages, assistants.total_tokens_used, assistants.created_at, assistants.updated_at, assistants.last_used_at, assistants.configuration \nFROM assistants \nWHERE (assistants.creator_id = $1::UUID OR assistants.is_public = true AND assistants.status = $2::assistantstatus) AND assistants.status != $3::assistantstatus ORDER BY assistants.name ASC \n LIMIT $4::INTEGER OFFSET $5::INTEGER]\n[parameters: (UUID('55b7f853-2299-4c75-b2b2-f2fec55146a0'), 'ACTIVE', 'ARCHIVED', 20, 0)]\n(Background on this error at: https://sqlalche.me/e/20/f405)"
+        "assistants": [
+          {
+            "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-07T21:33:00.208417",
+            "updated_at": "2025-08-07T21:33:00.208418",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          }
+        ],
+        "total": 1,
+        "page": 1,
+        "limit": 20,
+        "has_next": false,
+        "has_prev": false
       },
-      "response_text": "{\"detail\":\"Failed to list assistants: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedFunctionError'>: operator does not exist: character varying = assistantstatus\\nHINT:  No operator matches the given name and argument types. You might need to add explicit type casts.\\n[SQL: SELECT assistants.id, assistants.name, assistants.description, assistants.system_prompt, assistants.ai_model, assistants.temperature, assistants.max_tokens, assistants.status, assistants.is_public, assistants.creator_id, assistants.total_conversations, assistants.total_messages, assistants.total_tokens_used, assistants.created_at, assistants.updated_at, assistants.last_used_at, assistants.configuration \\nFROM assistants \\nWHERE (assistants.creator_id = $1::UUID OR assistants.is_public = true AND assistants.status = $2::assistantstatus) AND assistants.status != $3::assistantstatus ORDER BY assistants.name ASC \\n LIMIT $4::INTEGER OFFSET $5::INTEGER]\\n[parameters: (UUID('55b7f853-2299-4c75-b2b2-f2fec55146a0'), 'ACTIVE', 'ARCHIVED', 20, 0)]\\n(Background on this error at: https://sqlalche.me/e/20/f405)\"}",
-      "timestamp": "2025-08-07T20:28:19.917706",
-      "duration_ms": 12.18104362487793,
-      "success": false,
+      "response_text": "{\"assistants\":[{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":1,\"page\":1,\"limit\":20,\"has_next\":false,\"has_prev\":false}",
+      "timestamp": "2025-08-07T21:33:00.243646",
+      "duration_ms": 24.994611740112305,
+      "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
@@ -390,31 +483,62 @@
         "status": "active"
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
-        "Content-Type": "application/json"
-      },
-      "response_status": 500,
-      "response_body": {
-        "detail": "Failed to list assistants: 'str' object has no attribute 'value'"
-      },
-      "response_text": "{\"detail\":\"Failed to list assistants: 'str' object has no attribute 'value'\"}",
-      "timestamp": "2025-08-07T20:28:19.920544",
-      "duration_ms": 15.021562576293945,
-      "success": false,
-      "error_message": null,
-      "test_type": "REST_API"
-    },
-    {
-      "endpoint": "/api/v1/assistants/6e2bc42c-9302-4a5f-9f7e-d44eb51f417d",
-      "method": "GET",
-      "payload": null,
-      "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
-        "id": "6e2bc42c-9302-4a5f-9f7e-d44eb51f417d",
+        "assistants": [
+          {
+            "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-07T21:33:00.208417",
+            "updated_at": "2025-08-07T21:33:00.208418",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          }
+        ],
+        "total": 1,
+        "page": 1,
+        "limit": 20,
+        "has_next": false,
+        "has_prev": false
+      },
+      "response_text": "{\"assistants\":[{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":1,\"page\":1,\"limit\":20,\"has_next\":false,\"has_prev\":false}",
+      "timestamp": "2025-08-07T21:33:00.250138",
+      "duration_ms": 31.486988067626953,
+      "success": true,
+      "error_message": null,
+      "test_type": "REST_API"
+    },
+    {
+      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
         "name": "Test AI Assistant",
         "description": "A test assistant for API testing purposes",
         "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -424,14 +548,14 @@
         "max_tokens": 2048,
         "status": "active",
         "is_public": false,
-        "creator_id": "55b7f853-2299-4c75-b2b2-f2fec55146a0",
+        "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
         "total_conversations": 0,
         "total_messages": 0,
         "total_tokens_used": 0,
         "knowledge_count": 0,
         "document_count": 0,
-        "created_at": "2025-08-07T20:28:19.900367",
-        "updated_at": "2025-08-07T20:28:19.900368",
+        "created_at": "2025-08-07T21:33:00.208417",
+        "updated_at": "2025-08-07T21:33:00.208418",
         "last_used_at": null,
         "configuration": {
           "test_mode": true,
@@ -440,15 +564,15 @@
         "knowledge_bases": [],
         "documents": []
       },
-      "response_text": "{\"id\":\"6e2bc42c-9302-4a5f-9f7e-d44eb51f417d\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"55b7f853-2299-4c75-b2b2-f2fec55146a0\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T20:28:19.900367\",\"updated_at\":\"2025-08-07T20:28:19.900368\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
-      "timestamp": "2025-08-07T20:28:19.924115",
-      "duration_ms": 3.5200119018554688,
+      "response_text": "{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
+      "timestamp": "2025-08-07T21:33:00.255338",
+      "duration_ms": 5.115270614624023,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/6e2bc42c-9302-4a5f-9f7e-d44eb51f417d",
+      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
       "method": "PUT",
       "payload": {
         "name": "Updated Test Assistant",
@@ -457,12 +581,12 @@
         "status": "active"
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
-        "id": "6e2bc42c-9302-4a5f-9f7e-d44eb51f417d",
+        "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
         "name": "Updated Test Assistant",
         "description": "Updated description for testing purposes",
         "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -472,14 +596,14 @@
         "max_tokens": 2048,
         "status": "active",
         "is_public": false,
-        "creator_id": "55b7f853-2299-4c75-b2b2-f2fec55146a0",
+        "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
         "total_conversations": 0,
         "total_messages": 0,
         "total_tokens_used": 0,
         "knowledge_count": 0,
         "document_count": 0,
-        "created_at": "2025-08-07T20:28:19.900367",
-        "updated_at": "2025-08-07T20:28:19.926915",
+        "created_at": "2025-08-07T21:33:00.208417",
+        "updated_at": "2025-08-07T21:33:00.258348",
         "last_used_at": null,
         "configuration": {
           "test_mode": true,
@@ -488,15 +612,15 @@
         "knowledge_bases": [],
         "documents": []
       },
-      "response_text": "{\"id\":\"6e2bc42c-9302-4a5f-9f7e-d44eb51f417d\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.8,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"55b7f853-2299-4c75-b2b2-f2fec55146a0\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T20:28:19.900367\",\"updated_at\":\"2025-08-07T20:28:19.926915\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
-      "timestamp": "2025-08-07T20:28:19.931373",
-      "duration_ms": 7.187843322753906,
+      "response_text": "{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.8,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.258348\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
+      "timestamp": "2025-08-07T21:33:00.264176",
+      "duration_ms": 8.742809295654297,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/6e2bc42c-9302-4a5f-9f7e-d44eb51f417d/knowledge?action=add",
+      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/knowledge?action=add",
       "method": "POST",
       "payload": {
         "action": "add",
@@ -504,7 +628,7 @@
         "document_ids": []
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
@@ -517,14 +641,14 @@
         }
       },
       "response_text": "{\"message\":\"Assistant knowledge updated successfully\",\"action\":\"add\",\"result\":{\"knowledge_bases\":[],\"documents\":[]}}",
-      "timestamp": "2025-08-07T20:28:19.936553",
-      "duration_ms": 5.1021575927734375,
+      "timestamp": "2025-08-07T21:33:00.271881",
+      "duration_ms": 7.602691650390625,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/6e2bc42c-9302-4a5f-9f7e-d44eb51f417d/knowledge?action=replace",
+      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/knowledge?action=replace",
       "method": "POST",
       "payload": {
         "action": "replace",
@@ -532,7 +656,7 @@
         "document_ids": []
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
@@ -545,25 +669,25 @@
         }
       },
       "response_text": "{\"message\":\"Assistant knowledge updated successfully\",\"action\":\"replace\",\"result\":{\"knowledge_bases\":[],\"documents\":[]}}",
-      "timestamp": "2025-08-07T20:28:19.942445",
-      "duration_ms": 10.992050170898438,
+      "timestamp": "2025-08-07T21:33:00.278540",
+      "duration_ms": 14.26243782043457,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/6e2bc42c-9302-4a5f-9f7e-d44eb51f417d/chat-config",
+      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/chat-config",
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "success": true,
         "data": {
-          "id": "6e2bc42c-9302-4a5f-9f7e-d44eb51f417d",
+          "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
           "name": "Updated Test Assistant",
           "description": "Updated description for testing purposes",
           "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -577,11 +701,11 @@
             "created_by": "api_test"
           }
         },
-        "timestamp": "2025-08-07T20:28:19.945108"
+        "timestamp": "2025-08-07T21:33:00.281763"
       },
-      "response_text": "{\"success\":true,\"data\":{\"id\":\"6e2bc42c-9302-4a5f-9f7e-d44eb51f417d\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"temperature\":0.8,\"max_tokens\":2048,\"knowledge_base_ids\":[],\"document_ids\":[],\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},\"timestamp\":\"2025-08-07T20:28:19.945108\"}",
-      "timestamp": "2025-08-07T20:28:19.946078",
-      "duration_ms": 3.5665035247802734,
+      "response_text": "{\"success\":true,\"data\":{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"temperature\":0.8,\"max_tokens\":2048,\"knowledge_base_ids\":[],\"document_ids\":[],\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},\"timestamp\":\"2025-08-07T21:33:00.281763\"}",
+      "timestamp": "2025-08-07T21:33:00.282833",
+      "duration_ms": 4.220247268676758,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -591,17 +715,15 @@
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
-      "response_status": 500,
-      "response_body": {
-        "detail": "Failed to get featured assistants"
-      },
-      "response_text": "{\"detail\":\"Failed to get featured assistants\"}",
-      "timestamp": "2025-08-07T20:28:19.949371",
-      "duration_ms": 3.220796585083008,
-      "success": false,
+      "response_status": 200,
+      "response_body": [],
+      "response_text": "[]",
+      "timestamp": "2025-08-07T21:33:00.287260",
+      "duration_ms": 4.3506622314453125,
+      "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
@@ -610,36 +732,53 @@
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
-      "response_status": 500,
+      "response_status": 200,
       "response_body": {
-        "detail": "Failed to list assistants: 'str' object has no attribute 'value'"
+        "success": true,
+        "data": {
+          "assistants": [
+            {
+              "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+              "name": "Updated Test Assistant",
+              "description": "Updated description for testing purposes",
+              "ai_model": "gpt-4o",
+              "ai_model_display": "GPT-4o",
+              "is_public": false,
+              "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+              "total_conversations": 0,
+              "is_owner": true
+            }
+          ],
+          "total": 1
+        },
+        "timestamp": "2025-08-07T21:33:00.292189"
       },
-      "response_text": "{\"detail\":\"Failed to list assistants: 'str' object has no attribute 'value'\"}",
-      "timestamp": "2025-08-07T20:28:19.952032",
-      "duration_ms": 2.604246139526367,
-      "success": false,
+      "response_text": "{\"success\":true,\"data\":{\"assistants\":[{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"is_owner\":true}],\"total\":1},\"timestamp\":\"2025-08-07T21:33:00.292189\"}",
+      "timestamp": "2025-08-07T21:33:00.293294",
+      "duration_ms": 5.951404571533203,
+      "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/6e2bc42c-9302-4a5f-9f7e-d44eb51f417d",
+      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
       "method": "DELETE",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjU1YjdmODUzLTIyOTktNGM3NS1iMmIyLWYyZmVjNTUxNDZhMCIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwMDI5OX0.mThSDeFSnStvsxCk5moBdkxx0d-UazfnYvXpbsDLcAg",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "message": "Assistant 'Updated Test Assistant' deleted successfully",
-        "assistant_id": "6e2bc42c-9302-4a5f-9f7e-d44eb51f417d"
+        "assistant_id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77"
       },
-      "response_text": "{\"message\":\"Assistant 'Updated Test Assistant' deleted successfully\",\"assistant_id\":\"6e2bc42c-9302-4a5f-9f7e-d44eb51f417d\"}",
-      "timestamp": "2025-08-07T20:28:19.958292",
-      "duration_ms": 6.202459335327148,
+      "response_text": "{\"message\":\"Assistant 'Updated Test Assistant' deleted successfully\",\"assistant_id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\"}",
+      "timestamp": "2025-08-07T21:33:00.300513",
+      "duration_ms": 7.132291793823242,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"

@@ -237,37 +237,6 @@ Multi-tenant organization management.
 - `idx_org_created` (created_at)
 
 **Relationships:**
-- One-to-Many: `organization_members`
-
----
-
-#### `organization_members`
-Organization membership management.
-
-| Column | Type | Description | Constraints |
-|--------|------|-------------|-------------|
-| id | UUID | Primary key | PK, Default: uuid4 |
-| organization_id | UUID | Reference to organizations | FK(organizations.id), Not Null |
-| user_id | UUID | Reference to users | FK(users.id), Not Null |
-| role | Enum(OrganizationRole) | Member role (owner, admin, manager, member, guest) | Default: member |
-| is_active | Boolean | Membership status | Default: True |
-| invited_by_id | UUID | Inviter user ID | FK(users.id), Nullable |
-| invitation_token | String(100) | Invitation token | Unique, Nullable |
-| invitation_expires_at | DateTime | Invitation expiration | Nullable |
-| invitation_accepted_at | DateTime | Acceptance timestamp | Nullable |
-| last_activity_at | DateTime | Last activity | Nullable |
-| created_at | DateTime | Join timestamp | Not Null, Default: now() |
-| updated_at | DateTime | Last update timestamp | Not Null, Default: now() |
-| left_at | DateTime | Leave timestamp | Nullable |
-
-**Indexes:**
-- `idx_member_org` (organization_id)
-- `idx_member_user` (user_id)
-- `idx_member_role` (role)
-- `idx_member_active` (is_active)
-
-**Constraints:**
-- `uq_org_member` (organization_id, user_id)
 
 ---
 
@@ -657,7 +626,6 @@ Document collections for knowledge management.
 | Column | Type | Description | Constraints |
 |--------|------|-------------|-------------|
 | id | UUID | Primary key | PK, Default: uuid4 |
-| organization_id | UUID | Reference to organization | FK(organizations.id), Not Null |
 | creator_id | UUID | Reference to creator | FK(users.id), Nullable |
 | name | String(200) | Knowledge base name | Not Null |
 | description | Text | Description | Nullable |
@@ -674,7 +642,6 @@ Document collections for knowledge management.
 | updated_at | DateTime | Last update timestamp | Not Null, Default: now() |
 
 **Indexes:**
-- `idx_kb_organization` (organization_id)
 - `idx_kb_creator` (creator_id)
 - `idx_kb_type` (type)
 - `idx_kb_active` (is_active)
@@ -781,7 +748,6 @@ Cached semantic queries for performance.
 | Column | Type | Description | Constraints |
 |--------|------|-------------|-------------|
 | id | UUID | Primary key | PK, Default: uuid4 |
-| organization_id | UUID | Reference to organization | FK(organizations.id), Not Null |
 | query | Text | Original query | Not Null |
 | query_embedding | Vector(1536) | Query vector | Not Null |
 | response | Text | Cached response | Not Null |
@@ -794,7 +760,6 @@ Cached semantic queries for performance.
 | updated_at | DateTime | Last update timestamp | Not Null, Default: now() |
 
 **Indexes:**
-- `idx_cache_org` (organization_id)
 - `idx_cache_expires` (expires_at)
 - `idx_cache_accessed` (last_accessed_at)
 - `idx_cache_query_vector_hnsw` - HNSW index for semantic cache lookups
@@ -975,3 +940,41 @@ The database uses Alembic for migration management. Key migrations include:
    - Vector operations are CPU/memory intensive
    - Consider read replicas for search operations
    - Monitor embedding dimensions vs performance trade-offs
+
+## Default Test User
+
+The migration 008_settings_tables.py creates a default test user for development and testing purposes:
+
+**Credentials:**
+- Email: `test@arketic.com`
+- Password: `testpass123`
+- Username: `testuser`
+
+**User Properties:**
+- Role: `user` (standard user role)
+- Status: `active`
+- Verified: `true`
+- Active: `true`
+- Two-Factor: `false`
+
+**Profile Settings:**
+- Timezone: `UTC`
+- Language: `en`
+- Bio: `Test user profile`
+
+**Preferences:**
+- Theme: `light`
+- Default AI Model: `gpt-3.5-turbo`
+- AI Response Style: `balanced`
+- AI Creativity Level: `5`
+
+**Important Notes:**
+- This user is automatically created during migration 008
+- The password is hashed using bcrypt
+- All required fields are properly set to avoid constraint violations
+- User profiles and preferences are also created with default values
+
+**Security Warning:**
+- This test user should ONLY be used in development environments
+- In production, this user should be removed or disabled
+- Never use default credentials in production systems

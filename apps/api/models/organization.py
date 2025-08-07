@@ -17,13 +17,6 @@ from core.database import Base
 from core.types import UUID
 
 
-class OrganizationRole(str, PyEnum):
-    """User roles within an organization"""
-    OWNER = "owner"
-    ADMIN = "admin"
-    MANAGER = "manager"
-    MEMBER = "member"
-    GUEST = "guest"
 
 
 class PersonRole(str, PyEnum):
@@ -112,7 +105,6 @@ class Organization(Base):
     subscription_ends_at = Column(DateTime, nullable=True)
     
     # Relationships
-    members = relationship("OrganizationMember", back_populates="organization", cascade="all, delete-orphan")
     
     # Indexes
     __table_args__ = (
@@ -149,72 +141,6 @@ class Organization(Base):
     def __repr__(self):
         return f"<Organization(id={self.id}, name={self.name}, slug={self.slug})>"
 
-
-class OrganizationMember(Base):
-    """Organization membership model"""
-    __tablename__ = "organization_members"
-    
-    # Primary key
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    
-    # Foreign keys
-    organization_id = Column(UUID(as_uuid=True), ForeignKey('organizations.id', ondelete='CASCADE'), nullable=False)
-    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    
-    # Membership details
-    role = Column(Enum(OrganizationRole), default=OrganizationRole.MEMBER, nullable=False)
-    is_active = Column(Boolean, default=True, nullable=False)
-    
-    # Invitation details
-    invited_by_id = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
-    invitation_token = Column(String(100), unique=True, nullable=True)
-    invitation_expires_at = Column(DateTime, nullable=True)
-    invitation_accepted_at = Column(DateTime, nullable=True)
-    
-    # Activity tracking
-    last_activity_at = Column(DateTime, nullable=True)
-    
-    # Timestamps
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
-    left_at = Column(DateTime, nullable=True)
-    
-    # Relationships
-    organization = relationship("Organization", back_populates="members")
-    user = relationship("User", foreign_keys=[user_id])
-    invited_by = relationship("User", foreign_keys=[invited_by_id])
-    
-    # Constraints and indexes
-    __table_args__ = (
-        UniqueConstraint('organization_id', 'user_id', name='uq_org_member'),
-        Index('idx_member_org', 'organization_id'),
-        Index('idx_member_user', 'user_id'),
-        Index('idx_member_role', 'role'),
-        Index('idx_member_active', 'is_active'),
-    )
-    
-    @property
-    def is_owner(self) -> bool:
-        """Check if member is organization owner"""
-        return self.role == OrganizationRole.OWNER
-    
-    @property
-    def is_admin(self) -> bool:
-        """Check if member has admin privileges"""
-        return self.role in [OrganizationRole.OWNER, OrganizationRole.ADMIN]
-    
-    @property
-    def can_manage_members(self) -> bool:
-        """Check if member can manage other members"""
-        return self.role in [OrganizationRole.OWNER, OrganizationRole.ADMIN, OrganizationRole.MANAGER]
-    
-    @property
-    def has_left(self) -> bool:
-        """Check if member has left the organization"""
-        return self.left_at is not None
-    
-    def __repr__(self):
-        return f"<OrganizationMember(id={self.id}, org={self.organization_id}, user={self.user_id}, role={self.role})>"
 
 
 class Person(Base):

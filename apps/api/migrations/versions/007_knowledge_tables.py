@@ -1,8 +1,8 @@
-"""Add PGVector extension and knowledge embeddings tables
+"""Knowledge management and vector search tables
 
-Revision ID: 005
-Revises: 004
-Create Date: 2025-08-07 18:30:00.000000
+Revision ID: 007
+Revises: 006
+Create Date: 2025-08-07 23:36:00.000000
 
 """
 from alembic import op
@@ -12,27 +12,20 @@ from pgvector.sqlalchemy import Vector
 import uuid
 
 # revision identifiers, used by Alembic.
-revision = '005'
-down_revision = '004_remove_employee_id'
+revision = '007'
+down_revision = '006'
 branch_labels = None
 depends_on = None
 
 
 def upgrade() -> None:
-    # Create PGVector extension
-    op.execute('CREATE EXTENSION IF NOT EXISTS vector')
-    
     # Create knowledge_bases table
     op.create_table('knowledge_bases',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-        sa.Column('organization_id', postgresql.UUID(as_uuid=True), 
-                  sa.ForeignKey('organizations.id', ondelete='CASCADE'), nullable=False),
-        sa.Column('creator_id', postgresql.UUID(as_uuid=True), 
-                  sa.ForeignKey('users.id', ondelete='SET NULL'), nullable=True),
+        sa.Column('creator_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('users.id', ondelete='SET NULL'), nullable=True),
         sa.Column('name', sa.String(200), nullable=False),
         sa.Column('description', sa.Text(), nullable=True),
-        sa.Column('type', sa.Enum('documentation', 'faq', 'product', 'general', 'custom', name='knowledgebasetype'), 
-                  default='general', nullable=False),
+        sa.Column('type', sa.Enum('documentation', 'faq', 'product', 'general', 'custom', name='knowledgebasetype'), default='general', nullable=False),
         sa.Column('is_public', sa.Boolean(), default=False, nullable=False),
         sa.Column('is_active', sa.Boolean(), default=True, nullable=False),
         sa.Column('embedding_model', sa.String(100), default='text-embedding-3-small', nullable=False),
@@ -46,21 +39,17 @@ def upgrade() -> None:
     )
     
     # Create indexes for knowledge_bases
-    op.create_index('idx_kb_organization', 'knowledge_bases', ['organization_id'])
     op.create_index('idx_kb_creator', 'knowledge_bases', ['creator_id'])
     op.create_index('idx_kb_type', 'knowledge_bases', ['type'])
     op.create_index('idx_kb_active', 'knowledge_bases', ['is_active'])
-    
+
     # Create knowledge_documents table
     op.create_table('knowledge_documents',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-        sa.Column('knowledge_base_id', postgresql.UUID(as_uuid=True), 
-                  sa.ForeignKey('knowledge_bases.id', ondelete='CASCADE'), nullable=False),
-        sa.Column('uploader_id', postgresql.UUID(as_uuid=True), 
-                  sa.ForeignKey('users.id', ondelete='SET NULL'), nullable=True),
+        sa.Column('knowledge_base_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('knowledge_bases.id', ondelete='CASCADE'), nullable=False),
+        sa.Column('uploader_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('users.id', ondelete='SET NULL'), nullable=True),
         sa.Column('title', sa.String(500), nullable=False),
-        sa.Column('source_type', sa.Enum('file', 'url', 'text', 'api', name='documentsourcetype'), 
-                  default='file', nullable=False),
+        sa.Column('source_type', sa.Enum('file', 'url', 'text', 'api', name='documentsourcetype'), default='file', nullable=False),
         sa.Column('source_url', sa.String(1000), nullable=True),
         sa.Column('file_name', sa.String(255), nullable=True),
         sa.Column('file_type', sa.String(50), nullable=True),
@@ -69,8 +58,7 @@ def upgrade() -> None:
         sa.Column('content', sa.Text(), nullable=True),
         sa.Column('chunk_count', sa.Integer(), default=0, nullable=False),
         sa.Column('token_count', sa.Integer(), default=0, nullable=False),
-        sa.Column('processing_status', sa.Enum('pending', 'processing', 'completed', 'failed', name='processingstatus'), 
-                  default='pending', nullable=False),
+        sa.Column('processing_status', sa.Enum('pending', 'processing', 'completed', 'failed', name='documentprocessingstatus'), default='pending', nullable=False),
         sa.Column('error_message', sa.Text(), nullable=True),
         sa.Column('tags', sa.JSON(), nullable=True),
         sa.Column('metadata', sa.JSON(), nullable=True),
@@ -85,18 +73,16 @@ def upgrade() -> None:
     op.create_index('idx_doc_status', 'knowledge_documents', ['processing_status'])
     op.create_index('idx_doc_source_type', 'knowledge_documents', ['source_type'])
     op.create_index('idx_doc_file_hash', 'knowledge_documents', ['file_hash'])
-    
-    # Create knowledge_embeddings table with vector column
+
+    # Create knowledge_embeddings table with PgVector
     op.create_table('knowledge_embeddings',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-        sa.Column('document_id', postgresql.UUID(as_uuid=True), 
-                  sa.ForeignKey('knowledge_documents.id', ondelete='CASCADE'), nullable=False),
-        sa.Column('knowledge_base_id', postgresql.UUID(as_uuid=True), 
-                  sa.ForeignKey('knowledge_bases.id', ondelete='CASCADE'), nullable=False),
+        sa.Column('document_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('knowledge_documents.id', ondelete='CASCADE'), nullable=False),
+        sa.Column('knowledge_base_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('knowledge_bases.id', ondelete='CASCADE'), nullable=False),
         sa.Column('chunk_index', sa.Integer(), nullable=False),
         sa.Column('chunk_size', sa.Integer(), nullable=False),
         sa.Column('content', sa.Text(), nullable=False),
-        sa.Column('embedding', Vector(1536), nullable=False),  # PGVector column
+        sa.Column('embedding', Vector(1536), nullable=False),
         sa.Column('token_count', sa.Integer(), nullable=False),
         sa.Column('metadata', sa.JSON(), nullable=True),
         sa.Column('created_at', sa.DateTime(), default=sa.func.now(), nullable=False),
@@ -109,9 +95,7 @@ def upgrade() -> None:
     op.create_index('idx_emb_chunk', 'knowledge_embeddings', ['document_id', 'chunk_index'])
     op.create_index('idx_emb_created', 'knowledge_embeddings', ['created_at'])
     
-    # Create HNSW index for vector similarity search
-    # m = 16: number of bi-directional links created for each node
-    # ef_construction = 64: size of the dynamic list for the nearest neighbors
+    # Create HNSW index for vector search
     op.execute("""
         CREATE INDEX idx_embedding_vector_hnsw 
         ON knowledge_embeddings 
@@ -119,44 +103,35 @@ def upgrade() -> None:
         WITH (m = 16, ef_construction = 64)
     """)
     
-    # Create GIN index for metadata filtering
-    op.execute("""
-        CREATE INDEX idx_emb_metadata_gin 
-        ON knowledge_embeddings 
-        USING GIN(metadata)
-    """)
-    
-    # Create knowledge_search_history table for analytics
+    # Create GIN index for metadata (jsonb supports gin, json doesn't)
+    # op.create_index('idx_emb_metadata_gin', 'knowledge_embeddings', ['metadata'], postgresql_using='gin')
+
+    # Create knowledge_search_history table
     op.create_table('knowledge_search_history',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-        sa.Column('knowledge_base_id', postgresql.UUID(as_uuid=True), 
-                  sa.ForeignKey('knowledge_bases.id', ondelete='CASCADE'), nullable=False),
-        sa.Column('user_id', postgresql.UUID(as_uuid=True), 
-                  sa.ForeignKey('users.id', ondelete='SET NULL'), nullable=True),
+        sa.Column('knowledge_base_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('knowledge_bases.id', ondelete='CASCADE'), nullable=False),
+        sa.Column('user_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('users.id', ondelete='SET NULL'), nullable=True),
         sa.Column('query', sa.Text(), nullable=False),
         sa.Column('query_embedding', Vector(1536), nullable=True),
         sa.Column('results_count', sa.Integer(), default=0, nullable=False),
         sa.Column('top_score', sa.Numeric(5, 4), nullable=True),
         sa.Column('execution_time_ms', sa.Integer(), nullable=True),
-        sa.Column('search_type', sa.Enum('semantic', 'keyword', 'hybrid', name='searchtype'), 
-                  default='semantic', nullable=False),
+        sa.Column('search_type', sa.Enum('semantic', 'keyword', 'hybrid', name='searchtype'), default='semantic', nullable=False),
         sa.Column('filters_applied', sa.JSON(), nullable=True),
         sa.Column('selected_result_id', postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column('feedback_rating', sa.Integer(), nullable=True),  # 1-5 rating
+        sa.Column('feedback_rating', sa.Integer(), nullable=True),
         sa.Column('created_at', sa.DateTime(), default=sa.func.now(), nullable=False),
     )
     
-    # Create indexes for search history
+    # Create indexes for knowledge_search_history
     op.create_index('idx_search_kb', 'knowledge_search_history', ['knowledge_base_id'])
     op.create_index('idx_search_user', 'knowledge_search_history', ['user_id'])
     op.create_index('idx_search_created', 'knowledge_search_history', ['created_at'])
     op.create_index('idx_search_type', 'knowledge_search_history', ['search_type'])
-    
-    # Create semantic cache table for frequently asked questions
+
+    # Create semantic_cache table
     op.create_table('semantic_cache',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-        sa.Column('organization_id', postgresql.UUID(as_uuid=True), 
-                  sa.ForeignKey('organizations.id', ondelete='CASCADE'), nullable=False),
         sa.Column('query', sa.Text(), nullable=False),
         sa.Column('query_embedding', Vector(1536), nullable=False),
         sa.Column('response', sa.Text(), nullable=False),
@@ -169,8 +144,7 @@ def upgrade() -> None:
         sa.Column('updated_at', sa.DateTime(), default=sa.func.now(), onupdate=sa.func.now(), nullable=False),
     )
     
-    # Create indexes for semantic cache
-    op.create_index('idx_cache_org', 'semantic_cache', ['organization_id'])
+    # Create indexes for semantic_cache
     op.create_index('idx_cache_expires', 'semantic_cache', ['expires_at'])
     op.create_index('idx_cache_accessed', 'semantic_cache', ['last_accessed_at'])
     
@@ -181,12 +155,11 @@ def upgrade() -> None:
         USING hnsw (query_embedding vector_cosine_ops)
         WITH (m = 16, ef_construction = 64)
     """)
-    
-    # Create performance monitoring table
+
+    # Create vector_performance_metrics table
     op.create_table('vector_performance_metrics',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-        sa.Column('operation_type', sa.Enum('insert', 'search', 'update', 'delete', name='vectoroperation'), 
-                  nullable=False),
+        sa.Column('operation_type', sa.Enum('insert', 'search', 'update', 'delete', name='vectoroperationtype'), nullable=False),
         sa.Column('table_name', sa.String(100), nullable=False),
         sa.Column('batch_size', sa.Integer(), nullable=True),
         sa.Column('execution_time_ms', sa.Integer(), nullable=False),
@@ -196,7 +169,7 @@ def upgrade() -> None:
         sa.Column('created_at', sa.DateTime(), default=sa.func.now(), nullable=False),
     )
     
-    # Create indexes for performance metrics
+    # Create indexes for vector_performance_metrics
     op.create_index('idx_perf_operation', 'vector_performance_metrics', ['operation_type'])
     op.create_index('idx_perf_table', 'vector_performance_metrics', ['table_name'])
     op.create_index('idx_perf_created', 'vector_performance_metrics', ['created_at'])
@@ -212,11 +185,8 @@ def downgrade() -> None:
     op.drop_table('knowledge_bases')
     
     # Drop enums
-    op.execute('DROP TYPE IF EXISTS vectoroperation')
+    op.execute('DROP TYPE IF EXISTS vectoroperationtype')
     op.execute('DROP TYPE IF EXISTS searchtype')
-    op.execute('DROP TYPE IF EXISTS processingstatus')
+    op.execute('DROP TYPE IF EXISTS documentprocessingstatus')
     op.execute('DROP TYPE IF EXISTS documentsourcetype')
     op.execute('DROP TYPE IF EXISTS knowledgebasetype')
-    
-    # Drop PGVector extension (be careful with this in production)
-    # op.execute('DROP EXTENSION IF EXISTS vector')

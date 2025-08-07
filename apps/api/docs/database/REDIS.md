@@ -165,7 +165,6 @@ Manages user sessions with automatic expiration and renewal.
     "user_id": "uuid",
     "email": "user@example.com",
     "role": "user",
-    "organization_id": "uuid",
     "login_time": "2024-01-01T00:00:00Z",
     "ip_address": "192.168.1.1",
     "user_agent": "Mozilla/5.0...",

@@ -1,5 +1,4 @@
 import React, { memo } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -82,12 +81,11 @@ const navigationItems: NavigationItem[] = [
 // User Profile Component
 const UserProfile = memo(function UserProfile() {
   const { user, logout } = useAuth()
-  const router = useRouter()
 
   const handleLogout = async () => {
     try {
       await logout()
-      router.push('/login')
+      window.location.href = '/login'
     } catch (error) {
       console.error('Logout error:', error)
     }
@@ -118,8 +116,6 @@ const UserProfile = memo(function UserProfile() {
 
 export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
   const { activeSection, navigateToSection, isActiveSection } = useNavigation()
-  const router = useRouter()
-  const pathname = usePathname()
 
   return (
     <div className={cn(
@@ -148,7 +144,7 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
         <Button
           variant="ghost"
           className="w-full justify-start text-white hover:bg-white/10 dark:hover:bg-white/5 gap-3 h-11 px-4 rounded-xl bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/20 dark:border-blue-400/30"
-          onClick={() => router.push('/chat')}
+          onClick={() => navigateToSection('chat')}
         >
           <Plus className="h-5 w-5" />
           <span className="font-medium">New Chat</span>
@@ -165,9 +161,9 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
           variant="ghost"
           className={cn(
             "w-full justify-start text-white hover:bg-white/10 dark:hover:bg-white/5 gap-3 h-10 px-4 rounded-lg transition-all duration-200",
-            pathname === '/chat' && "bg-blue-600/20 text-blue-300 border-r-2 border-blue-400"
+            isActiveSection('chat') && "bg-blue-600/20 text-blue-300 border-r-2 border-blue-400"
           )}
-          onClick={() => router.push('/chat')}
+          onClick={() => navigateToSection('chat')}
         >
           <Bot className="h-4 w-4" />
           <span className="text-sm">All Chats</span>
@@ -180,14 +176,10 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
         
         {navigationItems.map((item) => {
           const Icon = item.icon
-          const isActive = item.id === 'chat' ? pathname === '/chat' : isActiveSection(item.id)
+          const isActive = isActiveSection(item.id)
           
           const handleNavigation = () => {
-            if (item.id === 'chat') {
-              router.push('/chat')
-            } else {
-              navigateToSection(item.id)
-            }
+            navigateToSection(item.id)
           }
           
           return (

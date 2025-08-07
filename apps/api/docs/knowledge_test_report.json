@@ -1,13 +1,13 @@
 {
   "test_metadata": {
-    "generated_at": "2025-08-07T20:04:07.057934Z",
+    "generated_at": "2025-08-07T22:00:25.386820Z",
     "base_url": "http://localhost:8000",
     "service": "Knowledge Management API",
     "jira_task": "AR-16",
     "total_tests": 12,
-    "successful_tests": 12,
-    "failed_tests": 0,
-    "success_rate_percent": 100.0,
+    "successful_tests": 11,
+    "failed_tests": 1,
+    "success_rate_percent": 91.67,
     "test_knowledge_base_id": null,
     "features_tested": [
       "Document Upload (Text & File)",
@@ -23,7 +23,7 @@
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 211.03,
+      "avg_duration_ms": 12.22,
       "test_types": [
         "DOCUMENT_UPLOAD"
       ]
@@ -32,7 +32,7 @@
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 78.85,
+      "avg_duration_ms": 14.05,
       "test_types": [
         "DOCUMENT_UPLOAD_FILE"
       ]
@@ -41,16 +41,16 @@
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 7.63,
+      "avg_duration_ms": 6.31,
       "test_types": [
         "DOCUMENT_LIST"
       ]
     },
-    "/api/v1/knowledge/8cf1992c-4ad9-4aef-ab66-a86562ae8ede": {
+    "/api/v1/knowledge/50349556-a763-441b-9a04-85b9404950a2": {
       "total_calls": 2,
       "successful_calls": 2,
       "failed_calls": 0,
-      "avg_duration_ms": 11.49,
+      "avg_duration_ms": 7.64,
       "test_types": [
         "DOCUMENT_DETAILS",
         "DELETE_DOCUMENT"
@@ -60,7 +60,7 @@
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 16.68,
+      "avg_duration_ms": 30.83,
       "test_types": [
         "SEMANTIC_SEARCH"
       ]
@@ -69,16 +69,16 @@
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 14.18,
+      "avg_duration_ms": 7.18,
       "test_types": [
         "RAG_QUERY"
       ]
     },
-    "/api/v1/knowledge/similar/8cf1992c-4ad9-4aef-ab66-a86562ae8ede?k=5": {
+    "/api/v1/knowledge/similar/50349556-a763-441b-9a04-85b9404950a2?k=5": {
       "total_calls": 1,
-      "successful_calls": 1,
-      "failed_calls": 0,
-      "avg_duration_ms": 15.18,
+      "successful_calls": 0,
+      "failed_calls": 1,
+      "avg_duration_ms": 7.89,
       "test_types": [
         "SIMILAR_DOCUMENTS"
       ]
@@ -87,7 +87,7 @@
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 6.87,
+      "avg_duration_ms": 6.43,
       "test_types": [
         "CREATE_COLLECTION"
       ]
@@ -96,16 +96,16 @@
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 6.41,
+      "avg_duration_ms": 5.37,
       "test_types": [
         "LIST_COLLECTIONS"
       ]
     },
-    "/api/v1/collections/7be4ef3d-3a91-47a9-b436-4a5381ca6870": {
+    "/api/v1/collections/7aa17b17-2c60-46db-bb90-a941cb7308f5": {
       "total_calls": 2,
       "successful_calls": 2,
       "failed_calls": 0,
-      "avg_duration_ms": 8.36,
+      "avg_duration_ms": 7.52,
       "test_types": [
         "UPDATE_COLLECTION",
         "DELETE_COLLECTION"
@@ -118,14 +118,14 @@
       "method": "POST",
       "payload": {
         "knowledge_base_id": null,
-        "title": "Python Programming Guide - 1754597040",
-        "content": "Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\n\nTest run timestamp: 1754597040",
+        "title": "Python Programming Guide - 1754604018",
+        "content": "Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\n\nTest run timestamp: 1754604018",
         "source_type": "text",
         "metadata": {
           "category": "programming",
           "language": "python",
           "test": true,
-          "test_timestamp": "1754597040"
+          "test_timestamp": "1754604018"
         }
       },
       "headers": {
@@ -134,18 +134,18 @@
       },
       "response_status": 201,
       "response_body": {
-        "document_id": "8cf1992c-4ad9-4aef-ab66-a86562ae8ede",
+        "document_id": "50349556-a763-441b-9a04-85b9404950a2",
         "chunk_ids": [
-          "9232754d-f29c-4dff-bfc6-6f472cb40b2e"
+          "682eda9d-0053-42aa-ba50-9edbd1300cc3"
         ],
         "chunk_count": 1,
         "token_count": 40,
-        "processing_time_ms": 205.07600000000002,
+        "processing_time_ms": 8.645,
         "status": "completed"
       },
-      "response_text": "{\"document_id\":\"8cf1992c-4ad9-4aef-ab66-a86562ae8ede\",\"chunk_ids\":[\"9232754d-f29c-4dff-bfc6-6f472cb40b2e\"],\"chunk_count\":1,\"token_count\":40,\"processing_time_ms\":205.07600000000002,\"status\":\"completed\"}",
-      "timestamp": "2025-08-07T20:04:00.865140Z",
-      "duration_ms": 211.03,
+      "response_text": "{\"document_id\":\"50349556-a763-441b-9a04-85b9404950a2\",\"chunk_ids\":[\"682eda9d-0053-42aa-ba50-9edbd1300cc3\"],\"chunk_count\":1,\"token_count\":40,\"processing_time_ms\":8.645,\"status\":\"completed\"}",
+      "timestamp": "2025-08-07T22:00:18.637199Z",
+      "duration_ms": 12.22,
       "success": true,
       "error_message": null,
       "test_type": "DOCUMENT_UPLOAD"
@@ -161,24 +161,24 @@
       },
       "response_status": 201,
       "response_body": {
-        "document_id": "71b10d3a-69c8-4e5d-8fff-3ed0a8d7e5d4",
+        "document_id": "5f092a02-9615-4c38-9045-895d3ecb9a1d",
         "chunk_ids": [
-          "57ba6240-0747-4766-a885-ad613dc571d7"
+          "a1a9f5a8-df2d-4504-a72c-223bcbc0a04f"
         ],
         "chunk_count": 1,
         "token_count": 39,
-        "processing_time_ms": 14.158999999999999,
+        "processing_time_ms": 8.902999999999999,
         "status": "completed",
         "file_info": {
-          "filename": "test_document_1754597041.md",
+          "filename": "test_document_1754604019.md",
           "file_type": ".md",
           "file_size": 175,
           "content_type": "text/markdown"
         }
       },
-      "response_text": "{\"document_id\":\"71b10d3a-69c8-4e5d-8fff-3ed0a8d7e5d4\",\"chunk_ids\":[\"57ba6240-0747-4766-a885-ad613dc571d7\"],\"chunk_count\":1,\"token_count\":39,\"processing_time_ms\":14.158999999999999,\"status\":\"completed\",\"file_info\":{\"filename\":\"test_document_1754597041.md\",\"file_type\":\".md\",\"file_size\":175,\"content_type\":\"text/markdown\"}}",
-      "timestamp": "2025-08-07T20:04:01.444631Z",
-      "duration_ms": 78.85,
+      "response_text": "{\"document_id\":\"5f092a02-9615-4c38-9045-895d3ecb9a1d\",\"chunk_ids\":[\"a1a9f5a8-df2d-4504-a72c-223bcbc0a04f\"],\"chunk_count\":1,\"token_count\":39,\"processing_time_ms\":8.902999999999999,\"status\":\"completed\",\"file_info\":{\"filename\":\"test_document_1754604019.md\",\"file_type\":\".md\",\"file_size\":175,\"content_type\":\"text/markdown\"}}",
+      "timestamp": "2025-08-07T22:00:19.151762Z",
+      "duration_ms": 14.05,
       "success": true,
       "error_message": null,
       "test_type": "DOCUMENT_UPLOAD_FILE"
@@ -195,202 +195,143 @@
       "response_body": {
         "documents": [
           {
-            "id": "71b10d3a-69c8-4e5d-8fff-3ed0a8d7e5d4",
-            "title": "test_document_1754597041.md",
+            "id": "5f092a02-9615-4c38-9045-895d3ecb9a1d",
+            "title": "test_document_1754604019.md",
             "source_type": "file",
             "file_name": null,
             "file_type": null,
             "chunk_count": 1,
             "token_count": 39,
             "processing_status": "completed",
-            "created_at": "2025-08-07T20:04:01.430456",
-            "updated_at": "2025-08-07T20:04:01.440193",
+            "created_at": "2025-08-07T22:00:19.142582",
+            "updated_at": "2025-08-07T22:00:19.147486",
             "metadata": {
-              "filename": "test_document_1754597041.md",
+              "filename": "test_document_1754604019.md",
               "file_type": ".md",
               "file_size": 175,
               "content_type": "text/markdown"
             }
           },
           {
-            "id": "8cf1992c-4ad9-4aef-ab66-a86562ae8ede",
-            "title": "Python Programming Guide - 1754597040",
+            "id": "50349556-a763-441b-9a04-85b9404950a2",
+            "title": "Python Programming Guide - 1754604018",
             "source_type": "text",
             "file_name": null,
             "file_type": null,
             "chunk_count": 1,
             "token_count": 40,
             "processing_status": "completed",
-            "created_at": "2025-08-07T20:04:00.660868",
-            "updated_at": "2025-08-07T20:04:00.860391",
+            "created_at": "2025-08-07T22:00:18.628541",
+            "updated_at": "2025-08-07T22:00:18.633213",
             "metadata": {
               "category": "programming",
               "language": "python",
               "test": true,
-              "test_timestamp": "1754597040"
+              "test_timestamp": "1754604018"
             }
           },
           {
-            "id": "862c7c37-a8a6-4869-82bf-f79430721a88",
-            "title": "error-context.md",
+            "id": "dac7d443-89ef-4e50-92ea-79a3cc25dd06",
+            "title": "test_document.txt",
             "source_type": "file",
             "file_name": null,
             "file_type": null,
             "chunk_count": 1,
-            "token_count": 21,
+            "token_count": 11,
             "processing_status": "completed",
-            "created_at": "2025-08-07T20:03:03.428354",
-            "updated_at": "2025-08-07T20:03:03.616764",
+            "created_at": "2025-08-07T22:00:14.419258",
+            "updated_at": "2025-08-07T22:00:14.424025",
             "metadata": {
-              "filename": "error-context.md",
-              "file_type": ".md",
-              "file_size": 68,
-              "content_type": "application/octet-stream"
+              "filename": "test_document.txt",
+              "file_type": ".txt",
+              "file_size": 57,
+              "content_type": "text/plain"
             }
           },
           {
-            "id": "f56bf071-622c-4ce8-8a6f-935969ab219e",
-            "title": "YAPAY ZEKA DESTEKLİ HUKUKİ DÖNÜŞÜM.pdf",
-            "source_type": "file",
-            "file_name": null,
-            "file_type": null,
-            "chunk_count": 4,
-            "token_count": 1328,
-            "processing_status": "completed",
-            "created_at": "2025-08-07T19:48:49.965498",
-            "updated_at": "2025-08-07T19:48:50.237863",
-            "metadata": {
-              "filename": "YAPAY ZEKA DESTEKLİ HUKUKİ DÖNÜŞÜM.pdf",
-              "file_type": ".pdf",
-              "file_size": 1789772,
-              "content_type": "application/pdf"
-            }
-          },
-          {
-            "id": "fa61d612-b496-431b-905d-e950c9c576f7",
-            "title": "uzun_test_dokumani.pdf",
-            "source_type": "file",
-            "file_name": null,
-            "file_type": null,
-            "chunk_count": 8,
-            "token_count": 3053,
-            "processing_status": "completed",
-            "created_at": "2025-08-07T19:48:02.907672",
-            "updated_at": "2025-08-07T19:48:03.112021",
-            "metadata": {
-              "filename": "uzun_test_dokumani.pdf",
-              "file_type": ".pdf",
-              "file_size": 3725,
-              "content_type": "application/pdf"
-            }
-          },
-          {
-            "id": "a9f88831-5407-4777-80be-3185a04adf89",
-            "title": "Gizlilik Sözleşmesi.pdf",
-            "source_type": "file",
-            "file_name": null,
-            "file_type": null,
-            "chunk_count": 15,
-            "token_count": 4685,
-            "processing_status": "completed",
-            "created_at": "2025-08-07T19:45:29.917459",
-            "updated_at": "2025-08-07T19:45:29.967528",
-            "metadata": {
-              "filename": "Gizlilik Sözleşmesi.pdf",
-              "file_type": ".pdf",
-              "file_size": 784528,
-              "content_type": "application/pdf"
-            }
-          },
-          {
-            "id": "71635eba-af8e-48e4-8ac1-a4c2763c25ce",
-            "title": "Alimehmetoglu.pdf",
-            "source_type": "file",
-            "file_name": null,
-            "file_type": null,
-            "chunk_count": 7,
-            "token_count": 1370,
-            "processing_status": "completed",
-            "created_at": "2025-08-07T19:45:03.339868",
-            "updated_at": "2025-08-07T19:45:03.369780",
-            "metadata": {
-              "filename": "Alimehmetoglu.pdf",
-              "file_type": ".pdf",
-              "file_size": 110009,
-              "content_type": "application/pdf"
-            }
-          },
-          {
-            "id": "ce24a37f-0f61-4232-a8d4-f5d7d5021f1c",
-            "title": "test_gizlilik_sozlesmesi.pdf",
-            "source_type": "file",
-            "file_name": null,
-            "file_type": null,
-            "chunk_count": 1,
-            "token_count": 70,
-            "processing_status": "completed",
-            "created_at": "2025-08-07T19:43:36.183733",
-            "updated_at": "2025-08-07T19:43:36.192729",
-            "metadata": {
-              "filename": "test_gizlilik_sozlesmesi.pdf",
-              "file_type": ".pdf",
-              "file_size": 1648,
-              "content_type": "application/pdf"
-            }
-          },
-          {
-            "id": "29e92efe-0a60-4b2b-a41e-07e0cc087d3a",
-            "title": "test_document_1754595787.md",
+            "id": "821db886-d98e-407d-81cb-2c2d269a8cd7",
+            "title": "test_document_1754604006.md",
             "source_type": "file",
             "file_name": null,
             "file_type": null,
             "chunk_count": 1,
             "token_count": 39,
             "processing_status": "completed",
-            "created_at": "2025-08-07T19:43:07.220877",
-            "updated_at": "2025-08-07T19:43:07.230156",
+            "created_at": "2025-08-07T22:00:06.391518",
+            "updated_at": "2025-08-07T22:00:06.396136",
             "metadata": {
-              "filename": "test_document_1754595787.md",
+              "filename": "test_document_1754604006.md",
               "file_type": ".md",
               "file_size": 175,
               "content_type": "text/markdown"
             }
           },
           {
-            "id": "3e4d9bf6-52ca-47d2-916c-d63affd07014",
-            "title": "analysis.md",
+            "id": "0e37bd8c-81d9-4971-84a2-68c8836059f4",
+            "title": "IK ve ORDİNO MODÜLÜ ANALİZ.pdf",
             "source_type": "file",
             "file_name": null,
             "file_type": null,
-            "chunk_count": 15,
-            "token_count": 3679,
+            "chunk_count": 1,
+            "token_count": 13147,
             "processing_status": "completed",
-            "created_at": "2025-08-07T19:32:21.734947",
-            "updated_at": "2025-08-07T19:32:21.769310",
+            "created_at": "2025-08-07T21:59:45.283442",
+            "updated_at": "2025-08-07T21:59:45.295750",
             "metadata": {
-              "filename": "analysis.md",
+              "filename": "IK ve ORDİNO MODÜLÜ ANALİZ.pdf",
+              "file_type": ".pdf",
+              "file_size": 3899900,
+              "content_type": "application/pdf"
+            }
+          },
+          {
+            "id": "e9f9a2a3-a056-43cf-af4b-c9212933c83a",
+            "title": "ai_infrastructure_wbs_latest[1].md",
+            "source_type": "file",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 24150,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T21:59:25.565674",
+            "updated_at": "2025-08-07T21:59:25.591936",
+            "metadata": {
+              "filename": "ai_infrastructure_wbs_latest[1].md",
               "file_type": ".md",
-              "file_size": 11692,
+              "file_size": 122171,
               "content_type": "application/octet-stream"
             }
+          },
+          {
+            "id": "59a60efb-62cd-43ae-b32d-d381505585a9",
+            "title": "Test Document",
+            "source_type": "text",
+            "file_name": null,
+            "file_type": null,
+            "chunk_count": 1,
+            "token_count": 9,
+            "processing_status": "completed",
+            "created_at": "2025-08-07T21:59:06.528633",
+            "updated_at": "2025-08-07T21:59:08.813394",
+            "metadata": null
           }
         ],
         "pagination": {
           "page": 1,
           "limit": 10,
-          "total": 33,
-          "total_pages": 4
+          "total": 7,
+          "total_pages": 1
         }
       },
-      "response_text": "{\"documents\":[{\"id\":\"71b10d3a-69c8-4e5d-8fff-3ed0a8d7e5d4\",\"title\":\"test_document_1754597041.md\",\"source_type\":\"file\",\"file_name\":null,\"file_type\":null,\"chunk_count\":1,\"token_count\":39,\"processing_status\":\"completed\",\"created_at\":\"2025-08-07T20:04:01.430456\",\"updated_at\":\"2025-08-07T20:04:01.440193\",\"metadata\":{\"filename\":\"test_document_1754597041.md\",\"file_type\":\".md\",\"file_size\":175,\"content_type\":\"text/markdown\"}},{\"id\":\"8cf1992c-4ad9-4aef-ab66-a86562ae8ede\",\"title\":\"Python Programming Guide ",
-      "timestamp": "2025-08-07T20:04:01.953028Z",
-      "duration_ms": 7.63,
+      "response_text": "{\"documents\":[{\"id\":\"5f092a02-9615-4c38-9045-895d3ecb9a1d\",\"title\":\"test_document_1754604019.md\",\"source_type\":\"file\",\"file_name\":null,\"file_type\":null,\"chunk_count\":1,\"token_count\":39,\"processing_status\":\"completed\",\"created_at\":\"2025-08-07T22:00:19.142582\",\"updated_at\":\"2025-08-07T22:00:19.147486\",\"metadata\":{\"filename\":\"test_document_1754604019.md\",\"file_type\":\".md\",\"file_size\":175,\"content_type\":\"text/markdown\"}},{\"id\":\"50349556-a763-441b-9a04-85b9404950a2\",\"title\":\"Python Programming Guide ",
+      "timestamp": "2025-08-07T22:00:19.658672Z",
+      "duration_ms": 6.31,
       "success": true,
       "error_message": null,
       "test_type": "DOCUMENT_LIST"
     },
     {
-      "endpoint": "/api/v1/knowledge/8cf1992c-4ad9-4aef-ab66-a86562ae8ede",
+      "endpoint": "/api/v1/knowledge/50349556-a763-441b-9a04-85b9404950a2",
       "method": "GET",
       "payload": null,
       "headers": {
@@ -399,10 +340,10 @@
       },
       "response_status": 200,
       "response_body": {
-        "id": "8cf1992c-4ad9-4aef-ab66-a86562ae8ede",
-        "knowledge_base_id": "c5a559d9-408f-41c8-af7c-5a84129c4cdf",
-        "title": "Python Programming Guide - 1754597040",
-        "content": "Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\n\nTest run timestamp: 1754597040",
+        "id": "50349556-a763-441b-9a04-85b9404950a2",
+        "knowledge_base_id": "8cb4c209-729d-48a7-829e-eea1e7c1280d",
+        "title": "Python Programming Guide - 1754604018",
+        "content": "Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\n\nTest run timestamp: 1754604018",
         "source_type": "text",
         "source_url": null,
         "file_name": null,
@@ -417,23 +358,16 @@
           "category": "programming",
           "language": "python",
           "test": true,
-          "test_timestamp": "1754597040"
+          "test_timestamp": "1754604018"
         },
-        "created_at": "2025-08-07T20:04:00.660868",
-        "updated_at": "2025-08-07T20:04:00.860391",
-        "processed_at": "2025-08-07T20:04:00.860390",
-        "chunks": [
-          {
-            "id": "9232754d-f29c-4dff-bfc6-6f472cb40b2e",
-            "chunk_index": 0,
-            "content": "Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\n\nTest run timestamp: 1754597040",
-            "token_count": 40
-          }
-        ]
+        "created_at": "2025-08-07T22:00:18.628541",
+        "updated_at": "2025-08-07T22:00:18.633213",
+        "processed_at": "2025-08-07T22:00:18.633212",
+        "chunks": []
       },
-      "response_text": "{\"id\":\"8cf1992c-4ad9-4aef-ab66-a86562ae8ede\",\"knowledge_base_id\":\"c5a559d9-408f-41c8-af7c-5a84129c4cdf\",\"title\":\"Python Programming Guide - 1754597040\",\"content\":\"Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\\n\\nTest run timestamp: 1754597040\",\"source_type\":\"text\",\"source_url\":null,\"file_name\":null,\"file_type\":null,\"file_size\":null,\"chunk_count\":1,",
-      "timestamp": "2025-08-07T20:04:02.463495Z",
-      "duration_ms": 10.16,
+      "response_text": "{\"id\":\"50349556-a763-441b-9a04-85b9404950a2\",\"knowledge_base_id\":\"8cb4c209-729d-48a7-829e-eea1e7c1280d\",\"title\":\"Python Programming Guide - 1754604018\",\"content\":\"Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms including procedural, object-oriented, and functional programming.\\n\\nTest run timestamp: 1754604018\",\"source_type\":\"text\",\"source_url\":null,\"file_name\":null,\"file_type\":null,\"file_size\":null,\"chunk_count\":1,",
+      "timestamp": "2025-08-07T22:00:20.164726Z",
+      "duration_ms": 5.53,
       "success": true,
       "error_message": null,
       "test_type": "DOCUMENT_DETAILS"
@@ -460,73 +394,49 @@
         "query": "Python programming features",
         "results": [
           {
-            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754597041",
+            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754604019",
             "score": 0.48454219102859497,
-            "document_id": "71b10d3a-69c8-4e5d-8fff-3ed0a8d7e5d4",
-            "document_title": "test_document_1754597041.md",
+            "document_id": "5f092a02-9615-4c38-9045-895d3ecb9a1d",
+            "document_title": "test_document_1754604019.md",
             "chunk_index": 0,
             "metadata": {
-              "document_id": "71b10d3a-69c8-4e5d-8fff-3ed0a8d7e5d4",
-              "title": "test_document_1754597041.md",
-              "created_at": "2025-08-07T20:04:01.430456"
+              "document_id": "5f092a02-9615-4c38-9045-895d3ecb9a1d",
+              "title": "test_document_1754604019.md",
+              "created_at": "2025-08-07T22:00:19.142582"
             }
           },
           {
-            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754595787",
+            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754604006",
             "score": 0.48454219102859497,
-            "document_id": "29e92efe-0a60-4b2b-a41e-07e0cc087d3a",
-            "document_title": "test_document_1754595787.md",
+            "document_id": "821db886-d98e-407d-81cb-2c2d269a8cd7",
+            "document_title": "test_document_1754604006.md",
             "chunk_index": 0,
             "metadata": {
-              "document_id": "29e92efe-0a60-4b2b-a41e-07e0cc087d3a",
-              "title": "test_document_1754595787.md",
-              "created_at": "2025-08-07T19:43:07.220877"
+              "document_id": "821db886-d98e-407d-81cb-2c2d269a8cd7",
+              "title": "test_document_1754604006.md",
+              "created_at": "2025-08-07T22:00:06.391518"
             }
           },
           {
-            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754594242",
-            "score": 0.48454219102859497,
-            "document_id": "cb2fdfd7-4904-4852-adc1-04a58fb8714e",
-            "document_title": "test_document_1754594242.md",
+            "content": "# Kurumsal AI Altyapı Projesi - Technical Work Breakdown Structure\n\n## Yönetici Özeti\n\nBu doküman, kurumsal düzeyde bir AI altyapısının tasarım, geliştirme ve implementasyonu için kapsamlı bir proje planını sunmaktadır. Proje, güçlü Türkçe desteği, multi-tenant mimari, güvenlik-odaklı yaklaşım ve açık kaynak teknolojiler kullanarak enterprise-ready bir AI platformu oluşturmayı hedeflemektedir.\n\n### Anahtar Başarı Faktörleri\n- **Süre**: 18-24 ay (MVP: 12 ay)\n- **Bütçe**: €2.2M - €2.6M geliştirme, €435K/yıl işletme\n- **Ekip**: 14-16 kişi çekirdek ekip + Dış hizmetler\n- **Teknoloji**: .NET Core odaklı, mikroservis mimarisi, Kubernetes deployment\n- **AI Capabilities**: RAG, çoklu LLM modeli, workflow automation, document processing\n\n### Temel Değer Önerileri\n- **%100 Açık Kaynak**: Vendor lock-in riski eliminasyonu\n- **Enterprise Security**: OWASP, GDPR, ISO27001 compliance\n- **Türkçe Optimizasyonu**: Yerel dil modelleri ve multilingual support\n- **Visual Workflow Designer**: Kullanıcıların kendi iş akışlarını tasarlayabilmesi\n- **Multi-Modal AI**: Text, görüntü, ses işleme capabilities\n\n---\n\n## Proje Tanımı ve Kapsamı\n\n### Proje Vizyonu\nModern AI teknolojilerini kurumsal gereksinimlere uygun şekilde entegre ederek, veri güvenliği ve mahremiyet korunurken, kullanıcı dostu arayüzler ve güçlü workflow otomasyonu ile organizasyonel verimliliği artırmak.\n\n### Proje Misyonu\nKurumsal kullanıcıların yapay zeka teknolojilerini güvenli, ölçeklenebilir ve özelleştirilebilir bir platform üzerinden kullanabilmelerini sağlayan, hem on-premise hem cloud ortamlarında çalışabilen AI altyapısı oluşturmak.\n\n### Proje Kapsamı\n\n#### Dahil Olan Özellikler ✅\n- **Çoklu LLM Desteği**: Offline ve online model entegrasyonu\n- **RAG (Retrieval Augmented Generation)**: Kurumsal doküman bazlı yanıtlama\n- **Multi-Tenant Architecture**: Tenant bazlı veri izolasyonu\n- **Document Processing**: 1000+ dosya formatı desteği (Apache Tika)\n- **Visual Workflow Designer**: Drag-drop workflow oluşturma\n- **Mobile Application**: Cross-platform React Native app\n- **Admin Dashboard**: Kapsamlı yönetim paneli\n- **External API Integrations**: YouTube, Slack, Teams, WhatsApp vs.\n- **Image Generation**: Local Stable Diffusion deployment _(Kapsam dışına alınabilir)_\n- **MCP Protocol**: Model Context Protocol implementasyonu\n- **Security & Compliance**: OWASP, GDPR, ISO27001 uyumluluğu\n\n#### Dahil Olmayan Özellikler ❌\n- **Voice Recognition/TTS**: İlk fazda ses işleme yok\n- **Video Processing**: Video content analysis dahil değil\n- **Blockchain Integration**: Distributed ledger entegrasyonu yok\n- **IoT Device Integration**: IoT sensör entegrasyonları yok\n- **Legacy System Migration**: Mevcut sistemlerden data migration _(Dahil edilebilir)_\n- **Custom Hardware**: Özel AI chip veya hardware gereksinimleri\n\n---\n\n## İhtiyaç Analizi\n\n### Kurumsal İhtiyaçlar\n\n#### 1. Veri Güvenliği ve Mahremiyet\n**Mevcut Problem**: Kurumlar hassas verilerini dış AI servislerine göndermekten çekiniyor.\n\n**Çözüm**: On-premise deployment, tenant-based data isolation, encryption at rest/transit\n\n#### 2. Türkçe Dil Desteği Yetersizliği  \n**Mevcut Problem**: Global AI modelleri Türkçe'de yetersiz performans gösterebiliyor.\n\n**Çözüm**: Turkish-specific fine-tuned models, multilingual embedding support\n\n#### 3. Workflow Otomasyonu İhtiyacı\n**Mevcut Problem**: Manuel, tekrarlayan business processlerin AI ile otomatize edilmesi\n\n**Çözüm**: Visual workflow designer, 50+ pre-built node library, custom logic support\n\n#### 4. Çoklu Veri Kaynağı Entegrasyonu\n**Mevcut Problem**: Dağınık veri kaynaklarının AI sistemine entegre edilememesi\n\n**Çözüm**: Universal data connectors, real-time sync, webhook integrations\n\n#### 5. Scalability ve Performance\n**Mevcut Problem**: Artan kullanıcı sayısı ve veri hacmi ile performans azalması\n\n**Çözüm**: Kubernetes-native architecture, horizontal scaling, microservices\n\n### Teknik İhtiyaçlar\n\n#### 1. Infrastructure Flexibility\n- **Hybrid Deployment**: On-premise + cloud compatibility\n- **Container Orchestration**: Kubernetes-based scalable infrastructure\n- **Service Mesh**: Inter-service communication ve security\n\n#### 2. AI/ML Capabilities\n- **Model Agnostic**: Multiple LLM providers support\n- **Custom Model Training**: Domain-specific fine-tuning capability\n- **Vector Search**: Semantic search ve similarity matching\n- **Context Management**: Conversation memory ve personalization\n\n#### 3. Enterprise Integration\n- **SSO Integration**: Active Directory/LDAP compatibility\n- **API-First Design**: RESTful APIs, OpenAPI specification\n- **Event-Driven Architecture**: Real-time notifications ve updates\n- **Audit & Compliance**: Comprehensive logging ve regulatory compliance\n\n---\n\n## Proje Gereksinimleri\n\n### Fonksiyonel Gereksinimler\n\n#### 1. Kullanıcı Yönetimi\n- **FR-001**: Multi-tenant kullanıcı kayıt ve authentication sistemi\n- **FR-002**: Role-based access control (RBAC) implementasyonu  \n- **FR-003**: SSO entegrasyonu (SAML, OIDC, LDAP)\n- **FR-004**: Kullanıcı profil yönetimi ve preferences\n- **FR-005**: Tenant-level user management ve delegation\n\n#### 2. Doküman İşleme\n- **FR-006**: 1000+ dosya formatından text extraction (Apache Tika)\n- **FR-007**: OCR capability ile image-to-text conversion\n- **FR-008**: Real-time document processing ve indexing\n- **FR-009**: Document classification ve metadata tagging\n- **FR-010**: Version control ve document history tracking\n\n#### 3. AI/Chat Functionality\n- **FR-011**: Multi-model LLM support (Ollama, OpenAI, custom models)\n- **FR-012**: RAG-based document retrieval ve response generation\n- **FR-013**: Conversation memory ve context management\n- **FR-014**: Multi-language support (Türkçe optimized)\n- **FR-015**: Real-time chat interface (web + mobile)\n\n#### 4. Workflow Automation\n- **FR-016**: Visual workflow designer (drag-drop interface)\n- **FR-017**: 50+ pre-built automation nodes\n- **FR-018**: Custom node development SDK\n- **FR-019**: Scheduled ve event-triggered workflow execution\n- **FR-020**: Workflow versioning ve rollback capability\n\n#### 5. Admin & Management\n- **FR-021**: Comprehensive admin dashboard\n- **FR-022**: System monitoring ve health checks\n- **FR-023**: User activity analytics ve reporting\n- **FR-024**: Resource usage tracking ve billing\n- **FR-025**: Configuration management interface\n\n### Non-Fonksiyonel Gereksinimler\n\n#### 1. Performance Requirements\n- **NFR-001**: Response time < 2 saniye (95th percentile)\n- **NFR-002**: Concurrent 10,000+ user support\n- **NFR-003**: Document processing throughput > 1000 docs/hour\n- **NFR-004**: 99.9% system availability (8.77 saat/yıl downtime)\n- **NFR-005**: Auto-scaling capability (CPU/Memory based)\n\n#### 2. Security Requirements  \n- **NFR-006**: Data encryption at rest (AES-256)\n- **NFR-007**: TLS 1.3 for data in transit\n- **NFR-008**: Zero-trust network architecture\n- **NFR-009**: Regular security vulnerability scanning\n- **NFR-010**: OWASP Top 10 compliance\n\n#### 3. Compliance Requirements\n- **NFR-011**: GDPR data protection compliance\n- **NFR-012**: ISO 27001 information security standards\n- **NFR-013**: SOC 2 Type II audit readiness\n- **NFR-014**: Complete audit trail ve logging\n- **NFR-015**: Data residency ve sovereignty requirements\n\n#### 4. Scalability Requirements\n- **NFR-016**: Horizontal scaling capability\n- **NFR-017**: Multi-region deployment support\n- **NFR-018**: Database sharding ve read replicas\n- **NFR-019**: CDN integration for global performance\n- **NFR-020**: Elastic resource allocation\n\n#### 5. Usability Requirements\n- **NFR-021**: Intuitive user interface (< 30 min learning curve)\n- **NFR-022**: Mobile-responsive design\n- **NFR-023**: Accessibility compliance (WCAG 2.1 AA)\n- **NFR-024**: Multi-language UI support\n- **NFR-025**: Offline capability (mobile app)\n\n---\n\n## Proje Hedefleri ve Başarı Kriterleri\n\n### Kısa Vadeli Hedefler (0-12 ay - MVP)\n\n#### 1. Temel Platform Kurulumu\n- **Hedef**: Functional AI chat platform with basic RAG\n- **KPI**: MVP deployment ve first user onboarding\n- **Başarı Kriteri**: 10 pilot kullanıcı ile successful use cases\n\n#### 2. Core AI Capabilities\n- **Hedef**: Document processing ve basic workflow automation\n- **KPI**: 1000+ document processing capability\n- **Başarı Kriteri**: %95 accuracy document extraction ve indexing\n\n#### 3. Security Foundation\n- **Hedef**: Multi-tenant security ve compliance baseline\n- **KPI**: Security audit completion\n- **Başarı Kriteri**: Zero critical security vulnerabilities\n\n### Orta Vadeli Hedefler (12-18 ay - Full Platform)\n\n#### 1. Advanced Features\n- **Hedef**: Complete workflow designer ve mobile app\n- **KPI**: 50+ workflow nodes, mobile app store deployment\n- **Başarı Kriteri**: Complex workflow execution success rate > %98\n\n#### 2. Enterprise Integration\n- **Hedef**: Full external API integration suite\n- **KPI**: 20+ external service connectors\n- **Başarı Kriteri**: Seamless data flow between integrated systems\n\n#### 3. Performance Optimization\n- **Hedef**: Production-grade performance ve scalability\n- **KPI**: 10,000+ concurrent users, < 2s response time\n- **Başarı Kriteri**: Load testing benchmarks achieved\n\n### Uzun Vadeli Hedefler (18+ ay - Scale & Optimize)\n\n#### 1. AI Model Excellence\n- **Hedef**: Custom Turkish language model fine-tuning\n- **KPI**: Turkish language accuracy improvement %30+\n- **Başarı Kriteri**: Benchmark tests vs. global models\n\n#### 2. Market Expansion\n- **Hedef**: Multi-industry deployment ve customer success\n- **KPI**: 5+ different industry verticals\n- **Başarı Kriteri**: Customer satisfaction score > 4.5/5\n\n#### 3. Innovation Leadership\n- **Hedef**: AI technology leadership ve thought leadership\n- **KPI**: Technical publications, conference presentations\n- **Başarı Kriteri**: Industry recognition ve awards\n\n### Quantitative Success Metrics\n\n#### Technical KPIs\n- **System Uptime**: 99.9% availability\n- **Response Time**: < 2 seconds average\n- **Document Processing**: > 1000 docs/hour\n- **User Capacity**: 10,000+ concurrent users\n- **API Performance**: < 100ms average latency\n\n#### Business KPIs  \n- **User Adoption**: 90% user retention after 30 days\n- **Feature Utilization**: 70% of features actively used\n- **Customer Satisfaction**: > 4.5/5 NPS score  \n- **Time to Value**: < 1 week user onboarding\n- **Cost Efficiency**: 50% cost reduction vs. external AI services\n\n#### Quality KPIs\n- **Bug Rate**: < 0.1% critical bugs in production\n- **Security**: Zero data breaches, 100% compliance audit pass\n- **Documentation**: 100% API documentation coverage\n- **Testing**: > 90% code coverage, automated testing\n- **Performance**: All performance benchmarks consistently met\n\n---\n\n## Proje Genel Bilgileri\n- **Toplam Süre**: ~18-24 ay\n- **Toplam Adam-Gün Tahmini**: 2.800-3.200 adam-gün\n- **Ekip Büyüklüğü**: 14-16 kişi (çekirdek ekip)\n\n## Teknoloji Stack'i\n\n### Backend Core\n- **Framework**: .NET Core 8.0 (Primary), FastAPI/Python (AI/ML Services)\n- **Database**: PostgreSQL (Ana DB), Redis (Cache), Elasticsearch (Arama), Qdrant/Weaviate (Vector DB)\n- **Message Queue**: RabbitMQ (Seçilen çözüm - detay aşağıda)\n- **Authentication**: IdentityServer (Seçilen çözüm - detay aşağıda)\n- **Container**: Docker, Kubernetes\n- **Monitoring**: Prometheus, Grafana, Jaeger\n- **Security**: IdentityServer, HashiCorp Vault (Secrets)\n\n### AI/ML Stack\n- **LLM Hosting**: Ollama, vLLM, TGI (Text Generation Inference)\n- **ML Framework**: PyTorch, Transformers, LangChain (https://langchain.com - Açık kaynak LLM orchestration)\n- **Vector Search**: Qdrant (Seçilen - detay aşağıda), Weaviate\n- **Model Management**: MLflow (Machine learning model lifecycle yönetimi ve experiment tracking)\n- **ML Pipeline**: Kubeflow (Kubernetes üzerinde machine learning workflow'larını orchestrate etme)\n- **Image Generation**: Stable Diffusion, DALL-E API\n- **OCR**: Tesseract OCR (Görüntüdeki metinleri dijital metne dönüştürme)\n- **Document Processing**: Apache Tika (1000+ farklı dosya formatından metin ve metadata çıkarma)\n- **Embeddings**: Sentence Transformers (Metinleri vector embedding'lere dönüştürme)\n\n### Frontend & Mobile\n- **Web UI**: React/Next.js, TypeScript, Tailwind CSS\n- **Mobile**: React Native (Flutter kaldırıldı)\n- **Real-time**: SignalR (.NET), Socket.io, WebSockets\n- **Alternative UI**: OpenWebUI (Open source chat interface - https://openwebui.com)\n\n### DevOps & Infrastructure\n- **CI/CD**: GitHub Actions, Jenkins\n- **IaC**: Terraform, Ansible\n- **Database Migration**: Flyway/Liquibase (Veritabanı şema değişikliklerini versiyonlu yönetme)\n- **Logging**: ELK Stack (Elasticsearch, Logstash, Kibana)\n- **Backup**: MinIO (S3-compatible)\n- **Security Scanning**: Trivy (Container imajlarında güvenlik açığı tarama), Falco (Runtime güvenlik ihlallerini tespit etme)\n- **Policy Management**: OPA Gatekeeper (Kubernetes cluster seviyesinde güvenlik ve compliance politikalarını uygulama)\n- **Service Mesh**: Istio (Microservice'ler arası güvenli iletişim ve traffic yönetimi)\n\n---\n\n# Work Breakdown Structure\n\n## 1. PROJE YÖNETİMİ VE PLANLAMA (120 adam-gün)\n\n### 1.1 Proje Başlangıcı (40 adam-gün)\n**Açıklama**: Proje kapsamı belirleme, ekip oluşturma, metodoloji seçimi\n\n**Teknik İhtiyaçlar**: PM araçları, dokümantasyon platformu\n\n**Çözüm**: Jira/ClickUp/Asana, Confluence/Notion\n\n**Kaynaklar**: 1 Proje Yöneticisi, 1 Teknik Lider, 1 Business Analyst\n\n**Süre**: 2 hafta\n\n### 1.2 Gereksinimlerin Detaylandırılması (50 adam-gün)\n**Açıklama**: Fonksiyonel/teknik gereksinimlerin belirlenmesi, use case'lerin tanımlanması\n\n**Teknik İhtiyaçlar**: Wireframe/mockup araçları\n\n**Çözüm**: Figma, Draw.io, PlantUML\n\n**Kaynaklar**: 2 Business Analist, 1 UI/UX Designer, 1 Teknik Mimar\n\n**Süre**: 2.5 hafta\n\n### 1.3 Risk Analizi ve Proje Planlaması (30 adam-gün)\n**Açıklama**: Teknik/operasyonel riskler, zaman çizelgesi, kaynak planlaması\n\n**Kaynaklar**: 1 Proje Yöneticisi, 1 Teknik Lider\n\n**Süre**: 1.5 hafta\n\n---\n\n## 2. ALTYAPI VE DEVOPS (450 adam-gün)\n\n### 2.1 Kubernetes Cluster Kurulumu (80 adam-gün)\n**Açıklama**: HA Kubernetes cluster kurulumu, networking, storage yapılandırması\n\n**Teknik İhtiyaçlar**: VM'ler/Bare metal serverlar, Load balancer\n\n**Çözüm**: \n- K8s: kubeadm veya managed service (AKS, EKS, GKE)\n- CNI: Calico/Flannel\n- Storage: Longhorn/Rook-Ceph\n- Ingress: NGINX Ingress Controller\n\n**Kaynaklar**: 2 DevOps Engineer, 1 System Admin\n\n**Süre**: 4 hafta\n\n### 2.2 CI/CD Pipeline (70 adam-gün)\n**Açıklama**: GitOps workflow, automated testing, deployment pipelines\n\n**Teknik İhtiyaçlar**: Git repository, CI/CD server\n\n**Çözüm**: \n- GitHub Actions/Jenkins\n- ArgoCD (GitOps)\n- Docker Registry/Harbor\n- SonarQube (Code Quality)\n\n**Kaynaklar**: 1-2 DevOps Engineer\n\n**Süre**: 3.5 hafta\n\n### 2.3 Monitoring & Logging (90 adam-gün)\n**Açıklama**: Uygulama ve altyapı monitoring, centralized logging\n\n**Teknik İhtiyaçlar**: Monitoring sunucuları, log storage\n\n**Çözüm**:\n- Prometheus + Grafana\n- ELK Stack (Elasticsearch, Logstash, Kibana)\n- Jaeger (Distributed Tracing)\n- AlertManager\n\n**Kaynaklar**: 2 DevOps Engineer, 1 SRE\n\n**Süre**: 4.5 hafta\n\n### 2.4 Security & Secrets Management (60 adam-gün)\n**Açıklama**: Güvenlik politikaları, secret management, network policies\n\n**Teknik İhtiyaçlar**: HSM/Key management, SSL sertifikaları\n\n**Çözüm**:\n- HashiCorp Vault\n- cert-manager (Let's Encrypt)\n- Falco (Runtime Security)\n- OPA Gatekeeper (Policy Engine)\n\n**Kaynaklar**: 1 Security Engineer, 1 DevOps Engineer\n\n**Süre**: 3 hafta\n\n### 2.5 Backup & Disaster Recovery (80 adam-gün)\n**Açıklama**: Automated backup strategies, DR procedures\n\n**Teknik İhtiyaçlar**: Backup storage, secondary site (opsiyonel)\n\n**Çözüm**:\n- Velero (K8s backup)\n- MinIO (S3-compatible storage)\n- PostgreSQL streaming replication\n\n**Kaynaklar**: 1 DevOps Engineer, 1 DBA\n\n**Süre**: 4 hafta\n\n### 2.6 Network & Security Hardening (70 adam-gün)\n**Açıklama**: Network segmentation, firewall rules, security scanning\n\n**Teknik İhtiyaçlar**: Firewall, IDS/IPS, vulnerability scanners\n\n**Çözüm**:\n- Istio Service Mesh\n- Network Policies\n- Trivy (Container scanning)\n- OWASP ZAP\n\n**Kaynaklar**: 1 Security Engineer, 1 Network Engineer\n\n**Süre**: 3.5 hafta\n\n---\n\n## 3. CORE BACKEND SİSTEMLERİ (.NET Core) (650 adam-gün)\n\n### 3.1 Authentication & Authorization (ASP.NET Identity + IdentityServer) (120 adam-gün)\n**Açıklama**: .NET Core tabanlı kullanıcı yönetimi, JWT token handling, multi-tenant auth\n\n**Teknik İhtiyaçlar**: IdentityServer, SQL Server/PostgreSQL\n\n**Çözüm**:\n- ASP.NET Core Identity\n- Duende IdentityServer\n- Entity Framework Core\n- Multi-tenant JWT strategy\n\n**Kaynaklar**: 2 .NET Developer, 1 DevOps Engineer\n\n**Süre**: 6 hafta\n\n### 3.2 API Gateway & Rate Limiting (.NET Core) (90 adam-gün)\n**Açıklama**: .NET tabanlı API gateway, middleware pipeline, rate limiting\n\n**Teknik İhtiyaçlar**: Load balancer, distributed cache\n\n**Çözüm**:\n- **YARP** (Yet Another Reverse Proxy) - Microsoft'un .NET tabanlı reverse proxy\n- Custom middleware pipeline\n- Redis distributed cache\n- OpenAPI/Swagger integration\n\n**Kong vs YARP Karşılaştırması:**\n\n| **Faktör** | **Kong** | **YARP** ✅ **SEÇİLDİ** |\n|------------|----------|-------------------------|\n| **Ecosystem** | Lua + External plugins | Native .NET integration |\n| **Performance** | High (C + Lua) | Very High (.NET 8) |\n| **Configuration** | YAML/DB config | C# code-based |\n| **Customization** | Lua scripting | Full C# power |\n| **Monitoring** | External tools | Built-in ASP.NET metrics |\n| **Debugging** | Complex | Visual Studio debugging |\n| **Team Skills** | New tech stack | Existing .NET expertise |\n| **Deployment** | Separate container | Same .NET process |\n| **Licensing** | Open source + Enterprise | MIT (fully open) |\n\n**YARP Seçim Gerekçeleri:**\n1. **.NET Ecosystem Unity**: Tek technology stack, tek team expertise\n2. **Development Velocity**: .NET team için zero learning curve\n3. **Deep Integration**: ASP.NET Core middleware ile native integration\n4. **Custom Logic**: C# ile complex business logic easy implementation\n5. **Performance**: .NET 8 ile exceptional performance\n\n**Kaynaklar**: 2 .NET Developer\n\n**Süre**: 4.5 hafta\n\n### 3.3 Core Database Schema & ORM (80 adam-gün)\n**Açıklama**: Entity Framework Core setup, migrations, multi-tenant patterns\n\n**Teknik İhtiyaçlar**: PostgreSQL cluster, connection pooling\n\n**Çözüm**:\n- Entity Framework Core 8\n- Flyway/Liquibase (Database schema versioning ve migration yönetimi)\n- Multi-tenant DbContext patterns\n- Npgsql connection pooling\n\n**Kaynaklar**: 1 .NET Developer, 1 DBA\n\n**Süre**: 4 hafta\n\n### 3.4 Message Queue Integration (.NET Core) (100 adam-gün)\n**Açıklama**: .NET native message handling, event-driven architecture  \n\n**Teknik İhtiyaçlar**: RabbitMQ cluster\n\n**Çözüm**:\n- MassTransit (.NET message bus abstraction)\n- RabbitMQ .NET Client\n- Background services (IHostedService)\n- Saga pattern implementation\n\n**Kaynaklar**: 2 .NET Developer, 1 DevOps Engineer\n\n**Süre**: 5 hafta\n\n### 3.5 File Storage & Management (.NET Core) (70 adam-gün)\n**Açıklama**: .NET tabanlı file handling, Azure Storage/MinIO integration\n\n**Teknik İhtiyaçlar**: Object storage, CDN\n\n**Çözüm**:\n- ASP.NET Core file upload middleware\n- MinIO .NET SDK\n- Background file processing\n- Distributed caching (Redis)\n\n**Kaynaklar**: 2 .NET Developer\n\n**Süre**: 3.5 hafta\n\n### 3.6 Audit Logging System (.NET Core) (60 adam-gün)\n**Açıklama**: Structured logging, audit trails, compliance logging\n\n**Teknik İhtiyaçlar**: Elasticsearch cluster\n\n**Çözüm**:\n- Serilog (Structured logging)\n- Custom audit middleware\n- Elasticsearch .NET client\n- GDPR compliance features\n\n**Kaynaklar**: 1 .NET Developer, 1 Security Engineer\n\n**Süre**: 3 hafta\n\n### 3.7 Background Task Management (.NET Core) (80 adam-gün)\n**Açıklama**: Background services, job scheduling, distributed tasks\n\n**Teknik İhtiyaçlar**: Redis/SQL Server for job persistence\n\n**Çözüm**:\n- Hangfire (.NET background job processor - Web UI, dashboard, simple jobs)\n- Quartz.NET (Advanced scheduling - complex cron expressions, clustered scheduling)\n- IHostedService for long-running tasks\n- Distributed locking (Redis)\n\n**Neden İkisi**: Hangfire basit jobs ve monitoring için, Quartz.NET enterprise-level complex scheduling için\n\n**Kaynaklar**: 2 .NET Developer\n\n**Süre**: 4 hafta\n\n### 3.8 SignalR Integration (50 adam-gün)\n**Açıklama**: Real-time communication, chat functionality\n\n**Teknik İhtiyaçlar**: WebSocket connection, Redis backplane for scaling\n\n**Çözüm**:\n- ASP.NET Core SignalR\n- Redis backplane for multi-instance\n- Custom hub authorization\n- Connection management\n\n## WebSocket Technology Karşılaştırması\n\n### SignalR (.NET) ✅ **SEÇİLDİ**\n**Avantajlar**:\n- .NET ecosystem native integration\n- Automatic fallback (WebSocket → Server-Sent Events → Long Polling)\n- Built-in scaling (Redis backplane)\n- Strong typing ile type-safe communication\n- Authentication/authorization integration\n- Connection management built-in\n\n**Dezavantajlar**:\n- .NET clients için optimize (diğer platformlarda limitli)\n- Microsoft-specific technology\n\n### Socket.io (Node.js)\n**Avantajlar**:\n- Cross-platform client support\n- Mature ecosystem, large community\n- Room/namespace management\n- Automatic reconnection\n- Binary data support\n\n**Dezavantajlar**:\n- Node.js dependency (additional tech stack)\n- .NET integration requires bridge\n- More complex deployment\n\n### Native WebSocket\n**Avantajlar**:\n- Browser native support\n- Lightweight protocol\n- No additional dependencies\n- Full control over implementation\n\n**Dezavantajlar**:\n- Manual connection management\n- No automatic fallback\n- Manual reconnection logic\n- No built-in scaling\n\n### WebSocket Seçim Gerekçesi: SignalR\n1. **.NET Ecosystem Unity**: Tek technology stack consistency\n2. **Built-in Scaling**: Redis backplane ile horizontal scaling\n3. **Type Safety**: Strong typing ile compile-time error detection\n4. **Fallback Support**: Network restrictions'da automatic fallback\n5. **Enterprise Features**: Authentication, authorization, monitoring built-in\n\n**Kaynaklar**: 1 .NET Developer, 1 DevOps Engineer\n\n**Süre**: 2.5 hafta\n\n---\n\n## 4. VERİ YÖNETİMİ VE ETL (350 adam-gün)\n\n### 4.1 Data Ingestion Framework (120 adam-gün)\n**Açıklama**: Farklı veri kaynaklarından otomatik veri çekme sistemi\n\n**Teknik İhtiyaçlar**: ETL sunucuları, staging database\n\n**Çözüm**:\n- Apache Airflow (Workflow orchestration)\n- Custom connectors:\n  - Office 365 API\n  - Google Drive API\n  - Database connectors (JDBC/ODBC)\n  - File system watchers\n  - Web scrapers (Scrapy)\n  - REST/SOAP API clients\n\n**Kaynaklar**: 3 Backend Developer, 1 Data Engineer\n\n**Süre**: 6 hafta\n\n### 4.2 Document Processing Pipeline (100 adam-gün)\n**Açıklama**: Döküman parsing, text extraction, format conversion\n\n**Teknik İhtiyaçlar**: OCR service, document processing servers\n\n**Çözüm**:\n- Apache Tika (1000+ farklı dosya formatından metin ve metadata çıkarma - PDF, Word, Excel, PowerPoint, CAD, Audio, Video, Email formats)\n- Tesseract OCR (Görüntüdeki metinleri dijital metne dönüştürme)\n- PDF processing libraries\n- Image processing (OpenCV)\n\n**Kaynaklar**: 2 Backend Developer, 1 ML Engineer\n\n**Süre**: 5 hafta\n\n### 4.3 Vector Database & Embeddings (80 adam-gün)\n**Açıklama**: Metin embedding'leri, similarity search\n\n**Teknik İhtiyaçlar**: Vector database cluster, GPU for embeddings\n\n**Çözüm**:\n- Qdrant/Weaviate (Vector DB)\n- Sentence Transformers\n- Multilingual embedding models\n\n**Kaynaklar**: 2 ML Engineer, 1 Backend Developer\n\n**Süre**: 4 hafta\n\n### 4.4 Data Privacy & Classification (50 adam-gün)\n**Açıklama**: Hassas veri tespiti, veri sınıflandırma, GDPR compliance\n\n**Teknik İhtiyaçlar**: ML models for data classification\n\n**Çözüm**:\n- Custom NER models\n- Data encryption at rest\n- Access control policies\n\n**Kaynaklar**: 1 ML Engineer, 1 Security Engineer, 1 Backend Developer\n\n**Süre**: 2.5 hafta\n\n---\n\n## 5. AI/LLM ALTYAPIsı (400 adam-gün)\n\n### 5.1 LLM Model Management (100 adam-gün)\n**Açıklama**: Multi-model support, model versioning, A/B testing\n\n**Teknik İhtiyaçlar**: GPU cluster, model storage\n\n**Çözüm**:\n- Ollama (Local models)\n- vLLM/TGI (Inference servers)\n- MLflow (Model registry)\n- Models: Llama 2/3, Mistral, Turkish-specific models\n\n**Kaynaklar**: 2 ML Engineer, 1 MLOps Engineer\n\n**Süre**: 5 hafta\n\n## Offline LLM Alternatifleri ve Seçim Gerekçeleri\n\n### Ollama Desteklenen Modeller ✅ **PRIMARY**\n\n#### Popüler Açık Kaynak Modeller\n- **Llama 2/3** (7B, 13B, 70B) - Meta'nın açık kaynak modelleri\n  - **Seçim Gerekçesi**: Güçlü performans, geniş community support, commercial use friendly\n- **Mistral 7B** - Güçlü multilingual support\n  - **Seçim Gerekçesi**: Excellent instruction following, compact size, Apache 2.0 license\n- **Code Llama** - Code generation specialized\n  - **Seçim Gerekçesi**: Programming tasks için optimize, Meta backing\n- **Vicuna** - Conversation optimized\n  - **Seçim Gerekçesi**: ChatGPT-style conversations, fine-tuned from Llama\n\n#### Yeni Nesil Açık Kaynak Modeller\n- **DeepSeek Coder** - Programming ve reasoning odaklı\n  - **Seçim Gerekçesi**: Code generation'da GPT-4 seviyesi performance, MIT license\n- **Qwen 2.5** - Alibaba'nın multilingual modeli\n  - **Seçim Gerekçesi**: Strong multilingual, including Turkish support, Apache 2.0\n- **Phi-3** - Microsoft'un compact high-performance modeli\n  - **Seçim Gerekçesi**: Küçük boyut ama yüksek performans, mobile deployment possible\n\n#### Turkish-Specific Models\n- **Trendyol LLaMA** - Turkish e-commerce domain\n  - **Seçim Gerekçesi**: Turkish retail/commerce use cases için fine-tuned, local expertise\n- **Turkish-Alpaca** - Community-driven Turkish model\n  - **Seçim Gerekçesi**: Open source Turkish community tarafından geliştirildi\n- **TURNA** - TÜBİTAK destekli Turkish model\n  - **Seçim Gerekçesi**: Academic backing, Turkish NLP tasks için optimize\n\n### Alternatif Offline Deployment Options\n\n#### LocalAI ✅ **SECONDARY**\n- **Avantajlar**: OpenAI API compatible, multiple model formats\n- **Desteklenen**: GGML, GGUF, GPTQ models\n- **Use Case**: OpenAI API drop-in replacement\n- **Seçim Gerekçesi**: Existing OpenAI integrations için seamless migration\n\n#### Text Generation Inference (TGI) ✅ **PRODUCTION READY**\n- **Avantajlar**: HuggingFace integration, production-ready\n- **Desteklenen**: Most HuggingFace models\n- **Use Case**: High-performance inference server\n- **Seçim Gerekçesi**: Enterprise-grade stability, scaling capabilities\n\n#### vLLM ✅ **HIGH THROUGHPUT**\n- **Avantajlar**: Memory efficient, high throughput\n- **Desteklenen**: Popular transformer models\n- **Use Case**: Serving multiple concurrent requests\n- **Seçim Gerekçesi**: PagedAttention algorithm ile memory optimization\n\n### Model Seçim Stratejisi\n\n#### Tier 1: Production Models\n1. **Llama 3 8B/70B** - General purpose, strong reasoning\n2. **Mistral 7B** - Multilingual, instruction following\n3. **DeepSeek Coder** - Programming tasks\n\n#### Tier 2: Specialized Models  \n1. **Trendyol LLaMA** - Turkish commercial domain\n2. **Qwen 2.5** - Advanced multilingual\n3. **Code Llama** - Development assistance\n\n#### Tier 3: Experimental/Research\n1. **Turkish-Alpaca** - Community models\n2. **Phi-3** - Compact deployment scenarios\n\n### 5.2 RAG (Retrieval Augmented Generation) System (120 adam-gün)\n**Açıklama**: Context-aware responses, document retrieval\n\n**Teknik İhtiyaçlar**: Vector search engine, embedding service\n\n**Çözüm**:\n- LangChain/LlamaIndex\n- Hybrid search (vector + keyword)\n- Context ranking algorithms\n\n**Kaynaklar**: 3 ML Engineer\n\n**Süre**: 6 hafta\n\n## Qdrant vs Weaviate → **Seçim: Qdrant**\n\n### Qdrant ✅ **SEÇİLDİ**\n**Avantajlar:**\n- Rust ile yazılmış (yüksek performance, düşük memory usage)\n- Simple REST API ve gRPC support\n- Built-in filtering ve faceted search\n- Docker deployment kolay\n- Horizontal scaling built-in\n- Open source (Apache 2.0)\n\n### Weaviate\n**Avantajlar:**\n- GraphQL API (flexible queries)\n- Built-in ML model integration\n- Multi-modal search (text + image)\n- Strong schema validation\n- Active community\n\n**Dezavantajlar:**\n- Go tabanlı (daha fazla resource consumption)\n- Complex setup ve configuration\n- GraphQL learning curve\n\n**Seçim Gerekçesi**: Qdrant'ın simplicity, performance ve kolay deployment avantajları projenin gereksinimlerine daha uygun.\n\n### 5.3 Agent Framework (80 adam-gün)\n**Açıklama**: Autonomous agents, tool usage, action execution\n\n**Teknik İhtiyaçlar**: Agent orchestration service\n\n**Çözüm**:\n- Custom agent framework\n- Tool integration (calculators, APIs, etc.)\n- Action planning algorithms\n\n**Kaynaklar**: 2 ML Engineer\n\n**Süre**: 4 hafta\n\n### 5.4 Conversation Memory (60 adam-gün)\n**Açıklama**: Chat history, context management, personalization\n\n**Teknik İhtiyaçlar**: Fast database for conversation storage\n\n**Çözüm**:\n- Redis (Short-term memory)\n- PostgreSQL (Long-term storage)\n- Memory summarization techniques\n\n**Kaynaklar**: 2 Backend Developer\n\n**Süre**: 3 hafta\n\n### 5.5 Model Fine-tuning Pipeline (40 adam-gün)\n**Açıklama**: Custom model training, domain adaptation\n\n**Teknik İhtiyaçlar**: Training infrastructure, dataset management\n\n**Çözüm**:\n- Kubeflow/MLflow\n- LoRA/QLoRA fine-tuning\n- Custom Turkish datasets\n\n**Kaynaklar**: 2 ML Engineer\n\n**Süre**: 2 hafta\n\n---\n\n## 6. IMAGE GENERATION (150 adam-gün)\n\n### 6.1 Stable Diffusion Setup (80 adam-gün)\n**Açıklama**: Local image generation capability\n\n**Teknik İhtiyaçlar**: High-end GPU cluster\n\n**Çözüm**:\n- Stable Diffusion WebUI\n- Custom models for Turkish context\n- Image upscaling services\n\n**Kaynaklar**: 2 ML Engineer\n\n**Süre**: 4 hafta\n\n### 6.2 Image API & Queue Management (70 adam-gün)\n**Açıklama**: Image generation API, queue management\n\n**Teknik İhtiyaçlar**: GPU scheduling, image storage\n\n**Çözüm**:\n- FastAPI service\n- Celery for async processing\n- Image optimization pipeline\n\n**Kaynaklar**: 2 Backend Developer\n\n**Süre**: 3.5 hafta\n\n---\n\n## 7. FRONTEND GELIŞTIRME (440 adam-gün)\n\n### 7.1 Core UI Framework (100 adam-gün)\n**Açıklama**: Ana kullanıcı arayüzü, component library\n\n**Teknik İhtiyaçlar**: Modern web framework, UI library\n\n**Çözüm**:\n- React 18 + Next.js\n- TypeScript\n- Tailwind CSS + Headless UI\n- React Query (State management)\n\n**Kaynaklar**: 3 Frontend Developer\n\n**Süre**: 5 hafta\n\n### 7.2 Chat Interface (80 adam-gün)\n**Açıklama**: Real-time chat, message formatting, file sharing\n\n**Teknik İhtiyaçlar**: WebSocket connection, file upload\n\n**Çözüm**:\n- Socket.io client\n- React-based chat components\n- Markdown rendering\n- File drag & drop\n\n**Kaynaklar**: 2 Frontend Developer\n\n**Süre**: 4 hafta\n\n### 7.3 Admin Dashboard (90 adam-gün)\n**Açıklama**: Yönetim paneli, kullanıcı yönetimi, sistem metrikleri\n\n**Teknik İhtiyaçlar**: Charts, tables, form components\n\n**Çözüm**:\n- React Admin / Ant Design\n- Chart.js/Recharts\n- Form validation (React Hook Form)\n\n**Kaynaklar**: 2 Frontend Developer\n\n**Süre**: 4.5 hafta\n\n### 7.4 Workspace Management (70 adam-gün)\n**Açıklama**: Multi-workspace UI, permissions management\n\n**Teknik İhtiyaçlar**: Complex state management\n\n**Çözüm**:\n- Context API + React Query\n- Role-based component rendering\n\n**Kaynaklar**: 2 Frontend Developer\n\n**Süre**: 3.5 hafta\n\n### 7.5 Integration Management UI (60 adam-gün)\n**Açıklama**: Entegrasyon yönetimi, configuration UI\n\n**Teknik İhtiyaçlar**: Dynamic form generation\n\n**Çözüm**:\n- JSON Schema forms\n- OAuth flow handling\n- Connection testing UI\n\n**Kaynaklar**: 2 Frontend Developer\n\n**Süre**: 3 hafta\n\n### 7.6 OpenWebUI Integration (40 adam-gün)\n**Açıklama**: Açık kaynak chat arayüzü entegrasyonu ve customization\n\n**Teknik İhtiyaçlar**: OpenWebUI deployment, branding customization\n\n**Çözüm**:\n- OpenWebUI (https://openwebui.com) deployment\n- Custom branding ve theming\n- Backend API integration\n- Multi-tenant workspace support\n\n**Kaynaklar**: 1 Frontend Developer, 1 DevOps Engineer\n\n**Süre**: 2 hafta\n\n---\n\n## 8. MOBİL UYGULAMA (React Native) (250 adam-gün)\n\n### 8.1 Mobile App Framework (React Native) (100 adam-gün)\n**Açıklama**: Cross-platform mobile app development  \n\n**Teknik İhtiyaçlar**: React Native CLI, native modules\n\n**Çözüm**:\n- React Native 0.73+\n- TypeScript support\n- React Navigation v6\n- Offline-first architecture\n- Push notifications (FCM/APNs)\n\n**Kaynaklar**: 2 Mobile Developer (React Native)\n\n**Süre**: 5 hafta\n\n### 8.2 Mobile-specific Features (80 adam-gün)\n**Açıklama**: Native functionality integration\n\n**Teknik İhtiyaçlar**: Native platform APIs\n\n**Çözüm**:\n- react-native-voice (Speech recognition)\n- react-native-camera (Camera integration)\n- react-native-biometrics (Face ID/Touch ID)\n- react-native-document-picker\n\n**Kaynaklar**: 2 Mobile Developer (React Native)\n\n**Süre**: 4 hafta\n\n### 8.3 Offline Sync (70 adam-gün)\n**Açıklama**: Offline data management and synchronization\n\n**Teknik İhtiyaçlar**: Local database, sync protocols\n\n**Çözüm**:\n- WatermelonDB (Reactive local database)\n- Background sync with conflict resolution\n- Redux Persist for state management\n- Queue-based sync mechanism\n\n**Kaynaklar**: 2 Mobile Developer (React Native)\n\n**Süre**: 3.5 hafta\n\n---\n\n## 9. ENTEGRASYON MODÜLLERİ (250 adam-gün)\n\n### 9.1 Standard API Integrations (100 adam-gün)\n**Açıklama**: Yaygın kullanılan servislerin entegrasyonu\n\n**Teknik İhtiyaçlar**: API clients, OAuth handlers\n\n**Çözüm**:\n- YouTube API\n- Slack SDK\n- Google Chat API\n- Microsoft Teams API\n- WhatsApp Business API\n\n**Kaynaklar**: 2 Backend Developer\n\n**Süre**: 5 hafta\n\n### 9.2 Custom Integration Framework (80 adam-gün)\n**Açıklama**: Plugin architecture, custom connector development\n\n**Teknik İhtiyaçlar**: Plugin system, sandbox environment\n\n**Çözüm**:\n- Plugin SDK\n- Sandbox execution environment\n- Marketplace concept\n\n**Kaynaklar**: 2 Backend Developer\n\n**Süre**: 4 hafta\n\n### 9.3 MCP Protocol Implementation (70 adam-gün)\n**Açıklama**: Model Context Protocol support ve tool integration\n\n**Teknik İhtiyaçlar**: Protocol implementation, tool sandboxing\n\n**Çözüm**:\n- .NET Core MCP server implementation\n- Tool registry ve discovery system\n- Security sandboxing for tool execution\n- JSON-RPC 2.0 protocol handling\n- Built-in tools: calculator, web search, file ops, database queries\n\n**MCP Implementation Detayları**:\n\n#### Tool Registry & Discovery System\n**Ne Yapılacak**: Dynamic tool registration ve runtime discovery\n**Çözülen Problem**: AI agents'ların available tools'u keşfetmesi ve kullanması\n**Implementation**:\n```csharp\npublic interface IToolRegistry\n{\n    Task RegisterToolAsync(string toolName, IToolDefinition tool);\n    Task<IEnumerable<IToolDefinition>> GetAvailableToolsAsync();\n    Task<IToolDefinition> GetToolAsync(string toolName);\n    Task UnregisterToolAsync(string toolName);\n}\n```\n\n#### Security Sandboxing\n**Ne Yapılacak**: Tool execution'ı güvenli sandbox environment'ta çalıştırma\n**Çözülen Problem**: Malicious tool execution'dan sistem korunması\n**Implementation**: \n- Resource limits (CPU, memory, time)\n- File system access restrictions\n- Network access policies\n- Process isolation\n\n#### JSON-RPC 2.0 Protocol Handling\n**Ne Yapılacak**: MCP standardına uygun communication protocol\n**Çözülen Problem**: Standardized AI tool interaction\n**Implementation**: WebSocket/HTTP based JSON-RPC messaging\n\n**Kaynaklar**: 2 .NET Developer\n\n**Süre**: 3.5 hafta\n\n---\n\n## 10. WORKFLOW VE OTOMASYON (350 adam-gün)\n\n### 10.1 Visual Workflow Designer (150 adam-gün)\n**Açıklama**: Kullanıcıların kendi iş akışlarını tasarlayabileceği görsel editör\n\n**Teknik İhtiyaçlar**: React-based flow editor, workflow execution engine\n**Çözüm Alternatifleri**:\n\n#### Seçenek 1: React Flow (https://reactflow.dev) ✅ **ÖNERİLEN**\n**Frontend**: \n- Node-based visual interface\n- TypeScript support, lightweight\n- Custom node components\n- **Backend Yükü**: %100 custom .NET workflow engine gerekli\n\n**Avantajlar**: Full control, .NET integration, customizable\n**Dezavantajlar**: Full backend implementation, daha fazla development effort\n\n#### Seçenek 2: n8n Fork (Açık Kaynak Analysis)\n**Lisans**: Fair-code license (Apache 2.0-like for self-hosting)\n**Commercial Use**: ✅ Self-hosted deployment commercial use için ücretsiz\n**Restrictions**: SaaS offering yasak, source code distribute etmek için lisans gerekli\n\n**n8n Architecture**:\n- **Frontend**: Node-based Vue.js editor (hazır)\n- **Backend**: Node.js workflow engine (hazır)\n- **Database**: PostgreSQL/MongoDB (workflow storage)\n- **.NET Integration**: REST API üzerinden communication\n\n#### Seçenek 3: Autommate.com Karşılaştırması\n\n##### Autommate.com Analysis\n**Avantajlar**:\n- Enterprise-focused workflow automation\n- Visual drag-drop interface\n- Pre-built connectors (500+)\n- Cloud-native architecture\n- API-first design\n\n**Dezavantajlar**:\n- Proprietary/closed source\n- SaaS-only model (on-premise yok)\n- Vendor lock-in riski\n- Licensing costs scaling with usage\n- Limited customization\n\n##### Workflow Platform Karşılaştırması\n\n| Aspect | React Flow + .NET | n8n Fork | Autommate.com |\n|--------|------------------|----------|---------------|\n| **Development Effort** | 150 adam-gün | 60 adam-gün | 0 adam-gün (SaaS) |\n| **Customization** | Full control | Limited by architecture | Very limited |\n| **On-premise** | ✅ Full support | ✅ Self-hosted | ❌ SaaS only |\n| **Licensing Cost** | MIT (free) | Fair-code (free self-host) | Subscription based |\n| **Vendor Lock-in** | None | Minimal | High |\n| **.NET Integration** | Native | REST API bridge | REST API only |\n| **UI Flexibility** | Complete freedom | Vue.js constraints | Fixed UI |\n| **Node Library** | Build from scratch | 200+ nodes ready | 500+ connectors |\n| **Enterprise Security** | Full control | Self-managed | Shared responsibility |\n| **Maintenance** | Full ownership | Dependency on updates | Vendor managed |\n\n**Önerilen Hibrit Yaklaşım**:\n```\nPhase 1 (MVP): n8n Fork (faster time-to-market)\nPhase 2 (Scale): Migration to React Flow + .NET (full control)\nAutommate.com: Excluded due to SaaS-only, vendor lock-in\n```\n\n**Kaynaklar**: 2 Frontend Developer, 2 .NET Developer\n\n**Süre**: 7.5 hafta\n\n### 10.2 Workflow Execution Engine (.NET Core) (120 adam-gün)\n**Açıklama**: Workflow'ları execute eden core engine\n\n**Teknik İhtiyaçlar**: State machine, parallel processing\n\n**Çözüm**:\n- **State Machine**: Stateless library (.NET)\n- **Parallel Execution**: Task Parallel Library\n- **Persistence**: Entity Framework Core\n- **Monitoring**: Real-time execution tracking\n- **Error Handling**: Retry policies, compensation patterns\n\n**Kaynaklar**: 2 .NET Developer, 1 DevOps Engineer\n\n**Süre**: 6 hafta\n\n### 10.3 Pre-built Node Library (80 adam-gün)\n**Açıklama**: Hazır workflow node'ları ve custom node geliştirme framework'ü\n\n**Teknik İhtiyaçlar**: Plugin architecture, node SDK\n\n**Çözüm**:\n\n**Built-in Nodes**:\n- **Data Nodes**: Database query, API call, file operations\n- **AI Nodes**: LLM query, document analysis, image generation\n- **Communication**: Email, Slack, Teams, WhatsApp\n- **Logic**: Conditions, loops, data transformation\n- **Integration**: CRM, ERP, productivity tools\n\n**Custom Node SDK**:\n```csharp\npublic abstract class WorkflowNode\n{\n    public abstract Task<NodeResult> ExecuteAsync(NodeContext context);\n    public abstract NodeConfiguration GetConfiguration();\n    public virtual Task<bool> ValidateAsync(NodeData data) => Task.FromResult(true);\n}\n```\n\n**Kaynaklar**: 2 .NET Developer, 1 Frontend Developer\n\n**Süre**: 4 hafta\n\n---\n\n## 11. GÜVENLİK VE COMPLIANCE (300 adam-gün)\n\n### 11.1 OWASP Security Implementation (120 adam-gün)\n**Açıklama**: OWASP Top 10 güvenlik önlemleri\n\n**Teknik İhtiyaçlar**: Security scanners, WAF\n\n**Çözüm**:\n- Input validation\n- SQL injection prevention\n- XSS protection\n- CSRF tokens\n- Security headers\n\n**Kaynaklar**: 2 Security Engineer, 1 Backend Developer\n\n**Süre**: 6 hafta\n\n### 11.2 GDPR Compliance (100 adam-gün)\n**Açıklama**: Veri koruma, kullanıcı hakları, consent management\n\n**Teknik İhtiyaçlar**: Data classification, encryption\n\n**Çözüm**:\n- Data inventory\n- Consent management system\n- Right to be forgotten\n- Data portability\n\n**Kaynaklar**: 1 Security Engineer, 1 Backend Developer, 1 Legal Consultant\n\n**Süre**: 5 hafta\n\n### 11.3 ISO 27001 Controls (80 adam-gün)\n**Açıklama**: Information security management\n\n**Teknik İhtiyaçlar**: Policy management, access controls\n\n**Çözüm**:\n- Access control matrix\n- Security policies\n- Incident response procedures\n\n**Kaynaklar**: 1 Security Engineer, 1 Compliance Officer\n\n**Süre**: 4 hafta\n\n---\n\n## 12. TEST VE KALİTE GÜVENCE (270 adam-gün)\n\n### 12.1 Automated Testing Framework (120 adam-gün)\n**Açıklama**: Unit, integration ve E2E testler\n\n**Teknik İhtiyaçlar**: Test runners, mock services\n\n**Çözüm**:\n\n**Backend Testing (.NET)**:\n- xUnit (Unit tests)\n- TestContainers (Integration tests with real databases)\n- Moq (Mocking framework)\n- FluentAssertions (Readable assertions)\n\n**Web Testing**:\n- Jest (Unit tests for React)\n- React Testing Library (Component testing)\n- Cypress (E2E testing)\n- Playwright (Cross-browser E2E)\n- Storybook (Component visual testing)\n\n**Mobile Testing**:\n- Jest (Unit tests)\n- Detox (React Native E2E testing)\n- Maestro (Mobile UI testing)\n- Firebase Test Lab (Device testing)\n\n**API Testing**:\n- Postman/Newman (API test automation)\n- K6 (API load testing)\n- Pact (Contract testing)\n\n**Kaynaklar**: 2 QA Engineer, 2 Developer\n\n**Süre**: 6 hafta\n\n### 12.2 Performance Testing (80 adam-gün)\n**Açıklama**: Load testing, stress testing, performance profiling\n\n**Teknik İhtiyaçlar**: Load testing tools\n\n**Çözüm**:\n- K6/JMeter (Load testing)\n- APM tools integration\n\n**Kaynaklar**: 1 Performance Engineer, 1 QA Engineer\n\n**Süre**: 4 hafta\n\n### 12.3 Security Testing (70 adam-gün)\n**Açıklama**: Penetration testing, vulnerability assessment\n\n**Teknik İhtiyaçlar**: Security testing tools\n\n**Çözüm**:\n- OWASP ZAP\n- Static code analysis\n- Dependency vulnerability scanning\n\n**Kaynaklar**: 1 Security Tester, 1 QA Engineer\n\n**Süre**: 3.5 hafta\n\n---\n\n## 13. DEPLOYMENT VE GO-LIVE (200 adam-gün)\n\n### 13.1 Production Environment Setup (80 adam-gün)\n**Açıklama**: Production cluster kurulumu, security hardening\n\n**Teknik İhtiyaçlar**: Production servers, monitoring setup\n\n**Çözüm**:\n- Production K8s cluster\n- Security policies\n- Backup procedures\n\n**Kaynaklar**: 2 DevOps Engineer, 1 SRE\n\n**Süre**: 4 hafta\n\n### 13.2 Data Migration (60 adam-gün)\n**Açıklama**: Existing data migration, validation\n\n**Teknik İhtiyaçlar**: Migration tools, validation scripts\n\n**Çözüm**:\n- Custom migration scripts\n- Data validation procedures\n\n**Kaynaklar**: 1 DBA, 2 Backend Developer\n\n**Süre**: 3 hafta\n\n### 13.3 User Training & Documentation (60 adam-gün)\n**Açıklama**: User manuals, training sessions, video tutorials\n\n**Teknik İhtiyaçlar**: Documentation platform, video tools\n\n**Çözüm**:\n- GitBook/Notion (Documentation)\n- Video tutorials\n- Training sessions\n\n**Kaynaklar**: 1 Technical Writer, 1 Trainer\n\n**Süre**: 3 hafta\n\n---\n\n## Mikroservis Mimarisi ve Rollback Stratejileri\n\n### Mikroservis Bileşenleri\n\n```\n┌─────────────────────────────────────────────────────────────────┐\n│                    Mikroservis Ecosystem                        │\n├─────────────────────────────────────────────────────────────────┤\n│                                                                 │\n│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │\n│ │   Identity  │ │    Chat     │ │  Document   │ │  Workflow   │ │\n│ │   Service   │ │   Service   │ │  Service    │ │  Service    │ │\n│ │             │ │             │ │             │ │             │ │\n│ │ Port: 5001  │ │ Port: 5002  │ │ Port: 5003  │ │ Port: 5004  │ │\n│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │\n│        │               │               │               │       │\n│        └───────────────┼───────────────┼───────────────┘       │\n│                        │               │                       │\n│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │\n│ │    AI/ML    │ │   File      │ │  Analytics  │ │Integration  │ │\n│ │   Service   │ │  Service    │ │  Service    │ │  Service    │ │\n│ │  (Python)   │ │             │ │             │ │             │ │\n│ │ Port: 8001  │ │ Port: 5005  │ │ Port: 5006  │ │ Port: 5007  │ │\n│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │\n│        │               │               │               │       │\n│        └───────────────▼───────────────▼───────────────┘       │\n│                        │                                       │\n│ ┌─────────────────────▼─────────────────────────────────────┐   │\n│ │              Shared Infrastructure                      │   │\n│ │    • RabbitMQ (Message Bus)                             │   │\n│ │    • Redis (Distributed Cache)                          │   │\n│ │    • PostgreSQL (Per-service databases)                 │   │\n│ │    • Qdrant (Vector Database)                           │   │\n│ └─────────────────────────────────────────────────────────┘   │\n└─────────────────────────────────────────────────────────────────┘\n```\n\n### Service Boundaries\n\n#### 1. Identity Service (.NET Core)\n- **Sorumluluklar**: Authentication, authorization, user management\n- **Database**: Users, roles, permissions, tenants\n- **APIs**: Login, register, token refresh, user CRUD\n- **Dependencies**: Redis (sessions), PostgreSQL\n\n#### 2. Chat Service (.NET Core) \n- **Sorumluluklar**: Conversation management, message routing\n- **Database**: Conversations, messages, chat history\n- **APIs**: Send message, get history, create conversation\n- **Dependencies**: AI/ML Service, Identity Service\n\n#### 3. Document Service (.NET Core)\n- **Sorumluluklar**: File upload, processing, metadata management\n- **Database**: File metadata, processing status\n- **APIs**: Upload, download, search, process\n- **Dependencies**: AI/ML Service (for processing)\n\n#### 4. AI/ML Service (Python/FastAPI)\n- **Sorumluluklar**: LLM inference, RAG, embeddings, OCR\n- **Database**: Model metadata, inference logs\n- **APIs**: Chat completion, embeddings, document analysis\n- **Dependencies**: Qdrant, external AI models\n\n#### 5. Workflow Service (.NET Core)\n- **Sorumluluklar**: Workflow definition, execution, scheduling\n- **Database**: Workflow definitions, execution logs, schedules\n- **APIs**: Create workflow, execute, monitor status\n- **Dependencies**: All other services (orchestration)\n\n#### 6. File Service (.NET Core)\n- **Sorumluluklar**: File storage, CDN, backup\n- **Database**: File locations, storage metadata\n- **APIs**: Store, retrieve, delete, backup\n- **Dependencies**: MinIO, backup systems\n\n### Rollback Mekanizmaları\n\n#### 1. Database Rollback Strategies\n\n##### a) Saga Pattern (Distributed Transactions)\n```csharp\npublic class DocumentProcessingSaga : ISaga\n{\n    public async Task<SagaResult> ExecuteAsync()\n    {\n        var compensations = new List<Func<Task>>();\n        \n        try\n        {\n            // Step 1: Upload file\n            await _fileService.UploadAsync(document);\n            compensations.Add(() => _fileService.DeleteAsync(document.Id));\n            \n            // Step 2: Process document  \n            await _aiService.ProcessAsync(document);\n            compensations.Add(() => _aiService.RevertProcessingAsync(document.Id));\n            \n            // Step 3: Index in vector DB\n            await _vectorService.IndexAsync(document);\n            compensations.Add(() => _vectorService.RemoveAsync(document.Id));\n            \n            return SagaResult.Success();\n        }\n        catch (Exception ex)\n        {\n            // Execute compensations in reverse order\n            foreach (var compensation in compensations.Reverse())\n            {\n                await compensation();\n            }\n            return SagaResult.Failed(ex.Message);\n        }\n    }\n}\n```\n\n\n# Sistem Mimarisi\n\n## High-Level Architecture\n```\n┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐\n│   Mobile App    │    │    Web Frontend  │    │  Admin Panel    │\n│                 │    │                  │    │                 │\n└─────────┬───────┘    └─────────┬────────┘    └─────────┬───────┘\n          │                      │                       │\n          └──────────────────────┼───────────────────────┘\n                                 │\n                    ┌────────────▼─────────────┐\n                    │      API Gateway         │\n                    │   (YARP + .NET Core)     │\n                    └────────────┬─────────────┘\n                                 │\n              ┌──────────────────┼──────────────────┐\n              │                  │                  │\n    ┌─────────▼─────────┐ ┌─────▼─────┐ ┌─────────▼─────────┐\n    │   Auth Service    │ │Core API   │ │  AI/LLM Service   │\n    │ (IdentityServer)  │ │(.NET Core)│ │  (Python/FastAPI) │\n    └───────────────────┘ └───────────┘ └───────────────────┘\n              │                  │                  │\n              └──────────────────┼──────────────────┘\n                                 │\n                    ┌────────────▼─────────────┐\n                    │     Message Queue        │\n                    │      (RabbitMQ)          │\n                    └────────────┬─────────────┘\n                                 │\n        ┌────────────────────────┼────────────────────────┐\n        │                        │                        │\n┌───────▼────────┐    ┌─────────▼─────────┐    ┌─────────▼─────────┐\n│   PostgreSQL   │    │     Redis         │    │   Vector DB       │\n│   (Main DB)    │    │   (Cache/Queue)   │    │  (Qdrant)         │\n└────────────────┘    └───────────────────┘    └───────────────────┘\n```\n\n## Database Architecture\n\n### Multi-Tenant Database Structure\n```\n┌─────────────────────────────────────────────────────────────────┐\n│                    PostgreSQL Cluster                           │\n├─────────────────────────────────────────────────────────────────┤\n│                                                                 │\n│  Master Node (Read/Write)                                       │\n│  ┌─────────────────────────────────────────────────────────────┐ │\n│  │                                                             │ │\n│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │ │\n│  │  │   Identity  │ │    Chat     │ │  Document   │           │ │\n│  │  │  Database   │ │  Database   │ │  Database   │           │ │\n│  │  └─────────────┘ └─────────────┘ └─────────────┘           │ │\n│  │                                                             │ │\n│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │ │\n│  │  │  Workflow   │ │   Analytics │ │    Audit    │           │ │\n│  │  │  Database   │ │   Database  │ │   Database  │           │ │\n│  │  └─────────────┘ └─────────────┘ └─────────────┘           │ │\n│  └─────────────────────────────────────────────────────────────┘ │\n│                                                                 │\n│  Read Replica 1                    Read Replica 2              │\n│  ┌─────────────────────────────┐   ┌─────────────────────────┐   │\n│  │       Read-Only             │   │       Read-Only         │   │\n│  │    Query Processing         │   │    Query Processing     │   │\n│  └─────────────────────────────┘   └─────────────────────────┘   │\n└─────────────────────────────────────────────────────────────────┘\n\n┌─────────────────────────────────────────────────────────────────┐\n│                    Redis Cluster                                │\n├─────────────────────────────────────────────────────────────────┤\n│                                                                 │\n│  Master Nodes                                                   │\n│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐               │\n│  │   Cache     │ │   Session   │ │   Queue     │               │\n│  │   Master    │ │   Master    │ │   Master    │               │\n│  └─────────────┘ └─────────────┘ └─────────────┘               │\n│         │               │               │                       │\n│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐               │\n│  │   Cache     │ │   Session   │ │   Queue     │               │\n│  │   Replica   │ │   Replica   │ │   Replica   │               │\n│  └─────────────┘ └─────────────┘ └─────────────┘               │\n└─────────────────────────────────────────────────────────────────┘\n\n┌─────────────────────────────────────────────────────────────────┐\n│                    Vector Database (Qdrant)                     │\n├─────────────────────────────────────────────────────────────────┤\n│                                                                 │\n│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐               │\n│  │ Collection  │ │ Collection  │ │ Collection  │               │\n│  │ Tenant_A    │ │ Tenant_B    │ │ Tenant_C    │               │\n│  │             │ │             │ │             │               │\n│  │ Documents   │ │ Documents   │ │ Documents   │               │\n│  │ Embeddings  │ │ Embeddings  │ │ Embeddings  │               │\n│  │ Metadata    │ │ Metadata    │ │ Metadata    │               │\n│  └─────────────┘ └─────────────┘ └─────────────┘               │\n└─────────────────────────────────────────────────────────────────┘\n```\n\n### Entity Relationship Model\n```\n┌─────────────────────────────────────────────────────────────────┐\n│                    Core Data Model                              │\n├─────────────────────────────────────────────────────────────────┤\n│                                                                 │\n│         Tenants                    Users                        │\n│      ┌─────────────┐            ┌─────────────┐                 │\n│      │ Id (PK)     │◄───────────┤ TenantId(FK)│                 │\n│      │ Name        │            │ Id (PK)     │                 │\n│      │ Domain      │            │ Email       │                 │\n│      │ Settings    │            │ FirstName   │                 │\n│      │ CreatedAt   │            │ LastName    │                 │\n│      └─────────────┘            │ PasswordHash│                 │\n│                                 │ CreatedAt   │                 │\n│                                 └─────────────┘                 │\n│                                         │                       │\n│         Documents                       │   Conversations       │\n│      ┌─────────────┐                    │ ┌─────────────┐       │\n│      │ Id (PK)     │                    └►│ UserId (FK) │       │\n│      │ TenantId(FK)│                      │ Id (PK)     │       │\n│      │ FileName    │                      │ Title       │       │\n│      │ ContentType │                      │ CreatedAt   │       │\n│      │ Size        │                      └─────────────┘       │\n│      │ ProcessedAt │                              │             │\n│      │ VectorId    │                              │             │\n│      │ CreatedAt   │                      Messages │             │\n│      └─────────────┘                    ┌─────────────┐         │\n│                                         │ Id (PK)     │         │\n│         Workflows                       │ ConvId (FK) │         │\n│      ┌─────────────┐                    │ Content     │         │\n│      │ Id (PK)     │                    │ Role        │         │\n│      │ TenantId(FK)│                    │ Timestamp   │         │\n│      │ Name        │                    └─────────────┘         │\n│      │ Definition  │                                            │\n│      │ Status      │                                            │\n│      │ CreatedBy   │                                            │\n│      │ CreatedAt   │                                            │\n│      └─────────────┘                                            │\n└─────────────────────────────────────────────────────────────────┘\n```\n\n## AI/LLM Architecture\n```\n┌─────────────────────────────────────────────────────────────────┐\n│                        AI/LLM Layer                             │\n├─────────────────────────────────────────────────────────────────┤\n│                                                                 │\n│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │\n│  │   Ollama    │  │    vLLM     │  │   OpenAI    │             │\n│  │ (Local LLM) │  │ (Inference) │  │  API Proxy  │             │\n│  └─────────────┘  └─────────────┘  └─────────────┘             │\n│           │               │               │                    │\n│           └───────────────▼───────────────┘                    │\n│                           │                                    │\n│  ┌────────────────────────▼────────────────────────┐           │\n│  │           Model Router & Load Balancer          │           │\n│  │                                                 │           │\n│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐│           │\n│  │  │   Llama 3   │ │   Mistral   │ │ DeepSeek    ││           │\n│  │  │     8B      │ │     7B      │ │   Coder     ││           │\n│  │  └─────────────┘ └─────────────┘ └─────────────┘│           │\n│  │                                                 │           │\n│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐│           │\n│  │  │ Trendyol    │ │   Qwen 2.5  │ │    Phi-3    ││           │\n│  │  │   LLaMA     │ │             │ │             ││           │\n│  │  └─────────────┘ └─────────────┘ └─────────────┘│           │\n│  └─────────────────────────────────────────────────┘           │\n│                           │                                    │\n│  ┌────────────────────────▼────────────────────────┐           │\n│  │              RAG Pipeline                       │           │\n│  │                                                 │           │\n│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐│           │\n│  │  │  Document   │ │   Vector    │ │   Context   ││           │\n│  │  │  Retrieval  │ │   Search    │ │  Assembly   ││           │\n│  │  │             │ │             │ │             ││           │\n│  │  │ • Semantic  │ │ • Qdrant    │ │ • Ranking   ││           │\n│  │  │ • Keyword   │ │ • Cosine    │ │ • Filtering ││           │\n│  │  │ • Hybrid    │ │ • Similarity│ │ • Chunking  ││           │\n│  │  └─────────────┘ └─────────────┘ └─────────────┘│           │\n│  └─────────────────────────────────────────────────┘           │\n│                           │                                    │\n│  ┌────────────────────────▼────────────────────────┐           │\n│  │              Agent Framework                    │           │\n│  │                                                 │           │\n│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐│           │\n│  │  │   Action    │ │   Memory    │ │    Tool     ││           │\n│  │  │  Planning   │ │ Management  │ │ Integration ││           │\n│  │  │             │ │             │ │             ││           │\n│  │  │ • Task      │ │ • Short-term│ │ • Calculator││           │\n│  │  │   Decomp    │ │ • Long-term │ │ • Web Search││           │\n│  │  │ • Chain     │ │ • Context   │ │ • Database  ││           │\n│  │  │   of Thought│ │   Window    │ │ • Custom    ││           │\n│  │  └─────────────┘ └─────────────┘ └─────────────┘│           │\n│  └─────────────────────────────────────────────────┘           │\n│                           │                                    │\n│  ┌────────────────────────▼────────────────────────┐           │\n│  │          Response Generation & Filtering        │           │\n│  │                                                 │           │\n│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐│           │\n│  │  │  Content    │ │  Safety     │ │  Quality    ││           │\n│  │  │  Filter     │ │   Filter    │ │  Control    ││           │\n│  │  │             │ │             │ │             ││           │\n│  │  │ • Privacy   │ │ • Toxicity  │ │ • Coherence ││           │\n│  │  │ • PII       │ │ • Bias      │ │ • Relevance ││           │\n│  │  │ • Sensitive │ │ • Harmful   │ │ • Accuracy  ││           │\n│  │  └─────────────┘ └─────────────┘ └─────────────┘│           │\n│  └─────────────────────────────────────────────────┘           │\n└─────────────────────────────────────────────────────────────────┘\n```\n\n## Data Flow Architecture\n\n```\n┌─────────────────────────────────────────────────────────────────┐\n│                     Data Ingestion Layer                        │\n├─────────────────────────────────────────────────────────────────┤\n│                                                                 │\n│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │\n│ │    APIs     │ │  File Sys   │ │ Databases   │ │   Office    │ │\n│ │ (REST/SOAP) │ │ (Webhook)   │ │ (JDBC/ODBC) │ │ 365/G-Drive │ │\n│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │\n│         │               │               │               │       │\n│         └───────────────▼───────────────▼───────────────┘       │\n│                         │                                       │\n│ ┌───────────────────────▼─────────────────────────────────────┐ │\n│ │              Apache Airflow (ETL Orchestration)            │ │\n│ │                                                             │ │\n│ │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │ │\n│ │  │  Data       │ │ Validation  │ │ Scheduling  │           │ │\n│ │  │ Connectors  │ │   Rules     │ │   Engine    │           │ │\n│ │  └─────────────┘ └─────────────┘ └─────────────┘           │ │\n│ └───────────────────────┬───────────────────────────────────────┘ │\n└─────────────────────────┼───────────────────────────────────────┘\n                          │\n┌─────────────────────────▼───────────────────────────────────────┐\n│                   Document Processing Layer                     │\n├─────────────────────────────────────────────────────────────────┤\n│                                                                 │\n│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │\n│ │Text Extract │ │     OCR     │ │   Format    │ │  Language   │ │\n│ │(Apache Tika)│ │(Tesseract)  │ │ Conversion  │ │ Detection   │ │\n│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │\n│         │               │               │               │       │\n│         └───────────────▼───────────────▼───────────────┘       │\n│                         │                                       │\n│ ┌───────────────────────▼─────────────────────────────────────┐ │\n│ │            Privacy & Classification Engine                  │ │\n│ │                                                             │ │\n│ │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │ │\n│ │  │PII Detection│ │Data Labeling│ │Access Control│           │ │\n│ │  │• Email      │ │• Sensitive  │ │• Tenant     │           │ │\n│ │  │• Phone      │ │• Public     │ │• Role-based │           │ │\n│ │  │• SSN/TC     │ │• Internal   │ │• Document   │           │ │\n│ │  └─────────────┘ └─────────────┘ └─────────────┘           │ │\n│ └───────────────────────┬─────────────────────────────────────┘ │\n└─────────────────────────┼───────────────────────────────────────┘\n                          │\n┌─────────────────────────▼───────────────────────────────────────┐\n│                   Vector Processing Layer                       │\n├─────────────────────────────────────────────────────────────────┤\n│                                                                 │\n│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │\n│ │ Embedding   │ │   Chunking  │ │   Vector    │ │   Index     │ │\n│ │ Generation  │ │ Strategy    │ │   Storage   │ │ Management  │ │\n│ │             │ │             │ │  (Qdrant)   │ │             │ │\n│ │• Sentence   │ │• Semantic   │ │• Collections│ │• Search     │ │\n│ │  Transformer│ │• Fixed Size │ │• Metadata   │ │• Filtering  │ │\n│ │• Multilingual│ │• Overlap    │ │• Sharding   │ │• Ranking    │ │\n│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │\n│         │               │               │               │       │\n│         └───────────────▼───────────────▼───────────────┘       │\n│                         │                                       │\n│ ┌───────────────────────▼─────────────────────────────────────┐ │\n│ │              Hybrid Search Index                            │ │\n│ │           (Vector + Keyword + Metadata)                     │ │\n│ │                                                             │ │\n│ │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │ │\n│ │  │   Vector    │ │  Keyword    │ │  Metadata   │           │ │\n│ │  │   Search    │ │   Search    │ │   Filter    │           │ │\n│ │  │• Cosine     │ │• BM25       │ │• Date Range │           │ │\n│ │  │• Dot Product│ │• TF-IDF     │ │• Document   │           │ │\n│ │  │• Euclidean  │ │• Boolean    │ │  Type       │           │ │\n│ │  └─────────────┘ └─────────────┘ └─────────────┘           │ │\n│ └─────────────────────────────────────────────────────────────┘ │\n└─────────────────────────────────────────────────────────────────┘\n```\n\n## Security Architecture\n\n```\n┌─────────────────────────────────────────────────────────────────┐\n│                        Security Layers                          │\n├─────────────────────────────────────────────────────────────────┤\n│                                                                 │\n│                     External Threat Protection                  │\n│ ┌─────────────────────────────────────────────────────────────┐ │\n│ │                                                             │ │\n│ │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │ │\n│ │  │    WAF      │ │     DDoS    │ │  Rate       │           │ │\n│ │  │ Protection  │ │ Protection  │ │ Limiting    │           │ │\n│ │  │• SQL Inject │ │• Traffic    │ │• API Calls  │           │ │\n│ │  │• XSS Filter │ │  Analysis   │ │• User       │           │ │\n│ │  │• OWASP Rules│ │• Geo-block  │ │  Sessions   │           │ │\n│ │  └─────────────┘ └─────────────┘ └─────────────┘           │ │\n│ └─────────────────────────────────────────────────────────────┘ │\n│                           │                                     │\n│                     Network Security                            │\n│ ┌─────────────────────────▼─────────────────────────────────────┐ │\n│ │                                                             │ │\n│ │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │ │\n│ │  │   Service   │ │  Network    │ │   mTLS      │           │ │\n│ │  │    Mesh     │ │  Policies   │ │ Certificate │           │ │\n│ │  │   (Istio)   │ │             │ │ Management  │           │ │\n│ │  │• Traffic    │ │• Namespace  │ │• Auto Rotate│           │ │\n│ │  │  Encryption │ │  Isolation  │ │• PKI        │           │ │\n│ │  │• Load       │ │• Ingress/   │ │• Vault      │           │ │\n│ │  │  Balancing  │ │  Egress     │ │  Integration│           │ │\n│ │  └─────────────┘ └─────────────┘ └─────────────┘           │ │\n│ └─────────────────────────────────────────────────────────────┘ │\n│                           │                                     │\n│                  Application Security                           │\n│ ┌─────────────────────────▼─────────────────────────────────────┐ │\n│ │                                                             │ │\n│ │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │ │\n│ │  │    API      │ │   Identity  │ │    Input    │           │ │\n│ │  │  Gateway    │ │ Management  │ │ Validation  │           │ │\n│ │  │   (YARP)    │ │(IdentityServ│ │             │           │ │\n│ │  │• Auth       │ │• JWT Tokens │ │• Schema     │           │ │\n│ │  │• Rate Limit │ │• RBAC       │ │  Validation │           │ │\n│ │  │• Logging    │ │• MFA        │ │• Sanitization│           │ │\n│ │  │• Monitoring │ │• Session    │ │• Type Check │           │ │\n│ │  └─────────────┘ └─────────────┘ └─────────────┘           │ │\n│ └─────────────────────────────────────────────────────────────┘ │\n│                           │                                     │\n│                     Data Security                               │\n│ ┌─────────────────────────▼─────────────────────────────────────┐ │\n│ │                                                             │ │\n│ │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │ │\n│ │  │ Encryption  │ │   Privacy   │ │   Access    │           │ │\n│ │  │   at Rest   │ │ Protection  │ │  Control    │           │ │\n│ │  │             │ │             │ │             │           │ │\n│ │  │• AES-256    │ │• PII        │ │• Tenant     │           │ │\n│ │  │• Tenant Keys│ │  Detection  │ │  Isolation  │           │ │\n│ │  │• Key        │ │• Data       │ │• Row Level  │           │ │\n│ │  │  Rotation   │ │  Masking    │ │  Security   │           │ │\n│ │  │• Vault      │ │• GDPR       │ │• Audit      │           │ │\n│ │  │  Management │ │  Compliance │ │  Trails     │           │ │\n│ │  └─────────────┘ └─────────────┘ └─────────────┘           │ │\n│ └─────────────────────────────────────────────────────────────┘ │\n│                           │                                     │\n│                  Monitoring & Response                          │\n│ ┌─────────────────────────▼─────────────────────────────────────┐ │\n│ │                                                             │ │\n│ │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │ │\n│ │  │   SIEM      │ │  Runtime    │ │  Incident   │           │ │\n│ │  │ (ELK Stack) │ │ Protection  │ │  Response   │           │ │\n│ │  │             │ │   (Falco)   │ │             │           │ │\n│ │  │• Log        │ │• Behavior   │ │• Automated  │           │ │\n│ │  │  Analysis   │ │  Analysis   │ │  Response   │           │ │\n│ │  │• Threat     │ │• Anomaly    │ │• Alert      │           │ │\n│ │  │  Detection  │ │  Detection  │ │  Escalation │           │ │\n│ │  │• Compliance │ │• Real-time  │ │• Forensics  │           │ │\n│ │  │  Reporting  │ │  Blocking   │ │• Recovery   │           │ │\n│ │  └─────────────┘ └─────────────┘ └─────────────┘           │ │\n│ └─────────────────────────────────────────────────────────────┘ │\n└─────────────────────────────────────────────────────────────────┘\n```\n\n---\n\n# Örnek İş Akışları\n\n## 1. Kullanıcı Sorgu Akışı (Chat)\n\n```\n[User Query: \"2023 yılı satış raporlarını özetle\"]\n                    │\n                    ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                Frontend Layer                                   │\n│ 1. User submits query through web/mobile interface             │\n│ 2. Client-side validation and sanitization                     │\n│ 3. WebSocket connection established (SignalR)                  │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                API Gateway (YARP)                               │\n│ 4. Authentication validation (JWT token)                       │\n│ 5. Rate limiting check (user/tenant limits)                    │\n│ 6. Request routing to Chat Service                             │\n│ 7. Audit logging (request details)                             │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│            Chat Service (.NET Core)                             │\n│ 8. Extract user context (tenant, roles, preferences)           │\n│ 9. Query preprocessing and intent classification               │\n│ 10. Conversation history retrieval (Redis/PostgreSQL)          │\n│ 11. Message to RabbitMQ: ProcessQueryMessage                   │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                AI/ML Service (Python)                           │\n│ 12. Query understanding and intent classification              │\n│ 13. Document retrieval from Qdrant (semantic search)           │\n│ 14. Context assembly and ranking                               │\n│ 15. LLM model selection (based on query type)                  │\n│ 16. RAG pipeline execution                                      │\n│ 17. Response generation with retrieved context                 │\n│ 18. Safety and quality filtering                               │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                Vector Database (Qdrant)                         │\n│ 19. Semantic search in tenant-specific collection              │\n│ 20. Hybrid search (vector + keyword + metadata)                │\n│ 21. Return relevant document chunks with scores                │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│              Response Processing                                │\n│ 22. Privacy filter (remove PII if necessary)                   │\n│ 23. Response formatting (markdown, citations)                  │\n│ 24. Conversation storage (Redis + PostgreSQL)                  │\n│ 25. Audit logging (query, response, sources)                   │\n│ 26. Real-time response streaming (WebSocket)                   │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n[User receives: \"2023 yılı toplam satışlarımız €2.4M olup, \nönceki yıla göre %15 artış göstermiştir. En yüksek performans \nQ4'te kaydedilmiştir...\" with source citations]\n```\n\n## 2. Veri Ingestion Akışı (Document Upload)\n\n```\n[User uploads: \"Q4_2023_Sales_Report.pdf\"]\n                    │\n                    ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                File Upload Process                              │\n│ 1. File validation (type, size, virus scan)                    │\n│ 2. Temporary storage in staging area                           │\n│ 3. File metadata extraction (name, size, type)                 │\n│ 4. Tenant and user context association                         │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│            Document Service (.NET Core)                         │\n│ 5. Create document record in PostgreSQL                        │\n│ 6. Move file to permanent storage (MinIO)                      │\n│ 7. Trigger background processing job                           │\n│ 8. Send ProcessDocumentMessage to RabbitMQ                     │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│         Background Document Processing (Hangfire)              │\n│ 9. Job picked up by background worker                          │\n│ 10. Update document status to \"Processing\"                     │\n│ 11. Route to appropriate processing pipeline                   │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│              Document Processing Pipeline                       │\n│ 12. Apache Tika: Extract text from PDF                         │\n│ 13. Tesseract OCR: Process any embedded images                 │\n│ 14. Language detection (Turkish/English/Other)                 │\n│ 15. Content structure analysis                                 │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│            Privacy & Classification Engine                      │\n│ 16. PII detection (email, phone, SSN, etc.)                    │\n│ 17. Sensitivity classification (Public/Internal/Confidential)  │\n│ 18. Data labeling and metadata tagging                         │\n│ 19. Access control policy assignment                           │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                Vector Processing                                │\n│ 20. Text chunking (semantic boundaries)                        │\n│ 21. Embedding generation (Sentence Transformers)               │\n│ 22. Vector storage in Qdrant (tenant collection)               │\n│ 23. Search index update                                         │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│               Completion & Notification                         │\n│ 24. Update document status to \"Completed\"                      │\n│ 25. Generate processing report                                 │\n│ 26. Send notification to user (WebSocket/Email)                │\n│ 27. Audit log completion                                        │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n[User notification: \"Q4_2023_Sales_Report.pdf has been processed \nand is now searchable. 127 pages processed, 15 charts extracted.\"]\n```\n\n## 3. Workflow Execution Akışı (Automation)\n\n```\n[Trigger: \"Daily Sales Report Generation\" - Scheduled at 9:00 AM]\n                    │\n                    ▼\n┌─────────────────────────────────────────────────────────────────┐\n│               Workflow Trigger Engine                           │\n│ 1. Scheduled trigger fires (Quartz.NET)                        │\n│ 2. Workflow definition retrieved from database                 │\n│ 3. Execution context prepared                                  │\n│ 4. Workflow instance created with unique ID                    │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│            Workflow Execution Engine (.NET)                     │\n│ 5. Parse workflow definition (JSON)                            │\n│ 6. Initialize state machine                                    │\n│ 7. Validate node connections and dependencies                  │\n│ 8. Start execution with first node                             │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                Node 1: Data Collection                          │\n│ 9. Execute \"Database Query\" node                               │\n│ 10. Query: \"SELECT * FROM sales WHERE date >= YESTERDAY\"       │\n│ 11. Data validation and format conversion                      │\n│ 12. Pass results to next node                                  │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                Node 2: AI Analysis                              │\n│ 13. Execute \"LLM Query\" node                                   │\n│ 14. Prompt: \"Analyze daily sales data and create summary\"      │\n│ 15. Call AI/ML service with structured data                    │\n│ 16. Receive formatted analysis and insights                    │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│               Node 3: Report Generation                         │\n│ 17. Execute \"Generate Report\" node                             │\n│ 18. Create PDF report with charts and analysis                 │\n│ 19. Store report in document management system                 │\n│ 20. Generate shareable link                                    │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│               Node 4: Notification                              │\n│ 21. Execute \"Send Email\" node                                  │\n│ 22. Compose email with report summary                          │\n│ 23. Attach PDF report                                          │\n│ 24. Send to distribution list                                  │\n│ 25. Log delivery status                                        │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│             Workflow Completion                                 │\n│ 26. Update workflow execution status                           │\n│ 27. Generate execution report                                  │\n│ 28. Archive execution logs                                     │\n│ 29. Schedule next execution (if recurring)                     │\n│ 30. Send completion notification to workflow owner             │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n[Email delivered: \"Daily Sales Report - March 15, 2024\" \nwith PDF attachment and executive summary]\n```\n\n## 4. Agent Action Akışı (Task Execution)\n\n```\n[User Request: \"Create a customer follow-up task for ABC Corp and \nschedule a meeting for next week\"]\n                    │\n                    ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                Agent Intent Analysis                            │\n│ 1. Parse user request using NLP                                │\n│ 2. Identify multiple intents:                                  │\n│    - Create task                                               │\n│    - Schedule meeting                                          │\n│ 3. Extract entities: \"ABC Corp\", \"next week\"                   │\n│ 4. Plan multi-step action sequence                             │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                Action Planning Phase                            │\n│ 5. Break down request into discrete actions:                   │\n│    Action 1: Lookup customer \"ABC Corp\"                        │\n│    Action 2: Create follow-up task                             │\n│    Action 3: Find available meeting slots                      │\n│    Action 4: Schedule meeting                                  │\n│    Action 5: Send confirmation                                 │\n│ 6. Check user permissions for each action                      │\n│ 7. Validate data requirements                                  │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│              Action 1: Customer Lookup                          │\n│ 8. Query customer database for \"ABC Corp\"                      │\n│ 9. Found: ABC Corporation (ID: 12345)                          │\n│ 10. Retrieve customer contact details                          │\n│ 11. Check last interaction date                                │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│              Action 2: Task Creation                            │\n│ 12. Use MCP tool: \"CreateTask\"                                 │\n│ 13. Task details:                                              │\n│     - Title: \"Follow-up with ABC Corp\"                         │\n│     - Customer: ABC Corporation (ID: 12345)                    │\n│     - Priority: Medium                                         │\n│     - Due date: Tomorrow                                       │\n│ 14. Store task in project management system                    │\n│ 15. Generate task ID: TSK-2024-0315                            │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│          Action 3: Calendar Availability Check                  │\n│ 16. Use MCP tool: \"CheckCalendar\"                              │\n│ 17. Query user's calendar for \"next week\"                      │\n│ 18. Find available slots:                                      │\n│     - Tuesday 10:00-11:00 AM                                   │\n│     - Thursday 2:00-3:00 PM                                    │\n│     - Friday 9:00-10:00 AM                                     │\n│ 19. Cross-reference with customer timezone                     │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│            Action 4: Meeting Scheduling                         │\n│ 20. Use MCP tool: \"ScheduleMeeting\"                            │\n│ 21. Propose: Thursday 2:00-3:00 PM                             │\n│ 22. Create calendar invite:                                    │\n│     - Title: \"Follow-up Meeting - ABC Corp\"                    │\n│     - Attendees: User + ABC Corp contacts                      │\n│     - Location: Video call (Teams link)                        │\n│     - Agenda: Generated from task details                      │\n│ 23. Send calendar invitation                                   │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│            Action 5: Confirmation & Logging                     │\n│ 24. Generate confirmation message                              │\n│ 25. Update task with meeting reference                         │\n│ 26. Log all actions in audit trail                             │\n│ 27. Set reminder for 1 hour before meeting                     │\n│ 28. Return summary to user                                     │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n[Agent Response: \"✅ Completed! I've created task TSK-2024-0315 \nfor ABC Corp follow-up and scheduled a meeting for Thursday, \nMarch 21st at 2:00 PM. Calendar invite sent to john@abccorp.com. \nYou'll receive a reminder 1 hour before the meeting.\"]\n```\n\n## 5. Multi-Tenant Data Access Akışı (Privacy Control)\n\n```\n[Tenant A User Query: \"Show me all financial documents\"]\n                    │\n                    ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                Authentication Layer                             │\n│ 1. JWT token validation                                         │\n│ 2. Extract tenant_id: \"tenant_a_uuid\"                          │\n│ 3. Extract user_id and roles                                   │\n│ 4. Validate token signature and expiration                     │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│               Authorization Layer                               │\n│ 5. Check user permissions for document access                  │\n│ 6. Role: \"Finance_Manager\" → Allow financial documents         │\n│ 7. Apply tenant isolation policies                             │\n│ 8. Set PostgreSQL session variable:                            │\n│    SET app.current_tenant_id = 'tenant_a_uuid'                 │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│            Database Query with RLS (Row Level Security)         │\n│ 9. Query execution:                                             │\n│    SELECT * FROM documents                                      │\n│    WHERE category = 'financial'                                │\n│    -- RLS automatically adds:                                  │\n│    -- AND tenant_id = current_setting('app.current_tenant_id') │\n│ 10. PostgreSQL RLS policy enforces tenant isolation            │\n│ 11. Only Tenant A's documents returned                         │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│              Data Classification Filter                         │\n│ 12. Check document sensitivity levels                          │\n│ 13. Apply role-based access control:                           │\n│     - Public: ✅ Allow                                         │\n│     - Internal: ✅ Allow (Finance Manager)                     │\n│     - Confidential: ✅ Allow (Finance Manager)                 │\n│     - Restricted: ❌ Require additional approval               │\n│ 14. Filter out restricted documents                            │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                Privacy Protection Layer                         │\n│ 15. Scan documents for PII exposure                            │\n│ 16. Apply data masking if necessary:                           │\n│     - Mask credit card numbers: **** **** **** 1234           │\n│     - Mask SSN: ***-**-1234                                   │\n│     - Mask personal emails: j***@example.com                  │\n│ 17. Log access attempt with details                            │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                 Vector Search Integration                       │\n│ 18. Query Qdrant with tenant collection filter:               │\n│     collection = \"tenant_a_documents\"                          │\n│     metadata_filter = {\"category\": \"financial\"}               │\n│ 19. Retrieve relevant document embeddings                      │\n│ 20. Cross-reference with allowed document IDs                  │\n│ 21. Ensure no data leakage between tenants                     │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n┌─────────────────────────────────────────────────────────────────┐\n│                Final Response Assembly                          │\n│ 22. Combine database results with vector search                │\n│ 23. Apply final privacy filters                                │\n│ 24. Generate response with proper citations                    │\n│ 25. Log successful access in audit trail                       │\n│ 26. Return filtered, tenant-isolated results                   │\n└─────────────────────────┬───────────────────────────────────────┘\n                         │\n                         ▼\n[Response: \"Found 23 financial documents including Q4 Budget Report, \nAnnual Financial Statement, and Monthly P&L reports. All documents \nare within your access level and have been security-filtered.\"]\n\n┌─────────────────────────────────────────────────────────────────┐\n│                    Audit Trail Entry                           │\n│ Timestamp: 2024-03-15 14:30:22 UTC                            │\n│ User: john.doe@company.com (Finance_Manager)                   │\n│ Tenant: Tenant A (tenant_a_uuid)                              │\n│ Action: DOCUMENT_QUERY                                         │\n│ Query: \"financial documents\"                                   │\n│ Results: 23 documents returned                                 │\n│ Privacy: 5 documents had PII masked                           │\n│ Access Level: GRANTED                                          │\n│ IP Address: 192.168.1.100                                     │\n│ User Agent: Mozilla/5.0 (Windows NT 10.0...)                 │\n└─────────────────────────────────────────────────────────────────┘",
+            "score": 3.9968028886505635e-15,
+            "document_id": "e9f9a2a3-a056-43cf-af4b-c9212933c83a",
+            "document_title": "ai_infrastructure_wbs_latest[1].md",
             "chunk_index": 0,
             "metadata": {
-              "document_id": "cb2fdfd7-4904-4852-adc1-04a58fb8714e",
-              "title": "test_document_1754594242.md",
-              "created_at": "2025-08-07T19:17:22.582550"
-            }
-          },
-          {
-            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754592877",
-            "score": 0.48454219102859497,
-            "document_id": "b5d701d2-8130-41b3-9047-52252d12f384",
-            "document_title": "test_document_1754592877.md",
-            "chunk_index": 0,
-            "metadata": {
-              "document_id": "b5d701d2-8130-41b3-9047-52252d12f384",
-              "title": "test_document_1754592877.md",
-              "created_at": "2025-08-07T18:54:37.031866"
-            }
-          },
-          {
-            "content": "# Python Programming\n\n## Introduction\nPython is a versatile programming language.\n\n### Key Features\n- Easy to learn\n- Powerful libraries\n- Cross-platform\n\nTest run: 1754592376",
-            "score": 0.48454219102859497,
-            "document_id": "5bb44383-7b5e-45f3-8e69-05fe496fc533",
-            "document_title": "test_document_1754592376.md",
-            "chunk_index": 0,
-            "metadata": {
-              "document_id": "5bb44383-7b5e-45f3-8e69-05fe496fc533",
-              "title": "test_document_1754592376.md",
-              "created_at": "2025-08-07T18:46:16.284582"
+              "document_id": "e9f9a2a3-a056-43cf-af4b-c9212933c83a",
+              "title": "ai_infrastructure_wbs_latest[1].md",
+              "created_at": "2025-08-07T21:59:25.565674"
             }
           }
         ],
         "search_type": "semantic",
-        "execution_time_ms": 11.428,
-        "total_results": 5
+        "execution_time_ms": 18.718,
+        "total_results": 3
       },
-      "response_text": "{\"query\":\"Python programming features\",\"results\":[{\"content\":\"# Python Programming\\n\\n## Introduction\\nPython is a versatile programming language.\\n\\n### Key Features\\n- Easy to learn\\n- Powerful libraries\\n- Cross-platform\\n\\nTest run: 1754597041\",\"score\":0.48454219102859497,\"document_id\":\"71b10d3a-69c8-4e5d-8fff-3ed0a8d7e5d4\",\"document_title\":\"test_document_1754597041.md\",\"chunk_index\":0,\"metadata\":{\"document_id\":\"71b10d3a-69c8-4e5d-8fff-3ed0a8d7e5d4\",\"title\":\"test_document_1754597041.md\",\"cre",
-      "timestamp": "2025-08-07T20:04:02.980418Z",
-      "duration_ms": 16.68,
+      "response_text": "{\"query\":\"Python programming features\",\"results\":[{\"content\":\"# Python Programming\\n\\n## Introduction\\nPython is a versatile programming language.\\n\\n### Key Features\\n- Easy to learn\\n- Powerful libraries\\n- Cross-platform\\n\\nTest run: 1754604019\",\"score\":0.48454219102859497,\"document_id\":\"5f092a02-9615-4c38-9045-895d3ecb9a1d\",\"document_title\":\"test_document_1754604019.md\",\"chunk_index\":0,\"metadata\":{\"document_id\":\"5f092a02-9615-4c38-9045-895d3ecb9a1d\",\"title\":\"test_document_1754604019.md\",\"cre",
+      "timestamp": "2025-08-07T22:00:20.696189Z",
+      "duration_ms": 30.83,
       "success": true,
       "error_message": null,
       "test_type": "SEMANTIC_SEARCH"
@@ -561,34 +471,29 @@
         "execution_time_ms": 0.0
       },
       "response_text": "{\"query\":\"What are the key features of Python?\",\"answer\":\"I couldn't find relevant information to answer your question.\",\"sources\":[],\"model_used\":\"gpt-3.5-turbo\",\"tokens_used\":{\"prompt\":0,\"completion\":0,\"total\":0},\"execution_time_ms\":0.0}",
-      "timestamp": "2025-08-07T20:04:03.495289Z",
-      "duration_ms": 14.18,
+      "timestamp": "2025-08-07T22:00:21.204064Z",
+      "duration_ms": 7.18,
       "success": true,
       "error_message": null,
       "test_type": "RAG_QUERY"
     },
     {
-      "endpoint": "/api/v1/knowledge/similar/8cf1992c-4ad9-4aef-ab66-a86562ae8ede?k=5",
+      "endpoint": "/api/v1/knowledge/similar/50349556-a763-441b-9a04-85b9404950a2?k=5",
       "method": "GET",
       "payload": null,
       "headers": {
         "Authorization": "Bearer eyJhbGciOiJIU...",
         "Content-Type": "application/json"
       },
-      "response_status": 200,
+      "response_status": 404,
       "response_body": {
-        "reference_document": {
-          "id": "8cf1992c-4ad9-4aef-ab66-a86562ae8ede",
-          "title": "Python Programming Guide - 1754597040"
-        },
-        "similar_documents": [],
-        "total_found": 0
+        "detail": "Document has no embeddings"
       },
-      "response_text": "{\"reference_document\":{\"id\":\"8cf1992c-4ad9-4aef-ab66-a86562ae8ede\",\"title\":\"Python Programming Guide - 1754597040\"},\"similar_documents\":[],\"total_found\":0}",
-      "timestamp": "2025-08-07T20:04:04.011207Z",
-      "duration_ms": 15.18,
-      "success": true,
-      "error_message": null,
+      "response_text": "{\"detail\":\"Document has no embeddings\"}",
+      "timestamp": "2025-08-07T22:00:21.712196Z",
+      "duration_ms": 7.89,
+      "success": false,
+      "error_message": "Endpoint not found or not implemented",
       "test_type": "SIMILAR_DOCUMENTS"
     },
     {
@@ -610,15 +515,15 @@
       },
       "response_status": 201,
       "response_body": {
-        "collection_id": "7be4ef3d-3a91-47a9-b436-4a5381ca6870",
+        "collection_id": "7aa17b17-2c60-46db-bb90-a941cb7308f5",
         "name": "Test Collection for API Testing",
         "type": "documentation",
         "is_public": false,
-        "created_at": "2025-08-07T20:04:04.517689"
+        "created_at": "2025-08-07T22:00:22.218102"
       },
-      "response_text": "{\"collection_id\":\"7be4ef3d-3a91-47a9-b436-4a5381ca6870\",\"name\":\"Test Collection for API Testing\",\"type\":\"documentation\",\"is_public\":false,\"created_at\":\"2025-08-07T20:04:04.517689\"}",
-      "timestamp": "2025-08-07T20:04:04.518717Z",
-      "duration_ms": 6.87,
+      "response_text": "{\"collection_id\":\"7aa17b17-2c60-46db-bb90-a941cb7308f5\",\"name\":\"Test Collection for API Testing\",\"type\":\"documentation\",\"is_public\":false,\"created_at\":\"2025-08-07T22:00:22.218102\"}",
+      "timestamp": "2025-08-07T22:00:22.219114Z",
+      "duration_ms": 6.43,
       "success": true,
       "error_message": null,
       "test_type": "CREATE_COLLECTION"
@@ -635,7 +540,7 @@
       "response_body": {
         "collections": [
           {
-            "id": "7be4ef3d-3a91-47a9-b436-4a5381ca6870",
+            "id": "7aa17b17-2c60-46db-bb90-a941cb7308f5",
             "name": "Test Collection for API Testing",
             "description": "Collection created for testing purposes",
             "type": "documentation",
@@ -644,130 +549,39 @@
             "total_documents": 0,
             "total_chunks": 0,
             "total_tokens": 0,
-            "created_at": "2025-08-07T20:04:04.515053",
-            "updated_at": "2025-08-07T20:04:04.515054"
+            "created_at": "2025-08-07T22:00:22.215762",
+            "updated_at": "2025-08-07T22:00:22.215762"
           },
           {
-            "id": "8592c536-6f8a-426d-8e41-d20e176ed5fe",
-            "name": "zxczxc",
-            "description": "zxczx",
-            "type": "general",
-            "is_public": false,
-            "is_active": true,
-            "total_documents": 0,
-            "total_chunks": 0,
-            "total_tokens": 0,
-            "created_at": "2025-08-07T19:29:59.244614",
-            "updated_at": "2025-08-07T19:29:59.244615"
-          },
-          {
-            "id": "fc2f1370-dbbf-44d7-8d73-e45cba099260",
-            "name": "asd",
-            "description": "asd",
-            "type": "general",
-            "is_public": false,
-            "is_active": true,
-            "total_documents": 0,
-            "total_chunks": 0,
-            "total_tokens": 0,
-            "created_at": "2025-08-07T19:20:35.672876",
-            "updated_at": "2025-08-07T19:20:35.672877"
-          },
-          {
-            "id": "1ac067d6-4e01-4cf1-bcbc-6688758b3669",
-            "name": "Test Collection for API Testing",
-            "description": "Collection created for testing purposes",
-            "type": "documentation",
-            "is_public": false,
-            "is_active": true,
-            "total_documents": 0,
-            "total_chunks": 0,
-            "total_tokens": 0,
-            "created_at": "2025-08-07T18:26:00.254314",
-            "updated_at": "2025-08-07T18:26:00.254315"
-          },
-          {
-            "id": "a6b2dcb2-9dd7-42b0-b446-dd8284f43efd",
-            "name": "Test Collection for API Testing",
-            "description": "Collection created for testing purposes",
-            "type": "documentation",
-            "is_public": false,
-            "is_active": true,
-            "total_documents": 0,
-            "total_chunks": 0,
-            "total_tokens": 0,
-            "created_at": "2025-08-07T18:23:38.637450",
-            "updated_at": "2025-08-07T18:23:38.637451"
-          },
-          {
-            "id": "296764e8-e89e-4999-ab05-f3a7e60d0e1d",
-            "name": "Test Collection for API Testing",
-            "description": "Collection created for testing purposes",
-            "type": "documentation",
-            "is_public": false,
-            "is_active": true,
-            "total_documents": 0,
-            "total_chunks": 0,
-            "total_tokens": 0,
-            "created_at": "2025-08-07T17:29:07.757770",
-            "updated_at": "2025-08-07T17:29:07.757771"
-          },
-          {
-            "id": "fbc6876e-6b6c-42c1-8ab1-0ef8af862a51",
-            "name": "Test Collection for API Testing",
-            "description": "Collection created for testing purposes",
-            "type": "documentation",
-            "is_public": false,
-            "is_active": true,
-            "total_documents": 0,
-            "total_chunks": 0,
-            "total_tokens": 0,
-            "created_at": "2025-08-07T17:25:13.668232",
-            "updated_at": "2025-08-07T17:25:13.668233"
-          },
-          {
-            "id": "09f134c8-0f9f-48e3-a2a1-035ea6d2b562",
-            "name": "Test Collection for API Testing",
-            "description": "Collection created for testing purposes",
-            "type": "documentation",
-            "is_public": false,
-            "is_active": true,
-            "total_documents": 0,
-            "total_chunks": 0,
-            "total_tokens": 0,
-            "created_at": "2025-08-07T17:23:27.416193",
-            "updated_at": "2025-08-07T17:23:27.416194"
-          },
-          {
-            "id": "c5a559d9-408f-41c8-af7c-5a84129c4cdf",
+            "id": "8cb4c209-729d-48a7-829e-eea1e7c1280d",
             "name": "Default Knowledge Base",
             "description": "Default knowledge base for storing documents",
             "type": "general",
             "is_public": false,
             "is_active": true,
-            "total_documents": 31,
-            "total_chunks": 78,
-            "total_tokens": 16026,
-            "created_at": "2025-08-07T16:54:12.061710",
-            "updated_at": "2025-08-07T20:04:01.441352"
+            "total_documents": 7,
+            "total_chunks": 7,
+            "total_tokens": 37435,
+            "created_at": "2025-08-07T21:54:33.587811",
+            "updated_at": "2025-08-07T22:00:19.148376"
           }
         ],
         "pagination": {
           "page": 1,
           "limit": 10,
-          "total": 9,
+          "total": 2,
           "total_pages": 1
         }
       },
-      "response_text": "{\"collections\":[{\"id\":\"7be4ef3d-3a91-47a9-b436-4a5381ca6870\",\"name\":\"Test Collection for API Testing\",\"description\":\"Collection created for testing purposes\",\"type\":\"documentation\",\"is_public\":false,\"is_active\":true,\"total_documents\":0,\"total_chunks\":0,\"total_tokens\":0,\"created_at\":\"2025-08-07T20:04:04.515053\",\"updated_at\":\"2025-08-07T20:04:04.515054\"},{\"id\":\"8592c536-6f8a-426d-8e41-d20e176ed5fe\",\"name\":\"zxczxc\",\"description\":\"zxczx\",\"type\":\"general\",\"is_public\":false,\"is_active\":true,\"total_doc",
-      "timestamp": "2025-08-07T20:04:05.025788Z",
-      "duration_ms": 6.41,
+      "response_text": "{\"collections\":[{\"id\":\"7aa17b17-2c60-46db-bb90-a941cb7308f5\",\"name\":\"Test Collection for API Testing\",\"description\":\"Collection created for testing purposes\",\"type\":\"documentation\",\"is_public\":false,\"is_active\":true,\"total_documents\":0,\"total_chunks\":0,\"total_tokens\":0,\"created_at\":\"2025-08-07T22:00:22.215762\",\"updated_at\":\"2025-08-07T22:00:22.215762\"},{\"id\":\"8cb4c209-729d-48a7-829e-eea1e7c1280d\",\"name\":\"Default Knowledge Base\",\"description\":\"Default knowledge base for storing documents\",\"type\":",
+      "timestamp": "2025-08-07T22:00:22.725051Z",
+      "duration_ms": 5.37,
       "success": true,
       "error_message": null,
       "test_type": "LIST_COLLECTIONS"
     },
     {
-      "endpoint": "/api/v1/collections/7be4ef3d-3a91-47a9-b436-4a5381ca6870",
+      "endpoint": "/api/v1/collections/7aa17b17-2c60-46db-bb90-a941cb7308f5",
       "method": "PUT",
       "payload": {
         "name": "Updated Test Collection",
@@ -775,7 +589,7 @@
         "metadata": {
           "test": true,
           "updated_by": "API Tester",
-          "updated_at": "2025-08-07T20:04:05.526431"
+          "updated_at": "2025-08-07T22:00:23.860651"
         }
       },
       "headers": {
@@ -784,19 +598,19 @@
       },
       "response_status": 200,
       "response_body": {
-        "collection_id": "7be4ef3d-3a91-47a9-b436-4a5381ca6870",
+        "collection_id": "7aa17b17-2c60-46db-bb90-a941cb7308f5",
         "name": "Updated Test Collection",
-        "updated_at": "2025-08-07T20:04:05.530723"
+        "updated_at": "2025-08-07T22:00:23.864293"
       },
-      "response_text": "{\"collection_id\":\"7be4ef3d-3a91-47a9-b436-4a5381ca6870\",\"name\":\"Updated Test Collection\",\"updated_at\":\"2025-08-07T20:04:05.530723\"}",
-      "timestamp": "2025-08-07T20:04:05.534426Z",
-      "duration_ms": 7.96,
+      "response_text": "{\"collection_id\":\"7aa17b17-2c60-46db-bb90-a941cb7308f5\",\"name\":\"Updated Test Collection\",\"updated_at\":\"2025-08-07T22:00:23.864293\"}",
+      "timestamp": "2025-08-07T22:00:23.867986Z",
+      "duration_ms": 7.3,
       "success": true,
       "error_message": null,
       "test_type": "UPDATE_COLLECTION"
     },
     {
-      "endpoint": "/api/v1/collections/7be4ef3d-3a91-47a9-b436-4a5381ca6870",
+      "endpoint": "/api/v1/collections/7aa17b17-2c60-46db-bb90-a941cb7308f5",
       "method": "DELETE",
       "payload": null,
       "headers": {
@@ -806,18 +620,18 @@
       "response_status": 200,
       "response_body": {
         "message": "Collection deleted successfully",
-        "collection_id": "7be4ef3d-3a91-47a9-b436-4a5381ca6870",
+        "collection_id": "7aa17b17-2c60-46db-bb90-a941cb7308f5",
         "documents_deleted": 0
       },
-      "response_text": "{\"message\":\"Collection deleted successfully\",\"collection_id\":\"7be4ef3d-3a91-47a9-b436-4a5381ca6870\",\"documents_deleted\":0}",
-      "timestamp": "2025-08-07T20:04:06.043609Z",
-      "duration_ms": 8.76,
+      "response_text": "{\"message\":\"Collection deleted successfully\",\"collection_id\":\"7aa17b17-2c60-46db-bb90-a941cb7308f5\",\"documents_deleted\":0}",
+      "timestamp": "2025-08-07T22:00:24.376255Z",
+      "duration_ms": 7.74,
       "success": true,
       "error_message": null,
       "test_type": "DELETE_COLLECTION"
     },
     {
-      "endpoint": "/api/v1/knowledge/8cf1992c-4ad9-4aef-ab66-a86562ae8ede",
+      "endpoint": "/api/v1/knowledge/50349556-a763-441b-9a04-85b9404950a2",
       "method": "DELETE",
       "payload": null,
       "headers": {
@@ -827,12 +641,12 @@
       "response_status": 200,
       "response_body": {
         "message": "Document deleted successfully",
-        "document_id": "8cf1992c-4ad9-4aef-ab66-a86562ae8ede",
-        "chunks_deleted": 1
+        "document_id": "50349556-a763-441b-9a04-85b9404950a2",
+        "chunks_deleted": 0
       },
-      "response_text": "{\"message\":\"Document deleted successfully\",\"document_id\":\"8cf1992c-4ad9-4aef-ab66-a86562ae8ede\",\"chunks_deleted\":1}",
-      "timestamp": "2025-08-07T20:04:06.557201Z",
-      "duration_ms": 12.82,
+      "response_text": "{\"message\":\"Document deleted successfully\",\"document_id\":\"50349556-a763-441b-9a04-85b9404950a2\",\"chunks_deleted\":0}",
+      "timestamp": "2025-08-07T22:00:24.886633Z",
+      "duration_ms": 9.75,
       "success": true,
       "error_message": null,
       "test_type": "DELETE_DOCUMENT"

@@ -51,8 +51,8 @@ class User(Base):
     
     
     # Account status
-    role = Column(Enum(UserRole), default=UserRole.USER, nullable=False)
-    status = Column(Enum(UserStatus), default=UserStatus.PENDING_VERIFICATION, nullable=False)
+    role = Column(Enum(UserRole, values_callable=lambda obj: [e.value for e in obj]), default=UserRole.USER, nullable=False)
+    status = Column(Enum(UserStatus, values_callable=lambda obj: [e.value for e in obj]), default=UserStatus.PENDING_VERIFICATION, nullable=False)
     is_verified = Column(Boolean, default=False, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     

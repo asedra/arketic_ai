@@ -139,7 +139,6 @@ class FormResponse(FormBase):
     view_count: int
     version: int
     parent_form_id: Optional[UUID]
-    organization_id: Optional[UUID]
     last_submitted_at: Optional[datetime]
     created_by: UUID
     created_at: datetime

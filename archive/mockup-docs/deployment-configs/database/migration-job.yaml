@@ -1,0 +1,309 @@
+# Database migration job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: arketic-db-migration
+  namespace: arketic
+  labels:
+    app: arketic-db-migration
+    version: v1
+spec:
+  template:
+    metadata:
+      labels:
+        app: arketic-db-migration
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: arketic-service-account
+      containers:
+      - name: migration
+        image: arketic/backend:latest
+        command: ["alembic", "upgrade", "head"]
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://arketic:$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)"
+        - name: DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: arketic-config
+              key: DATABASE_HOST
+        - name: DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: arketic-config
+              key: DATABASE_PORT
+        - name: DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: arketic-config
+              key: DATABASE_NAME
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: arketic-secrets
+              key: DATABASE_PASSWORD
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      nodeSelector:
+        kubernetes.io/os: linux
+  backoffLimit: 3
+  activeDeadlineSeconds: 600
+---
+# Database backup CronJob
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: arketic-db-backup
+  namespace: arketic
+  labels:
+    app: arketic-db-backup
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: arketic-db-backup
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: arketic-backup-sa
+          containers:
+          - name: backup
+            image: postgres:15-alpine
+            command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              
+              # Create backup filename with timestamp
+              BACKUP_FILE="arketic-backup-$(date +%Y%m%d-%H%M%S).sql"
+              
+              # Create database backup
+              pg_dump --verbose --clean --no-acl --no-owner \
+                -h $DATABASE_HOST \
+                -p $DATABASE_PORT \
+                -U arketic \
+                -d $DATABASE_NAME > /tmp/$BACKUP_FILE
+              
+              # Compress backup
+              gzip /tmp/$BACKUP_FILE
+              
+              # Upload to S3 (requires aws cli and proper IAM roles)
+              aws s3 cp /tmp/$BACKUP_FILE.gz s3://$S3_BACKUP_BUCKET/database/
+              
+              # Keep only last 30 days of backups
+              aws s3 ls s3://$S3_BACKUP_BUCKET/database/ | \
+                awk '{print $4}' | \
+                head -n -30 | \
+                xargs -I {} aws s3 rm s3://$S3_BACKUP_BUCKET/database/{}
+              
+              echo "Backup completed successfully: $BACKUP_FILE.gz"
+            env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: arketic-secrets
+                  key: DATABASE_PASSWORD
+            - name: DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: arketic-config
+                  key: DATABASE_HOST
+            - name: DATABASE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: arketic-config
+                  key: DATABASE_PORT
+            - name: DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: arketic-config
+                  key: DATABASE_NAME
+            - name: S3_BACKUP_BUCKET
+              value: "arketic-production-backups"
+            - name: AWS_DEFAULT_REGION
+              value: "us-west-2"
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "100m"
+              limits:
+                memory: "1Gi"
+                cpu: "500m"
+            securityContext:
+              allowPrivilegeEscalation: false
+              runAsNonRoot: true
+              runAsUser: 999
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                - ALL
+            volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          volumes:
+          - name: tmp
+            emptyDir: {}
+          nodeSelector:
+            kubernetes.io/os: linux
+      backoffLimit: 2
+      activeDeadlineSeconds: 1800
+---
+# Database restore job template
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: arketic-db-restore
+  namespace: arketic
+  labels:
+    app: arketic-db-restore
+spec:
+  template:
+    metadata:
+      labels:
+        app: arketic-db-restore
+    spec:
+      restartPolicy: Never
+      serviceAccountName: arketic-backup-sa
+      containers:
+      - name: restore
+        image: postgres:15-alpine
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          
+          # Download backup from S3
+          aws s3 cp s3://$S3_BACKUP_BUCKET/database/$BACKUP_FILE /tmp/
+          
+          # Decompress if needed
+          if [[ $BACKUP_FILE == *.gz ]]; then
+            gunzip /tmp/$BACKUP_FILE
+            BACKUP_FILE=${BACKUP_FILE%.gz}
+          fi
+          
+          # Restore database
+          psql -h $DATABASE_HOST -p $DATABASE_PORT -U arketic -d $DATABASE_NAME < /tmp/$BACKUP_FILE
+          
+          echo "Database restore completed successfully"
+        env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: arketic-secrets
+              key: DATABASE_PASSWORD
+        - name: DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: arketic-config
+              key: DATABASE_HOST
+        - name: DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: arketic-config
+              key: DATABASE_PORT
+        - name: DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: arketic-config
+              key: DATABASE_NAME
+        - name: S3_BACKUP_BUCKET
+          value: "arketic-production-backups"
+        - name: BACKUP_FILE
+          value: "arketic-backup-20231201-020000.sql.gz"  # Override with actual file
+        - name: AWS_DEFAULT_REGION
+          value: "us-west-2"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 999
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+  backoffLimit: 1
+  activeDeadlineSeconds: 3600
+---
+# Service account for backup operations
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: arketic-backup-sa
+  namespace: arketic
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/arketic-backup-role
+---
+# Point-in-time recovery monitoring
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wal-backup-script
+  namespace: arketic
+data:
+  backup-wal.sh: |
+    #!/bin/bash
+    set -e
+    
+    # WAL-E configuration for continuous archiving
+    export WALE_S3_PREFIX="s3://arketic-production-wal-backups"
+    export AWS_REGION="us-west-2"
+    
+    # Base backup every 6 hours
+    if [ "$1" = "base" ]; then
+        wal-e backup-push /var/lib/postgresql/data
+        echo "Base backup completed"
+    fi
+    
+    # WAL segment archiving (called by PostgreSQL)
+    if [ "$1" = "wal" ]; then
+        wal-e wal-push "$2"
+        echo "WAL segment $2 archived"
+    fi
+    
+    # List available backups
+    if [ "$1" = "list" ]; then
+        wal-e backup-list
+    fi
+    
+    # PITR restore
+    if [ "$1" = "restore" ]; then
+        RESTORE_TIME="$2"
+        wal-e backup-fetch /var/lib/postgresql/data LATEST
+        echo "restore_command = 'wal-e wal-fetch %f %p'" >> /var/lib/postgresql/data/recovery.conf
+        echo "recovery_target_time = '$RESTORE_TIME'" >> /var/lib/postgresql/data/recovery.conf
+        echo "PITR restore configured for time: $RESTORE_TIME"
+    fi

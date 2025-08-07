@@ -1,0 +1,46 @@
+{
+  "name": "@adaptive-cards/storybook",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Storybook documentation for Adaptive Cards UI components",
+  "scripts": {
+    "dev": "storybook dev -p 6006",
+    "build": "storybook build",
+    "preview": "http-server storybook-static -p 6007",
+    "test": "test-storybook",
+    "lint": "eslint .storybook/**/*.{js,ts} stories/**/*.{js,ts,tsx}",
+    "clean": "rm -rf storybook-static"
+  },
+  "dependencies": {
+    "@adaptive-cards/ui": "file:../../packages/ui",
+    "@adaptive-cards/core": "file:../../packages/core",
+    "@adaptive-cards/react": "file:../../packages/react",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.6.0",
+    "@storybook/addon-interactions": "^7.6.0",
+    "@storybook/addon-links": "^7.6.0",
+    "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/addon-docs": "^7.6.0",
+    "@storybook/addon-controls": "^7.6.0",
+    "@storybook/addon-viewport": "^7.6.0",
+    "@storybook/addon-backgrounds": "^7.6.0",
+    "@storybook/addon-measure": "^7.6.0",
+    "@storybook/addon-outline": "^7.6.0",
+    "@storybook/addon-a11y": "^7.6.0",
+    "@storybook/blocks": "^7.6.0",
+    "@storybook/react": "^7.6.0",
+    "@storybook/react-vite": "^7.6.0",
+    "@storybook/test": "^7.6.0",
+    "@storybook/test-runner": "^0.16.0",
+    "storybook": "^7.6.0",
+    "vite": "^5.0.0",
+    "http-server": "^14.1.1",
+    "eslint": "^8.55.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.3.0"
+  }
+}

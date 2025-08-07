@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@adaptive-cards/core": ["./packages/core/src"],
+      "@adaptive-cards/ui": ["./packages/ui/src"],
+      "@adaptive-cards/react": ["./packages/react/src"],
+      "@adaptive-cards/parser": ["./packages/parser/src"],
+      "@adaptive-cards/renderer": ["./packages/renderer/src"],
+      "@adaptive-cards/bot-framework": ["./packages/bot-framework/src"],
+      "@adaptive-cards/chat": ["./packages/chat/src"]
+    }
+  },
+  "include": [],
+  "exclude": ["node_modules", "dist", "build"],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/ui" },
+    { "path": "./packages/react" },
+    { "path": "./packages/parser" },
+    { "path": "./packages/renderer" },
+    { "path": "./packages/bot-framework" },
+    { "path": "./apps/demo" },
+    { "path": "./apps/storybook" }
+  ]
+}

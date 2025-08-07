@@ -1,0 +1,30 @@
+{
+  "name": "adaptive-cards-framework",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Adaptive Card Framework MVP with TypeScript, React support, and Bot Framework integration",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean",
+    "type-check": "turbo run type-check",
+    "storybook": "npm run dev --workspace=@adaptive-cards/storybook",
+    "build-storybook": "npm run build --workspace=@adaptive-cards/storybook",
+    "design-system": "npm run dev --workspace=@adaptive-cards/ui"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "turbo": "^1.11.0",
+    "typescript": "^5.3.0"
+  },
+  "packageManager": "npm@10.2.0",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

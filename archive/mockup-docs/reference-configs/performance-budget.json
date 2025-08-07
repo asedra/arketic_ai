@@ -1,0 +1,62 @@
+{
+  "description": "Performance budget for Arketic platform",
+  "budgets": {
+    "javascript": {
+      "limit": "300kb",
+      "description": "Total JavaScript bundle size"
+    },
+    "css": {
+      "limit": "50kb", 
+      "description": "Total CSS bundle size"
+    },
+    "images": {
+      "limit": "500kb",
+      "description": "Total image assets per page"
+    },
+    "fonts": {
+      "limit": "100kb",
+      "description": "Total font assets"
+    },
+    "total": {
+      "limit": "1mb",
+      "description": "Total page weight"
+    }
+  },
+  "metrics": {
+    "first-contentful-paint": {
+      "limit": 1800,
+      "unit": "ms",
+      "description": "Time to first contentful paint"
+    },
+    "largest-contentful-paint": {
+      "limit": 2500,
+      "unit": "ms", 
+      "description": "Time to largest contentful paint"
+    },
+    "first-input-delay": {
+      "limit": 100,
+      "unit": "ms",
+      "description": "First input delay"
+    },
+    "cumulative-layout-shift": {
+      "limit": 0.1,
+      "unit": "score",
+      "description": "Cumulative layout shift"
+    },
+    "speed-index": {
+      "limit": 3400,
+      "unit": "ms",
+      "description": "Speed index"
+    },
+    "time-to-interactive": {
+      "limit": 3800,
+      "unit": "ms",
+      "description": "Time to interactive"
+    },
+    "total-blocking-time": {
+      "limit": 200,
+      "unit": "ms",
+      "description": "Total blocking time"
+    }
+  }
+}

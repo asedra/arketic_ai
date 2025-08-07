@@ -1,0 +1,502 @@
+{
+  "timestamp": "2025-08-06T07:34:53.916Z",
+  "environment": "Docker",
+  "totalTests": 19,
+  "passed": 11,
+  "failed": 3,
+  "skipped": 5,
+  "results": [
+    {
+      "name": "API Health Check",
+      "status": "PASSED",
+      "duration": 11,
+      "timestamp": "2025-08-06T07:34:53.929Z",
+      "details": {
+        "endpoint": "/health",
+        "status": 200
+      }
+    },
+    {
+      "name": "Web Health Check",
+      "status": "PASSED",
+      "duration": 9,
+      "timestamp": "2025-08-06T07:34:53.938Z",
+      "details": {
+        "endpoint": "/api/health",
+        "status": 200
+      }
+    },
+    {
+      "name": "Nginx Health Check",
+      "status": "PASSED",
+      "duration": 3,
+      "timestamp": "2025-08-06T07:34:53.941Z",
+      "details": {
+        "endpoint": "/health",
+        "status": 200
+      }
+    },
+    {
+      "name": "Valid User Registration",
+      "status": "FAILED",
+      "duration": 9,
+      "timestamp": "2025-08-06T07:34:53.950Z",
+      "details": {
+        "email": "test_a44dd4ff-427a-4cde-96e6-d29ad480591c@example.com",
+        "error": {
+          "detail": [
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "confirm_password"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_a44dd4ff-427a-4cde-96e6-d29ad480591c@example.com",
+                "password": "f5c4986a0f344da7dab995ecc7440164",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "first_name"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_a44dd4ff-427a-4cde-96e6-d29ad480591c@example.com",
+                "password": "f5c4986a0f344da7dab995ecc7440164",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "last_name"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_a44dd4ff-427a-4cde-96e6-d29ad480591c@example.com",
+                "password": "f5c4986a0f344da7dab995ecc7440164",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Duplicate Email Registration",
+      "status": "FAILED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:34:53.952Z",
+      "details": {
+        "expectedStatus": 400,
+        "actualStatus": 422,
+        "error": {
+          "detail": [
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "confirm_password"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_a44dd4ff-427a-4cde-96e6-d29ad480591c@example.com",
+                "password": "f5c4986a0f344da7dab995ecc7440164",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "first_name"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_a44dd4ff-427a-4cde-96e6-d29ad480591c@example.com",
+                "password": "f5c4986a0f344da7dab995ecc7440164",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "last_name"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_a44dd4ff-427a-4cde-96e6-d29ad480591c@example.com",
+                "password": "f5c4986a0f344da7dab995ecc7440164",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Invalid Email Registration",
+      "status": "PASSED",
+      "duration": 3,
+      "timestamp": "2025-08-06T07:34:53.955Z",
+      "details": {
+        "expectedStatus": 422,
+        "actualStatus": 422,
+        "error": {
+          "detail": [
+            {
+              "type": "value_error",
+              "loc": [
+                "body",
+                "email"
+              ],
+              "msg": "value is not a valid email address: The email address is not valid. It must have exactly one @-sign.",
+              "input": "invalid-email",
+              "ctx": {
+                "reason": "The email address is not valid. It must have exactly one @-sign."
+              }
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "confirm_password"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "invalid-email",
+                "password": "f5c4986a0f344da7dab995ecc7440164",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "first_name"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "invalid-email",
+                "password": "f5c4986a0f344da7dab995ecc7440164",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "last_name"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "invalid-email",
+                "password": "f5c4986a0f344da7dab995ecc7440164",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Weak Password Registration",
+      "status": "PASSED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:34:53.957Z",
+      "details": {
+        "expectedStatus": 422,
+        "actualStatus": 422,
+        "error": {
+          "detail": [
+            {
+              "type": "string_too_short",
+              "loc": [
+                "body",
+                "password"
+              ],
+              "msg": "String should have at least 8 characters",
+              "input": "123",
+              "ctx": {
+                "min_length": 8
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/string_too_short"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "confirm_password"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_b5d6f542-b4cb-40da-9678-881fb048c658@example.com",
+                "password": "123",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "first_name"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_b5d6f542-b4cb-40da-9678-881fb048c658@example.com",
+                "password": "123",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "last_name"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_b5d6f542-b4cb-40da-9678-881fb048c658@example.com",
+                "password": "123",
+                "full_name": "Test User",
+                "organization_name": "Test Organization"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login/Logout Flow",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:34:53.957Z",
+      "details": {
+        "reason": "No registered users available"
+      }
+    },
+    {
+      "name": "JWT Token Validation",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:34:53.957Z",
+      "details": {
+        "reason": "No valid tokens available"
+      }
+    },
+    {
+      "name": "Protected Routes",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:34:53.957Z",
+      "details": {
+        "reason": "No valid tokens available"
+      }
+    },
+    {
+      "name": "Token Refresh",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:34:53.957Z",
+      "details": {
+        "reason": "No valid tokens available"
+      }
+    },
+    {
+      "name": "Password Reset Flow",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:34:53.958Z",
+      "details": {
+        "reason": "No registered users available"
+      }
+    },
+    {
+      "name": "Rate Limiting - Login Attempts",
+      "status": "PASSED",
+      "duration": 51,
+      "timestamp": "2025-08-06T07:34:54.009Z",
+      "details": {
+        "attempts": 6,
+        "rateLimitTriggered": true,
+        "statusCodes": [
+          401,
+          401,
+          401,
+          401,
+          401,
+          429
+        ]
+      }
+    },
+    {
+      "name": "SQL Injection Protection",
+      "status": "PASSED",
+      "duration": 1,
+      "timestamp": "2025-08-06T07:34:54.010Z",
+      "details": {
+        "status": 422,
+        "note": "Should not cause server error",
+        "error": {
+          "detail": [
+            {
+              "type": "value_error",
+              "loc": [
+                "body",
+                "email"
+              ],
+              "msg": "value is not a valid email address: The email address is not valid. It must have exactly one @-sign.",
+              "input": "admin'; DROP TABLE users; --",
+              "ctx": {
+                "reason": "The email address is not valid. It must have exactly one @-sign."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "XSS Protection",
+      "status": "PASSED",
+      "duration": 1,
+      "timestamp": "2025-08-06T07:34:54.012Z",
+      "details": {
+        "status": 422,
+        "note": "Should either sanitize input or reject with validation error",
+        "error": {
+          "detail": [
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "confirm_password"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_e5ef3d9b-5190-41a7-a393-ce9ddb1a069b@example.com",
+                "password": "aa48f1786232b355f644c75c96bea84f",
+                "full_name": "<script>alert(\"XSS\")</script>",
+                "organization_name": "Test Org"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "first_name"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_e5ef3d9b-5190-41a7-a393-ce9ddb1a069b@example.com",
+                "password": "aa48f1786232b355f644c75c96bea84f",
+                "full_name": "<script>alert(\"XSS\")</script>",
+                "organization_name": "Test Org"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            },
+            {
+              "type": "missing",
+              "loc": [
+                "body",
+                "last_name"
+              ],
+              "msg": "Field required",
+              "input": {
+                "email": "test_e5ef3d9b-5190-41a7-a393-ce9ddb1a069b@example.com",
+                "password": "aa48f1786232b355f644c75c96bea84f",
+                "full_name": "<script>alert(\"XSS\")</script>",
+                "organization_name": "Test Org"
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/missing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Concurrent Request Handling",
+      "status": "PASSED",
+      "duration": 6,
+      "timestamp": "2025-08-06T07:34:54.019Z",
+      "details": {
+        "concurrentRequests": 10,
+        "successfulRequests": 10,
+        "averageResponseTime": 6,
+        "maxResponseTime": 7,
+        "successRate": "100%"
+      }
+    },
+    {
+      "name": "Frontend Health Check",
+      "status": "PASSED",
+      "duration": 9,
+      "timestamp": "2025-08-06T07:34:54.028Z",
+      "details": {
+        "status": 200
+      }
+    },
+    {
+      "name": "CORS Configuration",
+      "status": "PASSED",
+      "duration": 1,
+      "timestamp": "2025-08-06T07:34:54.030Z",
+      "details": {
+        "status": 200,
+        "allowOrigin": "http://localhost:3000",
+        "allowMethods": "DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT"
+      }
+    },
+    {
+      "name": "Nginx API Routing",
+      "status": "FAILED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:34:54.032Z",
+      "details": {
+        "error": "Request failed with status code 404"
+      }
+    }
+  ],
+  "metrics": {
+    "totalDuration": 114,
+    "averageResponseTime": 6,
+    "slowestTest": {
+      "name": "Rate Limiting - Login Attempts",
+      "duration": 51.096457
+    },
+    "fastestTest": {
+      "name": "Login/Logout Flow",
+      "duration": 0
+    }
+  }
+}

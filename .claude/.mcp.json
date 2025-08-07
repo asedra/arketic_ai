@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--init",
+        "--network=host",
+        "--user=1000:1000",
+        "-v",
+        "/tmp:/tmp",
+        "mcr.microsoft.com/playwright/mcp",
+        "--isolated",
+        "--headless",
+        "--no-sandbox"
+      ]
+    }
+  }
+}

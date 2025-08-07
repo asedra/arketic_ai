@@ -1,0 +1,468 @@
+# Comprehensive backup and disaster recovery strategy
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-config
+  namespace: arketic
+data:
+  backup-policy.json: |
+    {
+      "retention": {
+        "daily": 30,
+        "weekly": 12,
+        "monthly": 12,
+        "yearly": 5
+      },
+      "encryption": {
+        "enabled": true,
+        "algorithm": "AES-256-GCM",
+        "keyRotationDays": 90
+      },
+      "compression": {
+        "enabled": true,
+        "algorithm": "gzip",
+        "level": 6
+      },
+      "verification": {
+        "enabled": true,
+        "checksumAlgorithm": "SHA-256",
+        "testRestoreFrequency": "weekly"
+      }
+    }
+---
+# Velero backup configuration for Kubernetes cluster state
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: aws-s3
+  namespace: velero
+spec:
+  provider: aws
+  objectStorage:
+    bucket: arketic-cluster-backups
+    prefix: velero
+  config:
+    region: us-west-2
+    s3ForcePathStyle: "false"
+---
+apiVersion: velero.io/v1
+kind: VolumeSnapshotLocation
+metadata:
+  name: aws-ebs
+  namespace: velero
+spec:
+  provider: aws
+  config:
+    region: us-west-2
+---
+# Daily cluster backup schedule
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: daily-backup
+  namespace: velero
+spec:
+  schedule: "0 1 * * *"  # 1 AM daily
+  template:
+    includedNamespaces:
+    - arketic
+    - ingress-nginx
+    - cert-manager
+    - monitoring
+    excludedResources:
+    - events
+    - events.events.k8s.io
+    - backups.velero.io
+    - restores.velero.io
+    - resticrepositories.velero.io
+    snapshotVolumes: true
+    ttl: 720h  # 30 days
+    storageLocation: aws-s3
+    volumeSnapshotLocations:
+    - aws-ebs
+    defaultVolumesToRestic: true
+---
+# Weekly full backup
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: weekly-full-backup
+  namespace: velero
+spec:
+  schedule: "0 2 * * 0"  # 2 AM every Sunday
+  template:
+    includedNamespaces:
+    - "*"
+    excludedResources:
+    - events
+    - events.events.k8s.io
+    snapshotVolumes: true
+    ttl: 2160h  # 90 days
+    storageLocation: aws-s3
+    volumeSnapshotLocations:
+    - aws-ebs
+    defaultVolumesToRestic: true
+---
+# Application data backup using Kanister
+apiVersion: cr.kanister.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: postgres-blueprint
+  namespace: arketic
+spec:
+  actions:
+    backup:
+      outputArtifacts:
+        cloudDump:
+          keyValue:
+            s3path: "{{ .Phases.dumpToObjectStore.Output.s3path }}"
+      phases:
+      - func: KubeTask
+        name: dumpToObjectStore
+        objects:
+          pgSecret:
+            kind: Secret
+            name: arketic-secrets
+            namespace: arketic
+        args:
+          image: postgres:15-alpine
+          namespace: arketic
+          command:
+          - bash
+          - -o
+          - errexit
+          - -o
+          - pipefail
+          - -c
+          - |
+            s3path="s3://arketic-app-backups/postgres/{{ toDate "2006-01-02T15:04:05.999999999Z07:00" .Time  | date "2006-01-02T15-04-05" }}/dump.sql"
+            PGPASSWORD={{ index .Object.pgSecret.Data "DATABASE_PASSWORD" | toString }} pg_dump --clean --if-exists -h postgres-service -U arketic arketic | gzip | aws s3 cp - ${s3path}
+            kando output s3path ${s3path}
+    restore:
+      inputArtifactNames:
+      - cloudDump
+      phases:
+      - func: KubeTask
+        name: restoreFromObjectStore
+        objects:
+          pgSecret:
+            kind: Secret
+            name: arketic-secrets
+            namespace: arketic
+        args:
+          image: postgres:15-alpine
+          namespace: arketic
+          command:
+          - bash
+          - -o
+          - errexit
+          - -o
+          - pipefail
+          - -c
+          - |
+            s3path="{{ .ArtifactsIn.cloudDump.KeyValue.s3path }}"
+            aws s3 cp ${s3path} - | gunzip | PGPASSWORD={{ index .Object.pgSecret.Data "DATABASE_PASSWORD" | toString }} psql -h postgres-service -U arketic arketic
+    delete:
+      inputArtifactNames:
+      - cloudDump
+      phases:
+      - func: KubeTask
+        name: deleteFromObjectStore
+        args:
+          image: amazon/aws-cli:latest
+          namespace: arketic
+          command:
+          - bash
+          - -o
+          - errexit
+          - -o
+          - pipefail
+          - -c
+          - |
+            s3path="{{ .ArtifactsIn.cloudDump.KeyValue.s3path }}"
+            aws s3 rm ${s3path}
+---
+# ActionSet to trigger application backups
+apiVersion: cr.kanister.io/v1alpha1
+kind: ActionSet
+metadata:
+  name: postgres-backup
+  namespace: arketic
+spec:
+  actions:
+  - name: backup
+    blueprint: postgres-blueprint
+    object:
+      kind: StatefulSet
+      name: postgres
+      namespace: arketic
+---
+# Redis backup blueprint
+apiVersion: cr.kanister.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: redis-blueprint
+  namespace: arketic
+spec:
+  actions:
+    backup:
+      outputArtifacts:
+        rdbDump:
+          keyValue:
+            s3path: "{{ .Phases.dumpToObjectStore.Output.s3path }}"
+      phases:
+      - func: KubeTask
+        name: dumpToObjectStore
+        objects:
+          redisSecret:
+            kind: Secret
+            name: arketic-secrets
+            namespace: arketic
+        args:
+          image: redis:7-alpine
+          namespace: arketic
+          command:
+          - bash
+          - -o
+          - errexit
+          - -o
+          - pipefail
+          - -c
+          - |
+            s3path="s3://arketic-app-backups/redis/{{ toDate "2006-01-02T15:04:05.999999999Z07:00" .Time  | date "2006-01-02T15-04-05" }}/dump.rdb"
+            redis-cli -h redis-service -a {{ index .Object.redisSecret.Data "REDIS_PASSWORD" | toString }} --rdb /tmp/dump.rdb
+            aws s3 cp /tmp/dump.rdb ${s3path}
+            kando output s3path ${s3path}
+    restore:
+      inputArtifactNames:
+      - rdbDump
+      phases:
+      - func: KubeTask
+        name: restoreFromObjectStore
+        args:
+          image: redis:7-alpine
+          namespace: arketic
+          command:
+          - bash
+          - -o
+          - errexit
+          - -o
+          - pipefail
+          - -c
+          - |
+            s3path="{{ .ArtifactsIn.rdbDump.KeyValue.s3path }}"
+            aws s3 cp ${s3path} /tmp/dump.rdb
+            # Stop Redis, replace dump file, restart
+            redis-cli -h redis-service -a {{ index .Object.redisSecret.Data "REDIS_PASSWORD" | toString }} DEBUG RESTART
+---
+# Disaster recovery testing job
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dr-test
+  namespace: arketic
+spec:
+  schedule: "0 3 * * 6"  # 3 AM every Saturday
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: dr-test
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: dr-test-sa
+          containers:
+          - name: dr-test
+            image: arketic/dr-test:latest
+            command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              
+              echo "Starting disaster recovery test..."
+              
+              # Create test namespace
+              kubectl create namespace dr-test-$(date +%s) || true
+              
+              # Test database backup restore
+              echo "Testing database backup restore..."
+              latest_backup=$(aws s3 ls s3://arketic-app-backups/postgres/ | sort | tail -n 1 | awk '{print $4}')
+              if [ -n "$latest_backup" ]; then
+                echo "Found latest backup: $latest_backup"
+                # Restore to test database
+                aws s3 cp s3://arketic-app-backups/postgres/$latest_backup /tmp/
+                gunzip /tmp/dump.sql.gz
+                PGPASSWORD=$TEST_DB_PASSWORD psql -h $TEST_DB_HOST -U arketic test_arketic < /tmp/dump.sql
+                echo "Database restore test completed successfully"
+              else
+                echo "No database backup found!"
+                exit 1
+              fi
+              
+              # Test cluster backup restore
+              echo "Testing cluster backup restore..."
+              velero backup get | head -5
+              latest_cluster_backup=$(velero backup get -o json | jq -r '.items[0].metadata.name')
+              if [ -n "$latest_cluster_backup" ]; then
+                echo "Found latest cluster backup: $latest_cluster_backup"
+                # Create test restore (dry-run)
+                velero restore create dr-test-$(date +%s) --from-backup $latest_cluster_backup --namespace-mappings arketic:dr-test --dry-run -o yaml
+                echo "Cluster restore test completed successfully"
+              else
+                echo "No cluster backup found!"
+                exit 1
+              fi
+              
+              # Test application functionality after restore
+              echo "Testing application functionality..."
+              # Add custom tests here
+              
+              # Cleanup test namespace
+              kubectl delete namespace dr-test-* --field-selector=status.phase!=Active || true
+              
+              echo "Disaster recovery test completed successfully"
+              
+              # Send notification
+              curl -X POST -H 'Content-type: application/json' \
+              --data '{"text":"DR test completed successfully for Arketic production"}' \
+              $SLACK_WEBHOOK_URL
+            env:
+            - name: TEST_DB_HOST
+              value: "test-postgres.arketic.svc.cluster.local"
+            - name: TEST_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-db-secret
+                  key: password
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: notification-secrets
+                  key: slack-webhook-url
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "100m"
+              limits:
+                memory: "512Mi"
+                cpu: "500m"
+            securityContext:
+              allowPrivilegeEscalation: false
+              runAsNonRoot: true
+              runAsUser: 1000
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                - ALL
+          nodeSelector:
+            kubernetes.io/os: linux
+      backoffLimit: 2
+      activeDeadlineSeconds: 3600
+---
+# Multi-region replication configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: replication-config
+  namespace: arketic
+data:
+  replication-setup.sh: |
+    #!/bin/bash
+    
+    # Cross-region database replication setup
+    setup_postgres_replication() {
+        echo "Setting up PostgreSQL streaming replication..."
+        
+        # Primary region configuration
+        kubectl patch configmap postgres-config -n arketic --patch='
+        data:
+          postgresql.conf: |
+            # Replication settings
+            wal_level = replica
+            max_wal_senders = 3
+            wal_keep_segments = 64
+            archive_mode = on
+            archive_command = "wal-e wal-push %p"
+            hot_standby = on
+        '
+        
+        # Create replication user
+        kubectl exec -it postgres-0 -n arketic -- psql -U arketic -c "
+        CREATE USER replicator REPLICATION LOGIN ENCRYPTED PASSWORD 'repl_password';
+        "
+        
+        # Secondary region standby setup
+        echo "Configure standby in secondary region with recovery.conf"
+    }
+    
+    # Cross-region file sync
+    setup_file_replication() {
+        echo "Setting up cross-region file synchronization..."
+        
+        # Use AWS DataSync or custom rsync
+        aws datasync create-task \
+            --source-location-arn arn:aws:datasync:us-west-2:account:location/loc-source \
+            --destination-location-arn arn:aws:datasync:us-east-1:account:location/loc-dest \
+            --name arketic-cross-region-sync
+    }
+    
+    # DNS failover setup
+    setup_dns_failover() {
+        echo "Setting up Route53 health checks and failover..."
+        
+        # Health check for primary region
+        aws route53 create-health-check \
+            --caller-reference $(date +%s) \
+            --health-check-config Type=HTTPS,ResourcePath=/health,FullyQualifiedDomainName=arketic.com,Port=443
+        
+        # Failover routing policy
+        aws route53 change-resource-record-sets \
+            --hosted-zone-id Z123456789 \
+            --change-batch file://failover-config.json
+    }
+---
+# Service Account for DR operations
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dr-test-sa
+  namespace: arketic
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/arketic-dr-role
+---
+# RBAC for DR operations
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dr-operator
+rules:
+- apiGroups: [""]
+  resources: ["namespaces", "pods", "services", "secrets", "configmaps", "persistentvolumes", "persistentvolumeclaims"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets", "daemonsets"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: ["velero.io"]
+  resources: ["backups", "restores"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: ["cr.kanister.io"]
+  resources: ["actionsets", "blueprints"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dr-operator-binding
+subjects:
+- kind: ServiceAccount
+  name: dr-test-sa
+  namespace: arketic
+roleRef:
+  kind: ClusterRole
+  name: dr-operator
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: arketic-config
+  namespace: arketic
+data:
+  NODE_ENV: "production"
+  ENVIRONMENT: "production"
+  DATABASE_HOST: "postgres-service"
+  DATABASE_PORT: "5432"
+  DATABASE_NAME: "arketic"
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  QDRANT_HOST: "qdrant-service"
+  QDRANT_PORT: "6333"
+  NEXT_PUBLIC_API_URL: "https://api.arketic.com"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: arketic-secrets
+  namespace: arketic
+type: Opaque
+stringData:
+  DATABASE_PASSWORD: "arketic123"
+  REDIS_PASSWORD: "redis123"
+  SECRET_KEY: "your-secret-key-change-in-production"
+  OPENAI_API_KEY: ""
+  ANTHROPIC_API_KEY: ""
+  JWT_SECRET: "your-jwt-secret-change-in-production"

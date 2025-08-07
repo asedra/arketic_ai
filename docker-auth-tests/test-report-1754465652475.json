@@ -1,0 +1,234 @@
+{
+  "timestamp": "2025-08-06T07:34:12.401Z",
+  "environment": "Docker",
+  "totalTests": 19,
+  "passed": 7,
+  "failed": 7,
+  "skipped": 5,
+  "results": [
+    {
+      "name": "API Health Check",
+      "status": "PASSED",
+      "duration": 13,
+      "timestamp": "2025-08-06T07:34:12.414Z",
+      "details": {
+        "endpoint": "/health",
+        "status": 200
+      }
+    },
+    {
+      "name": "Web Health Check",
+      "status": "PASSED",
+      "duration": 10,
+      "timestamp": "2025-08-06T07:34:12.424Z",
+      "details": {
+        "endpoint": "/api/health",
+        "status": 200
+      }
+    },
+    {
+      "name": "Nginx Health Check",
+      "status": "PASSED",
+      "duration": 3,
+      "timestamp": "2025-08-06T07:34:12.428Z",
+      "details": {
+        "endpoint": "/health",
+        "status": 200
+      }
+    },
+    {
+      "name": "Valid User Registration",
+      "status": "FAILED",
+      "duration": 3,
+      "timestamp": "2025-08-06T07:34:12.432Z",
+      "details": {
+        "email": "test_ba9ed66c-6bd8-412e-a595-f4949c9561db@example.com",
+        "error": {
+          "detail": "Not Found"
+        }
+      }
+    },
+    {
+      "name": "Duplicate Email Registration",
+      "status": "FAILED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:34:12.434Z",
+      "details": {
+        "expectedStatus": 400,
+        "actualStatus": 404,
+        "error": {
+          "detail": "Not Found"
+        }
+      }
+    },
+    {
+      "name": "Invalid Email Registration",
+      "status": "FAILED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:34:12.436Z",
+      "details": {
+        "expectedStatus": 422,
+        "actualStatus": 404,
+        "error": {
+          "detail": "Not Found"
+        }
+      }
+    },
+    {
+      "name": "Weak Password Registration",
+      "status": "FAILED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:34:12.438Z",
+      "details": {
+        "expectedStatus": 422,
+        "actualStatus": 404,
+        "error": {
+          "detail": "Not Found"
+        }
+      }
+    },
+    {
+      "name": "Login/Logout Flow",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:34:12.438Z",
+      "details": {
+        "reason": "No registered users available"
+      }
+    },
+    {
+      "name": "JWT Token Validation",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:34:12.438Z",
+      "details": {
+        "reason": "No valid tokens available"
+      }
+    },
+    {
+      "name": "Protected Routes",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:34:12.438Z",
+      "details": {
+        "reason": "No valid tokens available"
+      }
+    },
+    {
+      "name": "Token Refresh",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:34:12.438Z",
+      "details": {
+        "reason": "No valid tokens available"
+      }
+    },
+    {
+      "name": "Password Reset Flow",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:34:12.438Z",
+      "details": {
+        "reason": "No registered users available"
+      }
+    },
+    {
+      "name": "Rate Limiting - Login Attempts",
+      "status": "FAILED",
+      "duration": 10,
+      "timestamp": "2025-08-06T07:34:12.449Z",
+      "details": {
+        "attempts": 6,
+        "rateLimitTriggered": false,
+        "statusCodes": [
+          404,
+          404,
+          404,
+          404,
+          404,
+          404
+        ]
+      }
+    },
+    {
+      "name": "SQL Injection Protection",
+      "status": "PASSED",
+      "duration": 1,
+      "timestamp": "2025-08-06T07:34:12.450Z",
+      "details": {
+        "status": 404,
+        "note": "Should not cause server error",
+        "error": {
+          "detail": "Not Found"
+        }
+      }
+    },
+    {
+      "name": "XSS Protection",
+      "status": "FAILED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:34:12.452Z",
+      "details": {
+        "status": 404,
+        "note": "Should either sanitize input or reject with validation error",
+        "error": {
+          "detail": "Not Found"
+        }
+      }
+    },
+    {
+      "name": "Concurrent Request Handling",
+      "status": "PASSED",
+      "duration": 7,
+      "timestamp": "2025-08-06T07:34:12.461Z",
+      "details": {
+        "concurrentRequests": 10,
+        "successfulRequests": 10,
+        "averageResponseTime": 7,
+        "maxResponseTime": 9,
+        "successRate": "100%"
+      }
+    },
+    {
+      "name": "Frontend Health Check",
+      "status": "PASSED",
+      "duration": 9,
+      "timestamp": "2025-08-06T07:34:12.471Z",
+      "details": {
+        "status": 200
+      }
+    },
+    {
+      "name": "CORS Configuration",
+      "status": "PASSED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:34:12.473Z",
+      "details": {
+        "status": 200,
+        "allowOrigin": "http://localhost:3000",
+        "allowMethods": "DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT"
+      }
+    },
+    {
+      "name": "Nginx API Routing",
+      "status": "FAILED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:34:12.475Z",
+      "details": {
+        "error": "Request failed with status code 404"
+      }
+    }
+  ],
+  "metrics": {
+    "totalDuration": 74,
+    "averageResponseTime": 4,
+    "slowestTest": {
+      "name": "API Health Check",
+      "duration": 12.678405999999995
+    },
+    "fastestTest": {
+      "name": "Login/Logout Flow",
+      "duration": 0
+    }
+  }
+}

@@ -1,0 +1,287 @@
+{
+  "timestamp": "2025-08-06T07:36:16.040Z",
+  "environment": "Docker",
+  "totalTests": 19,
+  "passed": 11,
+  "failed": 3,
+  "skipped": 5,
+  "results": [
+    {
+      "name": "API Health Check",
+      "status": "PASSED",
+      "duration": 12,
+      "timestamp": "2025-08-06T07:36:16.052Z",
+      "details": {
+        "endpoint": "/health",
+        "status": 200
+      }
+    },
+    {
+      "name": "Web Health Check",
+      "status": "PASSED",
+      "duration": 12,
+      "timestamp": "2025-08-06T07:36:16.064Z",
+      "details": {
+        "endpoint": "/api/health",
+        "status": 200
+      }
+    },
+    {
+      "name": "Nginx Health Check",
+      "status": "PASSED",
+      "duration": 3,
+      "timestamp": "2025-08-06T07:36:16.067Z",
+      "details": {
+        "endpoint": "/health",
+        "status": 200
+      }
+    },
+    {
+      "name": "Valid User Registration",
+      "status": "FAILED",
+      "duration": 234,
+      "timestamp": "2025-08-06T07:36:16.302Z",
+      "details": {
+        "email": "test_e09df9d2-d4e1-4354-832a-bf7c373b9115@example.com",
+        "error": {
+          "detail": "Registration failed: 'AsyncSession' object has no attribute 'query'"
+        }
+      }
+    },
+    {
+      "name": "Duplicate Email Registration",
+      "status": "PASSED",
+      "duration": 3,
+      "timestamp": "2025-08-06T07:36:16.305Z",
+      "details": {
+        "expectedStatus": 400,
+        "actualStatus": 400,
+        "error": {
+          "detail": "A user with this email already exists"
+        }
+      }
+    },
+    {
+      "name": "Invalid Email Registration",
+      "status": "PASSED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:36:16.307Z",
+      "details": {
+        "expectedStatus": 422,
+        "actualStatus": 422,
+        "error": {
+          "detail": [
+            {
+              "type": "value_error",
+              "loc": [
+                "body",
+                "email"
+              ],
+              "msg": "value is not a valid email address: The email address is not valid. It must have exactly one @-sign.",
+              "input": "invalid-email",
+              "ctx": {
+                "reason": "The email address is not valid. It must have exactly one @-sign."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Weak Password Registration",
+      "status": "PASSED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:36:16.309Z",
+      "details": {
+        "expectedStatus": 422,
+        "actualStatus": 422,
+        "error": {
+          "detail": [
+            {
+              "type": "string_too_short",
+              "loc": [
+                "body",
+                "password"
+              ],
+              "msg": "String should have at least 8 characters",
+              "input": "123",
+              "ctx": {
+                "min_length": 8
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/string_too_short"
+            },
+            {
+              "type": "string_too_short",
+              "loc": [
+                "body",
+                "confirm_password"
+              ],
+              "msg": "String should have at least 8 characters",
+              "input": "123",
+              "ctx": {
+                "min_length": 8
+              },
+              "url": "https://errors.pydantic.dev/2.5/v/string_too_short"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login/Logout Flow",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:36:16.309Z",
+      "details": {
+        "reason": "No registered users available"
+      }
+    },
+    {
+      "name": "JWT Token Validation",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:36:16.309Z",
+      "details": {
+        "reason": "No valid tokens available"
+      }
+    },
+    {
+      "name": "Protected Routes",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:36:16.309Z",
+      "details": {
+        "reason": "No valid tokens available"
+      }
+    },
+    {
+      "name": "Token Refresh",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:36:16.309Z",
+      "details": {
+        "reason": "No valid tokens available"
+      }
+    },
+    {
+      "name": "Password Reset Flow",
+      "status": "SKIPPED",
+      "duration": 0,
+      "timestamp": "2025-08-06T07:36:16.309Z",
+      "details": {
+        "reason": "No registered users available"
+      }
+    },
+    {
+      "name": "Rate Limiting - Login Attempts",
+      "status": "PASSED",
+      "duration": 20,
+      "timestamp": "2025-08-06T07:36:16.329Z",
+      "details": {
+        "attempts": 6,
+        "rateLimitTriggered": true,
+        "statusCodes": [
+          401,
+          401,
+          401,
+          401,
+          401,
+          429
+        ]
+      }
+    },
+    {
+      "name": "SQL Injection Protection",
+      "status": "PASSED",
+      "duration": 1,
+      "timestamp": "2025-08-06T07:36:16.331Z",
+      "details": {
+        "status": 422,
+        "note": "Should not cause server error",
+        "error": {
+          "detail": [
+            {
+              "type": "value_error",
+              "loc": [
+                "body",
+                "email"
+              ],
+              "msg": "value is not a valid email address: The email address is not valid. It must have exactly one @-sign.",
+              "input": "admin'; DROP TABLE users; --",
+              "ctx": {
+                "reason": "The email address is not valid. It must have exactly one @-sign."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "XSS Protection",
+      "status": "FAILED",
+      "duration": 181,
+      "timestamp": "2025-08-06T07:36:16.512Z",
+      "details": {
+        "status": 500,
+        "note": "Should either sanitize input or reject with validation error",
+        "error": {
+          "detail": "Registration failed: 'AsyncSession' object has no attribute 'query'"
+        }
+      }
+    },
+    {
+      "name": "Concurrent Request Handling",
+      "status": "PASSED",
+      "duration": 7,
+      "timestamp": "2025-08-06T07:36:16.521Z",
+      "details": {
+        "concurrentRequests": 10,
+        "successfulRequests": 10,
+        "averageResponseTime": 7,
+        "maxResponseTime": 8,
+        "successRate": "100%"
+      }
+    },
+    {
+      "name": "Frontend Health Check",
+      "status": "PASSED",
+      "duration": 8,
+      "timestamp": "2025-08-06T07:36:16.528Z",
+      "details": {
+        "status": 200
+      }
+    },
+    {
+      "name": "CORS Configuration",
+      "status": "PASSED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:36:16.530Z",
+      "details": {
+        "status": 200,
+        "allowOrigin": "http://localhost:3000",
+        "allowMethods": "DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT"
+      }
+    },
+    {
+      "name": "Nginx API Routing",
+      "status": "FAILED",
+      "duration": 2,
+      "timestamp": "2025-08-06T07:36:16.532Z",
+      "details": {
+        "error": "Request failed with status code 404"
+      }
+    }
+  ],
+  "metrics": {
+    "totalDuration": 491,
+    "averageResponseTime": 26,
+    "slowestTest": {
+      "name": "Valid User Registration",
+      "duration": 234.13423
+    },
+    "fastestTest": {
+      "name": "Login/Logout Flow",
+      "duration": 0
+    }
+  }
+}

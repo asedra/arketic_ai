@@ -1,0 +1,113 @@
+{
+  "entryPoints": [
+    "./app",
+    "./components",
+    "./lib",
+    "./hooks",
+    "./types"
+  ],
+  "out": "./docs",
+  "theme": "default",
+  "name": "Arketic Platform Documentation",
+  "includeVersion": true,
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "excludeInternal": false,
+  "disableSources": false,
+  "includes": "./docs-src",
+  "media": "./docs-media",
+  "readme": "./README.md",
+  "tsconfig": "./tsconfig.json",
+  "plugin": [
+    "typedoc-plugin-markdown",
+    "typedoc-plugin-merge-modules"
+  ],
+  "gitRevision": "main",
+  "gitRemote": "origin",
+  "gaID": "",
+  "hideGenerator": false,
+  "categorizeByGroup": true,
+  "categoryOrder": [
+    "Components",
+    "Hooks",
+    "Utilities",
+    "Types",
+    "API",
+    "*"
+  ],
+  "sort": [
+    "source-order",
+    "required-first",
+    "alphabetical"
+  ],
+  "kindSortOrder": [
+    "Project",
+    "Module",
+    "Namespace",
+    "Enum",
+    "Enum Member",
+    "Class",
+    "Interface",
+    "Type Alias",
+    "Constructor",
+    "Property",
+    "Variable",
+    "Function",
+    "Accessor",
+    "Method"
+  ],
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "searchInComments": true,
+  "cleanOutputDir": true,
+  "treatWarningsAsErrors": false,
+  "logLevel": "Info",
+  "lightHighlightTheme": "light-plus",
+  "darkHighlightTheme": "dark-plus",
+  "customCss": "./docs-src/custom.css",
+  "markedOptions": {
+    "mangle": false
+  },
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": false
+  },
+  "commentStyle": "jsdoc",
+  "blockTags": [
+    "@alpha",
+    "@beta",
+    "@deprecated",
+    "@example",
+    "@experimental",
+    "@internal",
+    "@override",
+    "@packageDocumentation",
+    "@public",
+    "@readonly",
+    "@sealed",
+    "@virtual"
+  ],
+  "inlineTags": [
+    "@inheritDoc",
+    "@label",
+    "@link",
+    "@linkcode",
+    "@linkplain"
+  ],
+  "modifierTags": [
+    "@alpha",
+    "@beta",
+    "@deprecated",
+    "@experimental",
+    "@internal",
+    "@override",
+    "@public",
+    "@readonly",
+    "@sealed",
+    "@virtual"
+  ]
+}

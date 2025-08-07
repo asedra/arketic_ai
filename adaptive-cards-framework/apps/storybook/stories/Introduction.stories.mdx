@@ -1,0 +1,219 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introduction/Getting Started" />
+
+# Adaptive Cards Framework Design System
+
+Welcome to the **Adaptive Cards Framework Design System** - a comprehensive, accessible, and modern UI component library built for creating beautiful and functional adaptive card experiences.
+
+## Overview
+
+This design system provides:
+
+- 🎨 **Modern Design Language** - Based on Microsoft Fluent Design principles with the primary brand color #0078D4
+- ♿ **Accessibility First** - WCAG AA compliant components with proper ARIA support
+- 📱 **Mobile-First Responsive** - Optimized for all screen sizes and devices  
+- 🌙 **Dark Mode Support** - Automatic theme switching with system preference detection
+- 🎯 **TypeScript Ready** - Full type safety and excellent developer experience
+- ⚡ **Performance Optimized** - Lightweight and fast with minimal bundle impact
+
+## Key Features
+
+### Component Library
+- **Card Components** - Flexible card layouts with multiple variants (default, emphasis, accent, success, warning, error)
+- **Button Components** - Comprehensive button system with loading states, icons, and semantic variants
+- **Form Components** - Accessible inputs, textareas with validation states
+- **Feedback Components** - Badges, status indicators, and loading skeletons
+- **Layout Utilities** - Responsive grid systems and spacing utilities
+
+### Design Tokens
+- **Colors** - Brand colors, semantic colors, and neutral grays
+- **Typography** - System font stack with responsive sizing
+- **Spacing** - 4px-based spacing scale for consistent layouts
+- **Shadows** - Microsoft Fluent-inspired elevation system
+- **Border Radius** - Consistent corner rounding across components
+
+### Developer Experience
+- **Tailwind CSS Integration** - Custom theme with design tokens
+- **Storybook Documentation** - Interactive component playground
+- **TypeScript Support** - Full type definitions and IntelliSense
+- **ESLint Configuration** - Code quality and consistency
+- **Accessibility Testing** - Built-in a11y testing with Storybook
+
+## Quick Start
+
+### Installation
+
+```bash
+npm install @adaptive-cards/ui
+```
+
+### Usage
+
+```tsx
+import { Card, CardHeader, CardTitle, CardContent, Button } from '@adaptive-cards/ui';
+import '@adaptive-cards/ui/styles.css';
+
+function MyComponent() {
+  return (
+    <Card variant="default" size="md">
+      <CardHeader>
+        <CardTitle>Welcome to Adaptive Cards</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>This is a sample adaptive card with modern design.</p>
+        <Button className="mt-4">Get Started</Button>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### Tailwind CSS Configuration
+
+Add the UI package to your Tailwind content paths:
+
+```js
+module.exports = {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@adaptive-cards/ui/**/*.{js,ts,jsx,tsx}"
+  ],
+  // ... rest of your config
+}
+```
+
+## Design Principles
+
+### 1. Accessibility First
+- All components meet WCAG 2.1 AA standards
+- Keyboard navigation support
+- Screen reader compatibility
+- Focus management and indicators
+- High contrast mode support
+
+### 2. Mobile-First Responsive
+- Touch-friendly interaction targets (44px minimum)
+- Responsive typography and spacing
+- Flexible layouts that adapt to any screen size
+- Performance optimized for mobile devices
+
+### 3. Consistent Visual Language
+- Microsoft-inspired design with modern touches
+- Consistent spacing based on 8px grid system
+- Semantic color system with proper contrast ratios
+- Elevation system for visual hierarchy
+
+### 4. Developer Experience
+- TypeScript-first development
+- Comprehensive documentation with examples
+- Consistent API patterns across components
+- Easy customization with CSS custom properties
+
+## Component Architecture
+
+### Base Components
+- **Card** - Container component with variants and interactive states
+- **Button** - Action component with loading states and icon support
+- **Input** - Form input with validation and accessibility features
+- **Badge** - Status and labeling component
+- **Skeleton** - Loading state placeholder
+
+### Composition Patterns
+Components are designed to work together seamlessly:
+
+```tsx
+<Card interactive onClick={handleCardClick}>
+  <CardHeader>
+    <div className="flex justify-between items-start">
+      <CardTitle>Project Status</CardTitle>
+      <Badge variant="success">Active</Badge>
+    </div>
+  </CardHeader>
+  <CardContent>
+    <Input 
+      label="Project Name" 
+      value={projectName}
+      onChange={setProjectName}
+    />
+  </CardContent>
+  <CardFooter>
+    <Button loading={isSaving} onClick={handleSave}>
+      Save Changes
+    </Button>
+  </CardFooter>
+</Card>
+```
+
+## Customization
+
+### CSS Custom Properties
+The design system uses CSS custom properties for theming:
+
+```css
+:root {
+  --primary: 207 100% 42%;      /* Microsoft Blue */
+  --secondary: 210 40% 96%;
+  --success: 142.1 76.2% 36.3%;
+  --warning: 32.1 94.6% 43.7%;
+  --error: 0 84.2% 60.2%;
+  --radius: 0.5rem;
+}
+```
+
+### Dark Mode
+Dark mode is automatically handled through CSS classes:
+
+```tsx
+<div className="dark">
+  {/* Components automatically adapt to dark theme */}
+  <Card>Dark mode card</Card>
+</div>
+```
+
+### Extending Components
+Use class-variance-authority for consistent component variants:
+
+```tsx
+import { cva } from 'class-variance-authority';
+import { Card } from '@adaptive-cards/ui';
+
+const customCardVariants = cva('', {
+  variants: {
+    brand: {
+      primary: 'border-brand-500 bg-brand-50',
+      secondary: 'border-gray-300 bg-gray-50',
+    }
+  }
+});
+
+function CustomCard({ brand, ...props }) {
+  return (
+    <Card 
+      className={customCardVariants({ brand })}
+      {...props}
+    />
+  );
+}
+```
+
+## Getting Help
+
+### Documentation
+- Browse components in the **Components** section
+- Check **Design System** for tokens and guidelines
+- Review **Examples** for implementation patterns
+
+### Resources
+- [GitHub Repository](https://github.com/your-org/adaptive-cards-framework)
+- [Accessibility Guidelines](/docs/introduction-accessibility--docs)
+- [Migration Guide](/docs/introduction-migration--docs)
+
+### Community
+- [Discord Community](#)
+- [GitHub Discussions](#)
+- [Stack Overflow](#) (tag: adaptive-cards-ui)
+
+---
+
+**Ready to build amazing adaptive card experiences?** Start exploring the components in the sidebar! 🚀

@@ -1,0 +1,243 @@
+# cert-manager installation and configuration
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+  labels:
+    name: cert-manager
+---
+# ClusterIssuer for Let's Encrypt production
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@arketic.com
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+    - dns01:
+        route53:
+          region: us-west-2
+          accessKeyID: AKIA...
+          secretAccessKeySecretRef:
+            name: route53-credentials
+            key: secret-access-key
+---
+# ClusterIssuer for Let's Encrypt staging
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: admin@arketic.com
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+    - dns01:
+        route53:
+          region: us-west-2
+          accessKeyID: AKIA...
+          secretAccessKeySecretRef:
+            name: route53-credentials
+            key: secret-access-key
+---
+# Certificate for main domain
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: arketic-tls
+  namespace: arketic
+spec:
+  secretName: arketic-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - arketic.com
+  - www.arketic.com
+  - api.arketic.com
+  - admin.arketic.com
+  renewBefore: 720h # 30 days
+  duration: 2160h   # 90 days
+---
+# Certificate for internal services
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: arketic-internal-tls
+  namespace: arketic
+spec:
+  secretName: arketic-internal-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - monitoring.arketic.com
+  - grafana.arketic.com
+  - prometheus.arketic.com
+  - kibana.arketic.com
+  renewBefore: 720h
+  duration: 2160h
+---
+# Route53 credentials secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: route53-credentials
+  namespace: cert-manager
+type: Opaque
+stringData:
+  secret-access-key: "YOUR_SECRET_ACCESS_KEY"
+---
+# Certificate monitoring and alerting
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cert-manager-metrics
+  namespace: cert-manager
+  labels:
+    app: cert-manager
+spec:
+  selector:
+    matchLabels:
+      app: cert-manager
+  endpoints:
+  - port: tcp-prometheus-servicemonitor
+    interval: 60s
+    path: /metrics
+---
+# PrometheusRule for certificate expiry alerts
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: certificate-expiry-alerts
+  namespace: cert-manager
+  labels:
+    app: cert-manager
+spec:
+  groups:
+  - name: certificate-expiry
+    rules:
+    - alert: CertificateExpiringSoon
+      expr: certmanager_certificate_expiration_timestamp_seconds - time() < 7 * 24 * 3600
+      for: 1h
+      labels:
+        severity: warning
+      annotations:
+        summary: "Certificate {{ $labels.name }} is expiring soon"
+        description: "Certificate {{ $labels.name }} in namespace {{ $labels.namespace }} will expire in less than 7 days"
+    
+    - alert: CertificateExpired
+      expr: certmanager_certificate_expiration_timestamp_seconds - time() <= 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Certificate {{ $labels.name }} has expired"
+        description: "Certificate {{ $labels.name }} in namespace {{ $labels.namespace }} has expired"
+    
+    - alert: CertificateRenewalFailed
+      expr: increase(certmanager_certificate_renewal_failed_total[1h]) > 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Certificate renewal failed for {{ $labels.name }}"
+        description: "Certificate {{ $labels.name }} in namespace {{ $labels.namespace }} failed to renew"
+---
+# Trust manager for distributing CA certificates
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ca-bundle
+  namespace: arketic
+  labels:
+    config.trust.cert-manager.io/bundle: "true"
+data: {}
+---
+# Custom CA issuer for internal services
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: arketic-internal-ca
+spec:
+  ca:
+    secretName: arketic-internal-ca-secret
+---
+# Self-signed issuer for creating the internal CA
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-issuer
+spec:
+  selfSigned: {}
+---
+# Internal CA certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: arketic-internal-ca-cert
+  namespace: cert-manager
+spec:
+  isCA: true
+  commonName: Arketic Internal CA
+  secretName: arketic-internal-ca-secret
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+  subject:
+    organizationalUnits:
+    - Arketic Security
+    organizations:
+    - Arketic Inc.
+    countries:
+    - US
+    provinces:
+    - California
+    localities:
+    - San Francisco
+---
+# Certificate for service mesh mTLS
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: arketic-mtls
+  namespace: arketic
+spec:
+  secretName: arketic-mtls-secret
+  duration: 2160h # 90 days
+  renewBefore: 360h # 15 days before expiry
+  subject:
+    organizations:
+    - arketic
+  commonName: arketic-mtls
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+  - server auth
+  - client auth
+  dnsNames:
+  - arketic-backend-service.arketic.svc.cluster.local
+  - arketic-frontend-service.arketic.svc.cluster.local
+  - postgres-service.arketic.svc.cluster.local
+  - redis-service.arketic.svc.cluster.local
+  issuerRef:
+    name: arketic-internal-ca
+    kind: ClusterIssuer

@@ -1,0 +1,242 @@
+{
+  "coverage": 85,
+  "openFindings": 3,
+  "nextAuditDate": "2024-10-01",
+  "responsibleUsers": {
+    "overall": "u1",
+    "departments": {
+      "Engineering": "u1",
+      "Sales": "u7", 
+      "Marketing": "u14",
+      "Support": "u18",
+      "Production": "u11"
+    }
+  },
+  "clauses": [
+    { 
+      "id": "4.1",  
+      "title": "Understanding the organization and its context",                           
+      "description": "The organization shall determine external and internal issues that are relevant to its purpose and that affect its ability to achieve the intended result(s) of its quality management system.",
+      "linkedServices": 3, 
+      "status": "compliant", 
+      "responsibleUser": "u1",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "4.2",  
+      "title": "Understanding the needs and expectations of interested parties",          
+      "description": "The organization shall determine the interested parties that are relevant to the quality management system and the requirements of these interested parties.",
+      "linkedServices": 2, 
+      "status": "compliant", 
+      "responsibleUser": "u7",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "5.1",  
+      "title": "Leadership and commitment",                                               
+      "description": "Top management shall demonstrate leadership and commitment with respect to the quality management system.",
+      "linkedServices": 1, 
+      "status": "compliant", 
+      "responsibleUser": "u1",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "6.1",  
+      "title": "Actions to address risks and opportunities",                             
+      "description": "When planning for the quality management system, the organization shall consider the issues referred to in 4.1 and the requirements referred to in 4.2.",
+      "linkedServices": 4, 
+      "status": "gap",       
+      "responsibleUser": "u4",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "gap",      
+        "Marketing": "compliant", 
+        "Support": "gap",      
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "7.1",  
+      "title": "Resources",                                                               
+      "description": "The organization shall determine and provide the resources needed for the establishment, implementation, maintenance and continual improvement of the quality management system.",
+      "linkedServices": 2, 
+      "status": "compliant", 
+      "responsibleUser": "u6",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "7.5.3",
+      "title": "Control of documented information",                                       
+      "description": "Documented information required by the quality management system and by this International Standard shall be controlled to ensure it is available and suitable for use.",
+      "linkedServices": 1, 
+      "status": "compliant", 
+      "responsibleUser": "u5",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "8.1",  
+      "title": "Operational planning and control",                                       
+      "description": "The organization shall plan, implement and control the processes needed to meet requirements.",
+      "linkedServices": 6, 
+      "status": "gap",       
+      "responsibleUser": "u4",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "gap",      
+        "Marketing": "compliant", 
+        "Support": "gap",      
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "8.2",  
+      "title": "Requirements for products and services",                                 
+      "description": "The organization shall ensure that the requirements for the products and services to be offered to customers are determined.",
+      "linkedServices": 1, 
+      "status": "compliant", 
+      "responsibleUser": "u7",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "8.3",  
+      "title": "Design and development of products and services",                        
+      "description": "The organization shall establish, implement and maintain a design and development process that is appropriate to ensure the subsequent provision of products and services.",
+      "linkedServices": 1, 
+      "status": "compliant", 
+      "responsibleUser": "u1",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "8.5",  
+      "title": "Production and service provision",                                       
+      "description": "The organization shall implement production and service provision under controlled conditions.",
+      "linkedServices": 1, 
+      "status": "compliant", 
+      "responsibleUser": "u14",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "8.6",  
+      "title": "Release of products and services",                                       
+      "description": "The organization shall implement planned arrangements, at appropriate stages, to verify that the product and service requirements have been met.",
+      "linkedServices": 1, 
+      "status": "compliant", 
+      "responsibleUser": "u13",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "9.1",  
+      "title": "Monitoring, measurement, analysis and evaluation",                       
+      "description": "The organization shall determine what needs to be monitored and measured, the methods for monitoring, measurement, analysis and evaluation needed.",
+      "linkedServices": 1, 
+      "status": "compliant", 
+      "responsibleUser": "u18",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "9.2",  
+      "title": "Internal audit",                                                          
+      "description": "The organization shall conduct internal audits at planned intervals to provide information on whether the quality management system conforms to the organization's own requirements.",
+      "linkedServices": 1, 
+      "status": "gap",       
+      "responsibleUser": "u18",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "gap",      
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "10.1", 
+      "title": "Improvement",                                                             
+      "description": "The organization shall determine and select opportunities for improvement and implement any necessary actions to meet customer requirements and enhance customer satisfaction.",
+      "linkedServices": 2, 
+      "status": "gap",       
+      "responsibleUser": "u7",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "gap",      
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    },
+    { 
+      "id": "10.2", 
+      "title": "Non-conformity and corrective action",                                   
+      "description": "When a nonconformity occurs, the organization shall react to the nonconformity and take action to control and correct it.",
+      "linkedServices": 1, 
+      "status": "compliant", 
+      "responsibleUser": "u11",
+      "departments": { 
+        "Engineering": "compliant", 
+        "Sales": "compliant", 
+        "Marketing": "compliant", 
+        "Support": "compliant", 
+        "Production": "compliant" 
+      } 
+    }
+  ]
+} 

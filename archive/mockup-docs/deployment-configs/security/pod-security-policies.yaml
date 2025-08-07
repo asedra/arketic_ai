@@ -1,0 +1,241 @@
+# Pod Security Standards and Policies
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: arketic
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+---
+# Service Account for Arketic applications
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: arketic-service-account
+  namespace: arketic
+automountServiceAccountToken: false
+---
+# Role for minimal required permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: arketic-role
+  namespace: arketic
+rules:
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create"]
+---
+# Role binding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: arketic-role-binding
+  namespace: arketic
+subjects:
+- kind: ServiceAccount
+  name: arketic-service-account
+  namespace: arketic
+roleRef:
+  kind: Role
+  name: arketic-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Security Context Constraints for OpenShift (if applicable)
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  name: arketic-scc
+allowHostDirVolumePlugin: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegeEscalation: false
+allowPrivilegedContainer: false
+allowedCapabilities: null
+defaultAddCapabilities: null
+requiredDropCapabilities:
+- KILL
+- MKNOD
+- SETUID
+- SETGID
+fsGroup:
+  type: MustRunAs
+  ranges:
+  - min: 1000
+    max: 2000
+readOnlyRootFilesystem: true
+runAsUser:
+  type: MustRunAsNonRoot
+seLinuxContext:
+  type: MustRunAs
+supplementalGroups:
+  type: RunAsAny
+users:
+- system:serviceaccount:arketic:arketic-service-account
+volumes:
+- configMap
+- downwardAPI
+- emptyDir
+- persistentVolumeClaim
+- projected
+- secret
+---
+# Open Policy Agent Gatekeeper policies
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: arketicsecuritypolicy
+spec:
+  crd:
+    spec:
+      names:
+        kind: ArketicSecurityPolicy
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            allowedImages:
+              type: array
+              items:
+                type: string
+            requiredLabels:
+              type: array
+              items:
+                type: string
+            disallowedCapabilities:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package arketicsecurity
+        
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          not starts_with(container.image, input.parameters.allowedImages[_])
+          msg := sprintf("Container image %v is not allowed", [container.image])
+        }
+        
+        violation[{"msg": msg}] {
+          required := input.parameters.requiredLabels[_]
+          not input.review.object.metadata.labels[required]
+          msg := sprintf("Required label %v is missing", [required])
+        }
+        
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          capability := container.securityContext.capabilities.add[_]
+          capability == input.parameters.disallowedCapabilities[_]
+          msg := sprintf("Disallowed capability %v found", [capability])
+        }
+        
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          container.securityContext.privileged == true
+          msg := "Privileged containers are not allowed"
+        }
+        
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          container.securityContext.runAsRoot == true
+          msg := "Running as root is not allowed"
+        }
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ArketicSecurityPolicy
+metadata:
+  name: arketic-security-constraints
+spec:
+  match:
+    kinds:
+      - apiGroups: ["apps"]
+        kinds: ["Deployment", "StatefulSet"]
+    namespaces:
+      - arketic
+  parameters:
+    allowedImages:
+      - "ghcr.io/arketic/"
+      - "postgres:15"
+      - "redis:7"
+      - "qdrant/qdrant"
+    requiredLabels:
+      - "app"
+      - "version"
+    disallowedCapabilities:
+      - "NET_ADMIN"
+      - "SYS_ADMIN"
+      - "SYS_TIME"
+---
+# Admission controller webhook for additional security
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionWebhook
+metadata:
+  name: arketic-security-webhook
+webhooks:
+- name: security.arketic.com
+  clientConfig:
+    service:
+      name: arketic-security-webhook
+      namespace: arketic
+      path: "/validate"
+  rules:
+  - operations: ["CREATE", "UPDATE"]
+    apiGroups: ["apps"]
+    apiVersions: ["v1"]
+    resources: ["deployments", "statefulsets"]
+  namespaceSelector:
+    matchLabels:
+      name: arketic
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  failurePolicy: Fail
+---
+# Resource quotas for security
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: arketic-security-quota
+  namespace: arketic
+spec:
+  hard:
+    requests.cpu: "10"
+    requests.memory: 20Gi
+    limits.cpu: "20"
+    limits.memory: 40Gi
+    persistentvolumeclaims: "20"
+    secrets: "50"
+    configmaps: "50"
+---
+# Limit ranges for pods
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: arketic-limit-range
+  namespace: arketic
+spec:
+  limits:
+  - default:
+      cpu: "500m"
+      memory: "1Gi"
+    defaultRequest:
+      cpu: "100m"
+      memory: "256Mi"
+    max:
+      cpu: "2"
+      memory: "4Gi"
+    min:
+      cpu: "50m"
+      memory: "128Mi"
+    type: Container
+  - max:
+      storage: "100Gi"
+    min:
+      storage: "1Gi"
+    type: PersistentVolumeClaim

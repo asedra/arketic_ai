@@ -1,0 +1,12 @@
+{
+  "name": "@arketic/utils",
+  "version": "1.0.0",
+  "description": "Shared utilities for Arketic",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "scripts": {},
+  "dependencies": {}
+}

@@ -1,0 +1,72 @@
+@import '../../../packages/ui/src/styles/index.css';
+
+/* Additional Storybook-specific styles */
+.sb-show-main {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Ensure proper spacing in Storybook canvas */
+.docs-story > div {
+  min-height: auto !important;
+}
+
+/* Custom scrollbar for Storybook */
+.sb-main-padded {
+  @apply custom-scrollbar;
+}
+
+/* Override Storybook's default focus styles to match our design system */
+.sb-show-main button:focus-visible,
+.sb-show-main input:focus-visible,
+.sb-show-main textarea:focus-visible,
+.sb-show-main select:focus-visible {
+  outline: 2px solid hsl(var(--ring)) !important;
+  outline-offset: 2px !important;
+}
+
+/* Enhance code blocks in docs */
+.sbdocs-preview {
+  @apply border-border;
+}
+
+.sbdocs-preview code {
+  @apply bg-muted text-muted-foreground px-1 py-0.5 rounded text-sm;
+}
+
+/* Style tables in documentation */
+.sbdocs table {
+  @apply w-full border-collapse border border-border;
+}
+
+.sbdocs table th,
+.sbdocs table td {
+  @apply border border-border px-3 py-2 text-left;
+}
+
+.sbdocs table th {
+  @apply bg-muted font-semibold;
+}
+
+/* Ensure consistent spacing in story sections */
+.sb-story {
+  @apply space-y-4;
+}
+
+/* Custom animation for shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

@@ -1,0 +1,183 @@
+# Falco Helm chart values for runtime security monitoring
+falco:
+  # Rule matching and alerting
+  rules_file:
+    - /etc/falco/falco_rules.yaml
+    - /etc/falco/falco_rules.local.yaml
+    - /etc/falco/k8s_audit_rules.yaml
+    - /etc/falco/rules.d
+
+  # Falco outputs
+  outputs:
+    rate: 1
+    max_burst: 1000
+
+  # Falco gRPC configuration
+  grpc:
+    enabled: true
+    bind_address: "0.0.0.0:5060"
+    threadiness: 0
+
+  # Falco gRPC output service
+  grpc_output:
+    enabled: true
+
+  # File output
+  file_output:
+    enabled: true
+    keep_alive: false
+    filename: ./events.txt
+
+  # Program output
+  program_output:
+    enabled: false
+    keep_alive: false
+    program: "jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+
+  # HTTP output
+  http_output:
+    enabled: true
+    url: "https://your-siem-endpoint.com/falco-events"
+    user_agent: "falco/0.32.2"
+
+  # Stdout output
+  stdout_output:
+    enabled: true
+
+# Falco driver configuration
+driver:
+  enabled: true
+  kind: ebpf
+
+# eBPF probe configuration
+ebpf:
+  enabled: true
+  settings:
+    hostNetwork: true
+
+# Custom rules for Arketic
+customRules:
+  arketic_rules.yaml: |-
+    # Arketic-specific security rules
+    
+    - rule: Arketic Unauthorized File Access
+      desc: Detect unauthorized access to sensitive Arketic files
+      condition: >
+        (open_read and fd.name startswith "/app/secrets/" and not proc.name in (arketic_allowed_processes))
+      output: >
+        Unauthorized access to Arketic secrets detected (user=%user.name command=%proc.cmdline file=%fd.name)
+      priority: CRITICAL
+      tags: [arketic, file_access, secrets]
+    
+    - rule: Arketic Database Connection Anomaly
+      desc: Detect unusual database connection patterns
+      condition: >
+        (spawned_process and proc.name=psql and not proc.pname in (arketic-backend, alembic))
+      output: >
+        Unusual database connection detected (user=%user.name command=%proc.cmdline parent=%proc.pname)
+      priority: WARNING
+      tags: [arketic, database, anomaly]
+    
+    - rule: Arketic Privilege Escalation
+      desc: Detect privilege escalation attempts
+      condition: >
+        (spawned_process and proc.name in (su, sudo, setuid) and container.name contains "arketic")
+      output: >
+        Privilege escalation attempt in Arketic container (user=%user.name command=%proc.cmdline container=%container.name)
+      priority: CRITICAL
+      tags: [arketic, privilege_escalation]
+    
+    - rule: Arketic Network Anomaly
+      desc: Detect unusual network connections from Arketic services
+      condition: >
+        (outbound and container.name contains "arketic" and not fd.sip in (allowed_arketic_destinations))
+      output: >
+        Unusual outbound connection from Arketic service (container=%container.name dest=%fd.sip:%fd.sport)
+      priority: WARNING
+      tags: [arketic, network, anomaly]
+    
+    - list: arketic_allowed_processes
+      items: ["arketic-backend", "python", "uvicorn", "gunicorn"]
+    
+    - list: allowed_arketic_destinations
+      items: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+
+# Falco Sidekick for forwarding alerts
+falcosidekick:
+  enabled: true
+  
+  config:
+    slack:
+      webhookurl: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+      channel: "#security-alerts"
+      username: "Falco"
+      iconurl: "https://falco.org/img/brand/falco-logo.png"
+      outputformat: "all"
+      minimumpriority: "WARNING"
+    
+    datadog:
+      apikey: ""
+      host: "https://api.datadoghq.com"
+      minimumpriority: "WARNING"
+    
+    elasticsearch:
+      hostport: "arketic-logs-master:9200"
+      index: "falco"
+      type: "event"
+      minimumpriority: "WARNING"
+      username: ""
+      password: ""
+    
+    influxdb:
+      hostport: ""
+      database: "falco"
+      user: ""
+      password: ""
+      minimumpriority: "WARNING"
+    
+    webhook:
+      address: "https://your-webhook-endpoint.com/falco"
+      minimumpriority: "WARNING"
+
+  resources:
+    limits:
+      cpu: 20m
+      memory: 50Mi
+    requests:
+      cpu: 10m
+      memory: 25Mi
+
+# Resource limits for Falco
+resources:
+  limits:
+    cpu: 200m
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 512Mi
+
+# Node selector and tolerations
+nodeSelector: {}
+
+tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/control-plane
+
+# Service monitor for Prometheus
+serviceMonitor:
+  enabled: true
+  additionalLabels: {}
+  interval: 30s
+  scrapeTimeout: 10s
+
+# Security context
+securityContext:
+  privileged: true
+
+# Enable audit log monitoring
+auditLog:
+  enabled: true
+  dynamicBackend:
+    enabled: true

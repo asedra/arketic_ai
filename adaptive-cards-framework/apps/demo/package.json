@@ -1,0 +1,33 @@
+{
+  "name": "adaptive-cards-demo",
+  "version": "1.0.0",
+  "description": "Demo application for the Adaptive Cards Framework",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@adaptive-cards/core": "file:../../packages/core",
+    "@adaptive-cards/parser": "file:../../packages/parser",
+    "@adaptive-cards/react": "file:../../packages/react",
+    "@adaptive-cards/renderer": "file:../../packages/renderer",
+    "@adaptive-cards/bot-framework": "file:../../packages/bot-framework",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "clsx": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0",
+    "eslint": "^8.55.0",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0"
+  }
+}

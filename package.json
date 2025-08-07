@@ -1,0 +1,68 @@
+{
+  "name": "arketic-enterprise",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Arketic Enterprise Monorepo - Advanced Organization Management Platform",
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
+    "dev:web": "cd apps/web && npm run dev",
+    "dev:api": "cd apps/api && python3 -m uvicorn main:app --reload --port 8000",
+    "dev:docker": "./scripts/docker-dev.sh",
+    "docker:start": "docker compose up -d",
+    "docker:stop": "docker compose down",
+    "docker:restart": "docker compose restart",
+    "docker:rebuild": "docker compose down && docker compose build --no-cache && docker compose up -d",
+    "docker:logs": "docker compose logs -f",
+    "docker:clean": "./scripts/docker-dev.sh clean",
+    "build": "npm run build:packages && npm run build:apps",
+    "build:packages": "npm run build:ui && npm run build:types && npm run build:utils",
+    "build:ui": "cd packages/ui && npm run build",
+    "build:types": "cd packages/types && npm run build",
+    "build:utils": "cd packages/utils && npm run build",
+    "build:apps": "npm run build:web && npm run build:api",
+    "build:web": "cd apps/web && npm run build",
+    "build:api": "cd apps/api && python3 -m pip install -r requirements.txt",
+    "test": "npm run test:packages && npm run test:apps",
+    "test:packages": "npm run test:ui && npm run test:utils",
+    "test:ui": "cd packages/ui && npm run test",
+    "test:utils": "cd packages/utils && npm run test",
+    "test:apps": "npm run test:web && npm run test:api",
+    "test:web": "cd apps/web && npm run test",
+    "test:api": "cd apps/api && python3 -m pytest",
+    "lint": "npm run lint:web",
+    "lint:web": "cd apps/web && npm run lint",
+    "typecheck": "npm run typecheck:packages && npm run typecheck:web",
+    "typecheck:packages": "cd packages/types && tsc --noEmit",
+    "typecheck:web": "cd apps/web && tsc --noEmit",
+    "start": "concurrently \"npm run start:web\" \"npm run start:api\"",
+    "start:web": "cd apps/web && npm run start",
+    "start:api": "cd apps/api && python3 -m uvicorn main:app --port 8000",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
+    "reset": "npm run clean && npm install",
+    "setup": "./scripts/dev-setup.sh",
+    "setup:docker": "./scripts/docker-dev.sh"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arketic/arketic-enterprise.git"
+  },
+  "license": "PROPRIETARY",
+  "author": "Arketic Team",
+  "dependencies": {
+    "axios": "^1.11.0"
+  }
+}

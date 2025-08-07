@@ -1,0 +1,39 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2020",
+    "types": ["vite/client", "@storybook/react/types"],
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@adaptive-cards/ui": ["../../packages/ui/src"],
+      "@adaptive-cards/core": ["../../packages/core/src"],
+      "@adaptive-cards/react": ["../../packages/react/src"],
+      "@adaptive-cards/chat": ["../../packages/chat/src"]
+    }
+  },
+  "include": [
+    ".storybook/**/*",
+    "stories/**/*",
+    "styles/**/*",
+    "../../packages/*/src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "storybook-static",
+    "**/*.test.*",
+    "**/*.spec.*"
+  ]
+}

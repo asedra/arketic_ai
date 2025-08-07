@@ -1,0 +1,53 @@
+{
+  "test_metadata": {
+    "generated_at": "2025-08-07T09:58:37.824265Z",
+    "base_url": "http://localhost:8000",
+    "test_email": "test@arketic.com",
+    "total_tests": 1,
+    "successful_tests": 0,
+    "failed_tests": 1,
+    "success_rate_percent": 0.0,
+    "average_duration_ms": 31336.74,
+    "tested_endpoints": [
+      "POST /api/v1/organization/people/",
+      "GET /api/v1/organization/people/",
+      "GET /api/v1/organization/people/{id}",
+      "PUT /api/v1/organization/people/{id}",
+      "DELETE /api/v1/organization/people/{id}",
+      "POST /api/v1/organization/people/bulk",
+      "PUT /api/v1/organization/people/bulk",
+      "GET /api/v1/organization/people/stats/overview",
+      "GET /api/v1/organization/people/hierarchy"
+    ],
+    "test_data_created": 0
+  },
+  "endpoint_summary": {
+    "/api/v1/auth/login": {
+      "total_calls": 1,
+      "successful_calls": 0,
+      "failed_calls": 1,
+      "avg_duration_ms": 31336.74
+    }
+  },
+  "detailed_results": [
+    {
+      "endpoint": "/api/v1/auth/login",
+      "method": "POST",
+      "payload": {
+        "email": "test@arketic.com",
+        "password": "testpass123",
+        "remember_me": false
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "response_status": 0,
+      "response_body": null,
+      "response_text": "HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)",
+      "timestamp": "2025-08-07T09:58:37.824130Z",
+      "duration_ms": 31336.74,
+      "success": false,
+      "error_message": "Request failed: HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)"
+    }
+  ]
+}

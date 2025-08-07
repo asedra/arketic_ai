@@ -1,0 +1,178 @@
+[
+  {
+    "id": "site-1",
+    "name": "Main Office",
+    "type": "site",
+    "location": "New York, NY",
+    "children": [
+      {
+        "id": "dept-eng",
+        "name": "Engineering",
+        "type": "department",
+        "manager": "u1",
+        "children": [
+          {
+            "id": "title-se",
+            "name": "Senior Software Engineer",
+            "type": "title",
+            "children": [
+              { "id": "u1", "name": "John Doe", "email": "john.doe@company.com", "avatar": "/placeholder-user.jpg", "initials": "JD", "role": "Admin" }
+            ]
+          },
+          {
+            "id": "title-se-jr",
+            "name": "Software Engineer",
+            "type": "title",
+            "children": [
+              { "id": "u2", "name": "Mike Johnson", "email": "mike.johnson@company.com", "avatar": "/placeholder-user.jpg", "initials": "MJ", "role": "Admin" },
+              { "id": "u3", "name": "Emma Davis", "email": "emma.davis@company.com", "avatar": "/placeholder-user.jpg", "initials": "ED", "role": "User" }
+            ]
+          },
+          {
+            "id": "title-lead",
+            "name": "Team Lead",
+            "type": "title",
+            "children": [
+              { "id": "u4", "name": "Sarah Wilson", "email": "sarah.wilson@company.com", "avatar": "/placeholder-user.jpg", "initials": "SW", "role": "User" }
+            ]
+          },
+          {
+            "id": "title-qa",
+            "name": "QA Engineer",
+            "type": "title",
+            "children": [
+              { "id": "u5", "name": "Alex Chen", "email": "alex.chen@company.com", "avatar": "/placeholder-user.jpg", "initials": "AC", "role": "User" }
+            ]
+          },
+          {
+            "id": "title-devops",
+            "name": "DevOps Engineer",
+            "type": "title",
+            "children": [
+              { "id": "u6", "name": "Chris Lee", "email": "chris.lee@company.com", "avatar": "/placeholder-user.jpg", "initials": "CL", "role": "User" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "dept-sales",
+        "name": "Sales",
+        "type": "department",
+        "manager": "u7",
+        "children": [
+          {
+            "id": "title-sales-mgr",
+            "name": "Sales Manager",
+            "type": "title",
+            "children": [
+              { "id": "u7", "name": "Jane Smith", "email": "jane.smith@company.com", "avatar": "/placeholder-user.jpg", "initials": "JS", "role": "Admin" }
+            ]
+          },
+          {
+            "id": "title-sales-rep",
+            "name": "Sales Representative",
+            "type": "title",
+            "children": [
+              { "id": "u8", "name": "Maria Garcia", "email": "maria.garcia@company.com", "avatar": "/placeholder-user.jpg", "initials": "MG", "role": "User" },
+              { "id": "u9", "name": "Bob Johnson", "email": "bob.johnson@company.com", "avatar": "/placeholder-user.jpg", "initials": "BJ", "role": "User" },
+              { "id": "u10", "name": "Alice Brown", "email": "alice.brown@company.com", "avatar": "/placeholder-user.jpg", "initials": "AB", "role": "User" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "dept-prod",
+        "name": "Production",
+        "type": "department",
+        "manager": "u11",
+        "children": [
+          {
+            "id": "title-prod-mgr",
+            "name": "Production Manager",
+            "type": "title",
+            "children": [
+              { "id": "u11", "name": "Peter Parker", "email": "peter.parker@company.com", "avatar": "/placeholder-user.jpg", "initials": "PP", "role": "User" }
+            ]
+          },
+          {
+            "id": "title-prod-sup",
+            "name": "Production Supervisor",
+            "type": "title",
+            "children": [
+              { "id": "u12", "name": "James Taylor", "email": "james.taylor@company.com", "avatar": "/placeholder-user.jpg", "initials": "JT", "role": "User" }
+            ]
+          },
+          {
+            "id": "title-qc",
+            "name": "Quality Control Specialist",
+            "type": "title",
+            "children": [
+              { "id": "u13", "name": "Tom Wilson", "email": "tom.wilson@company.com", "avatar": "/placeholder-user.jpg", "initials": "TW", "role": "User" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "site-2",
+    "name": "Branch Office",
+    "type": "site",
+    "location": "Los Angeles, CA",
+    "children": [
+      {
+        "id": "dept-marketing",
+        "name": "Marketing",
+        "type": "department",
+        "manager": "u14",
+        "children": [
+          {
+            "id": "title-marketing-mgr",
+            "name": "Marketing Manager",
+            "type": "title",
+            "children": [
+              { "id": "u14", "name": "David Kim", "email": "david.kim@company.com", "avatar": "/placeholder-user.jpg", "initials": "DK", "role": "User" }
+            ]
+          },
+          {
+            "id": "title-marketing-spec",
+            "name": "Marketing Specialist",
+            "type": "title",
+            "children": [
+              { "id": "u15", "name": "Diana Evans", "email": "diana.evans@company.com", "avatar": "/placeholder-user.jpg", "initials": "DE", "role": "User" },
+              { "id": "u16", "name": "Frank Miller", "email": "frank.miller@company.com", "avatar": "/placeholder-user.jpg", "initials": "FM", "role": "User" },
+              { "id": "u17", "name": "Grace Wilson", "email": "grace.wilson@company.com", "avatar": "/placeholder-user.jpg", "initials": "GW", "role": "User" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "dept-support",
+        "name": "Support",
+        "type": "department",
+        "manager": "u18",
+        "children": [
+          {
+            "id": "title-support-mgr",
+            "name": "Support Manager",
+            "type": "title",
+            "children": [
+              { "id": "u18", "name": "Lisa Brown", "email": "lisa.brown@company.com", "avatar": "/placeholder-user.jpg", "initials": "LB", "role": "User" }
+            ]
+          },
+          {
+            "id": "title-support-spec",
+            "name": "Support Specialist",
+            "type": "title",
+            "children": [
+              { "id": "u19", "name": "Rachel Green", "email": "rachel.green@company.com", "avatar": "/placeholder-user.jpg", "initials": "RG", "role": "User" },
+              { "id": "u20", "name": "Henry Adams", "email": "henry.adams@company.com", "avatar": "/placeholder-user.jpg", "initials": "HA", "role": "User" },
+              { "id": "u21", "name": "Charlie Davis", "email": "charlie.davis@company.com", "avatar": "/placeholder-user.jpg", "initials": "CD", "role": "User" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
+

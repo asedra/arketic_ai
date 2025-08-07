@@ -347,11 +347,31 @@ class PeopleAPITester:
         
         return success
     
-    def test_get_person_not_found(self):
-        """Test getting non-existent person"""
+    def test_get_person(self):
+        """Test getting person - both existing and non-existent"""
         print("\n🔍 Get Person Tests")
         print("-" * 40)
         
+        # Test 1: Get existing person (created in test_create_person)
+        if self.config["created_people"]:
+            person_id = self.config["created_people"][0]
+            endpoint = f"/api/v1/organization/people/{person_id}"
+            
+            start_time = time.time()
+            response = self.make_request("GET", endpoint, headers=self.get_auth_headers())
+            
+            status = TestStatus.PASS if response.status_code == 200 else TestStatus.FAIL
+            error_msg = None if status == TestStatus.PASS else f"Expected 200, got {response.status_code}"
+            
+            self.log_result(
+                "Get Person - Success", endpoint, "GET",
+                [200], response, None, start_time, status, error_msg
+            )
+        else:
+            # If no person was created (due to known issue), skip this test
+            print("⏭️ Skipping Get Person - Success test (no person created)")
+        
+        # Test 2: Get non-existent person
         fake_id = str(uuid.uuid4())
         endpoint = f"/api/v1/organization/people/{fake_id}"
         
@@ -476,7 +496,7 @@ class PeopleAPITester:
             ]),
             ("Data Retrieval", [
                 self.test_list_people,
-                self.test_get_person_not_found
+                self.test_get_person
             ]),
             ("Data Modification", [
                 self.test_update_person_not_found,

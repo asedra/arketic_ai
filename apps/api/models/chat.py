@@ -201,7 +201,11 @@ class ChatMessage(Base):
     @validates('content')
     def validate_content(self, key, content):
         """Validate message content"""
+        # Allow empty content for AI messages during streaming (they start empty and get filled)
         if not content or len(content.strip()) == 0:
+            # Allow empty content for AI messages (needed for streaming functionality)
+            if self.message_type == MessageType.AI:
+                return content  # Allow empty content for AI messages during streaming
             raise ValueError("Message content cannot be empty")
         if len(content) > 50000:  # 50k character limit
             raise ValueError("Message content too long")

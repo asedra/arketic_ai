@@ -72,6 +72,12 @@ async def lifespan(app: FastAPI):
         logger.info("Initializing shared dependencies...")
         initialize_dependencies(security_manager)
         
+        # Initialize LangChain service client
+        logger.info("Initializing LangChain service client...")
+        from services.langchain_client import get_langchain_client
+        langchain_client = get_langchain_client()
+        logger.info("LangChain service client ready")
+        
         logger.info("Arketic Backend initialization complete")
         
     except Exception as e:
@@ -84,6 +90,11 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down Arketic Backend...")
     
     try:
+        # Cleanup LangChain client
+        logger.info("Cleaning up LangChain service client...")
+        from services.langchain_client import cleanup_langchain_client
+        await cleanup_langchain_client()
+        
         if security_manager:
             await security_manager.cleanup()
         

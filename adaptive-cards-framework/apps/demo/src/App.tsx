@@ -1,11 +1,15 @@
 import React, { useState, useCallback } from 'react';
 import { SimpleAdaptiveCardRenderer } from './SimpleCardRenderer';
 import { sampleCards, cardCategories } from './data/sampleCards';
+import { ArketicChatIntegration } from './ArketicChatIntegration';
+import AdaptiveCardDesigner from './AdaptiveCardDesigner';
 import './styles/index.css';
 
 function App() {
   const [selectedCard, setSelectedCard] = useState('welcome');
   const [actionLog, setActionLog] = useState<string[]>([]);
+  const [showChat, setShowChat] = useState(false);
+  const [showDesigner, setShowDesigner] = useState(false);
 
   const handleCardSelect = useCallback((cardId: string) => {
     setSelectedCard(cardId);
@@ -26,6 +30,14 @@ function App() {
 
   const cardData = sampleCards[selectedCard as keyof typeof sampleCards];
 
+  if (showChat) {
+    return <ArketicChatIntegration />;
+  }
+
+  if (showDesigner) {
+    return <AdaptiveCardDesigner />;
+  }
+
   return (
     <div className="demo-app">
       <header className="demo-header">
@@ -34,6 +46,47 @@ function App() {
           A modern TypeScript framework for creating and rendering adaptive cards with React support, 
           Bot Framework integration, and comprehensive validation.
         </p>
+        <div style={{ display: 'flex', gap: '12px', marginTop: '1rem', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setShowChat(true)}
+            style={{
+              padding: '0.75rem 1.5rem',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
+              transition: 'transform 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            🚀 Try Arketic Chat Integration
+          </button>
+          
+          <button
+            onClick={() => setShowDesigner(true)}
+            style={{
+              padding: '0.75rem 1.5rem',
+              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
+              transition: 'transform 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            🎨 Open Card Designer
+          </button>
+        </div>
       </header>
 
       <main className="demo-main">

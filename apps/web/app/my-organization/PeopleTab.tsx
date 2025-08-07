@@ -20,37 +20,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { organizationApi } from "@/lib/api-client"
+import { organizationApi, PersonResponse, PersonListResponse } from "@/lib/api-client"
 import { useToast } from "@/hooks/use-toast"
 import { LoadingGrid, LoadingSpinner } from "@/components/ui/loading"
 import { AddPersonModal } from "./components/AddPersonModal"
+import { PersonDetailModal } from "./components/PersonDetailModal"
 
 // Mock data import as fallback
 import mockPeopleData from "./mock/people.json"
 
-interface Person {
-  id: string
-  name: string
-  email: string
-  avatar: string
-  initials: string
-  role: string
-  department: string
-  title: string
-  site: string
-  status: string
-  phone: string
-  location: string
-  hireDate: string
-  manager?: string | null
-  directReports?: string[]
-  firstName?: string
-  lastName?: string
-  employeeId?: string | null
-}
-
 export function PeopleTab() {
-  const [peopleData, setPeopleData] = useState<Person[]>(mockPeopleData as Person[])
+  const [peopleData, setPeopleData] = useState<PersonResponse[]>([])
   const [loading, setLoading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
@@ -58,6 +38,8 @@ export function PeopleTab() {
   const [siteFilter, setSiteFilter] = useState("all")
   const [roleFilter, setRoleFilter] = useState("all")
   const [isAddPersonModalOpen, setIsAddPersonModalOpen] = useState(false)
+  const [selectedPerson, setSelectedPerson] = useState<PersonResponse | null>(null)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const { toast } = useToast()
 
   const fetchPeople = async (isRefreshAfterCreate = false) => {
@@ -70,83 +52,40 @@ export function PeopleTab() {
       const response = await organizationApi.getPeople()
       
       if (response.data) {
-        // Backend returns PersonListResponse: { people: [...], total: N, page: N, page_size: N, total_pages: N }
-        let items = response.data.people || response.data
-        
-        // Ensure items is an array
-        if (!Array.isArray(items)) {
-          console.warn('API response is not an array, using mock data')
-          items = mockPeopleData
-        }
-        
-        // Transform backend Person objects to frontend format
-        const transformedItems = items.map((person: any) => {
-          // Validate required fields
-          if (!person.id || !person.email) {
-            console.warn('Invalid person data:', person)
-            return null
-          }
-          
-          const firstName = person.first_name || ''
-          const lastName = person.last_name || ''
-          const fullName = person.full_name || `${firstName} ${lastName}`.trim()
-          
-          return {
-            id: person.id,
-            name: fullName || 'Unknown Name',
-            email: person.email,
-            avatar: person.avatar_url || '/placeholder-user.jpg', // Use placeholder if no avatar URL provided
-            initials: fullName ? fullName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) : 'UN',
-            role: person.role || 'User',
-            department: person.department || 'Unknown',
-            title: person.job_title || 'No Title',
-            site: person.site || 'Unknown',
-            status: person.status || 'active',
-            phone: person.phone || 'No Phone',
-            location: person.location || 'Unknown',
-            hireDate: person.hire_date || new Date().toISOString(),
-            manager: person.manager_id,
-            directReports: [],
-            firstName,
-            lastName,
-            employeeId: person.employee_id
-          }
-        }).filter(Boolean) // Remove null entries
-        
-        setPeopleData(transformedItems)
+        const data = response.data as PersonListResponse
+        setPeopleData(data.people || [])
         
         // Only show success toast for manual refresh, not after person creation
         if (!isRefreshAfterCreate) {
           toast({
             title: "Success",
-            description: `Loaded ${transformedItems.length} people successfully`,
+            description: `Loaded ${data.people?.length || 0} people successfully`,
           })
         }
-        return transformedItems // Return the data for promise resolution
+        return data.people // Return the data for promise resolution
       } else {
-        console.warn('Failed to fetch people data, using mock data')
-        setPeopleData(mockPeopleData as Person[])
+        console.warn('Failed to fetch people data')
+        setPeopleData([])
         if (!isRefreshAfterCreate) {
           toast({
             title: "Warning",
-            description: 'Using offline data. Some information may be outdated.',
+            description: 'Could not fetch people data.',
             variant: "destructive",
           })
         }
-        return mockPeopleData
+        return []
       }
     } catch (error) {
       console.error('Error fetching people data:', error)
-      // Use mock data as fallback
-      setPeopleData(mockPeopleData)
+      setPeopleData([])
       if (!isRefreshAfterCreate) {
         toast({
           title: "Error",
-          description: 'Failed to connect to server. Using offline data.',
+          description: 'Failed to connect to server.',
           variant: "destructive",
         })
       }
-      return mockPeopleData
+      return []
     } finally {
       setLoading(false)
       setRefreshing(false)
@@ -160,10 +99,7 @@ export function PeopleTab() {
       await fetchPeople(true) // Pass true to indicate this is a refresh after creation
     } catch (error) {
       console.error('Failed to refresh people list:', error)
-      // Ensure we still have data
-      if (!Array.isArray(peopleData) || peopleData.length === 0) {
-        setPeopleData(mockPeopleData as Person[])
-      }
+      // Data refresh handled in fetchPeople
     } finally {
       setRefreshing(false)
     }
@@ -172,37 +108,34 @@ export function PeopleTab() {
   useEffect(() => {
     fetchPeople().catch((error) => {
       console.error('Failed to initialize dashboard:', error)
-      // Ensure we have fallback data
-      if (!Array.isArray(peopleData) || peopleData.length === 0) {
-        setPeopleData(mockPeopleData as Person[])
-      }
+      // Data initialization handled in fetchPeople
     })
   }, [])
 
   const departments = useMemo(() => {
     if (!Array.isArray(peopleData)) return []
-    const depts = new Set(peopleData.map((person: Person) => person.department))
+    const depts = new Set(peopleData.map((person) => person.department))
     return Array.from(depts).filter(dept => dept && dept.trim() !== '')
   }, [peopleData])
 
   const sites = useMemo(() => {
     if (!Array.isArray(peopleData)) return []
-    const siteList = new Set(peopleData.map((person: Person) => person.site))
+    const siteList = new Set(peopleData.map((person) => person.site))
     return Array.from(siteList).filter(site => site && site.trim() !== '')
   }, [peopleData])
 
   const roles = useMemo(() => {
     if (!Array.isArray(peopleData)) return []
-    const roleList = new Set(peopleData.map((person: Person) => person.role))
+    const roleList = new Set(peopleData.map((person) => person.role))
     return Array.from(roleList).filter(role => role && role.trim() !== '')
   }, [peopleData])
 
   const filteredPeople = useMemo(() => {
     if (!Array.isArray(peopleData)) return []
-    return peopleData.filter((person: Person) => {
-      const matchesSearch = person.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    return peopleData.filter((person) => {
+      const matchesSearch = person.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            person.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           person.title.toLowerCase().includes(searchTerm.toLowerCase())
+                           (person.job_title?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
       
       const matchesDepartment = departmentFilter === "all" || person.department === departmentFilter
       const matchesSite = siteFilter === "all" || person.site === siteFilter
@@ -328,71 +261,81 @@ export function PeopleTab() {
       {/* People Grid */}
       {!loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredPeople.map((person: Person) => (
-          <Card key={person.id} className="hover:shadow-lg transition-shadow duration-200">
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <SmartAvatar 
-                    src={person.avatar} 
-                    alt={person.name}
-                    fallback={person.initials}
-                    size="lg"
-                  />
-                  <div>
-                    <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                      {person.name}
-                    </CardTitle>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      {person.title}
-                    </p>
+          {filteredPeople.map((person) => {
+            const initials = person.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+            return (
+              <Card 
+                key={person.id} 
+                className="hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                onClick={() => {
+                  setSelectedPerson(person)
+                  setIsDetailModalOpen(true)
+                }}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <SmartAvatar 
+                        src="/placeholder-user.jpg"
+                        alt={person.full_name}
+                        fallback={initials}
+                        size="lg"
+                      />
+                      <div>
+                        <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                          {person.full_name}
+                        </CardTitle>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                          {person.job_title || "No Title"}
+                        </p>
+                      </div>
+                    </div>
+                    <Badge 
+                      variant={person.role === "Admin" ? "default" : "secondary"}
+                      className="text-xs"
+                    >
+                      {person.role}
+                    </Badge>
                   </div>
-                </div>
-                <Badge 
-                  variant={person.role === "Admin" ? "default" : "secondary"}
-                  className="text-xs"
-                >
-                  {person.role}
-                </Badge>
-              </div>
-            </CardHeader>
-            
-            <CardContent className="space-y-3">
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                  <Mail className="h-3 w-3" />
-                  <span className="truncate">{person.email}</span>
-                </div>
+                </CardHeader>
                 
-                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                  <Phone className="h-3 w-3" />
-                  <span>{person.phone}</span>
-                </div>
-                
-                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                  <MapPin className="h-3 w-3" />
-                  <span>{person.location}</span>
-                </div>
-                
-                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                  <Building className="h-3 w-3" />
-                  <span>{person.department}</span>
-                </div>
-                
-                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                  <Calendar className="h-3 w-3" />
-                  <span>Hired {formatDate(person.hireDate)}</span>
-                </div>
-              </div>
-              
-              <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
-                <Badge variant="outline" className="text-xs">
-                  {person.site}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                <CardContent className="space-y-3">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <Mail className="h-3 w-3" />
+                      <span className="truncate">{person.email}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <Phone className="h-3 w-3" />
+                      <span>{person.phone || "No Phone"}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <MapPin className="h-3 w-3" />
+                      <span>{person.location || "No Location"}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <Building className="h-3 w-3" />
+                      <span>{person.department || "No Department"}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                      <Calendar className="h-3 w-3" />
+                      <span>Hired {person.hire_date ? formatDate(person.hire_date) : "Unknown"}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <Badge variant="outline" className="text-xs">
+                      {person.site || "No Site"}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
       )}
 
@@ -414,6 +357,15 @@ export function PeopleTab() {
         onOpenChange={setIsAddPersonModalOpen}
         onPersonAdded={handlePersonAdded}
         existingPeople={peopleData}
+      />
+
+      {/* Person Detail Modal */}
+      <PersonDetailModal
+        open={isDetailModalOpen}
+        onOpenChange={setIsDetailModalOpen}
+        person={selectedPerson}
+        onPersonUpdated={handlePersonAdded}
+        managers={peopleData.filter(p => p.role === "Admin" || p.role === "Manager")}
       />
     </div>
   )

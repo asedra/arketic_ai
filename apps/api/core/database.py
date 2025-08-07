@@ -84,11 +84,12 @@ async def init_database():
         autocommit=False,  # Explicit commit required
     )
     
-    # Create tables
+    # Create tables (with checkfirst to avoid recreating existing tables)
     try:
         async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        logger.info("Database tables created successfully")
+            # Use checkfirst=True to skip existing tables
+            await conn.run_sync(lambda sync_conn: Base.metadata.create_all(sync_conn, checkfirst=True))
+        logger.info("Database tables created/verified successfully")
     except Exception as e:
         logger.error(f"Failed to create database tables: {e}")
         raise
@@ -196,7 +197,7 @@ async def reset_database():
     
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(lambda sync_conn: Base.metadata.create_all(sync_conn, checkfirst=False))
     
     logger.info("Database reset completed")
 

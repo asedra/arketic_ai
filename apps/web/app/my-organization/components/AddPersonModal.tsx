@@ -40,7 +40,7 @@ import {
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { useToast } from "@/hooks/use-toast"
-import { organizationApi } from "@/lib/api-client"
+import { organizationApi, PersonCreateRequest, PersonResponse } from "@/lib/api-client"
 
 // Form schema with validation
 const addPersonSchema = z.object({
@@ -49,8 +49,8 @@ const addPersonSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().optional(),
   jobTitle: z.string().min(1, "Job title is required").max(100, "Job title must be less than 100 characters"),
-  department: z.string().min(1, "Department is required"),
-  site: z.string().min(1, "Site is required"),
+  department: z.string().optional(),
+  site: z.string().optional(),
   role: z.enum(["Admin", "User", "Manager", "Viewer"], {
     required_error: "Please select a role",
   }),
@@ -62,21 +62,11 @@ const addPersonSchema = z.object({
 
 type AddPersonFormData = z.infer<typeof addPersonSchema>
 
-interface Person {
-  id: string
-  name: string
-  email: string
-  department: string
-  site: string
-  role: string
-  title: string
-}
-
 interface AddPersonModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onPersonAdded: () => Promise<void>
-  existingPeople: Person[]
+  existingPeople: PersonResponse[]
 }
 
 export function AddPersonModal({
@@ -152,19 +142,19 @@ export function AddPersonModal({
 
     try {
       // Prepare the data for API submission
-      const submissionData = {
+      const submissionData: PersonCreateRequest = {
         first_name: data.firstName,
         last_name: data.lastName,
         email: data.email,
-        phone: data.phone || null,
+        phone: data.phone || undefined,
         job_title: data.jobTitle,
-        department: showCustomDepartment ? customDepartment : data.department,
-        site: showCustomSite ? customSite : data.site,
+        department: showCustomDepartment && customDepartment ? customDepartment : data.department || undefined,
+        site: showCustomSite && customSite ? customSite : data.site || undefined,
         role: data.role,
-        hire_date: data.hireDate ? format(data.hireDate, "yyyy-MM-dd") : null,
-        manager_id: data.manager && data.manager !== "no-manager" ? data.manager : null,
-        location: data.location || null,
-        employee_id: data.employeeId || null,
+        hire_date: data.hireDate ? data.hireDate.toISOString() : undefined,
+        manager_id: data.manager && data.manager !== "no-manager" ? data.manager : undefined,
+        location: data.location || undefined,
+        notes: undefined
       }
 
       // Call the API to create the person
@@ -410,7 +400,7 @@ export function AddPersonModal({
                     <FormItem>
                       <FormLabel className="flex items-center gap-2">
                         <Building className="h-3 w-3" />
-                        Department *
+                        Department
                       </FormLabel>
                       {showCustomDepartment ? (
                         <div className="flex gap-2">
@@ -472,7 +462,7 @@ export function AddPersonModal({
                     <FormItem>
                       <FormLabel className="flex items-center gap-2">
                         <Building className="h-3 w-3" />
-                        Site *
+                        Site
                       </FormLabel>
                       {showCustomSite ? (
                         <div className="flex gap-2">
@@ -572,7 +562,7 @@ export function AddPersonModal({
                           <SelectItem value="no-manager">No Manager</SelectItem>
                           {managers.map((manager) => (
                             <SelectItem key={manager.id} value={manager.id}>
-                              {manager.name} - {manager.title}
+                              {manager.full_name} - {manager.job_title || "No Title"}
                             </SelectItem>
                           ))}
                         </SelectContent>

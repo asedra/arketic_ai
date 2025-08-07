@@ -1,36 +1,38 @@
 {
   "test_metadata": {
-    "generated_at": "2025-08-07T10:05:14.903406Z",
+    "generated_at": "2025-08-07T14:58:31.969376Z",
     "base_url": "http://localhost:8000",
     "websocket_url": "ws://localhost:8000",
     "test_email": "test@arketic.com",
-    "test_chat_id": "344fac75-85bc-4c4d-9f56-5607b2fdba80",
-    "total_tests": 14,
+    "test_chat_id": "48e8a572-9ab4-4921-a505-e43ce4c9b771",
+    "total_tests": 13,
     "successful_tests": 13,
-    "failed_tests": 1,
-    "success_rate_percent": 92.86,
-    "average_duration_ms": 166.91,
+    "failed_tests": 0,
+    "success_rate_percent": 100.0,
+    "average_duration_ms": 67.6,
     "tested_features": [
       "Chat Creation",
       "Chat Listing",
       "Chat History Retrieval",
-      "Message Sending",
       "Typing Indicators",
       "Participant Management",
       "System Statistics",
-      "Connection Testing",
-      "OpenAI Direct Integration",
       "Production AI Chat (Non-streaming)",
       "Production AI Chat (Streaming)",
+      "LangChain Service Health Check",
+      "LangChain Service Integration Test",
+      "Services Status Monitoring",
+      "Circuit Breaker Pattern",
+      "Service Fallback Mechanism",
       "WebSocket Communication"
     ]
   },
   "rest_api_summary": {
-    "total_calls": 13,
+    "total_calls": 12,
     "successful_calls": 12,
-    "failed_calls": 1,
-    "success_rate_percent": 92.31,
-    "average_duration_ms": 166.91
+    "failed_calls": 0,
+    "success_rate_percent": 100.0,
+    "average_duration_ms": 67.6
   },
   "websocket_summary": {
     "total_tests": 1,
@@ -43,73 +45,67 @@
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 239.14
+      "avg_duration_ms": 180.29
     },
     "/api/v1/chat/chats": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 33.22
+      "avg_duration_ms": 9.6
     },
     "/api/v1/chat/chats?limit=10&offset=0": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 20.53
+      "avg_duration_ms": 4.0
     },
-    "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80?limit=50&offset=0": {
+    "/api/v1/chat/chats/48e8a572-9ab4-4921-a505-e43ce4c9b771?limit=50&offset=0": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 30.15
+      "avg_duration_ms": 5.63
     },
-    "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80/messages": {
+    "/api/v1/chat/chats/48e8a572-9ab4-4921-a505-e43ce4c9b771/typing": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 55.21
+      "avg_duration_ms": 2.2
     },
-    "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80/typing": {
+    "/api/v1/chat/chats/48e8a572-9ab4-4921-a505-e43ce4c9b771/participants": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 2.57
-    },
-    "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80/participants": {
-      "total_calls": 1,
-      "successful_calls": 1,
-      "failed_calls": 0,
-      "avg_duration_ms": 14.1
+      "avg_duration_ms": 4.06
     },
     "/api/v1/chat/stats": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 2.11
+      "avg_duration_ms": 1.98
     },
-    "/api/v1/chat/test/connection": {
-      "total_calls": 1,
-      "successful_calls": 1,
-      "failed_calls": 0,
-      "avg_duration_ms": 529.5
-    },
-    "/api/v1/chat/websocket/test/344fac75-85bc-4c4d-9f56-5607b2fdba80": {
-      "total_calls": 1,
-      "successful_calls": 1,
-      "failed_calls": 0,
-      "avg_duration_ms": 2.5
-    },
-    "/api/v1/chat/openai/test": {
-      "total_calls": 1,
-      "successful_calls": 1,
-      "failed_calls": 0,
-      "avg_duration_ms": 661.51
-    },
-    "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80/ai-message": {
+    "/api/v1/chat/chats/48e8a572-9ab4-4921-a505-e43ce4c9b771/ai-message": {
       "total_calls": 2,
+      "successful_calls": 2,
+      "failed_calls": 0,
+      "avg_duration_ms": 295.12
+    },
+    "/api/v1/chat/langchain/health": {
+      "total_calls": 1,
       "successful_calls": 1,
-      "failed_calls": 1,
-      "avg_duration_ms": 289.62
+      "failed_calls": 0,
+      "avg_duration_ms": 3.56
+    },
+    "/api/v1/chat/langchain/test": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 5.48
+    },
+    "/api/v1/chat/services/status": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 4.1
     }
   },
   "detailed_rest_results": [
@@ -126,8 +122,8 @@
       },
       "response_status": 200,
       "response_body": {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
-        "refresh_token": "spd5KfrCc_di8cv-FNP0kWpW7MuRHePOiTsrUCkbzvw",
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
+        "refresh_token": "PVQ9dxfbmz-hUToTOuOtaUQmf8pNKrKlHGvW7XyCUa4",
         "token_type": "bearer",
         "expires_in": 1800,
         "user": {
@@ -140,9 +136,9 @@
           "is_verified": true
         }
       },
-      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ\",\"refresh_token\":\"spd5KfrCc_di8cv-FNP0kWpW7MuRHePOiTsrUCkbzvw\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"42c9a688-e24a-4cd6-b5e2-4e77f1894a6b\",\"email\":\"test@arketic.com\",\"username\":null,\"first_name\":\"Test\",\"last_name\":\"User\",\"role\":\"user\",\"is_verified\":true}}",
-      "timestamp": "2025-08-07T10:05:06.448015Z",
-      "duration_ms": 239.14,
+      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8\",\"refresh_token\":\"PVQ9dxfbmz-hUToTOuOtaUQmf8pNKrKlHGvW7XyCUa4\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"42c9a688-e24a-4cd6-b5e2-4e77f1894a6b\",\"email\":\"test@arketic.com\",\"username\":null,\"first_name\":\"Test\",\"last_name\":\"User\",\"role\":\"user\",\"is_verified\":true}}",
+      "timestamp": "2025-08-07T14:58:25.328212Z",
+      "duration_ms": 180.29,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -151,7 +147,7 @@
       "endpoint": "/api/v1/chat/chats",
       "method": "POST",
       "payload": {
-        "title": "Test Chat 1754561106",
+        "title": "Test Chat 1754578705",
         "description": "Automated test chat for API testing",
         "chat_type": "direct",
         "ai_model": "gpt-3.5-turbo",
@@ -167,20 +163,20 @@
         ]
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
-        "id": "344fac75-85bc-4c4d-9f56-5607b2fdba80",
-        "title": "Test Chat 1754561106",
+        "id": "48e8a572-9ab4-4921-a505-e43ce4c9b771",
+        "title": "Test Chat 1754578705",
         "description": "Automated test chat for API testing",
         "chat_type": "direct",
         "ai_model": "gpt-3.5-turbo",
         "ai_persona": "helpful assistant",
         "message_count": 0,
-        "last_activity_at": "2025-08-07T10:05:06.958168",
-        "created_at": "2025-08-07T10:05:06.958169",
+        "last_activity_at": "2025-08-07T14:58:25.831212",
+        "created_at": "2025-08-07T14:58:25.831213",
         "is_private": false,
         "tags": [
           "test",
@@ -188,9 +184,9 @@
           "api"
         ]
       },
-      "response_text": "{\"id\":\"344fac75-85bc-4c4d-9f56-5607b2fdba80\",\"title\":\"Test Chat 1754561106\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":0,\"last_activity_at\":\"2025-08-07T10:05:06.958168\",\"created_at\":\"2025-08-07T10:05:06.958169\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]}",
-      "timestamp": "2025-08-07T10:05:06.982965Z",
-      "duration_ms": 33.22,
+      "response_text": "{\"id\":\"48e8a572-9ab4-4921-a505-e43ce4c9b771\",\"title\":\"Test Chat 1754578705\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":0,\"last_activity_at\":\"2025-08-07T14:58:25.831212\",\"created_at\":\"2025-08-07T14:58:25.831213\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]}",
+      "timestamp": "2025-08-07T14:58:25.838320Z",
+      "duration_ms": 9.6,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -200,21 +196,21 @@
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": [
         {
-          "id": "344fac75-85bc-4c4d-9f56-5607b2fdba80",
-          "title": "Test Chat 1754561106",
+          "id": "48e8a572-9ab4-4921-a505-e43ce4c9b771",
+          "title": "Test Chat 1754578705",
           "description": "Automated test chat for API testing",
           "chat_type": "direct",
           "ai_model": "gpt-3.5-turbo",
           "ai_persona": "helpful assistant",
           "message_count": 0,
-          "last_activity_at": "2025-08-07T10:05:06.958168",
-          "created_at": "2025-08-07T10:05:06.958169",
+          "last_activity_at": "2025-08-07T14:58:25.831212",
+          "created_at": "2025-08-07T14:58:25.831213",
           "is_private": false,
           "tags": [
             "test",
@@ -223,150 +219,186 @@
           ]
         },
         {
-          "id": "d781c138-670e-40b2-b30e-ec14cf7d511e",
-          "title": "asdas",
-          "description": "adas",
+          "id": "69dad38f-a13d-48b1-8016-9d79463f4e74",
+          "title": "Test Chat 1754578686",
+          "description": "Automated test chat for API testing",
           "chat_type": "direct",
           "ai_model": "gpt-3.5-turbo",
-          "ai_persona": null,
+          "ai_persona": "helpful assistant",
+          "message_count": 3,
+          "last_activity_at": "2025-08-07T14:58:11.712750",
+          "created_at": "2025-08-07T14:58:06.713664",
+          "is_private": false,
+          "tags": [
+            "test",
+            "automation",
+            "api"
+          ]
+        },
+        {
+          "id": "c507b855-954d-4468-8df7-2cf2abfda05f",
+          "title": "Test Chat 1754578539",
+          "description": "Automated test chat for API testing",
+          "chat_type": "direct",
+          "ai_model": "gpt-3.5-turbo",
+          "ai_persona": "helpful assistant",
           "message_count": 2,
-          "last_activity_at": "2025-08-07T09:22:19.252918",
-          "created_at": "2025-08-07T09:22:16.032202",
+          "last_activity_at": "2025-08-07T14:55:51.185755",
+          "created_at": "2025-08-07T14:55:39.435583",
           "is_private": false,
-          "tags": null
+          "tags": [
+            "test",
+            "automation",
+            "api"
+          ]
         },
         {
-          "id": "1ce56ba0-3f56-4425-badf-8fb5467027dd",
-          "title": "zxc",
-          "description": "zxcxz",
+          "id": "8fe7b710-a75a-4bb0-afbc-761cef746d67",
+          "title": "Test Chat 1754578442",
+          "description": "Automated test chat for API testing",
           "chat_type": "direct",
           "ai_model": "gpt-3.5-turbo",
-          "ai_persona": null,
+          "ai_persona": "helpful assistant",
           "message_count": 2,
-          "last_activity_at": "2025-08-07T09:15:31.824599",
-          "created_at": "2025-08-07T09:15:25.793500",
+          "last_activity_at": "2025-08-07T14:54:17.145094",
+          "created_at": "2025-08-07T14:54:02.711659",
           "is_private": false,
-          "tags": null
+          "tags": [
+            "test",
+            "automation",
+            "api"
+          ]
         },
         {
-          "id": "7fee9789-cb15-423a-8b94-411c7c002ec3",
-          "title": "asdsa",
-          "description": "asdsa",
+          "id": "8d81d0c3-a849-4987-92da-ecc28705823d",
+          "title": "Test Chat 1754578293",
+          "description": "Automated test chat for API testing",
           "chat_type": "direct",
           "ai_model": "gpt-3.5-turbo",
-          "ai_persona": null,
-          "message_count": 4,
-          "last_activity_at": "2025-08-07T09:15:05.185220",
-          "created_at": "2025-08-07T09:14:01.533549",
-          "is_private": false,
-          "tags": null
-        },
-        {
-          "id": "e2e40630-1e68-4d3c-a28e-c80924230753",
-          "title": "asdsa",
-          "description": "asdasd",
-          "chat_type": "direct",
-          "ai_model": "gpt-3.5-turbo",
-          "ai_persona": null,
-          "message_count": 4,
-          "last_activity_at": "2025-08-07T09:10:20.301165",
-          "created_at": "2025-08-07T09:07:24.598906",
-          "is_private": false,
-          "tags": null
-        },
-        {
-          "id": "9f5ee723-f89f-4631-9997-69d437779839",
-          "title": "zxcxzc",
-          "description": "zxczxc",
-          "chat_type": "direct",
-          "ai_model": "gpt-3.5-turbo",
-          "ai_persona": null,
+          "ai_persona": "helpful assistant",
           "message_count": 2,
-          "last_activity_at": "2025-08-07T07:22:56.974721",
-          "created_at": "2025-08-07T07:22:54.276213",
+          "last_activity_at": "2025-08-07T14:51:37.184056",
+          "created_at": "2025-08-07T14:51:33.639613",
           "is_private": false,
-          "tags": null
+          "tags": [
+            "test",
+            "automation",
+            "api"
+          ]
         },
         {
-          "id": "2c97577c-9f02-4a09-b9ef-d9057171f863",
-          "title": "zxvcxz",
-          "description": "zxcvzc",
+          "id": "8766b663-75a4-4d7b-a8e7-bba217098f82",
+          "title": "Test Chat 1754578253",
+          "description": "Automated test chat for API testing",
           "chat_type": "direct",
           "ai_model": "gpt-3.5-turbo",
-          "ai_persona": null,
+          "ai_persona": "helpful assistant",
           "message_count": 2,
-          "last_activity_at": "2025-08-07T07:21:52.817185",
-          "created_at": "2025-08-07T07:21:50.070216",
+          "last_activity_at": "2025-08-07T14:51:06.048443",
+          "created_at": "2025-08-07T14:50:53.571450",
           "is_private": false,
-          "tags": null
+          "tags": [
+            "test",
+            "automation",
+            "api"
+          ]
         },
         {
-          "id": "395fba92-3cd3-4145-8de0-532816f2e660",
-          "title": "zxcxz",
-          "description": "zxcz",
+          "id": "8437d4b7-6942-49f6-9196-dfb54d4e400d",
+          "title": "Test Chat 1754578099",
+          "description": "Automated test chat for API testing",
           "chat_type": "direct",
           "ai_model": "gpt-3.5-turbo",
-          "ai_persona": null,
+          "ai_persona": "helpful assistant",
           "message_count": 2,
-          "last_activity_at": "2025-08-07T07:20:55.295282",
-          "created_at": "2025-08-07T07:20:51.734220",
+          "last_activity_at": "2025-08-07T14:48:22.866717",
+          "created_at": "2025-08-07T14:48:19.320692",
           "is_private": false,
-          "tags": null
+          "tags": [
+            "test",
+            "automation",
+            "api"
+          ]
         },
         {
-          "id": "933dd368-03d7-41dc-a3bb-2b629bc31bd0",
-          "title": "zxcxz",
-          "description": "asdasd",
+          "id": "9b267eb5-ac6a-4ac3-ae0f-8219712b6b3d",
+          "title": "Test Chat 1754578066",
+          "description": "Automated test chat for API testing",
           "chat_type": "direct",
           "ai_model": "gpt-3.5-turbo",
-          "ai_persona": null,
+          "ai_persona": "helpful assistant",
           "message_count": 2,
-          "last_activity_at": "2025-08-07T07:19:44.583675",
-          "created_at": "2025-08-07T07:16:13.734494",
+          "last_activity_at": "2025-08-07T14:47:49.625390",
+          "created_at": "2025-08-07T14:47:46.062298",
           "is_private": false,
-          "tags": null
+          "tags": [
+            "test",
+            "automation",
+            "api"
+          ]
         },
         {
-          "id": "2117c49d-c9b2-44bf-a1fb-2336b5a24ba3",
-          "title": "asda",
-          "description": "asda",
+          "id": "ec0a8f55-936f-4e5c-a5ef-3eab6923decf",
+          "title": "Test Chat 1754577921",
+          "description": "Automated test chat for API testing",
           "chat_type": "direct",
           "ai_model": "gpt-3.5-turbo",
-          "ai_persona": null,
+          "ai_persona": "helpful assistant",
           "message_count": 2,
-          "last_activity_at": "2025-08-07T07:14:14.281889",
-          "created_at": "2025-08-07T07:11:36.847900",
+          "last_activity_at": "2025-08-07T14:45:25.318789",
+          "created_at": "2025-08-07T14:45:21.754104",
           "is_private": false,
-          "tags": null
+          "tags": [
+            "test",
+            "automation",
+            "api"
+          ]
+        },
+        {
+          "id": "abba14ef-da2e-4cb9-b68c-6afb3d0305c8",
+          "title": "Test Chat 1754577775",
+          "description": "Automated test chat for API testing",
+          "chat_type": "direct",
+          "ai_model": "gpt-3.5-turbo",
+          "ai_persona": "helpful assistant",
+          "message_count": 2,
+          "last_activity_at": "2025-08-07T14:42:58.627528",
+          "created_at": "2025-08-07T14:42:55.070004",
+          "is_private": false,
+          "tags": [
+            "test",
+            "automation",
+            "api"
+          ]
         }
       ],
-      "response_text": "[{\"id\":\"344fac75-85bc-4c4d-9f56-5607b2fdba80\",\"title\":\"Test Chat 1754561106\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":0,\"last_activity_at\":\"2025-08-07T10:05:06.958168\",\"created_at\":\"2025-08-07T10:05:06.958169\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},{\"id\":\"d781c138-670e-40b2-b30e-ec14cf7d511e\",\"title\":\"asdas\",\"description\":\"adas\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":null,\"message_count\":2,\"last_activity_at\":\"2025-08-07T09:22:19.252918\",\"created_at\":\"2025-08-07T09:22:16.032202\",\"is_private\":false,\"tags\":null},{\"id\":\"1ce56ba0-3f56-4425-badf-8fb5467027dd\",\"title\":\"zxc\",\"description\":\"zxcxz\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":null,\"message_count\":2,\"last_activity_at\":\"2025-08-07T09:15:31.824599\",\"created_at\":\"2025-08-07T09:15:25.793500\",\"is_private\":false,\"tags\":null},{\"id\":\"7fee9789-cb15-423a-8b94-411c7c002ec3\",\"title\":\"asdsa\",\"description\":\"asdsa\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":null,\"message_count\":4,\"last_activity_at\":\"2025-08-07T09:15:05.185220\",\"created_at\":\"2025-08-07T09:14:01.533549\",\"is_private\":false,\"tags\":null},{\"id\":\"e2e40630-1e68-4d3c-a28e-c80924230753\",\"title\":\"asdsa\",\"description\":\"asdasd\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":null,\"message_count\":4,\"last_activity_at\":\"2025-08-07T09:10:20.301165\",\"created_at\":\"2025-08-07T09:07:24.598906\",\"is_private\":false,\"tags\":null},{\"id\":\"9f5ee723-f89f-4631-9997-69d437779839\",\"title\":\"zxcxzc\",\"description\":\"zxczxc\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":null,\"message_count\":2,\"last_activity_at\":\"2025-08-07T07:22:56.974721\",\"created_at\":\"2025-08-07T07:22:54.276213\",\"is_private\":false,\"tags\":null},{\"id\":\"2c97577c-9f02-4a09-b9ef-d9057171f863\",\"title\":\"zxvcxz\",\"description\":\"zxcvzc\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":null,\"message_count\":2,\"last_activity_at\":\"2025-08-07T07:21:52.817185\",\"created_at\":\"2025-08-07T07:21:50.070216\",\"is_private\":false,\"tags\":null},{\"id\":\"395fba92-3cd3-4145-8de0-532816f2e660\",\"title\":\"zxcxz\",\"description\":\"zxcz\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":null,\"message_count\":2,\"last_activity_at\":\"2025-08-07T07:20:55.295282\",\"created_at\":\"2025-08-07T07:20:51.734220\",\"is_private\":false,\"tags\":null},{\"id\":\"933dd368-03d7-41dc-a3bb-2b629bc31bd0\",\"title\":\"zxcxz\",\"description\":\"asdasd\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":null,\"message_count\":2,\"last_activity_at\":\"2025-08-07T07:19:44.583675\",\"created_at\":\"2025-08-07T07:16:13.734494\",\"is_private\":false,\"tags\":null},{\"id\":\"2117c49d-c9b2-44bf-a1fb-2336b5a24ba3\",\"title\":\"asda\",\"description\":\"asda\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":null,\"message_count\":2,\"last_activity_at\":\"2025-08-07T07:14:14.281889\",\"created_at\":\"2025-08-07T07:11:36.847900\",\"is_private\":false,\"tags\":null}]",
-      "timestamp": "2025-08-07T10:05:07.504030Z",
-      "duration_ms": 20.53,
+      "response_text": "[{\"id\":\"48e8a572-9ab4-4921-a505-e43ce4c9b771\",\"title\":\"Test Chat 1754578705\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":0,\"last_activity_at\":\"2025-08-07T14:58:25.831212\",\"created_at\":\"2025-08-07T14:58:25.831213\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},{\"id\":\"69dad38f-a13d-48b1-8016-9d79463f4e74\",\"title\":\"Test Chat 1754578686\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":3,\"last_activity_at\":\"2025-08-07T14:58:11.712750\",\"created_at\":\"2025-08-07T14:58:06.713664\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},{\"id\":\"c507b855-954d-4468-8df7-2cf2abfda05f\",\"title\":\"Test Chat 1754578539\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":2,\"last_activity_at\":\"2025-08-07T14:55:51.185755\",\"created_at\":\"2025-08-07T14:55:39.435583\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},{\"id\":\"8fe7b710-a75a-4bb0-afbc-761cef746d67\",\"title\":\"Test Chat 1754578442\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":2,\"last_activity_at\":\"2025-08-07T14:54:17.145094\",\"created_at\":\"2025-08-07T14:54:02.711659\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},{\"id\":\"8d81d0c3-a849-4987-92da-ecc28705823d\",\"title\":\"Test Chat 1754578293\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":2,\"last_activity_at\":\"2025-08-07T14:51:37.184056\",\"created_at\":\"2025-08-07T14:51:33.639613\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},{\"id\":\"8766b663-75a4-4d7b-a8e7-bba217098f82\",\"title\":\"Test Chat 1754578253\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":2,\"last_activity_at\":\"2025-08-07T14:51:06.048443\",\"created_at\":\"2025-08-07T14:50:53.571450\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},{\"id\":\"8437d4b7-6942-49f6-9196-dfb54d4e400d\",\"title\":\"Test Chat 1754578099\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":2,\"last_activity_at\":\"2025-08-07T14:48:22.866717\",\"created_at\":\"2025-08-07T14:48:19.320692\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},{\"id\":\"9b267eb5-ac6a-4ac3-ae0f-8219712b6b3d\",\"title\":\"Test Chat 1754578066\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":2,\"last_activity_at\":\"2025-08-07T14:47:49.625390\",\"created_at\":\"2025-08-07T14:47:46.062298\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},{\"id\":\"ec0a8f55-936f-4e5c-a5ef-3eab6923decf\",\"title\":\"Test Chat 1754577921\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":2,\"last_activity_at\":\"2025-08-07T14:45:25.318789\",\"created_at\":\"2025-08-07T14:45:21.754104\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},{\"id\":\"abba14ef-da2e-4cb9-b68c-6afb3d0305c8\",\"title\":\"Test Chat 1754577775\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":2,\"last_activity_at\":\"2025-08-07T14:42:58.627528\",\"created_at\":\"2025-08-07T14:42:55.070004\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]}]",
+      "timestamp": "2025-08-07T14:58:26.342878Z",
+      "duration_ms": 4.0,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80?limit=50&offset=0",
+      "endpoint": "/api/v1/chat/chats/48e8a572-9ab4-4921-a505-e43ce4c9b771?limit=50&offset=0",
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "chat": {
-          "id": "344fac75-85bc-4c4d-9f56-5607b2fdba80",
-          "title": "Test Chat 1754561106",
+          "id": "48e8a572-9ab4-4921-a505-e43ce4c9b771",
+          "title": "Test Chat 1754578705",
           "description": "Automated test chat for API testing",
           "chat_type": "direct",
           "ai_model": "gpt-3.5-turbo",
           "ai_persona": "helpful assistant",
           "message_count": 0,
-          "last_activity_at": "2025-08-07T10:05:06.958168",
-          "created_at": "2025-08-07T10:05:06.958169",
+          "last_activity_at": "2025-08-07T14:58:25.831212",
+          "created_at": "2025-08-07T14:58:25.831213",
           "is_private": false,
           "tags": [
             "test",
@@ -377,97 +409,60 @@
         "messages": [],
         "participant_count": 1
       },
-      "response_text": "{\"chat\":{\"id\":\"344fac75-85bc-4c4d-9f56-5607b2fdba80\",\"title\":\"Test Chat 1754561106\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":0,\"last_activity_at\":\"2025-08-07T10:05:06.958168\",\"created_at\":\"2025-08-07T10:05:06.958169\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},\"messages\":[],\"participant_count\":1}",
-      "timestamp": "2025-08-07T10:05:08.034734Z",
-      "duration_ms": 30.15,
+      "response_text": "{\"chat\":{\"id\":\"48e8a572-9ab4-4921-a505-e43ce4c9b771\",\"title\":\"Test Chat 1754578705\",\"description\":\"Automated test chat for API testing\",\"chat_type\":\"direct\",\"ai_model\":\"gpt-3.5-turbo\",\"ai_persona\":\"helpful assistant\",\"message_count\":0,\"last_activity_at\":\"2025-08-07T14:58:25.831212\",\"created_at\":\"2025-08-07T14:58:25.831213\",\"is_private\":false,\"tags\":[\"test\",\"automation\",\"api\"]},\"messages\":[],\"participant_count\":1}",
+      "timestamp": "2025-08-07T14:58:26.848826Z",
+      "duration_ms": 5.63,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80/messages",
-      "method": "POST",
-      "payload": {
-        "content": "Hello! This is a test message sent at 2025-08-07T10:05:08.535242",
-        "message_type": "user",
-        "reply_to_id": null,
-        "message_metadata": {
-          "source": "api_test",
-          "test_run": true
-        }
-      },
-      "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
-        "Content-Type": "application/json"
-      },
-      "response_status": 200,
-      "response_body": {
-        "id": "7210f9e2-123a-4b0e-b49f-7428c865ccd1",
-        "chat_id": "344fac75-85bc-4c4d-9f56-5607b2fdba80",
-        "sender_id": "42c9a688-e24a-4cd6-b5e2-4e77f1894a6b",
-        "content": "Hello! This is a test message sent at 2025-08-07T10:05:08.535242",
-        "message_type": "user",
-        "ai_model_used": null,
-        "tokens_used": null,
-        "processing_time_ms": null,
-        "status": "sent",
-        "created_at": "2025-08-07T10:05:08.563728",
-        "is_edited": false
-      },
-      "response_text": "{\"id\":\"7210f9e2-123a-4b0e-b49f-7428c865ccd1\",\"chat_id\":\"344fac75-85bc-4c4d-9f56-5607b2fdba80\",\"sender_id\":\"42c9a688-e24a-4cd6-b5e2-4e77f1894a6b\",\"content\":\"Hello! This is a test message sent at 2025-08-07T10:05:08.535242\",\"message_type\":\"user\",\"ai_model_used\":null,\"tokens_used\":null,\"processing_time_ms\":null,\"status\":\"sent\",\"created_at\":\"2025-08-07T10:05:08.563728\",\"is_edited\":false}",
-      "timestamp": "2025-08-07T10:05:08.590488Z",
-      "duration_ms": 55.21,
-      "success": true,
-      "error_message": null,
-      "test_type": "REST_API"
-    },
-    {
-      "endpoint": "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80/typing",
+      "endpoint": "/api/v1/chat/chats/48e8a572-9ab4-4921-a505-e43ce4c9b771/typing",
       "method": "POST",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "status": "sent",
-        "timestamp": "2025-08-07T10:05:09.092468"
+        "timestamp": "2025-08-07T14:58:27.350383"
       },
-      "response_text": "{\"status\":\"sent\",\"timestamp\":\"2025-08-07T10:05:09.092468\"}",
-      "timestamp": "2025-08-07T10:05:09.093479Z",
-      "duration_ms": 2.57,
+      "response_text": "{\"status\":\"sent\",\"timestamp\":\"2025-08-07T14:58:27.350383\"}",
+      "timestamp": "2025-08-07T14:58:27.351342Z",
+      "duration_ms": 2.2,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80/participants",
+      "endpoint": "/api/v1/chat/chats/48e8a572-9ab4-4921-a505-e43ce4c9b771/participants",
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
-        "chat_id": "344fac75-85bc-4c4d-9f56-5607b2fdba80",
+        "chat_id": "48e8a572-9ab4-4921-a505-e43ce4c9b771",
         "participants": [
           {
             "user_id": "42c9a688-e24a-4cd6-b5e2-4e77f1894a6b",
             "role": "owner",
-            "joined_at": "2025-08-07T10:05:06.977963",
+            "joined_at": "2025-08-07T14:58:25.835404",
             "can_send_messages": true,
             "can_upload_files": true,
-            "message_count": 1,
+            "message_count": 0,
             "last_read_at": null
           }
         ],
         "total_participants": 1
       },
-      "response_text": "{\"chat_id\":\"344fac75-85bc-4c4d-9f56-5607b2fdba80\",\"participants\":[{\"user_id\":\"42c9a688-e24a-4cd6-b5e2-4e77f1894a6b\",\"role\":\"owner\",\"joined_at\":\"2025-08-07T10:05:06.977963\",\"can_send_messages\":true,\"can_upload_files\":true,\"message_count\":1,\"last_read_at\":null}],\"total_participants\":1}",
-      "timestamp": "2025-08-07T10:05:09.607708Z",
-      "duration_ms": 14.1,
+      "response_text": "{\"chat_id\":\"48e8a572-9ab4-4921-a505-e43ce4c9b771\",\"participants\":[{\"user_id\":\"42c9a688-e24a-4cd6-b5e2-4e77f1894a6b\",\"role\":\"owner\",\"joined_at\":\"2025-08-07T14:58:25.835404\",\"can_send_messages\":true,\"can_upload_files\":true,\"message_count\":0,\"last_read_at\":null}],\"total_participants\":1}",
+      "timestamp": "2025-08-07T14:58:27.855900Z",
+      "duration_ms": 4.06,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -477,171 +472,36 @@
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "websocket_connections": {
-          "total_connections": 1,
-          "active_chats": 1,
-          "connections_per_chat": {
-            "d781c138-670e-40b2-b30e-ec14cf7d511e": 1
-          }
+          "total_connections": 0,
+          "active_chats": 0,
+          "connections_per_chat": {}
         },
         "system_status": "operational",
-        "timestamp": "2025-08-07T10:05:10.109553"
+        "timestamp": "2025-08-07T14:58:28.357236"
       },
-      "response_text": "{\"websocket_connections\":{\"total_connections\":1,\"active_chats\":1,\"connections_per_chat\":{\"d781c138-670e-40b2-b30e-ec14cf7d511e\":1}},\"system_status\":\"operational\",\"timestamp\":\"2025-08-07T10:05:10.109553\"}",
-      "timestamp": "2025-08-07T10:05:10.110394Z",
-      "duration_ms": 2.11,
+      "response_text": "{\"websocket_connections\":{\"total_connections\":0,\"active_chats\":0,\"connections_per_chat\":{}},\"system_status\":\"operational\",\"timestamp\":\"2025-08-07T14:58:28.357236\"}",
+      "timestamp": "2025-08-07T14:58:28.358043Z",
+      "duration_ms": 1.98,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/chat/test/connection",
-      "method": "POST",
-      "payload": null,
-      "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
-        "Content-Type": "application/json"
-      },
-      "response_status": 200,
-      "response_body": {
-        "success": true,
-        "message": "Chat system connectivity test completed",
-        "data": {
-          "database": {
-            "status": "healthy",
-            "message": "Database connection OK"
-          },
-          "websocket_manager": {
-            "status": "operational",
-            "connections": {
-              "total_connections": 1,
-              "active_chats": 1,
-              "connections_per_chat": {
-                "d781c138-670e-40b2-b30e-ec14cf7d511e": 1
-              }
-            }
-          },
-          "openai_api": {
-            "success": true,
-            "message": "OpenAI API connection successful",
-            "model_info": {
-              "model": "gpt-3.5-turbo-0125",
-              "usage": {
-                "prompt_tokens": 21,
-                "completion_tokens": 1,
-                "total_tokens": 22
-              },
-              "finish_reason": "stop"
-            },
-            "response_content": "OK",
-            "duration_seconds": 0.523,
-            "timestamp": "2025-08-07T10:05:11.138709"
-          },
-          "user_id": "42c9a688-e24a-4cd6-b5e2-4e77f1894a6b",
-          "username": "test@arketic.com"
-        },
-        "timestamp": "2025-08-07T10:05:11.138729"
-      },
-      "response_text": "{\"success\":true,\"message\":\"Chat system connectivity test completed\",\"data\":{\"database\":{\"status\":\"healthy\",\"message\":\"Database connection OK\"},\"websocket_manager\":{\"status\":\"operational\",\"connections\":{\"total_connections\":1,\"active_chats\":1,\"connections_per_chat\":{\"d781c138-670e-40b2-b30e-ec14cf7d511e\":1}}},\"openai_api\":{\"success\":true,\"message\":\"OpenAI API connection successful\",\"model_info\":{\"model\":\"gpt-3.5-turbo-0125\",\"usage\":{\"prompt_tokens\":21,\"completion_tokens\":1,\"total_tokens\":22},\"finish_reason\":\"stop\"},\"response_content\":\"OK\",\"duration_seconds\":0.523,\"timestamp\":\"2025-08-07T10:05:11.138709\"},\"user_id\":\"42c9a688-e24a-4cd6-b5e2-4e77f1894a6b\",\"username\":\"test@arketic.com\"},\"timestamp\":\"2025-08-07T10:05:11.138729\"}",
-      "timestamp": "2025-08-07T10:05:11.140421Z",
-      "duration_ms": 529.5,
-      "success": true,
-      "error_message": null,
-      "test_type": "REST_API"
-    },
-    {
-      "endpoint": "/api/v1/chat/websocket/test/344fac75-85bc-4c4d-9f56-5607b2fdba80",
-      "method": "GET",
-      "payload": null,
-      "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
-        "Content-Type": "application/json"
-      },
-      "response_status": 200,
-      "response_body": {
-        "success": false,
-        "error": "Failed to prepare WebSocket test",
-        "error_code": "websocket_test_failed",
-        "details": "'SecurityManager' object has no attribute 'create_token'",
-        "timestamp": "2025-08-07T10:05:11.642561"
-      },
-      "response_text": "{\"success\":false,\"error\":\"Failed to prepare WebSocket test\",\"error_code\":\"websocket_test_failed\",\"details\":\"'SecurityManager' object has no attribute 'create_token'\",\"timestamp\":\"2025-08-07T10:05:11.642561\"}",
-      "timestamp": "2025-08-07T10:05:11.643402Z",
-      "duration_ms": 2.5,
-      "success": true,
-      "error_message": null,
-      "test_type": "REST_API"
-    },
-    {
-      "endpoint": "/api/v1/chat/openai/test",
+      "endpoint": "/api/v1/chat/chats/48e8a572-9ab4-4921-a505-e43ce4c9b771/ai-message",
       "method": "POST",
       "payload": {
-        "message": "Hello! This is a test message for OpenAI integration at 2025-08-07T10:05:12.143906",
-        "model": "gpt-3.5-turbo",
-        "temperature": 0.7,
-        "system_prompt": "You are a helpful AI assistant for testing purposes. Please respond briefly and confirm you received the test message."
-      },
-      "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
-        "Content-Type": "application/json"
-      },
-      "response_status": 200,
-      "response_body": {
-        "success": true,
-        "message": "OpenAI direct API test completed successfully",
-        "data": {
-          "request": {
-            "message": "Hello! This is a test message for OpenAI integration at 2025-08-07T10:05:12.143906",
-            "model": "gpt-3.5-turbo",
-            "temperature": 0.7,
-            "system_prompt": "You are a helpful AI assistant for testing purposes. Please respond briefly and confirm you received the test message."
-          },
-          "response": {
-            "content": "Hello! I have received the test message for OpenAI integration. Thank you for testing.",
-            "model_used": "gpt-3.5-turbo-0125",
-            "processing_time_ms": 641,
-            "tokens_used": {
-              "input": 60,
-              "output": 18,
-              "total": 78
-            },
-            "finish_reason": "stop"
-          },
-          "user_info": {
-            "user_id": "42c9a688-e24a-4cd6-b5e2-4e77f1894a6b",
-            "username": "test@arketic.com"
-          },
-          "api_info": {
-            "integration_type": "Direct OpenAI API",
-            "messages_count": 2,
-            "has_system_prompt": true,
-            "openai_response_id": "chatcmpl-C1rmiXTmlzeIECRpz3ZpQ8Sc6fdHn"
-          }
-        },
-        "timestamp": "2025-08-07T10:05:12.803946"
-      },
-      "response_text": "{\"success\":true,\"message\":\"OpenAI direct API test completed successfully\",\"data\":{\"request\":{\"message\":\"Hello! This is a test message for OpenAI integration at 2025-08-07T10:05:12.143906\",\"model\":\"gpt-3.5-turbo\",\"temperature\":0.7,\"system_prompt\":\"You are a helpful AI assistant for testing purposes. Please respond briefly and confirm you received the test message.\"},\"response\":{\"content\":\"Hello! I have received the test message for OpenAI integration. Thank you for testing.\",\"model_used\":\"gpt-3.5-turbo-0125\",\"processing_time_ms\":641,\"tokens_used\":{\"input\":60,\"output\":18,\"total\":78},\"finish_reason\":\"stop\"},\"user_info\":{\"user_id\":\"42c9a688-e24a-4cd6-b5e2-4e77f1894a6b\",\"username\":\"test@arketic.com\"},\"api_info\":{\"integration_type\":\"Direct OpenAI API\",\"messages_count\":2,\"has_system_prompt\":true,\"openai_response_id\":\"chatcmpl-C1rmiXTmlzeIECRpz3ZpQ8Sc6fdHn\"}},\"timestamp\":\"2025-08-07T10:05:12.803946\"}",
-      "timestamp": "2025-08-07T10:05:12.805462Z",
-      "duration_ms": 661.51,
-      "success": true,
-      "error_message": null,
-      "test_type": "REST_API"
-    },
-    {
-      "endpoint": "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80/ai-message",
-      "method": "POST",
-      "payload": {
-        "message": "Hello AI! This is a production chat test at 2025-08-07T10:05:13.307951. Please respond briefly to confirm you received this message.",
+        "message": "Hello AI! This is a production chat test at 2025-08-07T14:58:28.858497. Please respond briefly to confirm you received this message.",
         "stream": false,
         "save_to_history": true
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
         "Content-Type": "application/json"
       },
       "response_status": 200,
@@ -651,73 +511,206 @@
         "streaming": false,
         "data": {
           "user_message": {
-            "id": "be3fa543-b91f-4d23-bfb2-e05cafadc79a",
-            "content": "Hello AI! This is a production chat test at 2025-08-07T10:05:13.307951. Please respond briefly to confirm you received this message.",
-            "timestamp": "2025-08-07T10:05:13.859089"
+            "id": "bead97ff-cf01-49fe-87ec-58866c410175",
+            "content": "Hello AI! This is a production chat test at 2025-08-07T14:58:28.858497. Please respond briefly to confirm you received this message.",
+            "timestamp": "2025-08-07T14:58:29.434249"
           },
           "ai_response": {
-            "id": "0bc8cc61-03ae-4872-887a-5849f96d13d1",
-            "content": "Hello! I received your message. Let me know if you need any assistance.",
-            "model_used": "gpt-3.5-turbo-0125",
-            "processing_time_ms": 512,
+            "id": "7c29552f-0a95-4861-a951-1ff0cb27f445",
+            "content": "Hello! I have received your message. How can I assist you today?",
+            "model_used": "gpt-3.5-turbo",
+            "processing_time_ms": 558,
             "tokens_used": {
-              "input": 86,
-              "output": 16,
-              "total": 102
+              "input": 28,
+              "output": 17,
+              "total": 45
             },
             "finish_reason": "stop",
-            "timestamp": "2025-08-07T10:05:13.859092"
+            "timestamp": "2025-08-07T14:58:29.434252"
           },
           "chat_info": {
-            "chat_id": "344fac75-85bc-4c4d-9f56-5607b2fdba80",
-            "total_messages": 3,
-            "total_tokens_used": 102
+            "chat_id": "48e8a572-9ab4-4921-a505-e43ce4c9b771",
+            "total_messages": 2,
+            "total_tokens_used": 45
           }
         },
-        "timestamp": "2025-08-07T10:05:13.859095"
+        "timestamp": "2025-08-07T14:58:29.434255"
       },
-      "response_text": "{\"success\":true,\"message\":\"AI response generated successfully\",\"streaming\":false,\"data\":{\"user_message\":{\"id\":\"be3fa543-b91f-4d23-bfb2-e05cafadc79a\",\"content\":\"Hello AI! This is a production chat test at 2025-08-07T10:05:13.307951. Please respond briefly to confirm you received this message.\",\"timestamp\":\"2025-08-07T10:05:13.859089\"},\"ai_response\":{\"id\":\"0bc8cc61-03ae-4872-887a-5849f96d13d1\",\"content\":\"Hello! I received your message. Let me know if you need any assistance.\",\"model_used\":\"gpt-3.5-turbo-0125\",\"processing_time_ms\":512,\"tokens_used\":{\"input\":86,\"output\":16,\"total\":102},\"finish_reason\":\"stop\",\"timestamp\":\"2025-08-07T10:05:13.859092\"},\"chat_info\":{\"chat_id\":\"344fac75-85bc-4c4d-9f56-5607b2fdba80\",\"total_messages\":3,\"total_tokens_used\":102}},\"timestamp\":\"2025-08-07T10:05:13.859095\"}",
-      "timestamp": "2025-08-07T10:05:13.860092Z",
-      "duration_ms": 552.11,
+      "response_text": "{\"success\":true,\"message\":\"AI response generated successfully\",\"streaming\":false,\"data\":{\"user_message\":{\"id\":\"bead97ff-cf01-49fe-87ec-58866c410175\",\"content\":\"Hello AI! This is a production chat test at 2025-08-07T14:58:28.858497. Please respond briefly to confirm you received this message.\",\"timestamp\":\"2025-08-07T14:58:29.434249\"},\"ai_response\":{\"id\":\"7c29552f-0a95-4861-a951-1ff0cb27f445\",\"content\":\"Hello! I have received your message. How can I assist you today?\",\"model_used\":\"gpt-3.5-turbo\",\"processing_time_ms\":558,\"tokens_used\":{\"input\":28,\"output\":17,\"total\":45},\"finish_reason\":\"stop\",\"timestamp\":\"2025-08-07T14:58:29.434252\"},\"chat_info\":{\"chat_id\":\"48e8a572-9ab4-4921-a505-e43ce4c9b771\",\"total_messages\":2,\"total_tokens_used\":45}},\"timestamp\":\"2025-08-07T14:58:29.434255\"}",
+      "timestamp": "2025-08-07T14:58:29.435417Z",
+      "duration_ms": 576.88,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80/ai-message",
+      "endpoint": "/api/v1/chat/chats/48e8a572-9ab4-4921-a505-e43ce4c9b771/ai-message",
       "method": "POST",
       "payload": {
-        "message": "Test streaming response at 2025-08-07T10:05:14.360666. Please provide a brief response.",
+        "message": "Test streaming response at 2025-08-07T14:58:29.935941. Please provide a brief response.",
         "stream": true,
         "save_to_history": true
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
         "Content-Type": "application/json"
       },
-      "response_status": 500,
+      "response_status": 400,
       "response_body": {
         "detail": "Message content cannot be empty"
       },
       "response_text": "{\"detail\":\"Message content cannot be empty\"}",
-      "timestamp": "2025-08-07T10:05:14.387839Z",
-      "duration_ms": 27.14,
-      "success": false,
-      "error_message": "Unexpected status code. Expected: [200, 400, 401, 403, 404], Got: 500",
+      "timestamp": "2025-08-07T14:58:29.949336Z",
+      "duration_ms": 13.37,
+      "success": true,
+      "error_message": null,
+      "test_type": "REST_API"
+    },
+    {
+      "endpoint": "/api/v1/chat/langchain/health",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "success": true,
+        "message": "LangChain service health check completed",
+        "data": {
+          "service_health": {
+            "status": "healthy",
+            "response_time_ms": 1.0,
+            "circuit_breaker_state": "CLOSED",
+            "failure_count": 0,
+            "service_url": "http://langchain:3001"
+          },
+          "circuit_breaker": {
+            "state": "CLOSED",
+            "failure_count": 0,
+            "failure_threshold": 5,
+            "timeout_seconds": 60,
+            "last_failure_time": "2025-08-07T14:58:12.730530"
+          },
+          "integration_status": "active",
+          "fallback_available": true
+        },
+        "timestamp": "2025-08-07T14:58:30.452564"
+      },
+      "response_text": "{\"success\":true,\"message\":\"LangChain service health check completed\",\"data\":{\"service_health\":{\"status\":\"healthy\",\"response_time_ms\":1.0,\"circuit_breaker_state\":\"CLOSED\",\"failure_count\":0,\"service_url\":\"http://langchain:3001\"},\"circuit_breaker\":{\"state\":\"CLOSED\",\"failure_count\":0,\"failure_threshold\":5,\"timeout_seconds\":60,\"last_failure_time\":\"2025-08-07T14:58:12.730530\"},\"integration_status\":\"active\",\"fallback_available\":true},\"timestamp\":\"2025-08-07T14:58:30.452564\"}",
+      "timestamp": "2025-08-07T14:58:30.453345Z",
+      "duration_ms": 3.56,
+      "success": true,
+      "error_message": null,
+      "test_type": "REST_API"
+    },
+    {
+      "endpoint": "/api/v1/chat/langchain/test",
+      "method": "POST",
+      "payload": {
+        "message": "Hello LangChain! This is a test message at 2025-08-07T14:58:30.953664. Please respond briefly to confirm the service is working.",
+        "model": "gpt-3.5-turbo",
+        "temperature": 0.7,
+        "system_prompt": "You are testing the LangChain service integration. Please respond briefly to confirm you received this test message."
+      },
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "success": false,
+        "error": "LangChain service test failed: Client error '400 Bad Request' for url 'http://langchain:3001/internal/chat/message'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+        "error_code": "langchain_service_failed",
+        "data": {
+          "processing_time_ms": 1,
+          "circuit_breaker_state": "CLOSED",
+          "failure_count": 1,
+          "fallback_available": true
+        },
+        "user_id": "42c9a688-e24a-4cd6-b5e2-4e77f1894a6b",
+        "timestamp": "2025-08-07T14:58:30.958210"
+      },
+      "response_text": "{\"success\":false,\"error\":\"LangChain service test failed: Client error '400 Bad Request' for url 'http://langchain:3001/internal/chat/message'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400\",\"error_code\":\"langchain_service_failed\",\"data\":{\"processing_time_ms\":1,\"circuit_breaker_state\":\"CLOSED\",\"failure_count\":1,\"fallback_available\":true},\"user_id\":\"42c9a688-e24a-4cd6-b5e2-4e77f1894a6b\",\"timestamp\":\"2025-08-07T14:58:30.958210\"}",
+      "timestamp": "2025-08-07T14:58:30.959194Z",
+      "duration_ms": 5.48,
+      "success": true,
+      "error_message": null,
+      "test_type": "REST_API"
+    },
+    {
+      "endpoint": "/api/v1/chat/services/status",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "success": true,
+        "message": "Services status check completed",
+        "data": {
+          "langchain_service": {
+            "health": {
+              "status": "healthy",
+              "response_time_ms": 1.0,
+              "circuit_breaker_state": "CLOSED",
+              "failure_count": 1,
+              "service_url": "http://langchain:3001"
+            },
+            "circuit_breaker": {
+              "state": "CLOSED",
+              "failure_count": 1,
+              "failure_threshold": 5,
+              "timeout_seconds": 60,
+              "last_failure_time": "2025-08-07T14:58:30.958185"
+            },
+            "base_url": "http://langchain:3001"
+          },
+          "websocket_manager": {
+            "status": "operational",
+            "connections": {
+              "total_connections": 0,
+              "active_chats": 0,
+              "connections_per_chat": {}
+            }
+          },
+          "fallback_services": {
+            "direct_openai": {
+              "status": "available",
+              "description": "Direct OpenAI API integration for fallback"
+            }
+          },
+          "integration_features": {
+            "circuit_breaker": "enabled",
+            "automatic_fallback": "enabled",
+            "streaming_support": "enabled",
+            "health_monitoring": "enabled"
+          }
+        },
+        "timestamp": "2025-08-07T14:58:31.462479"
+      },
+      "response_text": "{\"success\":true,\"message\":\"Services status check completed\",\"data\":{\"langchain_service\":{\"health\":{\"status\":\"healthy\",\"response_time_ms\":1.0,\"circuit_breaker_state\":\"CLOSED\",\"failure_count\":1,\"service_url\":\"http://langchain:3001\"},\"circuit_breaker\":{\"state\":\"CLOSED\",\"failure_count\":1,\"failure_threshold\":5,\"timeout_seconds\":60,\"last_failure_time\":\"2025-08-07T14:58:30.958185\"},\"base_url\":\"http://langchain:3001\"},\"websocket_manager\":{\"status\":\"operational\",\"connections\":{\"total_connections\":0,\"active_chats\":0,\"connections_per_chat\":{}}},\"fallback_services\":{\"direct_openai\":{\"status\":\"available\",\"description\":\"Direct OpenAI API integration for fallback\"}},\"integration_features\":{\"circuit_breaker\":\"enabled\",\"automatic_fallback\":\"enabled\",\"streaming_support\":\"enabled\",\"health_monitoring\":\"enabled\"}},\"timestamp\":\"2025-08-07T14:58:31.462479\"}",
+      "timestamp": "2025-08-07T14:58:31.463856Z",
+      "duration_ms": 4.1,
+      "success": true,
+      "error_message": null,
       "test_type": "REST_API"
     }
   ],
   "detailed_websocket_results": [
     {
-      "chat_id": "344fac75-85bc-4c4d-9f56-5607b2fdba80",
-      "connection_url": "ws://localhost:8000/api/v1/chat/chats/344fac75-85bc-4c4d-9f56-5607b2fdba80/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2MjkwNn0.g4RdLvyQ-yiY5Ds_qPqU88Fo2kWcmpQEl-q_IA3L7ZQ",
+      "chat_id": "48e8a572-9ab4-4921-a505-e43ce4c9b771",
+      "connection_url": "ws://localhost:8000/api/v1/chat/chats/48e8a572-9ab4-4921-a505-e43ce4c9b771/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU4MDUwNX0.7qP3w6a54TejDTt9Z7L5wR0pxg2-NhqtQRncOFzhmf8",
       "connected": true,
       "messages_sent": 1,
       "messages_received": 1,
-      "connection_duration_ms": 14.94,
+      "connection_duration_ms": 4.91,
       "success": true,
       "error_message": null,
-      "timestamp": "2025-08-07T10:05:14.903346Z"
+      "timestamp": "2025-08-07T14:58:31.969316Z"
     }
   ]
 }

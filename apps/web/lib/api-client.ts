@@ -688,6 +688,81 @@ export const knowledgeApi = {
     apiClient.post("/api/v1/compliance/sync"),
 }
 
+// People API types
+export interface PersonRole {
+  Admin: "Admin",
+  User: "User",
+  Manager: "Manager",
+  Viewer: "Viewer"
+}
+
+export interface PersonStatus {
+  active: "active",
+  inactive: "inactive",
+  pending: "pending"
+}
+
+export interface PersonCreateRequest {
+  first_name: string
+  last_name: string
+  email: string
+  phone?: string
+  job_title?: string
+  department?: string
+  site?: string
+  location?: string
+  role: "Admin" | "User" | "Manager" | "Viewer"
+  manager_id?: string
+  hire_date?: string
+  notes?: string
+}
+
+export interface PersonUpdateRequest {
+  first_name?: string
+  last_name?: string
+  email?: string
+  phone?: string
+  job_title?: string
+  department?: string
+  site?: string
+  location?: string
+  role?: "Admin" | "User" | "Manager" | "Viewer"
+  status?: "active" | "inactive" | "pending"
+  manager_id?: string
+  hire_date?: string
+  notes?: string
+}
+
+export interface PersonResponse {
+  id: string
+  organization_id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone?: string
+  job_title?: string
+  department?: string
+  site?: string
+  location?: string
+  role: "Admin" | "User" | "Manager" | "Viewer"
+  status: "active" | "inactive" | "pending"
+  full_name: string
+  is_active: boolean
+  manager_id?: string
+  hire_date?: string
+  notes?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface PersonListResponse {
+  people: PersonResponse[]
+  total: number
+  page: number
+  page_size: number
+  total_pages: number
+}
+
 export const organizationApi = {
   getProfile: () =>
     apiClient.get("/api/v1/organization/profile"),
@@ -695,14 +770,18 @@ export const organizationApi = {
   updateProfile: (data: any) =>
     apiClient.put("/api/v1/organization/profile", data),
   
-  getPeople: () =>
-    apiClient.get("/api/v1/organization/people"),
+  // People endpoints with proper types
+  getPeople: (page: number = 1, pageSize: number = 20) =>
+    apiClient.get<PersonListResponse>(`/api/v1/organization/people/?page=${page}&page_size=${pageSize}`),
   
-  createPerson: (data: any) =>
-    apiClient.post("/api/v1/organization/people", data),
+  getPerson: (id: string) =>
+    apiClient.get<PersonResponse>(`/api/v1/organization/people/${id}`),
   
-  updatePerson: (id: string, data: any) =>
-    apiClient.put(`/api/v1/organization/people/${id}`, data),
+  createPerson: (data: PersonCreateRequest) =>
+    apiClient.post<PersonResponse>("/api/v1/organization/people/", data),
+  
+  updatePerson: (id: string, data: PersonUpdateRequest) =>
+    apiClient.put<PersonResponse>(`/api/v1/organization/people/${id}`, data),
   
   deletePerson: (id: string) =>
     apiClient.delete(`/api/v1/organization/people/${id}`),

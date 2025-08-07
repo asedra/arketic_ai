@@ -55,6 +55,7 @@ services:
       - PORT=8000
       - CORS_ORIGINS=http://localhost:3000,http://web:3000,http://localhost:80,http://nginx
       - JWT_SECRET_KEY=dev_secret_key_change_in_production
+      - LANGCHAIN_INTERNAL_API_KEY=dev_internal_api_key_change_in_production
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - GROQ_API_KEY=${GROQ_API_KEY:-}
@@ -112,6 +113,52 @@ services:
       retries: 3
       start_period: 30s
 
+  # LangChain Microservice
+  langchain:
+    build:
+      context: ./apps/langchain
+      dockerfile: Dockerfile
+    container_name: arketic-langchain
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - REDIS_DB=0
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=arketic
+      - DB_PASSWORD=arketic_dev_password
+      - DB_NAME=arketic_dev
+      - JWT_SECRET_KEY=dev_secret_key_change_in_production
+      - INTERNAL_API_KEY=dev_internal_api_key_change_in_production
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - CORS_ORIGIN=http://localhost:3000,http://localhost:8000,http://web:3000,http://api:8000
+      - LOG_LEVEL=debug
+    # volumes:
+    #   - ./apps/langchain/src:/app/src
+    #   - ./apps/langchain/tests:/app/tests
+    #   - langchain_node_modules:/app/node_modules
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - default
+
   # Nginx Reverse Proxy (Development)
   nginx:
     image: nginx:alpine
@@ -123,6 +170,7 @@ services:
     depends_on:
       - web
       - api
+      - langchain
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
       interval: 15s
@@ -144,6 +192,8 @@ volumes:
   web_next:
     driver: local
   web_cache:
+    driver: local
+  langchain_node_modules:
     driver: local
 
 networks:

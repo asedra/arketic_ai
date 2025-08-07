@@ -503,13 +503,13 @@ Authorization: Bearer <access_token>
 
 ---
 
-### 9. Test Chat Connection
+### 9. LangChain Service Health Check
 
-**Endpoint**: `POST /api/v1/chat/test/connection`  
-**Summary**: Test chat system connectivity and user's API keys  
+**Endpoint**: `GET /api/v1/chat/langchain/health`  
+**Summary**: Check LangChain service health and circuit breaker status  
 **Authentication**: **Required** (HTTP Bearer)  
 
-**Description**: Comprehensive test of chat system components including database connectivity, WebSocket manager, and OpenAI API key validation.
+**Description**: Comprehensive health check of LangChain service integration including circuit breaker state, failure tracking, and fallback system status.
 
 **Headers**:
 ```
@@ -520,31 +520,51 @@ Authorization: Bearer <access_token>
 ```json
 {
   "success": true,
-  "message": "Chat system connectivity test completed",
+  "message": "LangChain service health check completed",
   "data": {
-    "database": {
+    "service_health": {
       "status": "healthy",
-      "response_time_ms": 5
+      "response_time_ms": 45,
+      "circuit_breaker_state": "CLOSED",
+      "failure_count": 0,
+      "service_url": "http://langchain:3001"
     },
-    "websocket_manager": {
-      "status": "operational",
-      "connections": {
-        "total_connections": 15,
-        "active_chats": 8
-      }
+    "circuit_breaker": {
+      "state": "CLOSED",
+      "failure_count": 0,
+      "failure_threshold": 5,
+      "timeout_seconds": 60,
+      "last_failure_time": null
     },
-    "openai_api": {
-      "success": true,
-      "message": "Connection test completed successfully",
-      "model_info": {
-        "model": "gpt-4",
-        "max_tokens": 2048,
-        "temperature": 0.7
-      },
-      "response_time_ms": 245
+    "integration_status": "active",
+    "fallback_available": true
+  },
+  "timestamp": "2024-01-01T12:32:00Z"
+}
+```
+
+**Degraded Service Response (200)**:
+```json
+{
+  "success": true,
+  "message": "LangChain service health check completed",
+  "data": {
+    "service_health": {
+      "status": "unhealthy",
+      "circuit_breaker_state": "OPEN",
+      "failure_count": 5,
+      "service_url": "http://langchain:3001",
+      "error": "Service unavailable"
     },
-    "user_id": "user-456",
-    "username": "johndoe"
+    "circuit_breaker": {
+      "state": "OPEN",
+      "failure_count": 5,
+      "failure_threshold": 5,
+      "timeout_seconds": 60,
+      "last_failure_time": "2024-01-01T12:30:00Z"
+    },
+    "integration_status": "active",
+    "fallback_available": true
   },
   "timestamp": "2024-01-01T12:32:00Z"
 }
@@ -552,44 +572,161 @@ Authorization: Bearer <access_token>
 
 ---
 
-### 10. WebSocket Test Endpoint
+### 10. LangChain Service Integration Test
 
-**Endpoint**: `GET /api/v1/chat/websocket/test/{chat_id}`  
-**Summary**: Generate WebSocket test URL and connection instructions  
+**Endpoint**: `POST /api/v1/chat/langchain/test`  
+**Summary**: Test LangChain service integration with circuit breaker and fallback  
 **Authentication**: **Required** (HTTP Bearer)  
 
-**Description**: Provides WebSocket connection URL with authentication token and testing instructions for developers.
+**Description**: Tests the LangChain service integration including circuit breaker pattern, automatic fallback to direct OpenAI, and service resilience.
+
+**Headers**:
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+**Request Body**:
+```json
+{
+  "message": "Hello! This is a test message for LangChain integration.",
+  "model": "gpt-3.5-turbo",
+  "temperature": 0.7,
+  "system_prompt": "You are testing the LangChain service. Please respond briefly to confirm integration is working."
+}
+```
+
+**Successful Response - LangChain Service Active (200)**:
+```json
+{
+  "success": true,
+  "message": "LangChain service test completed successfully",
+  "data": {
+    "request": {
+      "message": "Hello! This is a test message for LangChain integration.",
+      "model": "gpt-3.5-turbo",
+      "temperature": 0.7,
+      "system_prompt": "You are testing the LangChain service."
+    },
+    "response": {
+      "content": "Hello! LangChain service integration is working correctly. Test completed successfully.",
+      "model_used": "gpt-3.5-turbo",
+      "processing_time_ms": 1250,
+      "tokens_used": 85,
+      "finish_reason": "stop",
+      "fallback_used": false
+    },
+    "service_info": {
+      "integration_type": "LangChain Service",
+      "circuit_breaker_state": "CLOSED",
+      "service_url": "http://langchain:3001"
+    },
+    "user_info": {
+      "user_id": "user-456",
+      "username": "johndoe"
+    }
+  },
+  "timestamp": "2024-01-01T12:32:15Z"
+}
+```
+
+**Successful Response - Fallback Active (200)**:
+```json
+{
+  "success": true,
+  "message": "LangChain service test completed successfully",
+  "data": {
+    "request": {
+      "message": "Hello! This is a test message for LangChain integration.",
+      "model": "gpt-3.5-turbo",
+      "temperature": 0.7,
+      "system_prompt": "You are testing the LangChain service."
+    },
+    "response": {
+      "content": "Hello! I confirm that I received your test message. The system is using fallback to direct OpenAI API.",
+      "model_used": "gpt-3.5-turbo-0125",
+      "processing_time_ms": 890,
+      "tokens_used": 92,
+      "finish_reason": "stop",
+      "fallback_used": true
+    },
+    "service_info": {
+      "integration_type": "LangChain Service (Fallback)",
+      "circuit_breaker_state": "OPEN",
+      "service_url": "http://langchain:3001"
+    },
+    "user_info": {
+      "user_id": "user-456",
+      "username": "johndoe"
+    }
+  },
+  "timestamp": "2024-01-01T12:32:15Z"
+}
+```
+
+---
+
+### 11. Services Status Dashboard
+
+**Endpoint**: `GET /api/v1/chat/services/status`  
+**Summary**: Get comprehensive status of all integrated services  
+**Authentication**: **Required** (HTTP Bearer)  
+
+**Description**: Returns detailed status information for all chat system services including LangChain integration, WebSocket manager, fallback services, and feature flags.
 
 **Headers**:
 ```
 Authorization: Bearer <access_token>
 ```
 
-**Path Parameters**:
-- `chat_id` (required): Unique identifier of the chat to test
-
 **Successful Response (200)**:
 ```json
 {
   "success": true,
-  "message": "WebSocket test endpoint ready",
+  "message": "Services status check completed",
   "data": {
-    "chat_id": "123e4567-e89b-12d3-a456-426614174000",
-    "websocket_url": "ws://localhost:8000/api/v1/chat/chats/123e4567-e89b-12d3-a456-426614174000/ws?token=eyJhbGciOiJIUzI1NiIs...",
-    "test_instructions": {
-      "1": "Use the WebSocket URL above to connect",
-      "2": "Send a ping message: {\"type\": \"ping\", \"timestamp\": \"2024-01-01T00:00:00Z\"}",
-      "3": "You should receive a pong response",
-      "4": "Connection will be authenticated and validated for chat access"
+    "langchain_service": {
+      "health": {
+        "status": "healthy",
+        "response_time_ms": 42,
+        "circuit_breaker_state": "CLOSED",
+        "failure_count": 0,
+        "service_url": "http://langchain:3001"
+      },
+      "circuit_breaker": {
+        "state": "CLOSED",
+        "failure_count": 0,
+        "failure_threshold": 5,
+        "timeout_seconds": 60,
+        "last_failure_time": null
+      },
+      "base_url": "http://langchain:3001"
     },
-    "authentication": {
-      "method": "JWT token in query parameter",
-      "parameter": "token",
-      "token_provided": true,
-      "user_id": "user-456"
+    "websocket_manager": {
+      "status": "operational",
+      "connections": {
+        "total_connections": 12,
+        "active_chats": 5,
+        "connections_per_chat": {
+          "chat-123": 2,
+          "chat-456": 3
+        }
+      }
+    },
+    "fallback_services": {
+      "direct_openai": {
+        "status": "available",
+        "description": "Direct OpenAI API integration for fallback"
+      }
+    },
+    "integration_features": {
+      "circuit_breaker": "enabled",
+      "automatic_fallback": "enabled",
+      "streaming_support": "enabled",
+      "health_monitoring": "enabled"
     }
   },
-  "timestamp": "2024-01-01T12:32:15Z"
+  "timestamp": "2024-01-01T12:32:30Z"
 }
 ```
 
@@ -850,13 +987,13 @@ curl -X POST "http://localhost:8000/api/v1/chat/openai/test" \
 
 ---
 
-### 11. Chat with AI (Production)
+### 12. Chat with AI via LangChain (Production)
 
 **Endpoint**: `POST /api/v1/chat/chats/{chat_id}/ai-message`  
-**Summary**: Send message to AI and get response in production chat  
+**Summary**: Send message to AI using LangChain service integration exclusively  
 **Authentication**: **Required** (HTTP Bearer)  
 
-**Description**: Production endpoint for chatting with AI in a specific chat. Sends a message to AI and returns response, with options for streaming and saving to chat history. This is the main endpoint used by frontend for AI chat functionality.
+**Description**: Production endpoint for chatting with AI using the integrated LangChain service exclusively. Features circuit breaker pattern, service health monitoring, and options for streaming and saving to chat history. All OpenAI communication is handled through the LangChain microservice only. This is the main endpoint used by frontend for AI chat functionality.
 
 **Headers**:
 ```
@@ -881,12 +1018,13 @@ Content-Type: application/json
 - `stream` (boolean, optional): Whether to stream the response via WebSocket (default: false)
 - `save_to_history` (boolean, optional): Whether to save messages to chat history (default: true)
 
-**Successful Response - Non-Streaming (200)**:
+**Successful Response - LangChain Service Active (200)**:
 ```json
 {
   "success": true,
-  "message": "AI response generated successfully",
+  "message": "AI response generated successfully via LangChain service",
   "streaming": false,
+  "service_used": "langchain",
   "data": {
     "user_message": {
       "id": "msg-123",
@@ -904,15 +1042,34 @@ Content-Type: application/json
         "total": 165
       },
       "finish_reason": "stop",
-      "timestamp": "2024-01-01T12:35:15Z"
+      "timestamp": "2024-01-01T12:35:15Z",
+      "via_langchain": true
     },
     "chat_info": {
       "chat_id": "123e4567-e89b-12d3-a456-426614174000",
       "total_messages": 25,
       "total_tokens_used": 2450
+    },
+    "service_info": {
+      "circuit_breaker_state": "CLOSED",
+      "service_health": "healthy"
     }
   },
   "timestamp": "2024-01-01T12:35:15Z"
+}
+```
+
+**Error Response - LangChain Service Unavailable (503)**:
+```json
+{
+  "success": false,
+  "error": "LangChain service temporarily unavailable",
+  "error_code": "langchain_service_unavailable",
+  "service_info": {
+    "circuit_breaker_state": "OPEN",
+    "service_health": "unhealthy"
+  },
+  "timestamp": "2024-01-01T12:35:10Z"
 }
 ```
 
@@ -920,169 +1077,37 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "message": "AI response generation started",
+  "message": "AI response generation started via LangChain",
   "streaming": true,
+  "service_used": "langchain",
   "data": {
     "user_message_id": "msg-123",
     "ai_message_id": "msg-124",
     "chat_id": "123e4567-e89b-12d3-a456-426614174000",
     "model_used": "gpt-4",
-    "stream_via": "websocket"
-  },
-  "timestamp": "2024-01-01T12:35:00Z"
-}
-```
-
-**WebSocket Streaming Messages**:
-When `stream: true`, the AI response will be sent via WebSocket in real-time:
-
-```json
-// AI Response Start
-{
-  "type": "ai_response_start",
-  "message": {
-    "id": "msg-124",
-    "chat_id": "123e4567-e89b-12d3-a456-426614174000",
-    "sender_id": null,
-    "content": "",
-    "message_type": "AI",
-    "ai_model_used": "gpt-4",
-    "created_at": "2024-01-01T12:35:15Z",
-    "status": "PROCESSING",
-    "is_streaming": true
-  }
-}
-
-// AI Response Chunks (multiple)
-{
-  "type": "ai_response_chunk",
-  "message_id": "msg-124",
-  "chat_id": "123e4567-e89b-12d3-a456-426614174000",
-  "chunk": "Machine learning is",
-  "full_content": "Machine learning is"
-}
-
-// AI Response Complete
-{
-  "type": "ai_response_complete",
-  "message": {
-    "id": "msg-124",
-    "chat_id": "123e4567-e89b-12d3-a456-426614174000",
-    "sender_id": null,
-    "content": "Machine learning is a subset of artificial intelligence...",
-    "message_type": "AI",
-    "ai_model_used": "gpt-4",
-    "tokens_used": 165,
-    "processing_time_ms": 1250,
-    "created_at": "2024-01-01T12:35:15Z",
-    "status": "DELIVERED",
-    "is_streaming": false
-  }
-}
-```
-
-**Responses**:
-- **200 OK**: AI response generated successfully
-- **400 Bad Request**: OpenAI API key not configured or invalid message
-- **401 Unauthorized**: Invalid or expired access token
-- **403 Forbidden**: Access denied to this chat
-- **404 Not Found**: Chat not found
-- **500 Internal Server Error**: AI service error
-
----
-
-### 12. OpenAI Direct Integration Test
-
-**Endpoint**: `POST /api/v1/chat/openai/test`  
-**Summary**: Test direct OpenAI API integration  
-**Authentication**: **Required** (HTTP Bearer)  
-
-**Description**: Tests the direct OpenAI API integration by sending a message to OpenAI API. This endpoint demonstrates how to use OpenAI API directly with user's OpenAI API key for chat functionality.
-
-**Headers**:
-```
-Authorization: Bearer <access_token>
-Content-Type: application/json
-```
-
-**Request Body**:
-```json
-{
-  "message": "Hello, can you explain what machine learning is?",
-  "model": "gpt-3.5-turbo",
-  "temperature": 0.7,
-  "system_prompt": "You are a helpful AI assistant specialized in explaining technical concepts."
-}
-```
-
-**Request Body Schema**:
-- `message` (string, required): Test message to send to OpenAI (1-1000 chars)
-- `model` (string, optional): OpenAI model to use (default: "gpt-3.5-turbo")
-- `temperature` (float, optional): Temperature for response generation (0.0-2.0, default: 0.7)
-- `system_prompt` (string, optional): System prompt to guide the AI response
-
-**Successful Response (200)**:
-```json
-{
-  "success": true,
-  "message": "OpenAI direct API test completed successfully",
-  "data": {
-    "request": {
-      "message": "Hello, can you explain what machine learning is?",
-      "model": "gpt-3.5-turbo",
-      "temperature": 0.7,
-      "system_prompt": "You are a helpful AI assistant specialized in explaining technical concepts."
-    },
-    "response": {
-      "content": "Machine learning is a subset of artificial intelligence (AI) that enables computers to learn and make decisions or predictions without being explicitly programmed for each specific task...",
-      "model_used": "gpt-3.5-turbo",
-      "processing_time_ms": 1250,
-      "tokens_used": {
-        "input": 45,
-        "output": 120,
-        "total": 165
-      },
-      "finish_reason": "stop"
-    },
-    "user_info": {
-      "user_id": "123e4567-e89b-12d3-a456-426614174000",
-      "username": "johndoe"
-    },
-    "api_info": {
-      "integration_type": "Direct OpenAI API",
-      "messages_count": 2,
-      "has_system_prompt": true,
-      "openai_response_id": "chatcmpl-8abc123def456"
+    "stream_via": "websocket",
+    "service_info": {
+      "circuit_breaker_state": "CLOSED",
+      "langchain_available": true
     }
   },
   "timestamp": "2024-01-01T12:35:00Z"
 }
 ```
 
-**Error Response (400) - No API Key**:
-```json
-{
-  "detail": "OpenAI API key not configured. Please set up your API key in Settings first."
-}
-```
-
-**Error Response (200) - API Error**:
-```json
-{
-  "success": false,
-  "error": "Invalid OpenAI API key. Please check your API key in Settings.",
-  "error_code": "invalid_api_key",
-  "user_id": "123e4567-e89b-12d3-a456-426614174000",
-  "model_requested": "gpt-3.5-turbo",
-  "timestamp": "2024-01-01T12:35:00Z"
-}
-```
+**Circuit Breaker & Resilience Features**:
+- **Circuit Breaker States**: CLOSED (healthy), OPEN (service unavailable), HALF_OPEN (testing recovery)
+- **Service Protection**: Circuit breaker prevents cascading failures when LangChain service is down
+- **Health Monitoring**: Real-time monitoring of service health and response times
+- **Failure Tracking**: Tracks failures and automatically opens circuit after 5 consecutive failures
 
 **Responses**:
-- **200 OK**: Test completed (check success field for result)
-- **400 Bad Request**: OpenAI API key not configured
+- **200 OK**: AI response generated successfully via LangChain service
+- **400 Bad Request**: OpenAI API key not configured or invalid message
 - **401 Unauthorized**: Invalid or expired access token
-- **500 Internal Server Error**: Server error
+- **403 Forbidden**: Access denied to this chat
+- **404 Not Found**: Chat not found
+- **503 Service Unavailable**: LangChain service temporarily unavailable (circuit breaker open)
 
 ---
 

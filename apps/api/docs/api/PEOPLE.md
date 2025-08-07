@@ -24,6 +24,7 @@ Authorization: Bearer <your_jwt_token>
 | Field | Type | Required | Description | Constraints |
 |-------|------|----------|-------------|-------------|
 | `id` | UUID | No (auto-generated) | Unique identifier | Read-only |
+| `organization_id` | UUID | No | Organization identifier | Can be null |
 | `first_name` | string | Yes | Person's first name | Max 100 characters |
 | `last_name` | string | Yes | Person's last name | Max 100 characters |
 | `email` | string | Yes | Person's email address | Valid email format, unique |
@@ -32,12 +33,13 @@ Authorization: Bearer <your_jwt_token>
 | `department` | string | No | Department name | Max 100 characters |
 | `site` | string | No | Work site/location | Max 200 characters |
 | `location` | string | No | Geographic location | Max 200 characters |
-| `employee_id` | string | No | Employee identifier | Max 50 characters, unique if provided |
 | `role` | enum | Yes | System role | One of: "Admin", "User", "Manager", "Viewer" |
 | `status` | enum | No (defaults to "active") | Person status | One of: "active", "inactive", "pending" |
 | `manager_id` | UUID | No | ID of person's manager | Must be valid person ID |
 | `hire_date` | datetime | No | Date of hiring | ISO 8601 format |
 | `notes` | string | No | Additional notes | Text field |
+| `full_name` | string | No (computed) | Full name | Read-only, concatenated first + last name |
+| `is_active` | boolean | No (computed) | Active status | Read-only, true if status is "active" |
 | `created_at` | datetime | No (auto-generated) | Creation timestamp | Read-only |
 | `updated_at` | datetime | No (auto-generated) | Last update timestamp | Read-only |
 
@@ -46,6 +48,7 @@ Authorization: Bearer <your_jwt_token>
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
+  "organization_id": null,
   "first_name": "John",
   "last_name": "Doe",
   "email": "john.doe@company.com",
@@ -54,9 +57,10 @@ Authorization: Bearer <your_jwt_token>
   "department": "Engineering",
   "site": "Main Office",
   "location": "New York, NY",
-  "employee_id": "EMP001",
   "role": "User",
   "status": "active",
+  "full_name": "John Doe",
+  "is_active": true,
   "manager_id": "123e4567-e89b-12d3-a456-426614174001",
   "hire_date": "2024-01-15T00:00:00Z",
   "notes": "New hire in engineering team",
@@ -83,7 +87,6 @@ Create a new person record.
   "department": "Engineering",
   "site": "San Francisco Office",
   "location": "San Francisco, CA",
-  "employee_id": "EMP001",
   "role": "User",
   "manager_id": null,
   "hire_date": "2024-01-15T00:00:00Z",
@@ -95,15 +98,14 @@ Create a new person record.
 - `first_name` (string)
 - `last_name` (string) 
 - `email` (string, must be valid email format)
-- `job_title` (string)
+- `role` (enum: "Admin", "User", "Manager", "Viewer")
 
 **Optional Fields:**
 - `phone` (string)
+- `job_title` (string)
 - `department` (string)
 - `site` (string) 
 - `location` (string)
-- `employee_id` (string, must be unique)
-- `role` (enum: "Admin", "User", "Manager", "Viewer", default: "User")
 - `manager_id` (UUID, must reference existing person)
 - `hire_date` (ISO datetime)
 - `notes` (string)
@@ -112,6 +114,7 @@ Create a new person record.
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
+  "organization_id": null,
   "first_name": "John",
   "last_name": "Doe",
   "email": "john.doe@example.com",
@@ -120,9 +123,10 @@ Create a new person record.
   "department": "Engineering", 
   "site": "San Francisco Office",
   "location": "San Francisco, CA",
-  "employee_id": "EMP001",
   "role": "User",
   "status": "active",
+  "full_name": "John Doe",
+  "is_active": true,
   "manager_id": null,
   "hire_date": "2024-01-15T00:00:00Z",
   "notes": "New hire in engineering team",
@@ -132,9 +136,9 @@ Create a new person record.
 ```
 
 **Error Responses:**
-- `409 Conflict`: Email or employee_id already exists
+- `409 Conflict`: Email already exists
 - `422 Unprocessable Entity`: Validation errors
-- `400 Bad Request`: Invalid manager_id
+- `404 Not Found`: Invalid manager_id
 
 ---
 
@@ -166,7 +170,6 @@ GET /api/v1/organization/people/?page=1&page_size=10
       "department": "Engineering",
       "site": "San Francisco Office", 
       "location": "San Francisco, CA",
-      "employee_id": "EMP001",
       "role": "User",
       "status": "active",
       "manager_id": null,
@@ -209,8 +212,7 @@ GET /api/v1/organization/people/550e8400-e29b-41d4-a716-446655440000
   "job_title": "Software Engineer",
   "department": "Engineering",
   "site": "San Francisco Office",
-  "location": "San Francisco, CA", 
-  "employee_id": "EMP001",
+  "location": "San Francisco, CA",
   "role": "User",
   "status": "active",
   "manager_id": null,
@@ -257,7 +259,6 @@ Update an existing person's information.
   "department": "Engineering",
   "site": "San Francisco Office",
   "location": "San Francisco, CA",
-  "employee_id": "EMP001", 
   "role": "User",
   "status": "active",
   "manager_id": null,
@@ -270,7 +271,7 @@ Update an existing person's information.
 
 **Error Responses:**
 - `404 Not Found`: Person not found
-- `409 Conflict`: Email or employee_id conflict
+- `409 Conflict`: Email conflict
 - `422 Unprocessable Entity`: Validation errors
 
 ---
@@ -355,10 +356,6 @@ No response body.
 - Must be unique across all people
 - Automatically converted to lowercase
 
-### Employee ID Validation
-- Must be unique if provided (can be null)
-- Maximum 50 characters
-- Can contain letters, numbers, and common symbols
 
 ### Manager Validation
 - Manager ID must reference an existing person
@@ -418,33 +415,32 @@ curl -X PUT \
   }'
 ```
 
-## Known Issues
+## Resolved Issues
 
-### Current Issue: 409 Conflict on Creation
+### ✅ 409 Conflict on Creation (RESOLVED)
 
-**Problem:** The API currently returns 409 Conflict errors when creating people, even with guaranteed unique email addresses and employee IDs.
+**Problem:** The API was returning 409 Conflict errors when creating people, even with unique email addresses.
 
-**Status:** Under investigation
+**Status:** Resolved (2025-08-07)
 
-**Symptoms:**
-- All POST requests to create people return 409 status
-- Error message: "Person with this email or employee ID already exists"
-- Occurs even with completely unique, timestamp-based data
-- List endpoint correctly shows 0 people in database
+**Root Cause:** 
+- The `organization_id` field had a NOT NULL constraint in the database
+- The error handling was masking the actual `NotNullViolationError` and returning a misleading "email already exists" message
 
-**Workaround:** None currently available. This issue prevents new person creation.
+**Solution:**
+- Made `organization_id` nullable in the database
+- Removed `employee_id` field completely from the schema and database
+- Fixed error handling to properly report actual database errors
+- Updated response schemas to match the actual model properties
 
-**Investigation Notes:**
-- Service layer works correctly when tested in isolation
-- Database contains no conflicting records
-- Issue appears to be in API layer or database session handling
-- Transaction isolation or constraint checking may be involved
+**Testing:** All tests now pass with 100% success rate
 
 ## Notes
 
 - All email addresses are automatically converted to lowercase
-- Employee IDs must be unique across all people
 - Manager relationships are validated - manager must exist
 - Self-management is prevented (person cannot be their own manager)
 - Timestamps are automatically managed (created_at, updated_at)
 - All datetime fields use ISO 8601 format with UTC timezone
+- The `organization_id` field is optional and can be null
+- Response includes computed fields: `full_name` and `is_active`

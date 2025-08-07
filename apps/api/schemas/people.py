@@ -101,7 +101,7 @@ class PersonResponse(PersonBase):
     status: PersonStatus
     full_name: str
     is_active: bool
-    is_manager: bool
+    # Removed is_manager field - requires async DB access
     created_at: datetime
     updated_at: datetime
 

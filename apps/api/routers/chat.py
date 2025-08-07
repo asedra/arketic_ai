@@ -9,7 +9,7 @@ import uuid
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 
-from fastapi import APIRouter, HTTPException, status, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks
+from fastapi import APIRouter, HTTPException, status, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, or_, desc, func, select
@@ -23,7 +23,10 @@ from models.user import User, UserApiKey
 from services.ai_service import ai_service, AIServiceError
 
 # OpenAI imports for direct integration
-from openai import AsyncOpenAI
+# OpenAI integration removed - using LangChain only
+
+# LangChain service integration
+from services.langchain_client import get_langchain_client
 
 import logging
 logger = logging.getLogger(__name__)
@@ -50,11 +53,6 @@ class CreateChatRequest(BaseModel):
     is_private: bool = False
     tags: Optional[List[str]] = None
 
-class SendMessageRequest(BaseModel):
-    content: str = Field(..., min_length=1, max_length=50000)
-    message_type: MessageType = MessageType.USER
-    reply_to_id: Optional[str] = None
-    message_metadata: Optional[Dict[str, Any]] = None
 
 class OpenAITestRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=1000, description="Test message to send to OpenAI")
@@ -358,28 +356,38 @@ async def get_user_openai_key(user_id: str, db: AsyncSession) -> Optional[str]:
 async def generate_streaming_ai_response(
     chat_id: str,
     messages: List[Dict[str, str]],
-    client: AsyncOpenAI,
+    langchain_client,
     chat: Chat,
     ai_message_id: Optional[str],
     start_time: datetime,
-    db: Optional[AsyncSession] = None
+    db: Optional[AsyncSession] = None,
+    api_key: str = None,
+    user_id: str = None,
+    auth_token: str = ""
 ) -> None:
-    """Generate streaming AI response for production chat"""
+    """Generate streaming AI response using LangChain service"""
     try:
         full_content = ""
         
-        # Create streaming response
-        stream = await client.chat.completions.create(
-            model=chat.ai_model or "gpt-3.5-turbo",
-            messages=messages,
-            temperature=float(chat.temperature) if chat.temperature else 0.7,
-            max_tokens=chat.max_tokens or 2048,
-            stream=True
-        )
+        # Prepare settings for LangChain
+        settings = {
+            "model": chat.ai_model or "gpt-3.5-turbo",
+            "temperature": float(chat.temperature) if chat.temperature else 0.7,
+            "maxTokens": chat.max_tokens or 2048,
+            "systemPrompt": chat.system_prompt,
+            "provider": "openai"
+        }
         
-        async for chunk in stream:
-            if chunk.choices[0].delta.content is not None:
-                content_chunk = chunk.choices[0].delta.content
+        # Use LangChain streaming service
+        async for content_chunk in langchain_client.send_streaming_message(
+            chat_id=chat_id,
+            message=messages[-1]["content"] if messages else "",
+            user_id=user_id,
+            api_key=api_key,
+            settings=settings,
+            auth_token=auth_token
+        ):
+            if content_chunk:
                 full_content += content_chunk
                 
                 # Broadcast chunk to WebSocket
@@ -471,7 +479,7 @@ async def generate_ai_response(
     openai_key: str,
     websocket_manager: 'ConnectionManager'
 ) -> None:
-    """Generate AI response for user message with improved error handling"""
+    """Generate AI response using LangChain service with fallback to direct OpenAI"""
     start_time = datetime.utcnow()
     
     try:
@@ -514,13 +522,6 @@ async def generate_ai_response(
             # Add current user message
             messages.append({"role": "user", "content": user_message})
             
-            # Generate streaming AI response using OpenAI
-            start_time = datetime.utcnow()
-            
-            # Create temporary AI service with user's API key
-            from services.ai_service import OpenAIProvider
-            openai_provider = OpenAIProvider(openai_key)
-            
             # Create initial AI message for streaming updates
             ai_message = ChatMessage(
                 chat_id=chat.id,
@@ -556,32 +557,77 @@ async def generate_ai_response(
                 chat_id
             )
             
-            # Stream response chunks
-            full_content = ""
+            # Prepare settings for LangChain service
+            settings = {
+                "model": chat.ai_model or "gpt-3.5-turbo",
+                "temperature": float(chat.temperature) if chat.temperature else 0.7,
+                "maxTokens": chat.max_tokens or 2048,
+                "systemPrompt": chat.system_prompt,
+                "provider": "openai"
+            }
             
-            async for chunk in openai_provider.generate_streaming_response(
-                messages,
-                model=chat.ai_model or "gpt-3.5-turbo",
-                temperature=float(chat.temperature) if chat.temperature else 0.7,
-                max_tokens=chat.max_tokens or 2048
-            ):
-                full_content += chunk
+            # Get LangChain service client
+            langchain_client = get_langchain_client()
+            
+            # Stream response chunks using LangChain service
+            full_content = ""
+            processing_start = datetime.utcnow()
+            
+            try:
+                # Try LangChain service first for streaming
+                async for chunk in langchain_client.send_streaming_message(
+                    chat_id=str(chat_id),
+                    message=user_message,
+                    user_id=str(ai_message.sender_id) if ai_message.sender_id else "system",
+                    api_key=openai_key,
+                    settings=settings,
+                    auth_token=""
+                ):
+                    full_content += chunk
+                    
+                    # Broadcast chunk to WebSocket
+                    chunk_data = {
+                        "type": "ai_response_chunk",
+                        "message_id": str(ai_message.id),
+                        "chat_id": chat_id,
+                        "chunk": chunk,
+                        "full_content": full_content
+                    }
+                    await websocket_manager.broadcast_to_chat(
+                        json.dumps(chunk_data),
+                        chat_id
+                    )
+                    
+            except Exception as langchain_error:
+                logger.warning(f"LangChain service failed, using direct OpenAI fallback: {langchain_error}")
                 
-                # Broadcast chunk to WebSocket
-                chunk_data = {
-                    "type": "ai_response_chunk",
-                    "message_id": str(ai_message.id),
-                    "chat_id": chat_id,
-                    "chunk": chunk,
-                    "full_content": full_content
-                }
-                await websocket_manager.broadcast_to_chat(
-                    json.dumps(chunk_data),
-                    chat_id
-                )
+                # Fallback to direct OpenAI streaming
+                from services.ai_service import OpenAIProvider
+                openai_provider = OpenAIProvider(openai_key)
+                
+                async for chunk in openai_provider.generate_streaming_response(
+                    messages,
+                    model=chat.ai_model or "gpt-3.5-turbo",
+                    temperature=float(chat.temperature) if chat.temperature else 0.7,
+                    max_tokens=chat.max_tokens or 2048
+                ):
+                    full_content += chunk
+                    
+                    # Broadcast chunk to WebSocket
+                    chunk_data = {
+                        "type": "ai_response_chunk",
+                        "message_id": str(ai_message.id),
+                        "chat_id": chat_id,
+                        "chunk": chunk,
+                        "full_content": full_content
+                    }
+                    await websocket_manager.broadcast_to_chat(
+                        json.dumps(chunk_data),
+                        chat_id
+                    )
             
             end_time = datetime.utcnow()
-            processing_time_ms = int((end_time - start_time).total_seconds() * 1000)
+            processing_time_ms = int((end_time - processing_start).total_seconds() * 1000)
             
             # Update AI message with final content and get token count
             ai_message.content = full_content
@@ -601,7 +647,7 @@ async def generate_ai_response(
             
             # Record metrics for monitoring
             performance_monitor.record_ai_api_call(
-                provider="openai",
+                provider="langchain_service",
                 model=chat.ai_model or "gpt-3.5-turbo",
                 duration=processing_time_ms / 1000.0,
                 tokens_used={
@@ -892,147 +938,6 @@ async def get_chat_history(
             detail="Failed to retrieve chat history"
         )
 
-@router.post("/chats/{chat_id}/messages", response_model=MessageResponse)
-async def send_message(
-    chat_id: str,
-    request: SendMessageRequest,
-    background_tasks: BackgroundTasks,
-    db: AsyncSession = Depends(get_db),
-    current_user: dict = Depends(get_current_user_dict)
-):
-    """Send a message to a chat with improved validation and error handling"""
-    try:
-        logger.info(f"send_message endpoint called for chat {chat_id} by user {current_user['user_id']}")
-        # Validate user access and permissions
-        participant = await validate_chat_access(
-            chat_id, 
-            current_user["user_id"], 
-            db, 
-            required_permissions=["send_messages"]
-        )
-        
-        # Get and validate chat
-        chat = await get_chat_with_validation(chat_id, db)
-        
-        # Validate chat allows AI responses for message processing
-        if not hasattr(chat, 'enable_ai_responses'):
-            chat.enable_ai_responses = True  # Default to True for backwards compatibility
-        
-        # Create message with validation
-        try:
-            # Validate message content
-            if len(request.content.strip()) == 0:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Message content cannot be empty"
-                )
-            
-            message = ChatMessage(
-                chat_id=chat_id,
-                sender_id=current_user["user_id"],
-                content=request.content.strip(),  # Remove leading/trailing whitespace
-                message_type=request.message_type,
-                reply_to_id=request.reply_to_id,
-                message_metadata=request.message_metadata
-            )
-            
-            db.add(message)
-            
-            # Update chat activity atomically
-            chat.last_activity_at = datetime.utcnow()
-            chat.message_count += 1
-            
-            # Update participant message count
-            participant.message_count += 1
-            
-            await db.commit()
-            await db.refresh(message)
-            
-            logger.info(f"Message created: {message.id} in chat {chat_id} by user {current_user['user_id']}")
-            
-        except SQLAlchemyError as e:
-            await db.rollback()
-            logger.error(f"Database error creating message: {e}")
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to send message: Database error - {str(e)[:100]}"
-            )
-        except Exception as e:
-            await db.rollback()
-            logger.error(f"Unexpected error creating message: {e}", exc_info=True)
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to send message: {str(e)[:200]}"
-            )
-        
-        # Broadcast to WebSocket connections with error handling
-        try:
-            message_data = {
-                "type": "new_message",
-                "message": {
-                    "id": str(message.id),
-                    "chat_id": str(message.chat_id),
-                    "sender_id": message.sender_id,
-                    "content": message.content,
-                    "message_type": message.message_type.value,
-                    "created_at": message.created_at.isoformat()
-                }
-            }
-            
-            await manager.broadcast_to_chat(json.dumps(message_data), chat_id)
-            logger.info(f"Message broadcasted via WebSocket for chat {chat_id}")
-        except Exception as ws_error:
-            logger.warning(f"Failed to broadcast message via WebSocket for chat {chat_id}: {ws_error}")
-            # Don't fail the entire request if WebSocket broadcast fails
-        
-        # Generate AI response if AI responses are enabled and this is a user message
-        if (chat.enable_ai_responses and 
-            request.message_type == MessageType.USER and 
-            not request.content.startswith('/')):  # Skip AI response for commands
-            
-            # Get user's OpenAI API key
-            openai_key = await get_user_openai_key(current_user["user_id"], db)
-            
-            if openai_key:
-                # Generate AI response in background
-                background_tasks.add_task(
-                    generate_ai_response,
-                    chat_id,
-                    request.content,
-                    openai_key,
-                    manager
-                )
-            else:
-                # Notify user that API key is needed
-                error_data = {
-                    "type": "ai_error",
-                    "error": "Please set up your OpenAI API key in Settings to enable AI responses.",
-                    "chat_id": chat_id
-                }
-                await manager.broadcast_to_chat(json.dumps(error_data), chat_id)
-        
-        return MessageResponse(
-            id=str(message.id),
-            chat_id=str(message.chat_id),
-            sender_id=str(message.sender_id) if message.sender_id else None,
-            content=message.content,
-            message_type=message.message_type.value,
-            ai_model_used=message.ai_model_used,
-            tokens_used=message.tokens_used,
-            processing_time_ms=message.processing_time_ms,
-            status=message.status.value,
-            created_at=message.created_at,
-            is_edited=message.is_edited
-        )
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error sending message: {e}", exc_info=True)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to send message: {str(e)}"
-        )
 
 @ws_router.websocket("/chats/{chat_id}/ws")
 async def websocket_endpoint(websocket: WebSocket, chat_id: str, token: Optional[str] = None):
@@ -1286,261 +1191,36 @@ async def send_typing_indicator(
         )
 
 
-@router.post("/test/connection")
-async def test_chat_connection(
-    current_user: dict = Depends(get_current_user_dict)
-):
-    """Test chat system connectivity and API keys"""
-    try:
-        # Test database connectivity
-        from core.database import check_database_health
-        db_health = await check_database_health()
-        
-        # Test WebSocket manager
-        ws_stats = manager.get_connection_stats()
-        
-        # Test user's OpenAI API key if available
-        openai_status = None
-        async for db in get_db():
-            try:
-                openai_key = await get_user_openai_key(current_user["user_id"], db)
-                if openai_key:
-                    from services.ai_service import test_openai_connection_with_key
-                    openai_status = await test_openai_connection_with_key(openai_key, "gpt-3.5-turbo")
-                else:
-                    openai_status = {
-                        "success": False,
-                        "message": "No OpenAI API key configured",
-                        "error_code": "no_api_key"
-                    }
-                break
-            except Exception as e:
-                openai_status = {
-                    "success": False,
-                    "message": f"Error testing OpenAI connection: {str(e)}",
-                    "error_code": "connection_test_failed"
-                }
-                break
-        
-        return create_success_response({
-            "database": db_health,
-            "websocket_manager": {
-                "status": "operational",
-                "connections": ws_stats
-            },
-            "openai_api": openai_status,
-            "user_id": current_user["user_id"],
-            "username": current_user.get("username", "Unknown")
-        }, "Chat system connectivity test completed")
-        
-    except Exception as e:
-        logger.error(f"Error testing chat connection: {e}")
-        return {
-            "success": False,
-            "error": "Chat system test failed",
-            "error_code": "system_test_failed",
-            "details": str(e),
-            "timestamp": datetime.utcnow().isoformat()
-        }
 
 
-@router.get("/websocket/test/{chat_id}")
-async def test_websocket_endpoint(
-    chat_id: str,
-    current_user: dict = Depends(get_current_user_dict)
-):
-    """Test WebSocket endpoint connectivity and provide connection info"""
-    try:
-        # Generate a test WebSocket URL with authentication token
-        from core.dependencies import get_security_manager
-        
-        # Create a temporary token for WebSocket testing
-        security_manager = get_security_manager()
-        token = security_manager.create_token(
-            user_id=current_user["user_id"],
-            username=current_user["username"],
-            email=current_user["email"],
-            roles=current_user.get("roles", []),
-            permissions=current_user.get("permissions", [])
-        )
-        
-        ws_url = f"ws://localhost:8000/api/v1/chat/chats/{chat_id}/ws?token={token}"
-        
-        return create_success_response({
-            "chat_id": chat_id,
-            "websocket_url": ws_url,
-            "test_instructions": {
-                "1": "Use the WebSocket URL above to connect",
-                "2": "Send a ping message: {\"type\": \"ping\", \"timestamp\": \"2024-01-01T00:00:00Z\"}",
-                "3": "You should receive a pong response",
-                "4": "Connection will be authenticated and validated for chat access"
-            },
-            "authentication": {
-                "method": "JWT token in query parameter",
-                "parameter": "token",
-                "token_provided": True,
-                "user_id": current_user["user_id"]
-            }
-        }, "WebSocket test endpoint ready")
-        
-    except Exception as e:
-        logger.error(f"Error preparing WebSocket test for chat {chat_id}: {e}")
-        return {
-            "success": False,
-            "error": "Failed to prepare WebSocket test",
-            "error_code": "websocket_test_failed",
-            "details": str(e),
-            "timestamp": datetime.utcnow().isoformat()
-        }
 
 
-@router.post("/openai/test")
-async def test_openai_direct(
-    request: OpenAITestRequest,
-    db: AsyncSession = Depends(get_db),
-    current_user: dict = Depends(get_current_user_dict)
-):
-    """
-    Test OpenAI API integration directly
-    Sends a test message to OpenAI API and returns the response
-    """
-    try:
-        logger.info(f"OpenAI test request from user {current_user['user_id']}: {request.message[:50]}...")
-        
-        # Get user's OpenAI API key
-        openai_key = await get_user_openai_key(current_user["user_id"], db)
-        
-        if not openai_key:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="OpenAI API key not configured. Please set up your API key in Settings first."
-            )
-        
-        # Initialize OpenAI client with user's API key
-        client = AsyncOpenAI(api_key=openai_key)
-        
-        # Prepare messages
-        messages = []
-        
-        # Add system message if provided
-        if request.system_prompt:
-            messages.append({"role": "system", "content": request.system_prompt})
-        
-        # Add user message
-        messages.append({"role": "user", "content": request.message})
-        
-        # Record start time for performance monitoring
-        start_time = datetime.utcnow()
-        
-        # Call OpenAI API
-        response = await client.chat.completions.create(
-            model=request.model,
-            messages=messages,
-            temperature=request.temperature,
-            max_tokens=1000
-        )
-        
-        # Calculate processing time
-        end_time = datetime.utcnow()
-        processing_time_ms = int((end_time - start_time).total_seconds() * 1000)
-        
-        # Extract response content
-        response_content = response.choices[0].message.content
-        
-        # Get actual token usage from OpenAI response
-        actual_tokens = {
-            "input": response.usage.prompt_tokens if response.usage else 0,
-            "output": response.usage.completion_tokens if response.usage else 0,
-            "total": response.usage.total_tokens if response.usage else 0
-        }
-        
-        # Record metrics
-        performance_monitor.record_ai_api_call(
-            provider="openai_direct",
-            model=request.model,
-            duration=processing_time_ms / 1000.0,
-            tokens_used=actual_tokens
-        )
-        
-        logger.info(f"OpenAI test completed for user {current_user['user_id']}, processing time: {processing_time_ms}ms")
-        
-        return {
-            "success": True,
-            "message": "OpenAI direct API test completed successfully",
-            "data": {
-                "request": {
-                    "message": request.message,
-                    "model": request.model,
-                    "temperature": request.temperature,
-                    "system_prompt": request.system_prompt
-                },
-                "response": {
-                    "content": response_content,
-                    "model_used": response.model,
-                    "processing_time_ms": processing_time_ms,
-                    "tokens_used": actual_tokens,
-                    "finish_reason": response.choices[0].finish_reason
-                },
-                "user_info": {
-                    "user_id": current_user["user_id"],
-                    "username": current_user.get("username", "Unknown")
-                },
-                "api_info": {
-                    "integration_type": "Direct OpenAI API",
-                    "messages_count": len(messages),
-                    "has_system_prompt": bool(request.system_prompt),
-                    "openai_response_id": response.id
-                }
-            },
-            "timestamp": datetime.utcnow().isoformat()
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"OpenAI test failed for user {current_user['user_id']}: {e}")
-        
-        # If it's an OpenAI API error, provide more specific feedback
-        error_message = str(e)
-        error_code = "openai_test_failed"
-        
-        if "API key" in error_message or "Incorrect API key" in error_message:
-            error_message = "Invalid OpenAI API key. Please check your API key in Settings."
-            error_code = "invalid_api_key"
-        elif "rate limit" in error_message.lower():
-            error_message = "OpenAI API rate limit exceeded. Please try again later."
-            error_code = "rate_limit_exceeded"
-        elif "insufficient" in error_message.lower() or "quota" in error_message.lower():
-            error_message = "Insufficient OpenAI API credits. Please check your account."
-            error_code = "insufficient_credits"
-        elif "model" in error_message.lower() and "not found" in error_message.lower():
-            error_message = f"Model '{request.model}' not available. Please try a different model."
-            error_code = "model_not_available"
-        
-        return {
-            "success": False,
-            "error": error_message,
-            "error_code": error_code,
-            "user_id": current_user["user_id"],
-            "model_requested": request.model,
-            "timestamp": datetime.utcnow().isoformat()
-        }
 
 
 @router.post("/chats/{chat_id}/ai-message")
 async def chat_with_ai(
     chat_id: str,
-    request: ChatWithAIRequest,
+    request_body: ChatWithAIRequest,
     background_tasks: BackgroundTasks,
+    request: Request,
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(get_current_user_dict)
 ):
     """
-    Production endpoint for chatting with AI in a specific chat
-    Sends message to AI and returns response, optionally saving to chat history
+    Chat with AI using LangChain service integration with automatic fallback
+    
+    Features:
+    - LangChain service integration with circuit breaker pattern
+    - Automatic fallback to direct OpenAI API when service is unavailable
+    - Streaming and non-streaming response support
+    - Optional chat history persistence
+    - Real-time WebSocket broadcasting
     """
     try:
-        logger.info(f"chat_with_ai endpoint called - AI chat request from user {current_user['user_id']} in chat {chat_id}: {request.message[:100]}...")
+        logger.info(f"chat_with_ai endpoint called - AI chat request from user {current_user['user_id']} in chat {chat_id}: {request_body.message[:100]}...")
+        
+        # Extract JWT token from Authorization header for LangChain service
+        auth_header = request.headers.get("authorization", "")
         
         # Validate user access to chat
         participant = await validate_chat_access(
@@ -1553,7 +1233,14 @@ async def chat_with_ai(
         # Get and validate chat
         chat = await get_chat_with_validation(chat_id, db)
         
-        # Get user's OpenAI API key
+        # Validate message content
+        if not request_body.message or len(request_body.message.strip()) == 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Message content cannot be empty"
+            )
+        
+        # Get user's OpenAI API key for LangChain service
         openai_key = await get_user_openai_key(current_user["user_id"], db)
         
         if not openai_key:
@@ -1562,8 +1249,8 @@ async def chat_with_ai(
                 detail="OpenAI API key not configured. Please set up your API key in Settings first."
             )
         
-        # Initialize OpenAI client
-        client = AsyncOpenAI(api_key=openai_key)
+        # Initialize LangChain client
+        langchain_client = get_langchain_client()
         
         # Get recent chat history for context (if chat history exists)
         messages = []
@@ -1575,7 +1262,7 @@ async def chat_with_ai(
             messages.append({"role": "system", "content": f"You are {chat.ai_persona}."})
         
         # Get recent messages for context
-        if request.save_to_history:
+        if request_body.save_to_history:
             history_query = select(ChatMessage).where(
                 and_(
                     ChatMessage.chat_id == chat_id,
@@ -1594,15 +1281,15 @@ async def chat_with_ai(
                     messages.append({"role": "assistant", "content": msg.content})
         
         # Add current user message
-        messages.append({"role": "user", "content": request.message})
+        messages.append({"role": "user", "content": request_body.message})
         
         # Save user message to history if requested
         user_message_id = None
-        if request.save_to_history:
+        if request_body.save_to_history:
             user_message = ChatMessage(
                 chat_id=chat_id,
                 sender_id=current_user["user_id"],
-                content=request.message,
+                content=request_body.message,
                 message_type=MessageType.USER
             )
             
@@ -1636,7 +1323,7 @@ async def chat_with_ai(
         start_time = datetime.utcnow()
         
         # Handle streaming vs non-streaming responses
-        if request.stream:
+        if request_body.stream:
             # For streaming, we'll create the AI message first and then stream to WebSocket
             ai_message = ChatMessage(
                 chat_id=chat_id,
@@ -1648,7 +1335,7 @@ async def chat_with_ai(
                 processing_time_ms=0
             )
             
-            if request.save_to_history:
+            if request_body.save_to_history:
                 db.add(ai_message)
                 await db.commit()
                 await db.refresh(ai_message)
@@ -1675,11 +1362,14 @@ async def chat_with_ai(
                 generate_streaming_ai_response,
                 chat_id,
                 messages,
-                client,
+                langchain_client,
                 chat,
-                ai_message.id if request.save_to_history else None,
+                ai_message.id if request_body.save_to_history else None,
                 start_time,
-                db if request.save_to_history else None
+                db if request_body.save_to_history else None,
+                openai_key,
+                str(current_user["user_id"]),
+                auth_header
             )
             
             return {
@@ -1688,7 +1378,7 @@ async def chat_with_ai(
                 "streaming": True,
                 "data": {
                     "user_message_id": user_message_id,
-                    "ai_message_id": str(ai_message.id) if request.save_to_history else None,
+                    "ai_message_id": str(ai_message.id) if request_body.save_to_history else None,
                     "chat_id": chat_id,
                     "model_used": chat.ai_model or "gpt-3.5-turbo",
                     "stream_via": "websocket"
@@ -1697,37 +1387,79 @@ async def chat_with_ai(
             }
         
         else:
-            # Non-streaming response - return directly
-            response = await client.chat.completions.create(
-                model=chat.ai_model or "gpt-3.5-turbo",
-                messages=messages,
-                temperature=float(chat.temperature) if chat.temperature else 0.7,
-                max_tokens=chat.max_tokens or 2048
-            )
-            
-            # Calculate processing time
-            end_time = datetime.utcnow()
-            processing_time_ms = int((end_time - start_time).total_seconds() * 1000)
-            
-            # Extract response content
-            ai_response_content = response.choices[0].message.content
-            
-            # Get actual token usage from OpenAI response
-            actual_tokens = {
-                "input": response.usage.prompt_tokens if response.usage else 0,
-                "output": response.usage.completion_tokens if response.usage else 0,
-                "total": response.usage.total_tokens if response.usage else 0
+            # Non-streaming response using LangChain service with fallback
+            settings = {
+                "model": chat.ai_model or "gpt-3.5-turbo",
+                "temperature": float(chat.temperature) if chat.temperature else 0.7,
+                "maxTokens": chat.max_tokens or 2048,
+                "systemPrompt": chat.system_prompt,
+                "provider": "openai"
             }
+            
+            # Get LangChain service client
+            langchain_client = get_langchain_client()
+            
+            try:
+                # Try LangChain service first
+                langchain_response = await langchain_client.send_message(
+                    chat_id=str(chat_id),
+                    message=request_body.message,
+                    user_id=str(current_user["user_id"]),
+                    api_key=openai_key,
+                    settings=settings,
+                    auth_token=auth_header
+                )
+                
+                # Calculate processing time
+                end_time = datetime.utcnow()
+                processing_time_ms = int((end_time - start_time).total_seconds() * 1000)
+                
+                # Extract response content and metadata
+                ai_response_content = langchain_response["aiMessage"]["content"]
+                
+                # Get token usage from LangChain response or estimate
+                if "tokensUsed" in langchain_response["aiMessage"]:
+                    total_tokens = langchain_response["aiMessage"]["tokensUsed"]
+                    # Estimate input/output split
+                    input_tokens = estimate_tokens(request_body.message)
+                    output_tokens = total_tokens - input_tokens
+                    actual_tokens = {
+                        "input": input_tokens,
+                        "output": max(0, output_tokens),
+                        "total": total_tokens
+                    }
+                else:
+                    # Fallback to token estimation
+                    input_tokens = estimate_tokens(request_body.message)
+                    output_tokens = estimate_tokens(ai_response_content)
+                    actual_tokens = {
+                        "input": input_tokens,
+                        "output": output_tokens,
+                        "total": input_tokens + output_tokens
+                    }
+                
+                # Check if fallback was used
+                was_fallback = langchain_response.get("fallback", False)
+                provider = "langchain_service_fallback" if was_fallback else "langchain_service"
+                
+            except Exception as langchain_error:
+                logger.error(f"LangChain service failed: {langchain_error}")
+                
+                # No fallback - LangChain is the only provider
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="AI service temporarily unavailable. Please try again later."
+                )
             
             # Save AI response to history if requested
             ai_message_id = None
-            if request.save_to_history:
+            if request_body.save_to_history:
                 ai_message = ChatMessage(
                     chat_id=chat_id,
                     sender_id=None,
                     content=ai_response_content,
                     message_type=MessageType.AI,
-                    ai_model_used=response.model,
+                    ai_model_used=chat.ai_model or "gpt-3.5-turbo",
                     tokens_used=actual_tokens["total"],
                     processing_time_ms=processing_time_ms
                 )
@@ -1765,8 +1497,8 @@ async def chat_with_ai(
             
             # Record metrics
             performance_monitor.record_ai_api_call(
-                provider="openai_production",
-                model=response.model,
+                provider=provider,
+                model=chat.ai_model or "gpt-3.5-turbo",
                 duration=processing_time_ms / 1000.0,
                 tokens_used=actual_tokens
             )
@@ -1780,16 +1512,16 @@ async def chat_with_ai(
                 "data": {
                     "user_message": {
                         "id": user_message_id,
-                        "content": request.message,
+                        "content": request_body.message,
                         "timestamp": datetime.utcnow().isoformat()
                     },
                     "ai_response": {
                         "id": ai_message_id,
                         "content": ai_response_content,
-                        "model_used": response.model,
+                        "model_used": chat.ai_model or "gpt-3.5-turbo",
                         "processing_time_ms": processing_time_ms,
                         "tokens_used": actual_tokens,
-                        "finish_reason": response.choices[0].finish_reason,
+                        "finish_reason": "stop",
                         "timestamp": datetime.utcnow().isoformat()
                     },
                     "chat_info": {
@@ -1803,6 +1535,20 @@ async def chat_with_ai(
             
     except HTTPException:
         raise
+    except ValueError as e:
+        # Handle SQLAlchemy validation errors properly
+        if "Message content cannot be empty" in str(e):
+            logger.error(f"Message validation error in AI chat for user {current_user['user_id']} in chat {chat_id}: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(e)
+            )
+        else:
+            logger.error(f"Value error in AI chat for user {current_user['user_id']} in chat {chat_id}: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(e)
+            )
     except Exception as e:
         logger.error(f"AI chat failed for user {current_user['user_id']} in chat {chat_id}: {e}")
         
@@ -1824,3 +1570,216 @@ async def chat_with_ai(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=error_message
         )
+
+
+# LangChain Service Integration Endpoints
+
+@router.get("/langchain/health")
+async def get_langchain_service_health(
+    current_user: dict = Depends(get_current_user_dict)
+):
+    """Get LangChain service health status and circuit breaker information"""
+    try:
+        langchain_client = get_langchain_client()
+        
+        # Get service health
+        health_info = await langchain_client.get_service_health()
+        
+        # Get circuit breaker stats
+        circuit_stats = langchain_client.get_circuit_breaker_stats()
+        
+        return {
+            "success": True,
+            "message": "LangChain service health check completed",
+            "data": {
+                "service_health": health_info,
+                "circuit_breaker": circuit_stats,
+                "integration_status": "active",
+                "fallback_available": True
+            },
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"LangChain health check failed: {e}")
+        return {
+            "success": False,
+            "error": f"Health check failed: {str(e)}",
+            "error_code": "health_check_failed",
+            "timestamp": datetime.utcnow().isoformat()
+        }
+
+
+@router.post("/langchain/test")
+async def test_langchain_service(
+    request_body: OpenAITestRequest,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    current_user: dict = Depends(get_current_user_dict)
+):
+    """Test LangChain service integration with a simple message"""
+    try:
+        logger.info(f"LangChain service test request from user {current_user['user_id']}")
+        
+        # Extract JWT token from Authorization header for LangChain service
+        auth_header = request.headers.get("authorization", "")
+        
+        # Get user's OpenAI API key
+        openai_key = await get_user_openai_key(current_user["user_id"], db)
+        
+        if not openai_key:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="OpenAI API key not configured. Please set up your API key in Settings first."
+            )
+        
+        # Prepare settings
+        settings = {
+            "model": request_body.model,
+            "temperature": request_body.temperature,
+            "maxTokens": 1000,
+            "systemPrompt": request_body.system_prompt,
+            "provider": "openai"
+        }
+        
+        # Get LangChain service client
+        langchain_client = get_langchain_client()
+        
+        # Record start time
+        start_time = datetime.utcnow()
+        
+        try:
+            # Test LangChain service
+            response = await langchain_client.send_message(
+                chat_id="test-chat",
+                message=request_body.message,
+                user_id=str(current_user["user_id"]),
+                api_key=openai_key,
+                settings=settings,
+                auth_token=auth_header
+            )
+            
+            # Calculate processing time
+            end_time = datetime.utcnow()
+            processing_time_ms = int((end_time - start_time).total_seconds() * 1000)
+            
+            # Extract response data
+            ai_message = response["aiMessage"]
+            was_fallback = response.get("fallback", False)
+            
+            return {
+                "success": True,
+                "message": "LangChain service test completed successfully",
+                "data": {
+                    "request": {
+                        "message": request_body.message,
+                        "model": request_body.model,
+                        "temperature": request_body.temperature,
+                        "system_prompt": request_body.system_prompt
+                    },
+                    "response": {
+                        "content": ai_message["content"],
+                        "model_used": ai_message.get("model", request_body.model),
+                        "processing_time_ms": processing_time_ms,
+                        "tokens_used": ai_message.get("tokensUsed", 0),
+                        "finish_reason": ai_message.get("finishReason", "stop"),
+                        "fallback_used": was_fallback
+                    },
+                    "service_info": {
+                        "integration_type": "LangChain Service" if not was_fallback else "LangChain Service (Fallback)",
+                        "circuit_breaker_state": langchain_client.circuit_breaker.state,
+                        "service_url": langchain_client.base_url
+                    },
+                    "user_info": {
+                        "user_id": current_user["user_id"],
+                        "username": current_user.get("username", "Unknown")
+                    }
+                },
+                "timestamp": datetime.utcnow().isoformat()
+            }
+            
+        except Exception as langchain_error:
+            logger.error(f"LangChain service test failed: {langchain_error}")
+            
+            # Calculate processing time for failed request
+            end_time = datetime.utcnow()
+            processing_time_ms = int((end_time - start_time).total_seconds() * 1000)
+            
+            return {
+                "success": False,
+                "error": f"LangChain service test failed: {str(langchain_error)}",
+                "error_code": "langchain_service_failed",
+                "data": {
+                    "processing_time_ms": processing_time_ms,
+                    "circuit_breaker_state": langchain_client.circuit_breaker.state,
+                    "failure_count": langchain_client.circuit_breaker.failure_count,
+                    "fallback_available": True
+                },
+                "user_id": current_user["user_id"],
+                "timestamp": datetime.utcnow().isoformat()
+            }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"LangChain service test setup failed: {e}")
+        return {
+            "success": False,
+            "error": f"Test setup failed: {str(e)}",
+            "error_code": "test_setup_failed",
+            "timestamp": datetime.utcnow().isoformat()
+        }
+
+
+@router.get("/services/status")
+async def get_services_status(
+    current_user: dict = Depends(get_current_user_dict)
+):
+    """Get status of all AI services including LangChain service and fallbacks"""
+    try:
+        langchain_client = get_langchain_client()
+        
+        # Test LangChain service connectivity
+        langchain_health = await langchain_client.get_service_health()
+        langchain_circuit_stats = langchain_client.get_circuit_breaker_stats()
+        
+        # Get WebSocket manager stats
+        ws_stats = manager.get_connection_stats()
+        
+        return {
+            "success": True,
+            "message": "Services status check completed",
+            "data": {
+                "langchain_service": {
+                    "health": langchain_health,
+                    "circuit_breaker": langchain_circuit_stats,
+                    "base_url": langchain_client.base_url
+                },
+                "websocket_manager": {
+                    "status": "operational",
+                    "connections": ws_stats
+                },
+                "fallback_services": {
+                    "direct_openai": {
+                        "status": "available",
+                        "description": "Direct OpenAI API integration for fallback"
+                    }
+                },
+                "integration_features": {
+                    "circuit_breaker": "enabled",
+                    "automatic_fallback": "enabled",
+                    "streaming_support": "enabled",
+                    "health_monitoring": "enabled"
+                }
+            },
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Services status check failed: {e}")
+        return {
+            "success": False,
+            "error": f"Status check failed: {str(e)}",
+            "error_code": "status_check_failed",
+            "timestamp": datetime.utcnow().isoformat()
+        }

@@ -1,19 +1,19 @@
 {
   "test_metadata": {
-    "generated_at": "2025-08-07T10:46:58.921507Z",
+    "generated_at": "2025-08-07T12:47:47.788597Z",
     "test_suite": "People Management API - Comprehensive Tests",
     "base_url": "http://localhost:8000",
     "test_user": "test@arketic.com",
     "documentation_ref": "/docs/api/PEOPLE.md"
   },
   "test_summary": {
-    "total_tests": 15,
-    "passed": 14,
-    "failed": 1,
+    "total_tests": 17,
+    "passed": 17,
+    "failed": 0,
     "skipped": 0,
     "errors": 0,
-    "success_rate_percent": 93.33,
-    "average_duration_ms": 19.11
+    "success_rate_percent": 100.0,
+    "average_duration_ms": 15.25
   },
   "endpoint_analysis": {
     "/api/v1/auth/login": {
@@ -21,63 +21,70 @@
       "passed": 1,
       "failed": 0,
       "errors": 0,
-      "avg_duration_ms": 234.72
+      "avg_duration_ms": 171.12
     },
     "/api/v1/organization/people/": {
       "total_calls": 7,
-      "passed": 6,
-      "failed": 1,
+      "passed": 7,
+      "failed": 0,
       "errors": 0,
-      "avg_duration_ms": 4.17
+      "avg_duration_ms": 6.09
     },
     "/api/v1/organization/people/?page=1&page_size=5": {
       "total_calls": 1,
       "passed": 1,
       "failed": 0,
       "errors": 0,
-      "avg_duration_ms": 3.85
+      "avg_duration_ms": 5.03
     },
-    "/api/v1/organization/people/920a8478-946c-41ed-8543-e520aa87f0a8": {
+    "/api/v1/organization/people/7e0fd66e-29eb-4dfb-be5f-043c7d10a207": {
+      "total_calls": 2,
+      "passed": 2,
+      "failed": 0,
+      "errors": 0,
+      "avg_duration_ms": 10.29
+    },
+    "/api/v1/organization/people/53c141ab-00af-4480-978a-f24f620a7e8e": {
       "total_calls": 1,
       "passed": 1,
       "failed": 0,
       "errors": 0,
-      "avg_duration_ms": 5.77
+      "avg_duration_ms": 4.25
     },
-    "/api/v1/organization/people/c2ab811b-d9ef-4ff4-bd04-f6a57e814024": {
+    "/api/v1/organization/people/ef2fff30-d29f-4946-9d42-f186ceb45fb4": {
       "total_calls": 1,
       "passed": 1,
       "failed": 0,
       "errors": 0,
-      "avg_duration_ms": 4.41
+      "avg_duration_ms": 5.81
     },
-    "/api/v1/organization/people/2dbd4128-fa7a-4805-84fc-70766e6017eb": {
+    "/api/v1/organization/people/ca7a3f9c-ddbb-4183-b04b-7949b53614c7": {
       "total_calls": 1,
       "passed": 1,
       "failed": 0,
       "errors": 0,
-      "avg_duration_ms": 4.65
+      "avg_duration_ms": 5.73
     },
-    "/api/v1/organization/people/217dffe7-0bfc-498d-9619-049b9746229b": {
+    "/api/v1/organization/people/5b6fda01-c273-4fa3-9946-7a57951c71f8": {
       "total_calls": 1,
       "passed": 1,
       "failed": 0,
       "errors": 0,
-      "avg_duration_ms": 1.37
+      "avg_duration_ms": 1.39
     },
-    "/api/v1/organization/people/8d31075d-145c-43a0-b40a-302217c90f6c": {
+    "/api/v1/organization/people/4d225a2d-ac8f-4251-9a1a-c5d266c882ef": {
       "total_calls": 1,
       "passed": 1,
       "failed": 0,
       "errors": 0,
-      "avg_duration_ms": 1.34
+      "avg_duration_ms": 1.48
     },
-    "/api/v1/organization/people/ad76b09b-9bb0-47bd-b129-cfa6cd952df2": {
+    "/api/v1/organization/people/16151fa4-208a-4572-9e6b-bdbc74ffb4c1": {
       "total_calls": 1,
       "passed": 1,
       "failed": 0,
       "errors": 0,
-      "avg_duration_ms": 1.35
+      "avg_duration_ms": 1.16
     }
   },
   "known_issues": {
@@ -103,8 +110,8 @@
         "remember_me": false
       },
       "response_body": {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2NTQxOH0.w4hNNgz60t1w0_zkc5RdvG7KghfvZ_L9aojp2yJUz1g",
-        "refresh_token": "KEIspepWJQ0YI61QcHorG4fx599WVkK8mS7Y58jLwEs",
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU3MjY2Nn0.dN_FfPX1g5vFzr0SXLKohItDkI3AusG_d5Rn8R15ApA",
+        "refresh_token": "8f1NlvgSCQ2TUANpkwHlCDZjiR36jlxMlTvrxMKpsA0",
         "token_type": "bearer",
         "expires_in": 1800,
         "user": {
@@ -117,26 +124,25 @@
           "is_verified": true
         }
       },
-      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU2NTQxOH0.w4hNNgz60t1w0_zkc5RdvG7KghfvZ_L9aojp2yJUz1g\",\"refresh_token\":\"KEIspepWJQ0YI61QcHorG4fx599WVkK8mS7Y58jLwEs\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"42c9a688-e24a-4cd6-b5e2-4e77f1894a6b\",\"email\":\"test@arketic.com\",\"username\":null,\"first_name\":\"Test\",\"last_name\":\"User\",\"role\":\"user\",\"is_verified\":true}}",
-      "timestamp": "2025-08-07T10:46:58.168270Z",
-      "duration_ms": 234.72,
+      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6IjQyYzlhNjg4LWUyNGEtNGNkNi1iNWUyLTRlNzdmMTg5NGE2YiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjpudWxsLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDU3MjY2Nn0.dN_FfPX1g5vFzr0SXLKohItDkI3AusG_d5Rn8R15ApA\",\"refresh_token\":\"8f1NlvgSCQ2TUANpkwHlCDZjiR36jlxMlTvrxMKpsA0\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"42c9a688-e24a-4cd6-b5e2-4e77f1894a6b\",\"email\":\"test@arketic.com\",\"username\":null,\"first_name\":\"Test\",\"last_name\":\"User\",\"role\":\"user\",\"is_verified\":true}}",
+      "timestamp": "2025-08-07T12:47:46.998686Z",
+      "duration_ms": 171.12,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
     },
     {
-      "test_name": "Create Person - Known Issue",
+      "test_name": "Create Person - Success",
       "endpoint": "/api/v1/organization/people/",
       "method": "POST",
       "expected_status": [
-        201,
-        409
+        201
       ],
-      "actual_status": 409,
+      "actual_status": 201,
       "payload": {
         "first_name": "Test",
         "last_name": "Person",
-        "email": "test.person.1754563618168302_e23109_create@testcompany1754563618168302.com",
+        "email": "test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com",
         "phone": "+1-555-0199",
         "job_title": "Test Engineer",
         "department": "Quality Assurance",
@@ -144,18 +150,36 @@
         "location": "Test City, TC",
         "role": "User",
         "manager_id": null,
-        "hire_date": "2025-07-08T13:46:58.168324",
+        "hire_date": "2025-07-08T15:47:46.998830",
         "notes": "Test person for API validation"
       },
       "response_body": {
-        "detail": "Person with this email already exists"
+        "first_name": "Test",
+        "last_name": "Person",
+        "email": "test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com",
+        "phone": "+1-555-0199",
+        "job_title": "Test Engineer",
+        "department": "Quality Assurance",
+        "site": "Test Site",
+        "location": "Test City, TC",
+        "role": "User",
+        "manager_id": null,
+        "hire_date": "2025-07-08T15:47:46.998830",
+        "notes": "Test person for API validation",
+        "id": "7e0fd66e-29eb-4dfb-be5f-043c7d10a207",
+        "organization_id": null,
+        "status": "active",
+        "full_name": "Test Person",
+        "is_active": true,
+        "created_at": "2025-08-07T12:47:47.005389",
+        "updated_at": "2025-08-07T12:47:47.005390"
       },
-      "response_text": "{\"detail\":\"Person with this email already exists\"}",
-      "timestamp": "2025-08-07T10:46:58.176592Z",
-      "duration_ms": 8.25,
-      "status": "FAIL",
-      "error_message": "409 Conflict - Known issue: false positive conflict detection",
-      "validation_notes": "This is the documented 409 conflict bug with unique data"
+      "response_text": "{\"first_name\":\"Test\",\"last_name\":\"Person\",\"email\":\"test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com\",\"phone\":\"+1-555-0199\",\"job_title\":\"Test Engineer\",\"department\":\"Quality Assurance\",\"site\":\"Test Site\",\"location\":\"Test City, TC\",\"role\":\"User\",\"manager_id\":null,\"hire_date\":\"2025-07-08T15:47:46.998830\",\"notes\":\"Test person for API validation\",\"id\":\"7e0fd66e-29eb-4dfb-be5f-043c7d10a207\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"Test Person\",\"is_active\":true,\"created_at\":\"2025-08-07T12:47:47.005389\",\"updated_at\":\"2025-08-07T12:47:47.005390\"}",
+      "timestamp": "2025-08-07T12:47:47.017660Z",
+      "duration_ms": 18.82,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": "Person creation successful - issue may be resolved!"
     },
     {
       "test_name": "Validation - Missing Required Fields",
@@ -197,8 +221,8 @@
         ]
       },
       "response_text": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"last_name\"],\"msg\":\"Field required\",\"input\":{\"first_name\":\"Test\"},\"url\":\"https://errors.pydantic.dev/2.5/v/missing\"},{\"type\":\"missing\",\"loc\":[\"body\",\"email\"],\"msg\":\"Field required\",\"input\":{\"first_name\":\"Test\"},\"url\":\"https://errors.pydantic.dev/2.5/v/missing\"}]}",
-      "timestamp": "2025-08-07T10:46:58.280964Z",
-      "duration_ms": 4.21,
+      "timestamp": "2025-08-07T12:47:47.122793Z",
+      "duration_ms": 4.96,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
@@ -234,8 +258,8 @@
         ]
       },
       "response_text": "{\"detail\":[{\"type\":\"value_error\",\"loc\":[\"body\",\"email\"],\"msg\":\"value is not a valid email address: The email address is not valid. It must have exactly one @-sign.\",\"input\":\"not-an-email\",\"ctx\":{\"reason\":\"The email address is not valid. It must have exactly one @-sign.\"}}]}",
-      "timestamp": "2025-08-07T10:46:58.284122Z",
-      "duration_ms": 3.13,
+      "timestamp": "2025-08-07T12:47:47.126821Z",
+      "duration_ms": 3.99,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
@@ -271,8 +295,8 @@
         ]
       },
       "response_text": "{\"detail\":[{\"type\":\"enum\",\"loc\":[\"body\",\"role\"],\"msg\":\"Input should be 'Admin', 'User', 'Manager' or 'Viewer'\",\"input\":\"InvalidRole\",\"ctx\":{\"expected\":\"'Admin', 'User', 'Manager' or 'Viewer'\"}}]}",
-      "timestamp": "2025-08-07T10:46:58.287438Z",
-      "duration_ms": 3.29,
+      "timestamp": "2025-08-07T12:47:47.130268Z",
+      "duration_ms": 3.41,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
@@ -287,15 +311,121 @@
       "actual_status": 200,
       "payload": null,
       "response_body": {
-        "people": [],
-        "total": 0,
+        "people": [
+          {
+            "first_name": "Sarah",
+            "last_name": "Connor",
+            "email": "sarah.connor.test@example.com",
+            "phone": "+1-555-98761",
+            "job_title": "Project Manageraaa",
+            "department": "Operations",
+            "site": "",
+            "location": "",
+            "role": "Manager",
+            "manager_id": null,
+            "hire_date": null,
+            "notes": "",
+            "id": "7fa4bc8d-dd86-4106-afe3-ea95fc792e67",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Sarah Connor",
+            "is_active": true,
+            "created_at": "2025-08-07T11:09:22.794311",
+            "updated_at": "2025-08-07T11:34:48.425955"
+          },
+          {
+            "first_name": "Test",
+            "last_name": "Person",
+            "email": "test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com",
+            "phone": "+1-555-0199",
+            "job_title": "Test Engineer",
+            "department": "Quality Assurance",
+            "site": "Test Site",
+            "location": "Test City, TC",
+            "role": "User",
+            "manager_id": null,
+            "hire_date": "2025-07-08T15:47:46.998830",
+            "notes": "Test person for API validation",
+            "id": "7e0fd66e-29eb-4dfb-be5f-043c7d10a207",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Test Person",
+            "is_active": true,
+            "created_at": "2025-08-07T12:47:47.005389",
+            "updated_at": "2025-08-07T12:47:47.005390"
+          },
+          {
+            "first_name": "Emma",
+            "last_name": "Watson",
+            "email": "emma.watson.success@example.com",
+            "phone": "+1-555-4444",
+            "job_title": "Data Scientist",
+            "department": "Research",
+            "site": "",
+            "location": "",
+            "role": "User",
+            "manager_id": null,
+            "hire_date": null,
+            "notes": "",
+            "id": "bd97044e-f0e2-42ce-8a5c-637377863fb9",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Emma Watson",
+            "is_active": true,
+            "created_at": "2025-08-07T11:10:40.833151",
+            "updated_at": "2025-08-07T11:26:25.110611"
+          },
+          {
+            "first_name": "Bob",
+            "last_name": "Wilson",
+            "email": "bob.wilson.unique123@example.com",
+            "phone": "+1-555-2222",
+            "job_title": "QA Engineer",
+            "department": "Quality",
+            "site": null,
+            "location": null,
+            "role": "User",
+            "manager_id": null,
+            "hire_date": null,
+            "notes": null,
+            "id": "e6b436f3-9073-4bd8-b945-cd8c76c6f177",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Bob Wilson",
+            "is_active": true,
+            "created_at": "2025-08-07T11:07:01.466785",
+            "updated_at": "2025-08-07T11:07:01.466786"
+          },
+          {
+            "first_name": "asdsad",
+            "last_name": "sadasdasd",
+            "email": "asda@asd.com",
+            "phone": "111111111",
+            "job_title": "asdsad",
+            "department": "",
+            "site": "",
+            "location": "",
+            "role": "User",
+            "manager_id": "7fa4bc8d-dd86-4106-afe3-ea95fc792e67",
+            "hire_date": null,
+            "notes": "",
+            "id": "f6aa872d-97b5-4072-8765-1ebcfee6c9d9",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "asdsad sadasdasd",
+            "is_active": true,
+            "created_at": "2025-08-07T11:32:50.836380",
+            "updated_at": "2025-08-07T11:35:45.824761"
+          }
+        ],
+        "total": 5,
         "page": 1,
         "page_size": 20,
-        "total_pages": 0
+        "total_pages": 1
       },
-      "response_text": "{\"people\":[],\"total\":0,\"page\":1,\"page_size\":20,\"total_pages\":0}",
-      "timestamp": "2025-08-07T10:46:58.394371Z",
-      "duration_ms": 6.79,
+      "response_text": "{\"people\":[{\"first_name\":\"Sarah\",\"last_name\":\"Connor\",\"email\":\"sarah.connor.test@example.com\",\"phone\":\"+1-555-98761\",\"job_title\":\"Project Manageraaa\",\"department\":\"Operations\",\"site\":\"\",\"location\":\"\",\"role\":\"Manager\",\"manager_id\":null,\"hire_date\":null,\"notes\":\"\",\"id\":\"7fa4bc8d-dd86-4106-afe3-ea95fc792e67\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"Sarah Connor\",\"is_active\":true,\"created_at\":\"2025-08-07T11:09:22.794311\",\"updated_at\":\"2025-08-07T11:34:48.425955\"},{\"first_name\":\"Test\",\"last_name\":\"Person\",\"email\":\"test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com\",\"phone\":\"+1-555-0199\",\"job_title\":\"Test Engineer\",\"department\":\"Quality Assurance\",\"site\":\"Test Site\",\"location\":\"Test City, TC\",\"role\":\"User\",\"manager_id\":null,\"hire_date\":\"2025-07-08T15:47:46.998830\",\"notes\":\"Test person for API validation\",\"id\":\"7e0fd66e-29eb-4dfb-be5f-043c7d10a207\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"Test Person\",\"is_active\":true,\"created_at\":\"2025-08-07T12:47:47.005389\",\"updated_at\":\"2025-08-07T12:47:47.005390\"},{\"first_name\":\"Emma\",\"last_name\":\"Watson\",\"email\":\"emma.watson.success@example.com\",\"phone\":\"+1-555-4444\",\"job_title\":\"Data Scientist\",\"department\":\"Research\",\"site\":\"\",\"location\":\"\",\"role\":\"User\",\"manager_id\":null,\"hire_date\":null,\"notes\":\"\",\"id\":\"bd97044e-f0e2-42ce-8a5c-637377863fb9\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"Emma Watson\",\"is_active\":true,\"created_at\":\"2025-08-07T11:10:40.833151\",\"updated_at\":\"2025-08-07T11:26:25.110611\"},{\"first_name\":\"Bob\",\"last_name\":\"Wilson\",\"email\":\"bob.wilson.unique123@example.com\",\"phone\":\"+1-555-2222\",\"job_title\":\"QA Engineer\",\"department\":\"Quality\",\"site\":null,\"location\":null,\"role\":\"User\",\"manager_id\":null,\"hire_date\":null,\"notes\":null,\"id\":\"e6b436f3-9073-4bd8-b945-cd8c76c6f177\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"Bob Wilson\",\"is_active\":true,\"created_at\":\"2025-08-07T11:07:01.466785\",\"updated_at\":\"2025-08-07T11:07:01.466786\"},{\"first_name\":\"asdsad\",\"last_name\":\"sadasdasd\",\"email\":\"asda@asd.com\",\"phone\":\"111111111\",\"job_title\":\"asdsad\",\"department\":\"\",\"site\":\"\",\"location\":\"\",\"role\":\"User\",\"manager_id\":\"7fa4bc8d-dd86-4106-afe3-ea95fc792e67\",\"hire_date\":null,\"notes\":\"\",\"id\":\"f6aa872d-97b5-4072-8765-1ebcfee6c9d9\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"asdsad sadasdasd\",\"is_active\":true,\"created_at\":\"2025-08-07T11:32:50.836380\",\"updated_at\":\"2025-08-07T11:35:45.824761\"}],\"total\":5,\"page\":1,\"page_size\":20,\"total_pages\":1}",
+      "timestamp": "2025-08-07T12:47:47.238301Z",
+      "duration_ms": 7.94,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
@@ -310,22 +440,165 @@
       "actual_status": 200,
       "payload": null,
       "response_body": {
-        "people": [],
-        "total": 0,
+        "people": [
+          {
+            "first_name": "Sarah",
+            "last_name": "Connor",
+            "email": "sarah.connor.test@example.com",
+            "phone": "+1-555-98761",
+            "job_title": "Project Manageraaa",
+            "department": "Operations",
+            "site": "",
+            "location": "",
+            "role": "Manager",
+            "manager_id": null,
+            "hire_date": null,
+            "notes": "",
+            "id": "7fa4bc8d-dd86-4106-afe3-ea95fc792e67",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Sarah Connor",
+            "is_active": true,
+            "created_at": "2025-08-07T11:09:22.794311",
+            "updated_at": "2025-08-07T11:34:48.425955"
+          },
+          {
+            "first_name": "Test",
+            "last_name": "Person",
+            "email": "test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com",
+            "phone": "+1-555-0199",
+            "job_title": "Test Engineer",
+            "department": "Quality Assurance",
+            "site": "Test Site",
+            "location": "Test City, TC",
+            "role": "User",
+            "manager_id": null,
+            "hire_date": "2025-07-08T15:47:46.998830",
+            "notes": "Test person for API validation",
+            "id": "7e0fd66e-29eb-4dfb-be5f-043c7d10a207",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Test Person",
+            "is_active": true,
+            "created_at": "2025-08-07T12:47:47.005389",
+            "updated_at": "2025-08-07T12:47:47.005390"
+          },
+          {
+            "first_name": "Emma",
+            "last_name": "Watson",
+            "email": "emma.watson.success@example.com",
+            "phone": "+1-555-4444",
+            "job_title": "Data Scientist",
+            "department": "Research",
+            "site": "",
+            "location": "",
+            "role": "User",
+            "manager_id": null,
+            "hire_date": null,
+            "notes": "",
+            "id": "bd97044e-f0e2-42ce-8a5c-637377863fb9",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Emma Watson",
+            "is_active": true,
+            "created_at": "2025-08-07T11:10:40.833151",
+            "updated_at": "2025-08-07T11:26:25.110611"
+          },
+          {
+            "first_name": "Bob",
+            "last_name": "Wilson",
+            "email": "bob.wilson.unique123@example.com",
+            "phone": "+1-555-2222",
+            "job_title": "QA Engineer",
+            "department": "Quality",
+            "site": null,
+            "location": null,
+            "role": "User",
+            "manager_id": null,
+            "hire_date": null,
+            "notes": null,
+            "id": "e6b436f3-9073-4bd8-b945-cd8c76c6f177",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Bob Wilson",
+            "is_active": true,
+            "created_at": "2025-08-07T11:07:01.466785",
+            "updated_at": "2025-08-07T11:07:01.466786"
+          },
+          {
+            "first_name": "asdsad",
+            "last_name": "sadasdasd",
+            "email": "asda@asd.com",
+            "phone": "111111111",
+            "job_title": "asdsad",
+            "department": "",
+            "site": "",
+            "location": "",
+            "role": "User",
+            "manager_id": "7fa4bc8d-dd86-4106-afe3-ea95fc792e67",
+            "hire_date": null,
+            "notes": "",
+            "id": "f6aa872d-97b5-4072-8765-1ebcfee6c9d9",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "asdsad sadasdasd",
+            "is_active": true,
+            "created_at": "2025-08-07T11:32:50.836380",
+            "updated_at": "2025-08-07T11:35:45.824761"
+          }
+        ],
+        "total": 5,
         "page": 1,
         "page_size": 5,
-        "total_pages": 0
+        "total_pages": 1
       },
-      "response_text": "{\"people\":[],\"total\":0,\"page\":1,\"page_size\":5,\"total_pages\":0}",
-      "timestamp": "2025-08-07T10:46:58.398261Z",
-      "duration_ms": 3.85,
+      "response_text": "{\"people\":[{\"first_name\":\"Sarah\",\"last_name\":\"Connor\",\"email\":\"sarah.connor.test@example.com\",\"phone\":\"+1-555-98761\",\"job_title\":\"Project Manageraaa\",\"department\":\"Operations\",\"site\":\"\",\"location\":\"\",\"role\":\"Manager\",\"manager_id\":null,\"hire_date\":null,\"notes\":\"\",\"id\":\"7fa4bc8d-dd86-4106-afe3-ea95fc792e67\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"Sarah Connor\",\"is_active\":true,\"created_at\":\"2025-08-07T11:09:22.794311\",\"updated_at\":\"2025-08-07T11:34:48.425955\"},{\"first_name\":\"Test\",\"last_name\":\"Person\",\"email\":\"test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com\",\"phone\":\"+1-555-0199\",\"job_title\":\"Test Engineer\",\"department\":\"Quality Assurance\",\"site\":\"Test Site\",\"location\":\"Test City, TC\",\"role\":\"User\",\"manager_id\":null,\"hire_date\":\"2025-07-08T15:47:46.998830\",\"notes\":\"Test person for API validation\",\"id\":\"7e0fd66e-29eb-4dfb-be5f-043c7d10a207\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"Test Person\",\"is_active\":true,\"created_at\":\"2025-08-07T12:47:47.005389\",\"updated_at\":\"2025-08-07T12:47:47.005390\"},{\"first_name\":\"Emma\",\"last_name\":\"Watson\",\"email\":\"emma.watson.success@example.com\",\"phone\":\"+1-555-4444\",\"job_title\":\"Data Scientist\",\"department\":\"Research\",\"site\":\"\",\"location\":\"\",\"role\":\"User\",\"manager_id\":null,\"hire_date\":null,\"notes\":\"\",\"id\":\"bd97044e-f0e2-42ce-8a5c-637377863fb9\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"Emma Watson\",\"is_active\":true,\"created_at\":\"2025-08-07T11:10:40.833151\",\"updated_at\":\"2025-08-07T11:26:25.110611\"},{\"first_name\":\"Bob\",\"last_name\":\"Wilson\",\"email\":\"bob.wilson.unique123@example.com\",\"phone\":\"+1-555-2222\",\"job_title\":\"QA Engineer\",\"department\":\"Quality\",\"site\":null,\"location\":null,\"role\":\"User\",\"manager_id\":null,\"hire_date\":null,\"notes\":null,\"id\":\"e6b436f3-9073-4bd8-b945-cd8c76c6f177\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"Bob Wilson\",\"is_active\":true,\"created_at\":\"2025-08-07T11:07:01.466785\",\"updated_at\":\"2025-08-07T11:07:01.466786\"},{\"first_name\":\"asdsad\",\"last_name\":\"sadasdasd\",\"email\":\"asda@asd.com\",\"phone\":\"111111111\",\"job_title\":\"asdsad\",\"department\":\"\",\"site\":\"\",\"location\":\"\",\"role\":\"User\",\"manager_id\":\"7fa4bc8d-dd86-4106-afe3-ea95fc792e67\",\"hire_date\":null,\"notes\":\"\",\"id\":\"f6aa872d-97b5-4072-8765-1ebcfee6c9d9\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"asdsad sadasdasd\",\"is_active\":true,\"created_at\":\"2025-08-07T11:32:50.836380\",\"updated_at\":\"2025-08-07T11:35:45.824761\"}],\"total\":5,\"page\":1,\"page_size\":5,\"total_pages\":1}",
+      "timestamp": "2025-08-07T12:47:47.243383Z",
+      "duration_ms": 5.03,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Get Person - Success",
+      "endpoint": "/api/v1/organization/people/7e0fd66e-29eb-4dfb-be5f-043c7d10a207",
+      "method": "GET",
+      "expected_status": [
+        200
+      ],
+      "actual_status": 200,
+      "payload": null,
+      "response_body": {
+        "first_name": "Test",
+        "last_name": "Person",
+        "email": "test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com",
+        "phone": "+1-555-0199",
+        "job_title": "Test Engineer",
+        "department": "Quality Assurance",
+        "site": "Test Site",
+        "location": "Test City, TC",
+        "role": "User",
+        "manager_id": null,
+        "hire_date": "2025-07-08T15:47:46.998830",
+        "notes": "Test person for API validation",
+        "id": "7e0fd66e-29eb-4dfb-be5f-043c7d10a207",
+        "organization_id": null,
+        "status": "active",
+        "full_name": "Test Person",
+        "is_active": true,
+        "created_at": "2025-08-07T12:47:47.005389",
+        "updated_at": "2025-08-07T12:47:47.005390"
+      },
+      "response_text": "{\"first_name\":\"Test\",\"last_name\":\"Person\",\"email\":\"test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com\",\"phone\":\"+1-555-0199\",\"job_title\":\"Test Engineer\",\"department\":\"Quality Assurance\",\"site\":\"Test Site\",\"location\":\"Test City, TC\",\"role\":\"User\",\"manager_id\":null,\"hire_date\":\"2025-07-08T15:47:46.998830\",\"notes\":\"Test person for API validation\",\"id\":\"7e0fd66e-29eb-4dfb-be5f-043c7d10a207\",\"organization_id\":null,\"status\":\"active\",\"full_name\":\"Test Person\",\"is_active\":true,\"created_at\":\"2025-08-07T12:47:47.005389\",\"updated_at\":\"2025-08-07T12:47:47.005390\"}",
+      "timestamp": "2025-08-07T12:47:47.351742Z",
+      "duration_ms": 8.17,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
     },
     {
       "test_name": "Get Person - Not Found",
-      "endpoint": "/api/v1/organization/people/920a8478-946c-41ed-8543-e520aa87f0a8",
+      "endpoint": "/api/v1/organization/people/53c141ab-00af-4480-978a-f24f620a7e8e",
       "method": "GET",
       "expected_status": [
         404
@@ -336,15 +609,15 @@
         "detail": "Person not found"
       },
       "response_text": "{\"detail\":\"Person not found\"}",
-      "timestamp": "2025-08-07T10:46:58.504161Z",
-      "duration_ms": 5.77,
+      "timestamp": "2025-08-07T12:47:47.356050Z",
+      "duration_ms": 4.25,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
     },
     {
       "test_name": "Update Person - Not Found",
-      "endpoint": "/api/v1/organization/people/c2ab811b-d9ef-4ff4-bd04-f6a57e814024",
+      "endpoint": "/api/v1/organization/people/ef2fff30-d29f-4946-9d42-f186ceb45fb4",
       "method": "PUT",
       "expected_status": [
         404
@@ -357,15 +630,15 @@
         "detail": "Person not found"
       },
       "response_text": "{\"detail\":\"Person not found\"}",
-      "timestamp": "2025-08-07T10:46:58.608672Z",
-      "duration_ms": 4.41,
+      "timestamp": "2025-08-07T12:47:47.462067Z",
+      "duration_ms": 5.81,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
     },
     {
       "test_name": "Delete Person - Not Found",
-      "endpoint": "/api/v1/organization/people/2dbd4128-fa7a-4805-84fc-70766e6017eb",
+      "endpoint": "/api/v1/organization/people/ca7a3f9c-ddbb-4183-b04b-7949b53614c7",
       "method": "DELETE",
       "expected_status": [
         404
@@ -376,8 +649,8 @@
         "detail": "Person not found"
       },
       "response_text": "{\"detail\":\"Person not found\"}",
-      "timestamp": "2025-08-07T10:46:58.713493Z",
-      "duration_ms": 4.65,
+      "timestamp": "2025-08-07T12:47:47.568014Z",
+      "duration_ms": 5.73,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
@@ -396,8 +669,8 @@
         "detail": "Not authenticated"
       },
       "response_text": "{\"detail\":\"Not authenticated\"}",
-      "timestamp": "2025-08-07T10:46:58.815742Z",
-      "duration_ms": 2.06,
+      "timestamp": "2025-08-07T12:47:47.670244Z",
+      "duration_ms": 1.99,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
@@ -421,15 +694,15 @@
         "detail": "Not authenticated"
       },
       "response_text": "{\"detail\":\"Not authenticated\"}",
-      "timestamp": "2025-08-07T10:46:58.817201Z",
-      "duration_ms": 1.43,
+      "timestamp": "2025-08-07T12:47:47.671829Z",
+      "duration_ms": 1.54,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
     },
     {
-      "test_name": "Unauthorized - GET /api/v1/organization/people/217dffe7-0bfc-498d-9619-049b9746229b",
-      "endpoint": "/api/v1/organization/people/217dffe7-0bfc-498d-9619-049b9746229b",
+      "test_name": "Unauthorized - GET /api/v1/organization/people/5b6fda01-c273-4fa3-9946-7a57951c71f8",
+      "endpoint": "/api/v1/organization/people/5b6fda01-c273-4fa3-9946-7a57951c71f8",
       "method": "GET",
       "expected_status": [
         401,
@@ -441,15 +714,15 @@
         "detail": "Not authenticated"
       },
       "response_text": "{\"detail\":\"Not authenticated\"}",
-      "timestamp": "2025-08-07T10:46:58.818590Z",
-      "duration_ms": 1.37,
+      "timestamp": "2025-08-07T12:47:47.673253Z",
+      "duration_ms": 1.39,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
     },
     {
-      "test_name": "Unauthorized - PUT /api/v1/organization/people/8d31075d-145c-43a0-b40a-302217c90f6c",
-      "endpoint": "/api/v1/organization/people/8d31075d-145c-43a0-b40a-302217c90f6c",
+      "test_name": "Unauthorized - PUT /api/v1/organization/people/4d225a2d-ac8f-4251-9a1a-c5d266c882ef",
+      "endpoint": "/api/v1/organization/people/4d225a2d-ac8f-4251-9a1a-c5d266c882ef",
       "method": "PUT",
       "expected_status": [
         401,
@@ -463,15 +736,15 @@
         "detail": "Not authenticated"
       },
       "response_text": "{\"detail\":\"Not authenticated\"}",
-      "timestamp": "2025-08-07T10:46:58.819945Z",
-      "duration_ms": 1.34,
+      "timestamp": "2025-08-07T12:47:47.674760Z",
+      "duration_ms": 1.48,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
     },
     {
-      "test_name": "Unauthorized - DELETE /api/v1/organization/people/ad76b09b-9bb0-47bd-b129-cfa6cd952df2",
-      "endpoint": "/api/v1/organization/people/ad76b09b-9bb0-47bd-b129-cfa6cd952df2",
+      "test_name": "Unauthorized - DELETE /api/v1/organization/people/16151fa4-208a-4572-9e6b-bdbc74ffb4c1",
+      "endpoint": "/api/v1/organization/people/16151fa4-208a-4572-9e6b-bdbc74ffb4c1",
       "method": "DELETE",
       "expected_status": [
         401,
@@ -483,23 +756,170 @@
         "detail": "Not authenticated"
       },
       "response_text": "{\"detail\":\"Not authenticated\"}",
-      "timestamp": "2025-08-07T10:46:58.821317Z",
-      "duration_ms": 1.35,
+      "timestamp": "2025-08-07T12:47:47.675953Z",
+      "duration_ms": 1.16,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Cleanup - Delete 7e0fd66e...",
+      "endpoint": "/api/v1/organization/people/7e0fd66e-29eb-4dfb-be5f-043c7d10a207",
+      "method": "DELETE",
+      "expected_status": [
+        204,
+        404
+      ],
+      "actual_status": 204,
+      "payload": null,
+      "response_body": null,
+      "response_text": "",
+      "timestamp": "2025-08-07T12:47:47.788526Z",
+      "duration_ms": 12.4,
       "status": "PASS",
       "error_message": null,
       "validation_notes": null
     }
   ],
   "test_data_summary": {
-    "people_created": 0,
-    "created_person_ids": [],
+    "people_created": 1,
+    "created_person_ids": [
+      "7e0fd66e-29eb-4dfb-be5f-043c7d10a207"
+    ],
     "sample_data": {
+      "created_person": {
+        "first_name": "Test",
+        "last_name": "Person",
+        "email": "test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com",
+        "phone": "+1-555-0199",
+        "job_title": "Test Engineer",
+        "department": "Quality Assurance",
+        "site": "Test Site",
+        "location": "Test City, TC",
+        "role": "User",
+        "manager_id": null,
+        "hire_date": "2025-07-08T15:47:46.998830",
+        "notes": "Test person for API validation",
+        "id": "7e0fd66e-29eb-4dfb-be5f-043c7d10a207",
+        "organization_id": null,
+        "status": "active",
+        "full_name": "Test Person",
+        "is_active": true,
+        "created_at": "2025-08-07T12:47:47.005389",
+        "updated_at": "2025-08-07T12:47:47.005390"
+      },
       "people_list": {
-        "people": [],
-        "total": 0,
+        "people": [
+          {
+            "first_name": "Sarah",
+            "last_name": "Connor",
+            "email": "sarah.connor.test@example.com",
+            "phone": "+1-555-98761",
+            "job_title": "Project Manageraaa",
+            "department": "Operations",
+            "site": "",
+            "location": "",
+            "role": "Manager",
+            "manager_id": null,
+            "hire_date": null,
+            "notes": "",
+            "id": "7fa4bc8d-dd86-4106-afe3-ea95fc792e67",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Sarah Connor",
+            "is_active": true,
+            "created_at": "2025-08-07T11:09:22.794311",
+            "updated_at": "2025-08-07T11:34:48.425955"
+          },
+          {
+            "first_name": "Test",
+            "last_name": "Person",
+            "email": "test.person.1754570866998752_4e9395_create@testcompany1754570866998752.com",
+            "phone": "+1-555-0199",
+            "job_title": "Test Engineer",
+            "department": "Quality Assurance",
+            "site": "Test Site",
+            "location": "Test City, TC",
+            "role": "User",
+            "manager_id": null,
+            "hire_date": "2025-07-08T15:47:46.998830",
+            "notes": "Test person for API validation",
+            "id": "7e0fd66e-29eb-4dfb-be5f-043c7d10a207",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Test Person",
+            "is_active": true,
+            "created_at": "2025-08-07T12:47:47.005389",
+            "updated_at": "2025-08-07T12:47:47.005390"
+          },
+          {
+            "first_name": "Emma",
+            "last_name": "Watson",
+            "email": "emma.watson.success@example.com",
+            "phone": "+1-555-4444",
+            "job_title": "Data Scientist",
+            "department": "Research",
+            "site": "",
+            "location": "",
+            "role": "User",
+            "manager_id": null,
+            "hire_date": null,
+            "notes": "",
+            "id": "bd97044e-f0e2-42ce-8a5c-637377863fb9",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Emma Watson",
+            "is_active": true,
+            "created_at": "2025-08-07T11:10:40.833151",
+            "updated_at": "2025-08-07T11:26:25.110611"
+          },
+          {
+            "first_name": "Bob",
+            "last_name": "Wilson",
+            "email": "bob.wilson.unique123@example.com",
+            "phone": "+1-555-2222",
+            "job_title": "QA Engineer",
+            "department": "Quality",
+            "site": null,
+            "location": null,
+            "role": "User",
+            "manager_id": null,
+            "hire_date": null,
+            "notes": null,
+            "id": "e6b436f3-9073-4bd8-b945-cd8c76c6f177",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "Bob Wilson",
+            "is_active": true,
+            "created_at": "2025-08-07T11:07:01.466785",
+            "updated_at": "2025-08-07T11:07:01.466786"
+          },
+          {
+            "first_name": "asdsad",
+            "last_name": "sadasdasd",
+            "email": "asda@asd.com",
+            "phone": "111111111",
+            "job_title": "asdsad",
+            "department": "",
+            "site": "",
+            "location": "",
+            "role": "User",
+            "manager_id": "7fa4bc8d-dd86-4106-afe3-ea95fc792e67",
+            "hire_date": null,
+            "notes": "",
+            "id": "f6aa872d-97b5-4072-8765-1ebcfee6c9d9",
+            "organization_id": null,
+            "status": "active",
+            "full_name": "asdsad sadasdasd",
+            "is_active": true,
+            "created_at": "2025-08-07T11:32:50.836380",
+            "updated_at": "2025-08-07T11:35:45.824761"
+          }
+        ],
+        "total": 5,
         "page": 1,
         "page_size": 20,
-        "total_pages": 0
+        "total_pages": 1
       }
     }
   }

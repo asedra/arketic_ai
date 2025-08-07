@@ -185,8 +185,6 @@ export const Sidebar = memo(function Sidebar({ className }: SidebarProps) {
           const handleNavigation = () => {
             if (item.id === 'chat') {
               router.push('/chat')
-            } else if (item.id === 'forms') {
-              router.push('/forms')
             } else {
               navigateToSection(item.id)
             }

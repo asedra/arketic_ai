@@ -23,8 +23,6 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
   const [showConfetti, setShowConfetti] = useState(false)
   const [celebrationStage, setCelebrationStage] = useState(0)
   const [model, setModel] = useState('gpt-3.5-turbo')
-  const [maxTokens, setMaxTokens] = useState(1000)
-  const [temperature, setTemperature] = useState(0.7)
   const [language, setLanguage] = useState<'en' | 'tr'>('en')
   const [hasStoredKey, setHasStoredKey] = useState(false)
   const [testStatus, setTestStatus] = useState<'idle' | 'success' | 'error'>('idle')
@@ -94,8 +92,6 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
         
         // Set model parameters from backend
         setModel(openaiSettings.model || 'gpt-3.5-turbo')
-        setMaxTokens(openaiSettings.max_tokens || 1000)
-        setTemperature(openaiSettings.temperature || 0.7)
         
         // Show masked placeholder for API key (backend returns masked key for security)
         if (openaiSettings.api_key) {
@@ -216,9 +212,7 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
     try {
       const openaiSettings = {
         api_key: apiKey,
-        model: model,
-        max_tokens: maxTokens,
-        temperature: temperature
+        model: model
       }
 
       const response = await settingsApi.updateOpenAISettings(openaiSettings)
@@ -299,8 +293,6 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
       await settingsApi.clearOpenAISettings()
       setApiKey('')
       setModel('gpt-3.5-turbo')
-      setMaxTokens(1000)
-      setTemperature(0.7)
       setJustSaved(false)
       setHasStoredKey(false) // Clear stored key status
       localStorage.removeItem('openai-api-key')
@@ -358,9 +350,7 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
       if (hasNewKey && !apiKey.includes('•')) {
         const openaiSettings = {
           api_key: apiKey,
-          model: model,
-          max_tokens: maxTokens,
-          temperature: temperature
+          model: model
         }
 
         const saveResponse = await settingsApi.updateOpenAISettings(openaiSettings)
@@ -674,46 +664,6 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
               </select>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="max-tokens">{language === 'tr' ? 'Maksimum Token' : 'Max Tokens'}</Label>
-              <Input
-                id="max-tokens"
-                type="number"
-                min="1"
-                max="8192"
-                value={maxTokens}
-                onChange={(e) => {
-                  const value = parseInt(e.target.value) || 1000
-                  // Ensure value is within API limits
-                  setMaxTokens(Math.min(Math.max(value, 1), 8192))
-                }}
-                className="dark:bg-slate-800 dark:border-slate-600"
-              />
-              <div className="text-xs text-slate-500 dark:text-slate-400">
-                {language === 'tr' ? 'Aralık: 1-8192 token' : 'Range: 1-8192 tokens'}
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="temperature">{language === 'tr' ? 'Sıcaklık' : 'Temperature'}</Label>
-              <Input
-                id="temperature"
-                type="number"
-                min="0.0"
-                max="2.0"
-                step="0.1"
-                value={temperature}
-                onChange={(e) => {
-                  const value = parseFloat(e.target.value) || 0.7
-                  // Ensure value is within API limits
-                  setTemperature(Math.min(Math.max(value, 0.0), 2.0))
-                }}
-                className="dark:bg-slate-800 dark:border-slate-600"
-              />
-              <div className="text-xs text-slate-500 dark:text-slate-400">
-                {language === 'tr' ? 'Aralık: 0.0-2.0 (daha düşük = daha tutarlı)' : 'Range: 0.0-2.0 (lower = more consistent)'}
-              </div>
-            </div>
           </div>
           
           <div className="flex gap-3 mt-6">
@@ -721,13 +671,9 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
               onClick={handleSaveApiKey}
               disabled={isLoading || !apiKey.trim()}
               className={cn(
-                "flex items-center gap-2 transition-all duration-500 transform hover:scale-105 active:scale-95 group",
-                "hover:shadow-lg active:shadow-md",
-                justSaved && "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 border-green-500 shadow-green-200 shadow-lg",
-                isLoading && "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 animate-pulse",
-                !isLoading && !justSaved && "hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600",
-                celebrationStage >= 2 && "animate-bounce scale-110",
-                celebrationStage >= 3 && "shadow-2xl shadow-green-300 animate-pulse"
+                "flex items-center gap-2 transition-all duration-300",
+                justSaved && "bg-green-500 hover:bg-green-600 text-white",
+                isLoading && "bg-blue-500 hover:bg-blue-600 text-white"
               )}
             >
               {isLoading ? (
@@ -737,18 +683,8 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
                 </>
               ) : justSaved ? (
                 <>
-                  <div className="relative">
-                    <CheckCircle className="h-4 w-4 animate-pulse" />
-                    {showConfetti && (
-                      <Sparkles className="h-3 w-3 text-yellow-200 absolute -top-1 -right-1 animate-spin" />
-                    )}
-                  </div>
-                  <span className="font-bold">
-                    {language === 'tr' ? '🎉 Kaydedildi!' : '🎉 Saved!'}
-                  </span>
-                  {showConfetti && (
-                    <Heart className="h-3 w-3 text-red-200 animate-bounce" />
-                  )}
+                  <CheckCircle className="h-4 w-4" />
+                  <span>{getMessages().buttons.save}</span>
                 </>
               ) : (
                 <>

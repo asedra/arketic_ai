@@ -21,12 +21,27 @@ import {
   FileText,
   Folder,
   Sparkles,
-  Zap
+  Zap,
+  MessageSquare,
+  Download,
+  Trash2,
+  Eye,
+  Tag,
+  Calendar,
+  Users,
+  Database,
+  Copy,
+  X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useArketicStore } from '@/lib/state-manager'
-import { knowledgeApi } from '@/lib/api-client'
+import { knowledgeApi, DocumentResponse, CollectionResponse, UploadTextDocumentRequest, SearchRequest, RAGQueryRequest, CollectionRequest } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface KnowledgeContentProps {
   className?: string
@@ -38,118 +53,446 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
   const { toast } = useToast()
   
   // State management
-  const [knowledgeItems, setKnowledgeItems] = useState<any[]>([])
+  const [documents, setDocuments] = useState<DocumentResponse[]>([])
+  const [collections, setCollections] = useState<CollectionResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [syncing, setSyncing] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [uploadSuccess, setUploadSuccess] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [activeTab, setActiveTab] = useState('documents')
   
-  // Mock knowledge items (fallback)
-  const mockItems = [
-    {
-      id: 1,
-      name: 'Company Handbook',
-      type: 'document' as const,
-      size: '2.4 MB',
-      lastModified: '2 hours ago',
-      status: 'active' as const
-    },
-    {
-      id: 2,
-      name: 'API Documentation',
-      type: 'folder' as const,
-      size: '12 files',
-      lastModified: '1 day ago',
-      status: 'active' as const
-    },
-    {
-      id: 3,
-      name: 'Training Materials',
-      type: 'folder' as const,
-      size: '8 files',
-      lastModified: '3 days ago',
-      status: 'processing' as const
-    }
-  ]
+  // Dialog states
+  const [showUploadDialog, setShowUploadDialog] = useState(false)
+  const [showTextDialog, setShowTextDialog] = useState(false)
+  const [showCollectionDialog, setShowCollectionDialog] = useState(false)
+  const [showSearchDialog, setShowSearchDialog] = useState(false)
+  const [showRAGDialog, setShowRAGDialog] = useState(false)
+  const [showDocumentDetailDialog, setShowDocumentDetailDialog] = useState(false)
   
-  // Fetch knowledge items
-  const fetchKnowledgeItems = async () => {
+  // Form states
+  const [textDocument, setTextDocument] = useState<UploadTextDocumentRequest>({
+    title: '',
+    content: '',
+    description: '',
+    tags: [],
+    collection_id: 'none'
+  })
+  const [newCollection, setNewCollection] = useState<CollectionRequest>({
+    name: '',
+    description: ''
+  })
+  const [localSearchQuery, setLocalSearchQuery] = useState('')
+  const [ragQuery, setRagQuery] = useState('')
+  const [selectedCollection, setSelectedCollection] = useState<string>('')
+  const [searchResults, setSearchResults] = useState<DocumentResponse[]>([])
+  const [ragResponse, setRagResponse] = useState<{ answer: string; sources: DocumentResponse[] } | null>(null)
+  const [selectedDocument, setSelectedDocument] = useState<DocumentResponse | null>(null)
+  const [documentLoading, setDocumentLoading] = useState(false)
+  const [isDragOver, setIsDragOver] = useState(false)
+  
+  
+  // Fetch documents
+  const fetchDocuments = async () => {
     try {
       setLoading(true)
       setError(null)
-      const response = await knowledgeApi.getItems(searchQuery)
+      const response = await knowledgeApi.listDocuments()
+      console.log('Documents API response:', response)
       
       if (response.data) {
-        const items = response.data.items || response.data
-        setKnowledgeItems(items.length > 0 ? items : mockItems)
+        // Handle different response structures
+        let documentsData = []
+        if (response.data.documents) {
+          // Response has documents array nested
+          documentsData = Array.isArray(response.data.documents) ? response.data.documents : []
+        } else if (Array.isArray(response.data)) {
+          // Response data is directly an array
+          documentsData = response.data
+        } else {
+          // Response data is a single document
+          documentsData = [response.data]
+        }
         
-        if (items.length > 0) {
-          setShowSuccess(true)
+        console.log('Setting documents:', documentsData)
+        setDocuments(documentsData)
+        
+        if (documentsData.length > 0) {
           toast({
-            title: "Knowledge loaded successfully!",
-            description: `Found ${items.length} items in your knowledge base.`
+            title: "Documents loaded successfully!",
+            description: `Found ${documentsData.length} documents in your knowledge base.`
           })
         }
-      } else {
-        setKnowledgeItems(mockItems)
       }
     } catch (err) {
-      console.error('Error fetching knowledge items:', err)
-      setError('Failed to load knowledge base')
-      setKnowledgeItems(mockItems) // Fallback to mock data
+      console.error('Error fetching documents:', err)
+      setError('Failed to load documents')
     } finally {
       setLoading(false)
     }
   }
   
-  // Sync integrations
-  const handleSync = async () => {
+  // Fetch collections
+  const fetchCollections = async () => {
     try {
-      setSyncing(true)
-      await knowledgeApi.syncIntegrations()
+      const response = await knowledgeApi.listCollections()
+      console.log('Collections API response:', response)
       
-      toast({
-        title: "Sync complete!",
-        description: "Your integrations have been synchronized."
-      })
-      
-      // Refresh data after sync
-      await fetchKnowledgeItems()
+      if (response.data) {
+        // Handle different response structures
+        let collectionsData = []
+        if (response.data.collections) {
+          // Response has collections array nested
+          collectionsData = Array.isArray(response.data.collections) ? response.data.collections : []
+        } else if (Array.isArray(response.data)) {
+          // Response data is directly an array
+          collectionsData = response.data
+        } else {
+          // Response data is a single collection
+          collectionsData = [response.data]
+        }
+        
+        console.log('Setting collections:', collectionsData)
+        setCollections(collectionsData)
+      }
     } catch (err) {
-      toast({
-        title: "Sync failed",
-        description: "Unable to sync integrations. Please try again.",
-        variant: "destructive"
-      })
-    } finally {
-      setSyncing(false)
+      console.error('Error fetching collections:', err)
     }
   }
   
   // Handle file upload
-  const handleUpload = () => {
+  const handleFileUpload = async (files: FileList) => {
+    if (!files || files.length === 0) return
+    
+    const file = files[0]
+    const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2)
+    
     setUploading(true)
-    // Simulate upload process
-    setTimeout(() => {
-      setUploading(false)
+    setUploadProgress(0)
+    setUploadSuccess(false)
+    
+    // Show upload started notification
+    toast({
+      title: "Upload started",
+      description: `Processing ${file.name} (${fileSizeInMB} MB)...`,
+    })
+    
+    try {
+      // Validate file size (10MB limit)
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error(`File size (${fileSizeInMB} MB) exceeds 10MB limit`)
+      }
+      
+      // Validate file type
+      const allowedTypes = ['.pdf', '.doc', '.docx', '.txt', '.md']
+      const fileExt = '.' + file.name.split('.').pop()?.toLowerCase()
+      if (!allowedTypes.includes(fileExt)) {
+        throw new Error(`File type ${fileExt} is not supported. Allowed: ${allowedTypes.join(', ')}`)
+      }
+      
+      // Only include collection_id if it's actually selected and not empty/none
+      const uploadOptions: any = {
+        description: `Uploaded file: ${file.name}`,
+        onProgress: (progress: number) => {
+          setUploadProgress(progress)
+        }
+      }
+      
+      if (selectedCollection && selectedCollection !== 'none' && selectedCollection !== '') {
+        uploadOptions.collection_id = selectedCollection
+      }
+      
+      const response = await knowledgeApi.uploadFile(file, uploadOptions)
+      
+      if (response.data) {
+        setUploadSuccess(true)
+        
+        // Enhanced success notification with file details
+        const fileInfo = response.data.file_info || {}
+        const chunks = response.data.chunk_count || 0
+        const tokens = response.data.token_count || 0
+        const processingTime = response.data.processing_time_ms || 0
+        
+        toast({
+          title: "✅ Upload successful!",
+          description: `${file.name} processed successfully.\n📄 ${chunks} chunks, 🔤 ${tokens} tokens\n⏱️ Processed in ${processingTime}ms`,
+        })
+        
+        // Close dialog after short delay to show success state
+        setTimeout(() => {
+          setShowUploadDialog(false)
+          setUploadSuccess(false)
+        }, 2000)
+        
+        await fetchDocuments()
+        
+        // Show celebration for successful upload
+        setShowSuccess(true)
+        setTimeout(() => setShowSuccess(false), 3000)
+      }
+    } catch (err: any) {
+      console.error('Upload error:', err)
+      
+      // Enhanced error handling with specific messages
+      let errorTitle = "Upload failed"
+      let errorDescription = "Unable to upload file. Please try again."
+      
+      if (err.message) {
+        if (err.message.includes('size')) {
+          errorTitle = "File too large"
+          errorDescription = err.message
+        } else if (err.message.includes('type') || err.message.includes('format')) {
+          errorTitle = "Unsupported file type"  
+          errorDescription = err.message
+        } else if (err.message.includes('network') || err.message.includes('timeout')) {
+          errorTitle = "Connection error"
+          errorDescription = "Network issue. Please check your connection and try again."
+        } else if (err.message.includes('401') || err.message.includes('authentication')) {
+          errorTitle = "Authentication error"
+          errorDescription = "Please sign in again and try uploading."
+        } else if (err.message.includes('duplicate') || err.message.includes('exists')) {
+          errorTitle = "File already exists"
+          errorDescription = "This file has already been uploaded to your knowledge base."
+        } else {
+          errorDescription = err.message
+        }
+      }
+      
       toast({
-        title: "Upload successful!",
-        description: "Your files have been added to the knowledge base."
+        title: `❌ ${errorTitle}`,
+        description: errorDescription,
+        variant: "destructive"
       })
-      fetchKnowledgeItems()
-    }, 2000)
+      
+      // Reset upload state on error
+      setUploadProgress(0)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  // Handle drag and drop
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+    
+    const files = e.dataTransfer.files
+    if (files && files.length > 0) {
+      handleFileUpload(files)
+    }
+  }
+  
+  // Handle text document creation
+  const handleTextDocumentCreate = async () => {
+    if (!textDocument.title || !textDocument.content) {
+      toast({
+        title: "Validation error",
+        description: "Title and content are required.",
+        variant: "destructive"
+      })
+      return
+    }
+    
+    setUploading(true)
+    
+    try {
+      const documentToUpload = {
+        ...textDocument,
+        collection_id: textDocument.collection_id === 'none' ? undefined : textDocument.collection_id
+      }
+      const response = await knowledgeApi.uploadTextDocument(documentToUpload)
+      
+      if (response.data) {
+        toast({
+          title: "Document created successfully!",
+          description: `${textDocument.title} has been added to your knowledge base.`
+        })
+        setShowTextDialog(false)
+        setTextDocument({ title: '', content: '', description: '', tags: [], collection_id: 'none' })
+        await fetchDocuments()
+      }
+    } catch (err: any) {
+      toast({
+        title: "Creation failed",
+        description: err.message || "Unable to create document. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setUploading(false)
+    }
+  }
+  
+  // Handle collection creation
+  const handleCollectionCreate = async () => {
+    if (!newCollection.name) {
+      toast({
+        title: "Validation error",
+        description: "Collection name is required.",
+        variant: "destructive"
+      })
+      return
+    }
+    
+    try {
+      const response = await knowledgeApi.createCollection(newCollection)
+      
+      if (response.data) {
+        toast({
+          title: "Collection created successfully!",
+          description: `${newCollection.name} collection has been created.`
+        })
+        setShowCollectionDialog(false)
+        setNewCollection({ name: '', description: '' })
+        await fetchCollections()
+      }
+    } catch (err: any) {
+      toast({
+        title: "Creation failed",
+        description: err.message || "Unable to create collection. Please try again.",
+        variant: "destructive"
+      })
+    }
+  }
+  
+  // Handle document search
+  const handleSearch = async () => {
+    if (!localSearchQuery.trim()) return
+    
+    setLoading(true)
+    try {
+      const response = await knowledgeApi.searchDocuments({
+        query: localSearchQuery,
+        collection_id: selectedCollection && selectedCollection !== 'none' ? selectedCollection : undefined,
+        limit: 20
+      })
+      
+      if (response.data) {
+        setSearchResults(Array.isArray(response.data) ? response.data : [])
+        toast({
+          title: "Search completed!",
+          description: `Found ${response.data.length} matching documents.`
+        })
+      }
+    } catch (err: any) {
+      toast({
+        title: "Search failed",
+        description: err.message || "Unable to search documents. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+  
+  // Handle RAG query
+  const handleRAGQuery = async () => {
+    if (!ragQuery.trim()) return
+    
+    setLoading(true)
+    try {
+      const response = await knowledgeApi.ragQuery({
+        question: ragQuery,
+        collection_id: selectedCollection && selectedCollection !== 'none' ? selectedCollection : undefined,
+        limit: 10
+      })
+      
+      if (response.data) {
+        setRagResponse(response.data)
+        toast({
+          title: "Query completed!",
+          description: "AI has generated an answer based on your knowledge base."
+        })
+      }
+    } catch (err: any) {
+      toast({
+        title: "Query failed",
+        description: err.message || "Unable to process query. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+  
+  // Handle document viewing
+  const handleViewDocument = async (documentId: string) => {
+    setDocumentLoading(true)
+    try {
+      const response = await knowledgeApi.getDocument(documentId)
+      if (response.data) {
+        setSelectedDocument(response.data)
+        setShowDocumentDetailDialog(true)
+      }
+    } catch (err: any) {
+      toast({
+        title: "Failed to load document",
+        description: err.message || "Unable to load document details. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setDocumentLoading(false)
+    }
+  }
+
+  // Handle document deletion
+  const handleDocumentDelete = async (documentId: string) => {
+    try {
+      await knowledgeApi.deleteDocument(documentId)
+      toast({
+        title: "Document deleted!",
+        description: "Document has been removed from your knowledge base."
+      })
+      await fetchDocuments()
+    } catch (err: any) {
+      toast({
+        title: "Deletion failed",
+        description: err.message || "Unable to delete document. Please try again.",
+        variant: "destructive"
+      })
+    }
   }
   
   // Load data on mount
   useEffect(() => {
-    fetchKnowledgeItems()
-  }, [searchQuery])
+    fetchDocuments()
+    fetchCollections()
+  }, [])
   
-  // Filter items based on search
-  const filteredItems = knowledgeItems.filter(item => 
-    !searchQuery || item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // Filter documents based on search
+  const filteredDocuments = documents.filter(doc => 
+    !searchQuery || doc.title.toLowerCase().includes(searchQuery.toLowerCase())
   )
+  
+  // Format file size
+  const formatFileSize = (bytes?: number) => {
+    if (!bytes) return 'Unknown size'
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(1024))
+    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i]
+  }
+  
+  // Format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffTime = Math.abs(now.getTime() - date.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    
+    if (diffDays === 1) return '1 day ago'
+    if (diffDays < 7) return `${diffDays} days ago`
+    return date.toLocaleDateString()
+  }
   
   // Show success celebration
   if (showSuccess) {
@@ -172,7 +515,8 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
         description={error}
         onAction={() => {
           setError(null)
-          fetchKnowledgeItems()
+          fetchDocuments()
+          fetchCollections()
         }}
         onSecondaryAction={() => setError(null)}
       />
@@ -193,12 +537,21 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="animate-fade-in-scale">
-            {filteredItems.length} items
+            {filteredDocuments.length} documents
           </Badge>
-          {syncing && (
+          <Badge variant="secondary" className="animate-fade-in-scale">
+            {collections.length} collections
+          </Badge>
+          {uploading && (
             <div className="flex items-center space-x-2 text-blue-600">
-              <Zap className="h-4 w-4 animate-spin" />
-              <span className="text-sm">Syncing...</span>
+              <Upload className="h-4 w-4 animate-spin" />
+              <span className="text-sm">Processing...</span>
+            </div>
+          )}
+          {documentLoading && (
+            <div className="flex items-center space-x-2 text-green-600">
+              <Eye className="h-4 w-4 animate-pulse" />
+              <span className="text-sm">Loading document...</span>
             </div>
           )}
         </div>
@@ -209,52 +562,68 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <DelightfulButton
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-700"
-                glow
-                bounce
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                Add
-              </DelightfulButton>
+              <Dialog open={showTextDialog} onOpenChange={setShowTextDialog}>
+                <DialogTrigger asChild>
+                  <DelightfulButton
+                    size="sm"
+                    className="bg-blue-600 hover:bg-blue-700"
+                    glow
+                    bounce
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add Text
+                  </DelightfulButton>
+                </DialogTrigger>
+              </Dialog>
               
-              <DelightfulButton
-                variant="outline"
-                size="sm"
-                loading={uploading}
-                loadingText="Uploading..."
-                onClick={handleUpload}
-                ripple
-              >
-                <Upload className="h-4 w-4 mr-1" />
-                Upload
-              </DelightfulButton>
+              <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
+                <DialogTrigger asChild>
+                  <DelightfulButton
+                    variant="outline"
+                    size="sm"
+                    ripple
+                  >
+                    <Upload className="h-4 w-4 mr-1" />
+                    Upload File
+                  </DelightfulButton>
+                </DialogTrigger>
+              </Dialog>
               
-              <DelightfulButton
-                variant="outline"
-                size="sm"
-                loading={syncing}
-                loadingText="Syncing..."
-                onClick={handleSync}
-                ripple
-              >
-                <RefreshCw className="h-4 w-4 mr-1" />
-                Sync
-              </DelightfulButton>
+              <Dialog open={showCollectionDialog} onOpenChange={setShowCollectionDialog}>
+                <DialogTrigger asChild>
+                  <DelightfulButton variant="outline" size="sm" bounce>
+                    <FolderPlus className="h-4 w-4 mr-1" />
+                    New Collection
+                  </DelightfulButton>
+                </DialogTrigger>
+              </Dialog>
               
-              <DelightfulButton variant="outline" size="sm" bounce>
-                <FolderPlus className="h-4 w-4 mr-1" />
-                New Folder
-              </DelightfulButton>
+              <Dialog open={showSearchDialog} onOpenChange={setShowSearchDialog}>
+                <DialogTrigger asChild>
+                  <DelightfulButton variant="outline" size="sm" ripple>
+                    <Search className="h-4 w-4 mr-1" />
+                    Search
+                  </DelightfulButton>
+                </DialogTrigger>
+              </Dialog>
+              
+              <Dialog open={showRAGDialog} onOpenChange={setShowRAGDialog}>
+                <DialogTrigger asChild>
+                  <DelightfulButton variant="outline" size="sm" glow>
+                    <MessageSquare className="h-4 w-4 mr-1" />
+                    Ask AI
+                  </DelightfulButton>
+                </DialogTrigger>
+              </Dialog>
             </div>
             
             <div className="flex items-center gap-2">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
-                  placeholder="Search knowledge base..."
+                  placeholder="Filter documents..."
                   value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 w-64"
                 />
               </div>
@@ -279,121 +648,788 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
         </CardContent>
       </Card>
       
-      {/* Content */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Items</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="space-y-4">
-              <DelightfulLoading 
-                type="knowledge" 
-                message="Loading your knowledge base..."
-              />
-              <SkeletonLoader type={viewMode === 'grid' ? 'card' : 'list'} />
-            </div>
-          ) : filteredItems.length === 0 ? (
-            <DelightfulEmptyState
-              type={searchQuery ? 'search' : 'knowledge'}
-              title={searchQuery ? 'No matching documents' : 'Your knowledge base is empty'}
-              description={searchQuery ? 'Try adjusting your search terms or clear filters.' : 'Add documents, connect integrations, or create your first knowledge article.'}
-              actionLabel={searchQuery ? 'Clear search' : 'Add knowledge'}
-              onAction={() => {
-                // Handle action based on state
-                console.log('Empty state action')
-              }}
-            />
-          ) : viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredItems.map((item, index) => (
-                <div 
-                  key={item.id} 
-                  className={cn(
-                    "group border rounded-lg p-4 cursor-pointer transition-all duration-200",
-                    "hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-md hover-lift",
-                    "animate-fade-in-scale",
-                    `stagger-${Math.min(index + 1, 5)}`
-                  )}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    {item.type === 'folder' ? (
-                      <Folder className="h-5 w-5 text-blue-500 group-hover:animate-wiggle" />
-                    ) : (
-                      <FileText className="h-5 w-5 text-slate-500 group-hover:animate-wiggle" />
-                    )}
-                    <span className="font-medium text-slate-900 dark:text-slate-100 truncate">
-                      {item.name}
-                    </span>
-                    {item.status === 'processing' && (
-                      <Sparkles className="h-4 w-4 text-yellow-500 animate-pulse" />
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
-                    <span>{item.size}</span>
-                    <span>{item.lastModified}</span>
-                  </div>
-                  <div className="mt-2">
-                    <Badge 
-                      variant={item.status === 'active' ? 'default' : 'secondary'}
+      {/* Main Content */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="documents" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Documents ({filteredDocuments.length})
+          </TabsTrigger>
+          <TabsTrigger value="collections" className="flex items-center gap-2">
+            <Folder className="h-4 w-4" />
+            Collections ({collections.length})
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="documents" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Documents</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <div className="space-y-4">
+                  <DelightfulLoading 
+                    type="knowledge" 
+                    message="Loading documents..."
+                  />
+                  <SkeletonLoader type={viewMode === 'grid' ? 'card' : 'list'} />
+                </div>
+              ) : filteredDocuments.length === 0 ? (
+                <DelightfulEmptyState
+                  type={searchQuery ? 'search' : 'knowledge'}
+                  title={searchQuery ? 'No matching documents' : 'No documents yet'}
+                  description={searchQuery ? 'Try adjusting your search terms.' : 'Upload your first document or create a text document to get started.'}
+                  actionLabel={searchQuery ? 'Clear search' : 'Add document'}
+                  onAction={() => {
+                    if (searchQuery) {
+                      setSearchQuery('')
+                    } else {
+                      setShowTextDialog(true)
+                    }
+                  }}
+                />
+              ) : viewMode === 'grid' ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {filteredDocuments.map((doc, index) => (
+                    <div 
+                      key={doc.id} 
                       className={cn(
-                        "text-xs transition-colors",
-                        item.status === 'processing' && "animate-pulse"
+                        "group border rounded-lg p-4 cursor-pointer transition-all duration-200",
+                        "hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-md hover-lift",
+                        "animate-fade-in-scale",
+                        `stagger-${Math.min(index + 1, 5)}`
+                      )}
+                      onClick={() => handleViewDocument(doc.id)}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <FileText className="h-5 w-5 text-slate-500 group-hover:animate-wiggle" />
+                        <span className="font-medium text-slate-900 dark:text-slate-100 truncate flex-1">
+                          {doc.title}
+                        </span>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 w-6 p-0"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleViewDocument(doc.id)
+                            }}
+                            disabled={documentLoading}
+                          >
+                            <Eye className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDocumentDelete(doc.id)
+                            }}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="text-sm text-slate-500 dark:text-slate-400 mb-2 line-clamp-2">
+                        {doc.description || 'No description'}
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-slate-400">
+                        <span>{formatFileSize(doc.file_size)}</span>
+                        <span>{formatDate(doc.updated_at)}</span>
+                      </div>
+                      {doc.tags && doc.tags.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          {doc.tags.slice(0, 2).map((tag, i) => (
+                            <Badge key={i} variant="secondary" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                          {doc.tags.length > 2 && (
+                            <Badge variant="secondary" className="text-xs">
+                              +{doc.tags.length - 2}
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {filteredDocuments.map((doc, index) => (
+                    <div 
+                      key={doc.id} 
+                      className={cn(
+                        "group flex items-center justify-between p-3 border rounded-lg cursor-pointer",
+                        "hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm hover-lift",
+                        "transition-all duration-200 animate-slide-in-up",
+                        `stagger-${Math.min(index + 1, 5)}`
+                      )}
+                      onClick={() => handleViewDocument(doc.id)}
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        <FileText className="h-5 w-5 text-slate-500 group-hover:animate-wiggle flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-slate-900 dark:text-slate-100 truncate">
+                              {doc.title}
+                            </p>
+                            {doc.tags && doc.tags.length > 0 && (
+                              <div className="flex gap-1">
+                                {doc.tags.slice(0, 3).map((tag, i) => (
+                                  <Badge key={i} variant="secondary" className="text-xs">
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
+                            {doc.description || 'No description'} • {formatFileSize(doc.file_size)} • {formatDate(doc.updated_at)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleViewDocument(doc.id)
+                          }}
+                          disabled={documentLoading}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-red-500 hover:text-red-700"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleDocumentDelete(doc.id)
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="collections" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Collections</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {collections.length === 0 ? (
+                <DelightfulEmptyState
+                  type="knowledge"
+                  title="No collections yet"
+                  description="Create collections to organize your documents by topic, project, or any other criteria."
+                  actionLabel="Create collection"
+                  onAction={() => setShowCollectionDialog(true)}
+                />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {collections.map((collection, index) => (
+                    <div 
+                      key={collection.id}
+                      className={cn(
+                        "group border rounded-lg p-4 cursor-pointer transition-all duration-200",
+                        "hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-md hover-lift",
+                        "animate-fade-in-scale",
+                        `stagger-${Math.min(index + 1, 5)}`
                       )}
                     >
-                      {item.status === 'processing' ? 'Processing...' : item.status}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {filteredItems.map((item, index) => (
-                <div 
-                  key={item.id} 
-                  className={cn(
-                    "group flex items-center justify-between p-3 border rounded-lg cursor-pointer",
-                    "hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm hover-lift",
-                    "transition-all duration-200 animate-slide-in-up",
-                    `stagger-${Math.min(index + 1, 5)}`
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    {item.type === 'folder' ? (
-                      <Folder className="h-5 w-5 text-blue-500 group-hover:animate-wiggle" />
-                    ) : (
-                      <FileText className="h-5 w-5 text-slate-500 group-hover:animate-wiggle" />
-                    )}
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-slate-900 dark:text-slate-100">
-                          {item.name}
-                        </p>
-                        {item.status === 'processing' && (
-                          <Sparkles className="h-4 w-4 text-yellow-500 animate-pulse" />
-                        )}
+                      <div className="flex items-center gap-3 mb-2">
+                        <Database className="h-5 w-5 text-blue-500 group-hover:animate-wiggle" />
+                        <span className="font-medium text-slate-900 dark:text-slate-100 truncate flex-1">
+                          {collection.name}
+                        </span>
+                        <Badge variant="secondary" className="text-xs">
+                          {collection.document_count}
+                        </Badge>
                       </div>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
-                        {item.size} • {item.lastModified}
+                      <div className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                        {collection.description || 'No description'}
+                      </div>
+                      <div className="text-xs text-slate-400">
+                        Created {formatDate(collection.created_at)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+      
+      {/* Upload Text Document Dialog */}
+      <Dialog open={showTextDialog} onOpenChange={setShowTextDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create Text Document</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="title">Title *</Label>
+              <Input
+                id="title"
+                value={textDocument.title}
+                onChange={(e) => setTextDocument({ ...textDocument, title: e.target.value })}
+                placeholder="Enter document title"
+              />
+            </div>
+            <div>
+              <Label htmlFor="description">Description</Label>
+              <Input
+                id="description"
+                value={textDocument.description}
+                onChange={(e) => setTextDocument({ ...textDocument, description: e.target.value })}
+                placeholder="Enter description (optional)"
+              />
+            </div>
+            <div>
+              <Label htmlFor="collection">Collection</Label>
+              <Select 
+                value={textDocument.collection_id} 
+                onValueChange={(value) => setTextDocument({ ...textDocument, collection_id: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a collection (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No collection</SelectItem>
+                  {collections.map((collection) => (
+                    <SelectItem key={collection.id} value={collection.id}>
+                      {collection.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="content">Content *</Label>
+              <Textarea
+                id="content"
+                value={textDocument.content}
+                onChange={(e) => setTextDocument({ ...textDocument, content: e.target.value })}
+                placeholder="Enter document content"
+                className="min-h-[200px]"
+              />
+            </div>
+            <div>
+              <Label htmlFor="tags">Tags (comma separated)</Label>
+              <Input
+                id="tags"
+                value={textDocument.tags?.join(', ') || ''}
+                onChange={(e) => setTextDocument({ 
+                  ...textDocument, 
+                  tags: e.target.value.split(',').map(tag => tag.trim()).filter(Boolean)
+                })}
+                placeholder="tag1, tag2, tag3"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowTextDialog(false)}>
+                Cancel
+              </Button>
+              <DelightfulButton
+                onClick={handleTextDocumentCreate}
+                loading={uploading}
+                loadingText="Creating..."
+                disabled={!textDocument.title || !textDocument.content}
+              >
+                Create Document
+              </DelightfulButton>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Upload File Dialog */}
+      <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Upload Document File</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="collection-select">Collection</Label>
+              <Select value={selectedCollection} onValueChange={setSelectedCollection}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a collection (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No collection</SelectItem>
+                  {collections.map((collection) => (
+                    <SelectItem key={collection.id} value={collection.id}>
+                      {collection.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div 
+              className={cn(
+                "border-2 border-dashed rounded-lg p-6 transition-all duration-200",
+                isDragOver 
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 scale-105" 
+                  : "border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500",
+                uploading && "pointer-events-none opacity-50"
+              )}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <input
+                type="file"
+                id="file-upload"
+                className="hidden"
+                onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+                accept=".pdf,.doc,.docx,.txt,.md"
+                disabled={uploading}
+              />
+              <label
+                htmlFor="file-upload"
+                className={cn(
+                  "flex flex-col items-center justify-center cursor-pointer",
+                  uploading && "cursor-not-allowed"
+                )}
+              >
+                <Upload className={cn(
+                  "h-12 w-12 mb-2 transition-all duration-200",
+                  isDragOver 
+                    ? "text-blue-500 animate-bounce" 
+                    : "text-slate-400"
+                )} />
+                <span className={cn(
+                  "text-sm font-medium transition-colors duration-200",
+                  isDragOver 
+                    ? "text-blue-700 dark:text-blue-300" 
+                    : "text-slate-700 dark:text-slate-300"
+                )}>
+                  {isDragOver ? "Drop your file here!" : "Click to upload or drag and drop"}
+                </span>
+                <span className="text-xs text-slate-500 mt-1">
+                  PDF, DOC, DOCX, TXT, MD files up to 10MB
+                </span>
+              </label>
+            </div>
+            {uploading && (
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="flex items-center gap-2">
+                    <Upload className="h-4 w-4 animate-spin" />
+                    {uploadSuccess ? "Processing completed!" : "Uploading..."}
+                  </span>
+                  <span className="font-medium">
+                    {uploadSuccess ? "100%" : `${Math.round(uploadProgress)}%`}
+                  </span>
+                </div>
+                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
+                  <div 
+                    className={cn(
+                      "h-3 rounded-full transition-all duration-300",
+                      uploadSuccess 
+                        ? "bg-green-600 animate-pulse" 
+                        : "bg-blue-600"
+                    )}
+                    style={{ width: uploadSuccess ? "100%" : `${uploadProgress}%` }}
+                  />
+                </div>
+                {uploadSuccess && (
+                  <div className="text-center text-sm text-green-600 font-medium animate-fade-in">
+                    ✅ Upload successful! Closing in 2 seconds...
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Create Collection Dialog */}
+      <Dialog open={showCollectionDialog} onOpenChange={setShowCollectionDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create Collection</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="collection-name">Name *</Label>
+              <Input
+                id="collection-name"
+                value={newCollection.name}
+                onChange={(e) => setNewCollection({ ...newCollection, name: e.target.value })}
+                placeholder="Enter collection name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="collection-description">Description</Label>
+              <Textarea
+                id="collection-description"
+                value={newCollection.description}
+                onChange={(e) => setNewCollection({ ...newCollection, description: e.target.value })}
+                placeholder="Enter collection description (optional)"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowCollectionDialog(false)}>
+                Cancel
+              </Button>
+              <DelightfulButton
+                onClick={handleCollectionCreate}
+                disabled={!newCollection.name}
+              >
+                Create Collection
+              </DelightfulButton>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Search Dialog */}
+      <Dialog open={showSearchDialog} onOpenChange={setShowSearchDialog}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Semantic Search</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <Input
+                  value={localSearchQuery}
+                  onChange={(e) => setLocalSearchQuery(e.target.value)}
+                  placeholder="Enter your search query..."
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                />
+              </div>
+              <Select value={selectedCollection} onValueChange={setSelectedCollection}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="All collections" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">All collections</SelectItem>
+                  {collections.map((collection) => (
+                    <SelectItem key={collection.id} value={collection.id}>
+                      {collection.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <DelightfulButton onClick={handleSearch} loading={loading}>
+                <Search className="h-4 w-4 mr-1" />
+                Search
+              </DelightfulButton>
+            </div>
+            
+            {searchResults.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-3">Search Results ({searchResults.length})</h3>
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {searchResults.map((doc) => (
+                    <div key={doc.id} className="border rounded-lg p-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-slate-900 dark:text-slate-100">
+                            {doc.title}
+                          </h4>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                            {doc.description || 'No description'}
+                          </p>
+                          <div className="flex items-center gap-2 mt-2 text-xs text-slate-400">
+                            <Calendar className="h-3 w-3" />
+                            {formatDate(doc.updated_at)}
+                            {doc.file_size && (
+                              <>
+                                <span>•</span>
+                                {formatFileSize(doc.file_size)}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleViewDocument(doc.id)
+                            }}
+                            disabled={documentLoading}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* RAG Query Dialog */}
+      <Dialog open={showRAGDialog} onOpenChange={setShowRAGDialog}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Ask AI about your Knowledge Base</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <Textarea
+                  value={ragQuery}
+                  onChange={(e) => setRagQuery(e.target.value)}
+                  placeholder="Ask a question about your documents..."
+                  className="min-h-[100px]"
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Select value={selectedCollection} onValueChange={setSelectedCollection}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="All collections" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">All collections</SelectItem>
+                  {collections.map((collection) => (
+                    <SelectItem key={collection.id} value={collection.id}>
+                      {collection.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <DelightfulButton 
+                onClick={handleRAGQuery} 
+                loading={loading}
+                disabled={!ragQuery.trim()}
+                glow
+              >
+                <MessageSquare className="h-4 w-4 mr-1" />
+                Ask AI
+              </DelightfulButton>
+            </div>
+            
+            {ragResponse && (
+              <div className="mt-6 space-y-4">
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                  <h3 className="text-lg font-semibold mb-2 text-blue-900 dark:text-blue-100">
+                    AI Answer
+                  </h3>
+                  <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                    {ragResponse.answer}
+                  </p>
+                </div>
+                
+                {ragResponse.sources.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3">Sources ({ragResponse.sources.length})</h3>
+                    <div className="space-y-2">
+                      {ragResponse.sources.map((doc) => (
+                        <div key={doc.id} className="border rounded-lg p-3">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-medium text-slate-900 dark:text-slate-100">
+                                {doc.title}
+                              </h4>
+                              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                {doc.description || 'No description'}
+                              </p>
+                            </div>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleViewDocument(doc.id)
+                              }}
+                              disabled={documentLoading}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Document Detail Dialog */}
+      <Dialog open={showDocumentDetailDialog} onOpenChange={setShowDocumentDetailDialog}>
+        <DialogContent className="max-w-4xl max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span>Document Details</span>
+              <div className="flex items-center gap-2">
+                {selectedDocument?.content && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (selectedDocument?.content) {
+                        navigator.clipboard.writeText(selectedDocument.content)
+                        toast({
+                          title: "Copied!",
+                          description: "Document content copied to clipboard."
+                        })
+                      }
+                    }}
+                  >
+                    <Copy className="h-4 w-4 mr-1" />
+                    Copy
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowDocumentDetailDialog(false)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </DialogTitle>
+          </DialogHeader>
+          
+          {documentLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <DelightfulLoading type="knowledge" message="Loading document..." />
+            </div>
+          ) : selectedDocument ? (
+            <div className="flex-1 overflow-hidden flex flex-col space-y-4">
+              {/* Document Header */}
+              <div className="space-y-3 border-b pb-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                    {selectedDocument.title}
+                  </h2>
+                  {selectedDocument.description && (
+                    <p className="text-slate-600 dark:text-slate-400 mt-1">
+                      {selectedDocument.description}
+                    </p>
+                  )}
+                </div>
+                
+                {/* Metadata */}
+                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    Created {formatDate(selectedDocument.created_at)}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    Updated {formatDate(selectedDocument.updated_at)}
+                  </div>
+                  {selectedDocument.file_size && (
+                    <div className="flex items-center gap-1">
+                      <FileText className="h-4 w-4" />
+                      {formatFileSize(selectedDocument.file_size)}
+                    </div>
+                  )}
+                  {selectedDocument.file_type && (
+                    <Badge variant="secondary">{selectedDocument.file_type}</Badge>
+                  )}
+                </div>
+                
+                {/* Tags */}
+                {selectedDocument.tags && selectedDocument.tags.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <Tag className="h-4 w-4 text-slate-400" />
+                    <div className="flex flex-wrap gap-1">
+                      {selectedDocument.tags.map((tag, i) => (
+                        <Badge key={i} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Document Content */}
+              <div className="flex-1 overflow-auto">
+                {selectedDocument.content ? (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                      Content
+                    </h3>
+                    <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 border">
+                      <pre className="whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300 font-mono">
+                        {selectedDocument.content}
+                      </pre>
+                    </div>
+                  </div>
+                ) : selectedDocument.file_path ? (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                      File Information
+                    </h3>
+                    <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 border">
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        This is a file-based document. The original file is stored at:
+                      </p>
+                      <p className="text-sm font-mono text-slate-700 dark:text-slate-300 mt-2 bg-slate-100 dark:bg-slate-800 p-2 rounded">
+                        {selectedDocument.file_path}
                       </p>
                     </div>
                   </div>
-                  <Badge 
-                    variant={item.status === 'active' ? 'default' : 'secondary'}
-                    className={cn(
-                      "text-xs transition-colors",
-                      item.status === 'processing' && "animate-pulse"
-                    )}
-                  >
-                    {item.status === 'processing' ? 'Processing...' : item.status}
-                  </Badge>
+                ) : (
+                  <div className="text-center py-8 text-slate-500">
+                    No content available for this document.
+                  </div>
+                )}
+              </div>
+              
+              {/* Actions */}
+              <div className="flex justify-between items-center pt-4 border-t">
+                <div className="text-xs text-slate-400">
+                  Document ID: {selectedDocument.id}
                 </div>
-              ))}
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowDocumentDetailDialog(false)}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      handleDocumentDelete(selectedDocument.id)
+                      setShowDocumentDetailDialog(false)
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-slate-500">
+              No document selected.
             </div>
           )}
-        </CardContent>
-      </Card>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 })

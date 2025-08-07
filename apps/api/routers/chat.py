@@ -45,7 +45,8 @@ class CreateChatRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = Field(None, max_length=1000)
     chat_type: ChatType = ChatType.DIRECT
-    ai_model: str = "gpt-3.5-turbo"
+    assistant_id: Optional[str] = Field(None, description="ID of the assistant to use for this chat")
+    ai_model: str = Field("gpt-3.5-turbo", description="AI model (used if no assistant specified)")
     ai_persona: Optional[str] = None
     system_prompt: Optional[str] = None
     temperature: float = Field(0.7, ge=0.0, le=1.0)
@@ -70,6 +71,8 @@ class ChatResponse(BaseModel):
     title: str
     description: Optional[str]
     chat_type: str
+    assistant_id: Optional[str]
+    assistant_name: Optional[str]
     ai_model: Optional[str]
     ai_persona: Optional[str]
     message_count: int
@@ -740,20 +743,62 @@ async def create_chat(
 ):
     """Create a new chat conversation"""
     try:
+        # Get user object
+        user = await db.get(User, current_user["user_id"])
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Initialize variables for assistant-based configuration
+        assistant_id = None
+        assistant_name = None
+        ai_model = request.ai_model
+        system_prompt = request.system_prompt
+        temperature = request.temperature
+        max_tokens = request.max_tokens
+        
+        # If assistant is specified, get assistant configuration
+        if request.assistant_id:
+            try:
+                from services.assistant_service import assistant_service
+                assistant_config = await assistant_service.get_assistant_for_chat(
+                    db, request.assistant_id, user
+                )
+                
+                assistant_id = request.assistant_id
+                assistant_name = assistant_config["name"]
+                ai_model = assistant_config["ai_model"]
+                system_prompt = assistant_config["system_prompt"]
+                temperature = assistant_config["temperature"]
+                max_tokens = assistant_config["max_tokens"]
+                
+                logger.info(f"Using assistant '{assistant_name}' for chat creation")
+                
+            except HTTPException as e:
+                logger.warning(f"Failed to get assistant {request.assistant_id}: {e.detail}")
+                # Continue with default parameters if assistant not accessible
+                pass
+        
         # Create new chat
         chat = Chat(
             title=request.title,
             description=request.description,
             chat_type=request.chat_type,
-            ai_model=request.ai_model,
+            ai_model=ai_model,
             ai_persona=request.ai_persona,
-            system_prompt=request.system_prompt,
-            temperature=request.temperature,
-            max_tokens=request.max_tokens,
+            system_prompt=system_prompt,
+            temperature=temperature,
+            max_tokens=max_tokens,
             is_private=request.is_private,
             tags=request.tags,
             creator_id=current_user["user_id"]
         )
+        
+        # Add assistant_id to metadata since it may not be in the model yet
+        if assistant_id:
+            metadata = chat.chat_metadata or {}
+            metadata["assistant_id"] = assistant_id
+            metadata["assistant_name"] = assistant_name
+            chat.chat_metadata = metadata
         
         db.add(chat)
         await db.commit()
@@ -769,11 +814,23 @@ async def create_chat(
         db.add(participant)
         await db.commit()
         
+        # Log assistant usage if assistant was used
+        if assistant_id:
+            try:
+                from services.assistant_service import assistant_service
+                await assistant_service.log_assistant_usage(
+                    db, assistant_id, user.id, "conversation_start", chat.id
+                )
+            except Exception as e:
+                logger.warning(f"Failed to log assistant usage: {e}")
+        
         return ChatResponse(
             id=str(chat.id),
             title=chat.title,
             description=chat.description,
             chat_type=chat.chat_type.value,
+            assistant_id=assistant_id,
+            assistant_name=assistant_name,
             ai_model=chat.ai_model,
             ai_persona=chat.ai_persona,
             message_count=chat.message_count,
@@ -783,6 +840,8 @@ async def create_chat(
             tags=chat.tags
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error creating chat: {e}")
         raise HTTPException(
@@ -811,12 +870,23 @@ async def get_user_chats(
         result = await db.execute(query)
         chats = result.scalars().all()
         
-        return [
-            ChatResponse(
+        # Build chat responses with assistant information
+        chat_responses = []
+        for chat in chats:
+            # Extract assistant info from metadata
+            assistant_id = None
+            assistant_name = None
+            if chat.chat_metadata:
+                assistant_id = chat.chat_metadata.get("assistant_id")
+                assistant_name = chat.chat_metadata.get("assistant_name")
+            
+            chat_responses.append(ChatResponse(
                 id=str(chat.id),
                 title=chat.title,
                 description=chat.description,
                 chat_type=chat.chat_type.value,
+                assistant_id=assistant_id,
+                assistant_name=assistant_name,
                 ai_model=chat.ai_model,
                 ai_persona=chat.ai_persona,
                 message_count=chat.message_count,
@@ -824,9 +894,9 @@ async def get_user_chats(
                 created_at=chat.created_at,
                 is_private=chat.is_private,
                 tags=chat.tags
-            )
-            for chat in chats
-        ]
+            ))
+        
+        return chat_responses
         
     except Exception as e:
         logger.error(f"Error getting user chats: {e}")
@@ -887,6 +957,13 @@ async def get_chat_history(
         count_result = await db.execute(participant_count_query)
         participant_count = count_result.scalar()
         
+        # Extract assistant info from metadata
+        assistant_id = None
+        assistant_name = None
+        if chat.chat_metadata:
+            assistant_id = chat.chat_metadata.get("assistant_id")
+            assistant_name = chat.chat_metadata.get("assistant_name")
+        
         # Build response with additional metadata
         response = ChatHistoryResponse(
             chat=ChatResponse(
@@ -894,6 +971,8 @@ async def get_chat_history(
                 title=chat.title,
                 description=chat.description,
                 chat_type=chat.chat_type.value,
+                assistant_id=assistant_id,
+                assistant_name=assistant_name,
                 ai_model=chat.ai_model,
                 ai_persona=chat.ai_persona,
                 message_count=chat.message_count,
@@ -1783,3 +1862,63 @@ async def get_services_status(
             "error_code": "status_check_failed",
             "timestamp": datetime.utcnow().isoformat()
         }
+
+
+@router.get("/assistants/available")
+async def get_available_assistants_for_chat(
+    db: AsyncSession = Depends(get_db),
+    current_user: dict = Depends(get_current_user_dict)
+):
+    """Get available assistants for chat integration"""
+    try:
+        # Get user object
+        user = await db.get(User, current_user["user_id"])
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        from services.assistant_service import assistant_service
+        from schemas.assistant import AssistantSearchRequest
+        
+        # Get active assistants user can access
+        search_request = AssistantSearchRequest(
+            status="active",
+            page=1,
+            limit=100,
+            sort_by="name",
+            sort_order="asc"
+        )
+        
+        assistants_response = await assistant_service.list_assistants(db, user, search_request)
+        
+        # Format for chat integration
+        chat_assistants = []
+        for assistant in assistants_response.assistants:
+            chat_assistants.append({
+                "id": assistant.id,
+                "name": assistant.name,
+                "description": assistant.description,
+                "ai_model": assistant.ai_model,
+                "ai_model_display": assistant.ai_model_display,
+                "is_public": assistant.is_public,
+                "creator_id": assistant.creator_id,
+                "total_conversations": assistant.total_conversations,
+                "is_owner": str(assistant.creator_id) == str(user.id)
+            })
+        
+        return {
+            "success": True,
+            "data": {
+                "assistants": chat_assistants,
+                "total": len(chat_assistants)
+            },
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to get available assistants: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to get available assistants"
+        )

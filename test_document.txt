@@ -1,0 +1,14 @@
+Bu bir test dokümanıdır.
+
+Bu döküman Arketic AI Platform'un knowledge base özelliğini test etmek için oluşturulmuştur.
+
+İçerik:
+- Bu bir test dosyasıdır
+- Türkçe karakterler içerir
+- Bilgi yönetimi sistemini test ediyor
+- Upload özelliğinin çalışıp çalışmadığını kontrol eder
+
+Tarih: 7 Ağustos 2025
+Test durumu: Aktif
+
+Bu döküman başarıyla yüklenirse, knowledge base sisteminin düzgün çalıştığı anlaşılacaktır.

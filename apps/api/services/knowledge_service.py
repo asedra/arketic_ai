@@ -23,6 +23,22 @@ from models.user import User
 from services.pgvector_service import pgvector_service
 from services.langchain_client import get_langchain_client
 
+# Document processing imports
+try:
+    import pypdf
+except ImportError:
+    pypdf = None
+
+try:
+    from docx import Document as DocxDocument
+except ImportError:
+    DocxDocument = None
+
+try:
+    import chardet
+except ImportError:
+    chardet = None
+
 # Import database models (we'll need to create these)
 # from models.knowledge import KnowledgeBase, KnowledgeDocument, KnowledgeEmbedding
 
@@ -456,7 +472,7 @@ class KnowledgeService:
                     chunks.append({
                         "id": str(chunk.id),
                         "chunk_index": chunk.chunk_index,
-                        "content": chunk.content[:200] + "..." if len(chunk.content) > 200 else chunk.content,
+                        "content": chunk.content,
                         "token_count": chunk.token_count
                     })
             
@@ -464,7 +480,7 @@ class KnowledgeService:
                 "id": result.id,
                 "knowledge_base_id": result.knowledge_base_id,
                 "title": result.title,
-                "content": result.content[:1000] + "..." if result.content and len(result.content) > 1000 else result.content,
+                "content": result.content,
                 "source_type": result.source_type,
                 "source_url": result.source_url,
                 "file_name": result.file_name,
@@ -718,7 +734,7 @@ class KnowledgeService:
                     sources.append({
                         "document_id": UUID(doc_id) if doc_id else None,
                         "title": title,
-                        "content": doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content,
+                        "content": doc.page_content,
                         "score": score
                     })
             
@@ -924,13 +940,104 @@ class KnowledgeService:
     ) -> str:
         """Extract text from file content"""
         if file_ext in ['.txt', '.md']:
+            # Try to detect encoding if chardet is available
+            if chardet:
+                try:
+                    detected_encoding = chardet.detect(content)
+                    encoding = detected_encoding.get('encoding', 'utf-8')
+                    return content.decode(encoding, errors='ignore')
+                except Exception:
+                    pass
             return content.decode('utf-8', errors='ignore')
+        
         elif file_ext == '.pdf':
-            # Would need PyPDF2 or similar
-            raise HTTPException(status_code=501, detail="PDF extraction not yet implemented")
+            if not pypdf:
+                raise HTTPException(
+                    status_code=500, 
+                    detail="PDF processing library not available. Please install pypdf."
+                )
+            
+            try:
+                # Create a BytesIO object from the content
+                pdf_file = BytesIO(content)
+                
+                # Read the PDF
+                pdf_reader = pypdf.PdfReader(pdf_file)
+                
+                # Extract text from all pages
+                text_content = ""
+                for page_num, page in enumerate(pdf_reader.pages):
+                    try:
+                        page_text = page.extract_text()
+                        if page_text.strip():
+                            text_content += f"\n--- Page {page_num + 1} ---\n"
+                            text_content += page_text.strip() + "\n"
+                    except Exception as e:
+                        logger.warning(f"Failed to extract text from page {page_num + 1}: {str(e)}")
+                        continue
+                
+                if not text_content.strip():
+                    raise HTTPException(
+                        status_code=422, 
+                        detail="No text content could be extracted from the PDF. The PDF might be image-based or corrupted."
+                    )
+                
+                return text_content.strip()
+                
+            except Exception as e:
+                logger.error(f"PDF extraction failed for {filename}: {str(e)}")
+                if "No text content could be extracted" in str(e):
+                    raise
+                raise HTTPException(
+                    status_code=422, 
+                    detail=f"Failed to extract text from PDF: {str(e)}"
+                )
+        
         elif file_ext == '.docx':
-            # Would need python-docx
-            raise HTTPException(status_code=501, detail="DOCX extraction not yet implemented")
+            if not DocxDocument:
+                raise HTTPException(
+                    status_code=500, 
+                    detail="DOCX processing library not available. Please install python-docx."
+                )
+            
+            try:
+                # Create a BytesIO object from the content
+                docx_file = BytesIO(content)
+                
+                # Read the DOCX
+                doc = DocxDocument(docx_file)
+                
+                # Extract text from all paragraphs
+                text_content = ""
+                for paragraph in doc.paragraphs:
+                    if paragraph.text.strip():
+                        text_content += paragraph.text + "\n"
+                
+                # Also extract text from tables if any
+                for table in doc.tables:
+                    for row in table.rows:
+                        for cell in row.cells:
+                            if cell.text.strip():
+                                text_content += cell.text + " "
+                        text_content += "\n"
+                
+                if not text_content.strip():
+                    raise HTTPException(
+                        status_code=422, 
+                        detail="No text content could be extracted from the DOCX file."
+                    )
+                
+                return text_content.strip()
+                
+            except Exception as e:
+                logger.error(f"DOCX extraction failed for {filename}: {str(e)}")
+                if "No text content could be extracted" in str(e):
+                    raise
+                raise HTTPException(
+                    status_code=422, 
+                    detail=f"Failed to extract text from DOCX: {str(e)}"
+                )
+        
         else:
             raise HTTPException(status_code=400, detail=f"Unsupported file type: {file_ext}")
     
@@ -1041,7 +1148,7 @@ class KnowledgeService:
             for row in result:
                 # Create a mock document object
                 doc = type('Doc', (), {
-                    'page_content': row.content[:500] + "..." if len(row.content) > 500 else row.content,
+                    'page_content': row.content,
                     'metadata': {
                         'document_id': str(row.id),
                         'title': row.title,

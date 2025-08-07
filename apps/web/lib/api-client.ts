@@ -540,15 +540,27 @@ class ApiClient {
       xhr.timeout = config.timeout || this.defaultTimeout
       xhr.open("POST", `${this.baseURL}${endpoint}`)
       
-      // Add auth headers if needed
-      const headers = config.headers as Record<string, string> || {}
-      Object.entries(headers).forEach(([key, value]) => {
-        if (key.toLowerCase() !== "content-type") { // Let browser set content-type for FormData
-          xhr.setRequestHeader(key, value)
-        }
+      // Add auth headers automatically
+      this.getAuthHeaders().then(authHeaders => {
+        const allHeaders = { ...authHeaders, ...config.headers as Record<string, string> || {} }
+        Object.entries(allHeaders).forEach(([key, value]) => {
+          if (key.toLowerCase() !== "content-type") { // Let browser set content-type for FormData
+            xhr.setRequestHeader(key, value)
+          }
+        })
+        
+        xhr.send(formData)
+      }).catch(error => {
+        console.error('Failed to get auth headers for file upload:', error)
+        // Send without auth headers as fallback
+        const headers = config.headers as Record<string, string> || {}
+        Object.entries(headers).forEach(([key, value]) => {
+          if (key.toLowerCase() !== "content-type") {
+            xhr.setRequestHeader(key, value)
+          }
+        })
+        xhr.send(formData)
       })
-
-      xhr.send(formData)
     })
   }
 
@@ -678,7 +690,118 @@ export const complianceApi = {
     apiClient.uploadFile("/api/v1/compliance/upload", file, { onProgress }),
 }
 
+// Knowledge API interfaces
+export interface UploadTextDocumentRequest {
+  title: string
+  content: string
+  description?: string
+  tags?: string[]
+  collection_id?: string
+}
+
+export interface UploadFileRequest {
+  file: File
+  description?: string
+  tags?: string[]
+  collection_id?: string
+}
+
+export interface DocumentResponse {
+  id: string
+  title: string
+  content?: string
+  file_path?: string
+  description?: string
+  tags?: string[]
+  collection_id?: string
+  created_at: string
+  updated_at: string
+  file_size?: number
+  file_type?: string
+}
+
+export interface SearchRequest {
+  query: string
+  limit?: number
+  threshold?: number
+  collection_id?: string
+}
+
+export interface RAGQueryRequest {
+  question: string
+  collection_id?: string
+  limit?: number
+  threshold?: number
+}
+
+export interface CollectionRequest {
+  name: string
+  description?: string
+  metadata?: Record<string, any>
+}
+
+export interface CollectionResponse {
+  id: string
+  name: string
+  description?: string
+  metadata?: Record<string, any>
+  document_count: number
+  created_at: string
+  updated_at: string
+}
+
 export const knowledgeApi = {
+  // Document management
+  uploadTextDocument: (data: UploadTextDocumentRequest) =>
+    apiClient.post<DocumentResponse>("/api/v1/knowledge/upload", data),
+  
+  uploadFile: (file: File, options: { 
+    description?: string
+    tags?: string[]
+    collection_id?: string
+    onProgress?: (progress: number) => void
+  } = {}) => {
+    const { onProgress, ...additionalData } = options
+    return apiClient.uploadFile<DocumentResponse>(
+      "/api/v1/knowledge/upload/file", 
+      file, 
+      { onProgress, additionalData }
+    )
+  },
+  
+  listDocuments: (limit = 50, offset = 0) =>
+    apiClient.get<DocumentResponse[]>(`/api/v1/knowledge/list?limit=${limit}&offset=${offset}`),
+  
+  getDocument: (documentId: string) =>
+    apiClient.get<DocumentResponse>(`/api/v1/knowledge/${documentId}`),
+  
+  deleteDocument: (documentId: string) =>
+    apiClient.delete(`/api/v1/knowledge/${documentId}`),
+  
+  // Search and query
+  searchDocuments: (data: SearchRequest) =>
+    apiClient.post<DocumentResponse[]>("/api/v1/knowledge/search", data),
+  
+  ragQuery: (data: RAGQueryRequest) =>
+    apiClient.post<{ answer: string; sources: DocumentResponse[]; context: string[] }>("/api/v1/knowledge/query", data),
+  
+  findSimilarDocuments: (documentId: string, limit = 10) =>
+    apiClient.get<DocumentResponse[]>(`/api/v1/knowledge/similar/${documentId}?limit=${limit}`),
+  
+  // Collection management
+  createCollection: (data: CollectionRequest) =>
+    apiClient.post<CollectionResponse>("/api/v1/collections", data),
+  
+  listCollections: () =>
+    apiClient.get<CollectionResponse[]>("/api/v1/collections"),
+  
+  updateCollection: (collectionId: string, data: Partial<CollectionRequest>) =>
+    apiClient.put<CollectionResponse>(`/api/v1/collections/${collectionId}`, data),
+  
+  deleteCollection: (collectionId: string) =>
+    apiClient.delete(`/api/v1/collections/${collectionId}`),
+  
+  // Legacy methods for backward compatibility
   getItems: (search?: string) =>
     apiClient.get("/api/v1/compliance/", {
       headers: { ...search && { "X-Search": search } }

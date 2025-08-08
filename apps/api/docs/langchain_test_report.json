@@ -1,49 +1,49 @@
 {
   "test_metadata": {
-    "generated_at": "2025-08-07T21:51:02.529134Z",
+    "generated_at": "2025-08-08T09:40:21.051144Z",
     "base_url": "http://localhost:3001",
     "service_port": 3001,
     "total_tests": 6,
-    "successful_tests": 5,
-    "failed_tests": 1,
-    "success_rate_percent": 83.33
+    "successful_tests": 6,
+    "failed_tests": 0,
+    "success_rate_percent": 100.0
   },
   "endpoint_summary": {
     "/health": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 1.78
+      "avg_duration_ms": 2.51
     },
     "/health/database": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 5.33
+      "avg_duration_ms": 6.98
     },
     "/health/redis": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 7.95
+      "avg_duration_ms": 4.91
     },
     "/api/auth-test": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 7.59
+      "avg_duration_ms": 14.79
     },
     "/api/chat/message": {
       "total_calls": 1,
-      "successful_calls": 0,
-      "failed_calls": 1,
-      "avg_duration_ms": 685.69
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 868.09
     },
     "/metrics": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 8.2
+      "avg_duration_ms": 3.91
     }
   },
   "detailed_results": [
@@ -58,8 +58,8 @@
       "response_body": {
         "status": "healthy",
         "service": "langchain-chat",
-        "timestamp": "2025-08-07T21:50:58.810Z",
-        "uptime": 456.960450824,
+        "timestamp": "2025-08-08T09:40:17.145Z",
+        "uptime": 7238.780557863,
         "version": "1.0.0",
         "endpoints": [
           "POST /api/chat/message - Process chat message",
@@ -71,9 +71,9 @@
           "GET /metrics - Service metrics"
         ]
       },
-      "response_text": "{\"status\":\"healthy\",\"service\":\"langchain-chat\",\"timestamp\":\"2025-08-07T21:50:58.810Z\",\"uptime\":456.960450824,\"version\":\"1.0.0\",\"endpoints\":[\"POST /api/chat/message - Process chat message\",\"GET /api/chat/:chatId/history - Get chat history\",\"POST /api/provider/test - Test provider connection\",\"DELETE /api/chat/:chatId/clear - Clear conversation\",\"GET /api/chat/:chatId/summary - Get conversation summary\",\"GET /health - Health check\",\"GET /metrics - Service metrics\"]}",
-      "timestamp": "2025-08-07T21:50:58.810711Z",
-      "duration_ms": 1.78,
+      "response_text": "{\"status\":\"healthy\",\"service\":\"langchain-chat\",\"timestamp\":\"2025-08-08T09:40:17.145Z\",\"uptime\":7238.780557863,\"version\":\"1.0.0\",\"endpoints\":[\"POST /api/chat/message - Process chat message\",\"GET /api/chat/:chatId/history - Get chat history\",\"POST /api/provider/test - Test provider connection\",\"DELETE /api/chat/:chatId/clear - Clear conversation\",\"GET /api/chat/:chatId/summary - Get conversation summary\",\"GET /health - Health check\",\"GET /metrics - Service metrics\"]}",
+      "timestamp": "2025-08-08T09:40:17.146301Z",
+      "duration_ms": 2.51,
       "success": true,
       "error_message": null,
       "test_type": "HEALTH"
@@ -94,8 +94,8 @@
         "waitingCount": 0
       },
       "response_text": "{\"status\":\"healthy\",\"connected\":true,\"poolSize\":1,\"idleCount\":1,\"waitingCount\":0}",
-      "timestamp": "2025-08-07T21:50:59.316646Z",
-      "duration_ms": 5.33,
+      "timestamp": "2025-08-08T09:40:17.653947Z",
+      "duration_ms": 6.98,
       "success": true,
       "error_message": null,
       "test_type": "HEALTH"
@@ -111,15 +111,15 @@
       "response_body": {
         "status": "healthy",
         "connected": true,
-        "latency": "0ms",
+        "latency": "2ms",
         "info": {
-          "server": "# Server\r\nredis_version:7.4.5\r\nredis_git_sha1:00000000\r\nredis_git_dirty:0\r\nredis_build_id:14ef7c78d3983ab\r\nredis_mode:standalone\r\nos:Linux 5.15.167.4-microsoft-standard-WSL2 x86_64\r\narch_bits:64\r\nmonotonic_clock:POSIX clock_gettime\r\nmultiplexing_api:epoll\r\natomicvar_api:c11-builtin\r\ngcc_version:14.2.0\r\nprocess_id:1\r\nprocess_supervised:no\r\nrun_id:70df6fb3d41d446fdf16f5628b8fa8b40ab8146d\r\ntcp_port:6379\r\nserver_time_usec:1754603459819020\r\nuptime_in_seconds:498\r\nuptime_in_days:0\r\nhz:10\r\nconfigured_hz:10\r\nlru_clock:9772995\r\nexecutable:/data/redis-server\r\nconfig_file:/etc/redis/redis.conf\r\nio_threads_active:0\r\nlistener0:name=tcp,bind=0.0.0.0,port=6379\r\n",
-          "memory": "# Memory\r\nused_memory:1096296\r\nused_memory_human:1.05M\r\nused_memory_rss:13303808\r\nused_memory_rss_human:12.69M\r\nused_memory_peak:1109792\r\nused_memory_peak_human:1.06M\r\nused_memory_peak_perc:98.78%\r\nused_memory_overhead:951200\r\nused_memory_startup:946232\r\nused_memory_dataset:145096\r\nused_memory_dataset_perc:96.69%\r\nallocator_allocated:1662216\r\nallocator_active:2043904\r\nallocator_resident:8355840\r\nallocator_muzzy:0\r\ntotal_system_memory:16655069184\r\ntotal_system_memory_human:15.51G\r\nused_memory_lua:31744\r\nused_memory_vm_eval:31744\r\nused_memory_lua_human:31.00K\r\nused_memory_scripts_eval:0\r\nnumber_of_cached_scripts:0\r\nnumber_of_functions:0\r\nnumber_of_libraries:0\r\nused_memory_vm_functions:32768\r\nused_memory_vm_total:64512\r\nused_memory_vm_total_human:63.00K\r\nused_memory_functions:192\r\nused_memory_scripts:192\r\nused_memory_scripts_human:192B\r\nmaxmemory:268435456\r\nmaxmemory_human:256.00M\r\nmaxmemory_policy:allkeys-lru\r\nallocator_frag_ratio:1.26\r\nallocator_frag_bytes:305656\r\nallocator_rss_ratio:4.09\r\nallocator_rss_bytes:6311936\r\nrss_overhead_ratio:1.59\r\nrss_overhead_bytes:4947968\r\nmem_fragmentation_ratio:12.66\r\nmem_fragmentation_bytes:12252872\r\nmem_not_counted_for_evict:192\r\nmem_replication_backlog:0\r\nmem_total_replication_buffers:0\r\nmem_clients_slaves:0\r\nmem_clients_normal:3856\r\nmem_cluster_links:0\r\nmem_aof_buffer:192\r\nmem_allocator:jemalloc-5.3.0\r\nmem_overhead_db_hashtable_rehashing:0\r\nactive_defrag_running:0\r\nlazyfree_pending_objects:0\r\nlazyfreed_objects:0\r\n"
+          "server": "# Server\r\nredis_version:7.4.5\r\nredis_git_sha1:00000000\r\nredis_git_dirty:0\r\nredis_build_id:14ef7c78d3983ab\r\nredis_mode:standalone\r\nos:Linux 5.15.167.4-microsoft-standard-WSL2 x86_64\r\narch_bits:64\r\nmonotonic_clock:POSIX clock_gettime\r\nmultiplexing_api:epoll\r\natomicvar_api:c11-builtin\r\ngcc_version:14.2.0\r\nprocess_id:1\r\nprocess_supervised:no\r\nrun_id:45ddc066f31462f7f2a35e97f6daed757ca210fc\r\ntcp_port:6379\r\nserver_time_usec:1754646018157379\r\nuptime_in_seconds:20022\r\nuptime_in_days:0\r\nhz:10\r\nconfigured_hz:10\r\nlru_clock:9815554\r\nexecutable:/data/redis-server\r\nconfig_file:/etc/redis/redis.conf\r\nio_threads_active:0\r\nlistener0:name=tcp,bind=0.0.0.0,port=6379\r\n",
+          "memory": "# Memory\r\nused_memory:1445792\r\nused_memory_human:1.38M\r\nused_memory_rss:13910016\r\nused_memory_rss_human:13.27M\r\nused_memory_peak:1513832\r\nused_memory_peak_human:1.44M\r\nused_memory_peak_perc:95.51%\r\nused_memory_overhead:952672\r\nused_memory_startup:946232\r\nused_memory_dataset:493120\r\nused_memory_dataset_perc:98.71%\r\nallocator_allocated:2049408\r\nallocator_active:2494464\r\nallocator_resident:8798208\r\nallocator_muzzy:0\r\ntotal_system_memory:16655069184\r\ntotal_system_memory_human:15.51G\r\nused_memory_lua:31744\r\nused_memory_vm_eval:31744\r\nused_memory_lua_human:31.00K\r\nused_memory_scripts_eval:0\r\nnumber_of_cached_scripts:0\r\nnumber_of_functions:0\r\nnumber_of_libraries:0\r\nused_memory_vm_functions:32768\r\nused_memory_vm_total:64512\r\nused_memory_vm_total_human:63.00K\r\nused_memory_functions:192\r\nused_memory_scripts:192\r\nused_memory_scripts_human:192B\r\nmaxmemory:268435456\r\nmaxmemory_human:256.00M\r\nmaxmemory_policy:allkeys-lru\r\nallocator_frag_ratio:1.23\r\nallocator_frag_bytes:369024\r\nallocator_rss_ratio:3.53\r\nallocator_rss_bytes:6303744\r\nrss_overhead_ratio:1.58\r\nrss_overhead_bytes:5111808\r\nmem_fragmentation_ratio:9.76\r\nmem_fragmentation_bytes:12484896\r\nmem_not_counted_for_evict:1024\r\nmem_replication_backlog:0\r\nmem_total_replication_buffers:0\r\nmem_clients_slaves:0\r\nmem_clients_normal:3856\r\nmem_cluster_links:0\r\nmem_aof_buffer:1024\r\nmem_allocator:jemalloc-5.3.0\r\nmem_overhead_db_hashtable_rehashing:0\r\nactive_defrag_running:0\r\nlazyfree_pending_objects:0\r\nlazyfreed_objects:0\r\n"
         }
       },
-      "response_text": "{\"status\":\"healthy\",\"connected\":true,\"latency\":\"0ms\",\"info\":{\"server\":\"# Server\\r\\nredis_version:7.4.5\\r\\nredis_git_sha1:00000000\\r\\nredis_git_dirty:0\\r\\nredis_build_id:14ef7c78d3983ab\\r\\nredis_mode:standalone\\r\\nos:Linux 5.15.167.4-microsoft-standard-WSL2 x86_64\\r\\narch_bits:64\\r\\nmonotonic_clock:POSIX clock_gettime\\r\\nmultiplexing_api:epoll\\r\\natomicvar_api:c11-builtin\\r\\ngcc_version:14.2.0\\r\\nprocess_id:1\\r\\nprocess_supervised:no\\r\\nrun_id:70df6fb3d41d446fdf16f5628b8fa8b40ab8146d\\r\\ntcp_port:",
-      "timestamp": "2025-08-07T21:50:59.825193Z",
-      "duration_ms": 7.95,
+      "response_text": "{\"status\":\"healthy\",\"connected\":true,\"latency\":\"2ms\",\"info\":{\"server\":\"# Server\\r\\nredis_version:7.4.5\\r\\nredis_git_sha1:00000000\\r\\nredis_git_dirty:0\\r\\nredis_build_id:14ef7c78d3983ab\\r\\nredis_mode:standalone\\r\\nos:Linux 5.15.167.4-microsoft-standard-WSL2 x86_64\\r\\narch_bits:64\\r\\nmonotonic_clock:POSIX clock_gettime\\r\\nmultiplexing_api:epoll\\r\\natomicvar_api:c11-builtin\\r\\ngcc_version:14.2.0\\r\\nprocess_id:1\\r\\nprocess_supervised:no\\r\\nrun_id:45ddc066f31462f7f2a35e97f6daed757ca210fc\\r\\ntcp_port:",
+      "timestamp": "2025-08-08T09:40:18.159626Z",
+      "duration_ms": 4.91,
       "success": true,
       "error_message": null,
       "test_type": "HEALTH"
@@ -137,9 +137,9 @@
         "success": true,
         "message": "Authentication successful",
         "user": {
-          "user_id": "122e4df1-90a3-4015-aadd-513e8052eb23",
+          "user_id": "f2da9a18-7281-49de-956d-63473c24b4df",
           "email": "test@arketic.com",
-          "username": "test_user",
+          "username": "testuser",
           "roles": [
             "user"
           ],
@@ -150,11 +150,11 @@
             "preferences:update"
           ]
         },
-        "timestamp": "2025-08-07T21:51:00.332Z"
+        "timestamp": "2025-08-08T09:40:18.673Z"
       },
-      "response_text": "{\"success\":true,\"message\":\"Authentication successful\",\"user\":{\"user_id\":\"122e4df1-90a3-4015-aadd-513e8052eb23\",\"email\":\"test@arketic.com\",\"username\":\"test_user\",\"roles\":[\"user\"],\"permissions\":[\"read\",\"write\",\"profile:update\",\"preferences:update\"]},\"timestamp\":\"2025-08-07T21:51:00.332Z\"}",
-      "timestamp": "2025-08-07T21:51:00.333118Z",
-      "duration_ms": 7.59,
+      "response_text": "{\"success\":true,\"message\":\"Authentication successful\",\"user\":{\"user_id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"email\":\"test@arketic.com\",\"username\":\"testuser\",\"roles\":[\"user\"],\"permissions\":[\"read\",\"write\",\"profile:update\",\"preferences:update\"]},\"timestamp\":\"2025-08-08T09:40:18.673Z\"}",
+      "timestamp": "2025-08-08T09:40:18.674618Z",
+      "duration_ms": 14.79,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -163,7 +163,7 @@
       "endpoint": "/api/chat/message",
       "method": "POST",
       "payload": {
-        "chatId": "eba51e67-b562-408c-98ac-88b3b9e6a012",
+        "chatId": "e6fdeeae-8ba2-4773-aca2-0532d5c84353",
         "message": "Test message",
         "settings": {
           "provider": "openai",
@@ -177,17 +177,68 @@
         "x-api-key": "sk-proj-1GcPyxWGnE_i...",
         "Content-Type": "application/json"
       },
-      "response_status": 500,
+      "response_status": 200,
       "response_body": {
-        "error": "insert or update on table \"chat_messages\" violates foreign key constraint \"chat_messages_chat_id_fkey\"",
-        "code": "CHAT_PROCESSING_ERROR",
-        "timestamp": "2025-08-07T21:51:01.518Z"
+        "success": true,
+        "chatId": "e6fdeeae-8ba2-4773-aca2-0532d5c84353",
+        "userMessage": {
+          "id": "f15ab824-c9ca-4f51-9b81-6e5eb291d96b",
+          "chat_id": "e6fdeeae-8ba2-4773-aca2-0532d5c84353",
+          "sender_id": "f2da9a18-7281-49de-956d-63473c24b4df",
+          "reply_to_id": null,
+          "message_type": "user",
+          "content": "Test message",
+          "file_url": null,
+          "file_name": null,
+          "file_size": null,
+          "file_type": null,
+          "ai_model_used": null,
+          "tokens_used": 0,
+          "processing_time_ms": 0,
+          "ai_confidence_score": null,
+          "status": "sent",
+          "is_edited": false,
+          "is_deleted": false,
+          "message_metadata": null,
+          "created_at": "2025-08-08T09:40:19.651Z",
+          "updated_at": "2025-08-08T09:40:19.651Z",
+          "edited_at": null,
+          "deleted_at": null
+        },
+        "aiMessage": {
+          "id": "5baa696b-8811-45b2-a9c5-6881bced3ff6",
+          "chat_id": "e6fdeeae-8ba2-4773-aca2-0532d5c84353",
+          "sender_id": null,
+          "reply_to_id": null,
+          "message_type": "ai",
+          "content": "Hello! How can I assist you today?",
+          "file_url": null,
+          "file_name": null,
+          "file_size": null,
+          "file_type": null,
+          "ai_model_used": "gpt-3.5-turbo",
+          "tokens_used": 12,
+          "processing_time_ms": 388,
+          "ai_confidence_score": null,
+          "status": "sent",
+          "is_edited": false,
+          "is_deleted": false,
+          "message_metadata": null,
+          "created_at": "2025-08-08T09:40:20.038Z",
+          "updated_at": "2025-08-08T09:40:20.038Z",
+          "edited_at": null,
+          "deleted_at": null
+        },
+        "processingTime": 391,
+        "tokensUsed": 12,
+        "provider": "openai",
+        "model": "gpt-3.5-turbo"
       },
-      "response_text": "{\"error\":\"insert or update on table \\\"chat_messages\\\" violates foreign key constraint \\\"chat_messages_chat_id_fkey\\\"\",\"code\":\"CHAT_PROCESSING_ERROR\",\"timestamp\":\"2025-08-07T21:51:01.518Z\"}",
-      "timestamp": "2025-08-07T21:51:01.519466Z",
-      "duration_ms": 685.69,
-      "success": false,
-      "error_message": "Unexpected status code. Expected: [200, 400, 401, 404], Got: 500",
+      "response_text": "{\"success\":true,\"chatId\":\"e6fdeeae-8ba2-4773-aca2-0532d5c84353\",\"userMessage\":{\"id\":\"f15ab824-c9ca-4f51-9b81-6e5eb291d96b\",\"chat_id\":\"e6fdeeae-8ba2-4773-aca2-0532d5c84353\",\"sender_id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"reply_to_id\":null,\"message_type\":\"user\",\"content\":\"Test message\",\"file_url\":null,\"file_name\":null,\"file_size\":null,\"file_type\":null,\"ai_model_used\":null,\"tokens_used\":0,\"processing_time_ms\":0,\"ai_confidence_score\":null,\"status\":\"sent\",\"is_edited\":false,\"is_deleted\":false,\"mes",
+      "timestamp": "2025-08-08T09:40:20.043310Z",
+      "duration_ms": 868.09,
+      "success": true,
+      "error_message": null,
       "test_type": "REST_API"
     },
     {
@@ -200,28 +251,28 @@
       },
       "response_status": 200,
       "response_body": {
-        "activeChains": 1,
-        "totalRequests": 0,
-        "averageResponseTime": 0,
+        "activeChains": 2,
+        "totalRequests": 5,
+        "averageResponseTime": 579,
         "memoryUsage": {
-          "rss": 108036096,
-          "heapTotal": 39964672,
-          "heapUsed": 37413392,
-          "external": 9303309,
-          "arrayBuffers": 111546
+          "rss": 220213248,
+          "heapTotal": 140922880,
+          "heapUsed": 137383952,
+          "external": 9467620,
+          "arrayBuffers": 261831
         },
-        "uptime": 460.174823426,
-        "timestamp": "2025-08-07T21:51:02.024Z",
+        "uptime": 7242.181863146,
+        "timestamp": "2025-08-08T09:40:20.546Z",
         "chatServiceHealth": {
-          "activeChains": 1,
+          "activeChains": 2,
           "cacheHitRate": 0.85,
-          "averageProcessingTime": 0,
+          "averageProcessingTime": 579,
           "status": "healthy"
         }
       },
-      "response_text": "{\"activeChains\":1,\"totalRequests\":0,\"averageResponseTime\":0,\"memoryUsage\":{\"rss\":108036096,\"heapTotal\":39964672,\"heapUsed\":37413392,\"external\":9303309,\"arrayBuffers\":111546},\"uptime\":460.174823426,\"timestamp\":\"2025-08-07T21:51:02.024Z\",\"chatServiceHealth\":{\"activeChains\":1,\"cacheHitRate\":0.85,\"averageProcessingTime\":0,\"status\":\"healthy\"}}",
-      "timestamp": "2025-08-07T21:51:02.028272Z",
-      "duration_ms": 8.2,
+      "response_text": "{\"activeChains\":2,\"totalRequests\":5,\"averageResponseTime\":579,\"memoryUsage\":{\"rss\":220213248,\"heapTotal\":140922880,\"heapUsed\":137383952,\"external\":9467620,\"arrayBuffers\":261831},\"uptime\":7242.181863146,\"timestamp\":\"2025-08-08T09:40:20.546Z\",\"chatServiceHealth\":{\"activeChains\":2,\"cacheHitRate\":0.85,\"averageProcessingTime\":579,\"status\":\"healthy\"}}",
+      "timestamp": "2025-08-08T09:40:20.547887Z",
+      "duration_ms": 3.91,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"

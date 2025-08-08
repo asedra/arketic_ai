@@ -1062,7 +1062,7 @@ export interface PersonCreateRequest {
   department?: string
   site?: string
   location?: string
-  role: "ADMIN" | "USER" | "MANAGER" | "VIEWER"
+  role: "admin" | "user" | "manager" | "viewer"
   manager_id?: string
   hire_date?: string
   notes?: string
@@ -1077,7 +1077,7 @@ export interface PersonUpdateRequest {
   department?: string
   site?: string
   location?: string
-  role?: "ADMIN" | "USER" | "MANAGER" | "VIEWER"
+  role?: "admin" | "user" | "manager" | "viewer"
   status?: "active" | "inactive" | "pending"
   manager_id?: string
   hire_date?: string
@@ -1094,7 +1094,7 @@ export interface PersonResponse {
   department?: string
   site?: string
   location?: string
-  role: "ADMIN" | "USER" | "MANAGER" | "VIEWER"
+  role: "admin" | "user" | "manager" | "viewer"
   status: "active" | "inactive" | "pending"
   full_name: string
   is_active: boolean
@@ -1249,6 +1249,7 @@ export interface CreateChatRequest {
   title: string
   description?: string
   chat_type?: 'DIRECT' | 'GROUP' | 'CHANNEL'
+  assistant_id?: string | null
   ai_model?: string
   ai_persona?: string
   system_prompt?: string
@@ -1340,6 +1341,8 @@ export interface ChatResponse {
   title: string
   description?: string
   chat_type: string
+  assistant_id?: string | null
+  assistant_name?: string | null
   ai_model?: string
   ai_persona?: string
   message_count: number

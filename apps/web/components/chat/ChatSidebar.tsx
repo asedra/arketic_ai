@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useChatStore } from '@/lib/stores/chat-store'
+import { useAssistantStore } from '@/lib/stores/assistant-store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -10,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Plus, MessageCircle, Search, Bot, Users, Hash } from 'lucide-react'
+import { Plus, MessageCircle, Search, Bot, Users, Hash, Sparkles, Brain, ChevronRight } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 
 interface ChatSidebarProps {
@@ -27,24 +28,22 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ className }) => {
     createChat 
   } = useChatStore()
   
+  const { 
+    assistants, 
+    selectedAssistant,
+    loadAssistants,
+    selectAssistant,
+    clearSelection,
+    isLoading: assistantsLoading
+  } = useAssistantStore()
+  
   const [searchQuery, setSearchQuery] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [newChatForm, setNewChatForm] = useState({
-    title: '',
-    description: '',
-    chat_type: 'DIRECT' as const,
-    ai_model: 'gpt-3.5-turbo',
-    ai_persona: '',
-    system_prompt: '',
-    temperature: 0.7,
-    max_tokens: 2048,
-    is_private: false,
-    tags: [] as string[]
-  })
 
   React.useEffect(() => {
     loadChats()
-  }, [loadChats])
+    loadAssistants()
+  }, [loadChats, loadAssistants])
 
   const filteredChats = chats.filter(chat =>
     chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -52,69 +51,21 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ className }) => {
   )
 
   const handleCreateChat = async () => {
-    if (!newChatForm.title.trim()) return
+    if (!selectedAssistant) return
     
-    // Clean up the form data before sending - only include non-empty optional fields
     const chatData: any = {
-      title: newChatForm.title.trim()
+      title: `Chat with ${selectedAssistant.name}`,
+      assistant_id: selectedAssistant.id
     }
     
-    // Only add optional fields if they have meaningful values
-    if (newChatForm.description.trim()) {
-      chatData.description = newChatForm.description.trim()
-    }
-    
-    if (newChatForm.chat_type !== 'DIRECT') {
-      chatData.chat_type = newChatForm.chat_type
-    }
-    
-    if (newChatForm.ai_model && newChatForm.ai_model !== 'gpt-3.5-turbo') {
-      chatData.ai_model = newChatForm.ai_model
-    }
-    
-    if (newChatForm.ai_persona.trim()) {
-      chatData.ai_persona = newChatForm.ai_persona.trim()
-    }
-    
-    if (newChatForm.system_prompt.trim()) {
-      chatData.system_prompt = newChatForm.system_prompt.trim()
-    }
-    
-    if (newChatForm.temperature !== 0.7) {
-      chatData.temperature = newChatForm.temperature
-    }
-    
-    if (newChatForm.max_tokens !== 2048) {
-      chatData.max_tokens = newChatForm.max_tokens
-    }
-    
-    if (newChatForm.is_private) {
-      chatData.is_private = newChatForm.is_private
-    }
-    
-    if (newChatForm.tags.length > 0) {
-      chatData.tags = newChatForm.tags
-    }
-    
-    console.log('Creating chat with data:', chatData)
+    console.log('Creating chat with assistant:', chatData)
     
     try {
       const chatId = await createChat(chatData)
       if (chatId) {
         setCurrentChat(chatId)
         setIsCreateDialogOpen(false)
-        setNewChatForm({
-          title: '',
-          description: '',
-          chat_type: 'DIRECT' as const,
-          ai_model: 'gpt-3.5-turbo',
-          ai_persona: '',
-          system_prompt: '',
-          temperature: 0.7,
-          max_tokens: 2048,
-          is_private: false,
-          tags: [] as string[]
-        })
+        clearSelection()
       }
     } catch (error) {
       console.error('Failed to create chat:', error)
@@ -148,110 +99,91 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ className }) => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
               <DialogHeader>
-                <DialogTitle className="text-slate-900 dark:text-slate-100">Create New Chat</DialogTitle>
+                <DialogTitle className="text-slate-900 dark:text-slate-100">
+                  Select an Assistant
+                </DialogTitle>
                 <DialogDescription className="text-slate-600 dark:text-slate-400">
-                  Set up a new chat session with customizable AI settings and preferences.
+                  Choose an AI assistant to start your conversation with specialized knowledge and capabilities.
                 </DialogDescription>
               </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="title">Title</Label>
-                  <Input
-                    id="title"
-                    placeholder="Enter chat title..."
-                    value={newChatForm.title}
-                    onChange={(e) => setNewChatForm(prev => ({ ...prev, title: e.target.value }))}
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="description">Description (optional)</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Brief description of the chat purpose..."
-                    value={newChatForm.description}
-                    onChange={(e) => setNewChatForm(prev => ({ ...prev, description: e.target.value }))}
-                    rows={2}
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="chat_type">Chat Type</Label>
-                  <Select 
-                    value={newChatForm.chat_type} 
-                    onValueChange={(value: 'DIRECT' | 'GROUP' | 'CHANNEL') => setNewChatForm(prev => ({ ...prev, chat_type: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="DIRECT">
-                        <div className="flex items-center gap-2">
-                          <Bot className="h-4 w-4" />
-                          <span>Direct AI Chat</span>
+              
+              
+                <div className="space-y-4">
+                  {assistantsLoading ? (
+                    <div className="text-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">Loading assistants...</p>
+                    </div>
+                  ) : assistants.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Brain className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                      <p className="text-sm text-slate-500 dark:text-slate-400">No assistants available</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 max-h-96 overflow-y-auto">
+                      {assistants.map((assistant) => (
+                        <div
+                          key={assistant.id}
+                          className={cn(
+                            "p-3 border rounded-lg cursor-pointer transition-all",
+                            selectedAssistant?.id === assistant.id
+                              ? "border-blue-500 bg-blue-50 dark:bg-blue-950/50"
+                              : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+                          )}
+                          onClick={() => selectAssistant(assistant.id)}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shrink-0">
+                              <Bot className="h-4 w-4 text-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-sm text-slate-900 dark:text-slate-100">
+                                {assistant.name}
+                              </h4>
+                              {assistant.description && (
+                                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 line-clamp-2">
+                                  {assistant.description}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="secondary" className="text-xs">
+                                  {assistant.ai_model_display || assistant.ai_model}
+                                </Badge>
+                                {assistant.knowledge_count > 0 && (
+                                  <Badge variant="outline" className="text-xs">
+                                    {assistant.knowledge_count} knowledge bases
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </SelectItem>
-                      <SelectItem value="GROUP">
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          <span>Group Chat</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="CHANNEL">
-                        <div className="flex items-center gap-2">
-                          <Hash className="h-4 w-4" />
-                          <span>Channel</span>
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {selectedAssistant && (
+                    <div className="flex gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setIsCreateDialogOpen(false)
+                          clearSelection()
+                        }}
+                        className="flex-1"
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        onClick={handleCreateChat}
+                        disabled={isLoading}
+                        className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                      >
+                        Start Chat with {selectedAssistant.name}
+                      </Button>
+                    </div>
+                  )}
                 </div>
-                
-                <div>
-                  <Label htmlFor="ai_model">AI Model</Label>
-                  <Select 
-                    value={newChatForm.ai_model} 
-                    onValueChange={(value) => setNewChatForm(prev => ({ ...prev, ai_model: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-                      <SelectItem value="gpt-4">GPT-4</SelectItem>
-                      <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
-                      <SelectItem value="gpt-4o">GPT-4O</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="ai_persona">AI Persona (optional)</Label>
-                  <Input
-                    id="ai_persona"
-                    placeholder="e.g., Marketing Expert, Code Reviewer, etc."
-                    value={newChatForm.ai_persona}
-                    onChange={(e) => setNewChatForm(prev => ({ ...prev, ai_persona: e.target.value }))}
-                  />
-                </div>
-                
-                <div className="flex gap-4">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setIsCreateDialogOpen(false)}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                  <Button 
-                    onClick={handleCreateChat}
-                    disabled={!newChatForm.title.trim() || isLoading}
-                    className="flex-1"
-                  >
-                    Create Chat
-                  </Button>
-                </div>
-              </div>
             </DialogContent>
           </Dialog>
         </div>

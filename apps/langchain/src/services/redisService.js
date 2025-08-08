@@ -90,6 +90,39 @@ class RedisService {
     }
   }
 
+  async get(key) {
+    if (!this.isConnected) {
+      throw new Error('Redis not connected');
+    }
+    
+    try {
+      const value = await this.client.get(key);
+      return value ? JSON.parse(value) : null;
+    } catch (error) {
+      logger.error('Error getting value from Redis:', error);
+      throw error;
+    }
+  }
+
+  async set(key, value, ttl = null) {
+    if (!this.isConnected) {
+      throw new Error('Redis not connected');
+    }
+    
+    try {
+      const stringValue = JSON.stringify(value);
+      if (ttl) {
+        await this.client.setEx(key, ttl, stringValue);
+      } else {
+        await this.client.set(key, stringValue);
+      }
+      return true;
+    } catch (error) {
+      logger.error('Error setting value in Redis:', error);
+      throw error;
+    }
+  }
+
   async getCachedConversation(chatId) {
     if (!this.isConnected) {
       throw new Error('Redis not connected');

@@ -12,6 +12,8 @@ export interface ChatMessage extends MessageResponse {
 export interface Chat extends ChatResponse {
   lastActivity: Date
   createdAt: Date
+  assistant_id?: string | null
+  assistant_name?: string | null
 }
 
 interface TypingUser {

@@ -6,6 +6,7 @@ import { HumanMessage, AIMessage } from '@langchain/core/messages';
 import winston from 'winston';
 import DatabaseService from './databaseService.js';
 import RedisService from './redisService.js';
+import simpleRAGService from './knowledge/simpleRAGService.js';
 
 const logger = winston.createLogger({
   level: 'info',
@@ -108,8 +109,31 @@ class ChatService {
   async processMessage({ chatId, message, userId, apiKey, settings = {} }) {
     const startTime = Date.now();
     
+    logger.info('ProcessMessage called with settings:', JSON.stringify(settings));
+    
     try {
-      const { chain, memory } = await this.getOrCreateChain(chatId, apiKey, settings);
+      // Check if we need to use RAG (Retrieval Augmented Generation)
+      const useRAG = settings.knowledgeBaseIds?.length > 0 || settings.documentIds?.length > 0;
+      let enhancedSettings = { ...settings };
+      let ragMetadata = null;
+      
+      logger.info(`RAG check - useRAG: ${useRAG}, knowledgeBaseIds: ${JSON.stringify(settings.knowledgeBaseIds)}, documentIds: ${JSON.stringify(settings.documentIds)}`);
+      
+      if (useRAG) {
+        logger.info('Processing with RAG - Knowledge bases:', settings.knowledgeBaseIds, 'Documents:', settings.documentIds);
+        
+        // Process with RAG to enhance the system prompt with context
+        const ragResult = await simpleRAGService.processWithRAG(message, apiKey, settings);
+        
+        // Update settings with enhanced prompt
+        enhancedSettings.systemPrompt = ragResult.systemPrompt;
+        ragMetadata = ragResult.metadata;
+        
+        logger.info('RAG processing complete:', ragMetadata);
+      }
+      
+      // Now continue with normal chat flow using enhanced settings
+      const { chain, memory } = await this.getOrCreateChain(chatId, apiKey, enhancedSettings);
       
       const userMessage = await this.dbService.saveMessage({
         chatId,
@@ -145,9 +169,10 @@ class ChatService {
         sender_id: null,
         content: response.text,
         messageType: 'ai',
-        aiModelUsed: settings.model || 'gpt-3.5-turbo',
+        aiModelUsed: enhancedSettings.model || 'gpt-3.5-turbo',
         tokensUsed: tokens,
-        processingTimeMs: Date.now() - startTime
+        processingTimeMs: Date.now() - startTime,
+        metadata: ragMetadata
       });
 
       await this.redisService.setCachedConversation(chatId, {
@@ -161,7 +186,8 @@ class ChatService {
         userMessage,
         aiMessage,
         processingTime: Date.now() - startTime,
-        tokensUsed: tokens
+        tokensUsed: tokens,
+        ragMetadata: ragMetadata
       };
     } catch (error) {
       logger.error('Error processing message:', error);

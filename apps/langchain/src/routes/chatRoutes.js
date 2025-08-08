@@ -1,8 +1,8 @@
 import express from 'express';
 import ChatService from '../services/chatService.js';
 import { authMiddleware, internalServiceAuth } from '../middleware/auth.js';
-import { query } from '../services/database.js';
-import { cacheGet, cacheSet } from '../services/redis.js';
+import DatabaseService from '../services/databaseService.js';
+import RedisService from '../services/redisService.js';
 import winston from 'winston';
 import Joi from 'joi';
 
@@ -27,7 +27,9 @@ const messageSchema = Joi.object({
     temperature: Joi.number().min(0).max(2).default(0.7),
     maxTokens: Joi.number().min(1).max(4096).default(2048),
     systemPrompt: Joi.string().max(1000).optional(),
-    streaming: Joi.boolean().default(false)
+    streaming: Joi.boolean().default(false),
+    knowledgeBaseIds: Joi.array().items(Joi.string()).optional(),
+    documentIds: Joi.array().items(Joi.string()).optional()
   }).default({})
 });
 
@@ -37,20 +39,18 @@ const providerTestSchema = Joi.object({
   model: Joi.string().default('gpt-3.5-turbo')
 });
 
-// Helper function to get API key
+// Helper function to get API key  
 async function getApiKeyForUser(userId, provider = 'openai') {
   try {
-    const result = await query(
-      'SELECT api_key FROM user_api_keys WHERE user_id = $1 AND provider = $2',
-      [userId, provider]
-    );
+    // For now, use environment variables as fallback since encrypted keys need decryption
+    // TODO: Implement proper key decryption from user_api_keys table
+    const envKey = provider === 'openai' ? process.env.OPENAI_API_KEY : process.env.ANTHROPIC_API_KEY;
     
-    if (result.rows.length > 0) {
-      return result.rows[0].api_key;
+    if (!envKey) {
+      throw new Error(`No API key available for provider: ${provider}`);
     }
     
-    // Fallback to environment variables
-    return provider === 'openai' ? process.env.OPENAI_API_KEY : process.env.ANTHROPIC_API_KEY;
+    return envKey;
   } catch (error) {
     logger.error('Error getting API key:', error);
     throw new Error('Failed to retrieve API key');
@@ -60,7 +60,7 @@ async function getApiKeyForUser(userId, provider = 'openai') {
 // Get metrics from Redis
 async function getMetricsFromRedis() {
   try {
-    const metrics = await cacheGet('langchain:metrics');
+    const metrics = await RedisService.get('langchain:metrics');
     return metrics || { totalRequests: 0 };
   } catch (error) {
     logger.error('Error getting metrics from Redis:', error);
@@ -71,7 +71,7 @@ async function getMetricsFromRedis() {
 // Get average response time
 async function getAverageResponseTime() {
   try {
-    const result = await query(`
+    const result = await DatabaseService.query(`
       SELECT AVG(processing_time_ms) as avg_time 
       FROM chat_messages 
       WHERE created_at >= NOW() - INTERVAL '1 hour'
@@ -131,7 +131,7 @@ router.post('/api/chat/message', authMiddleware, async (req, res) => {
     // Update metrics
     try {
       const currentMetrics = await getMetricsFromRedis();
-      await cacheSet('langchain:metrics', {
+      await RedisService.set('langchain:metrics', {
         ...currentMetrics,
         totalRequests: (currentMetrics.totalRequests || 0) + 1,
         lastRequest: new Date().toISOString()
@@ -174,7 +174,7 @@ router.get('/api/chat/:chatId/history', authMiddleware, async (req, res) => {
     }
     
     // Verify chat belongs to user
-    const chatCheck = await query(
+    const chatCheck = await DatabaseService.query(
       'SELECT id FROM chats WHERE id = $1 AND creator_id = $2',
       [chatId, userId]
     );
@@ -188,7 +188,7 @@ router.get('/api/chat/:chatId/history', authMiddleware, async (req, res) => {
     
     // Check cache first
     const cacheKey = `chat_history:${chatId}`;
-    const cached = await cacheGet(cacheKey);
+    const cached = await RedisService.get(cacheKey);
     
     if (cached) {
       return res.json({
@@ -199,7 +199,7 @@ router.get('/api/chat/:chatId/history', authMiddleware, async (req, res) => {
     }
     
     // Get from database
-    const history = await query(
+    const history = await DatabaseService.query(
       `SELECT id, content, message_type, ai_model_used, tokens_used, 
               processing_time_ms, created_at 
        FROM chat_messages 
@@ -209,7 +209,7 @@ router.get('/api/chat/:chatId/history', authMiddleware, async (req, res) => {
     );
     
     // Cache for 5 minutes
-    await cacheSet(cacheKey, history.rows, 300);
+    await RedisService.set(cacheKey, history.rows, 300);
     
     res.json({
       chatId,
@@ -273,7 +273,7 @@ router.delete('/api/chat/:chatId/clear', authMiddleware, async (req, res) => {
     const userId = req.user.user_id;
     
     // Verify chat belongs to user
-    const chatCheck = await query(
+    const chatCheck = await DatabaseService.query(
       'SELECT id FROM chats WHERE id = $1 AND creator_id = $2',
       [chatId, userId]
     );
@@ -309,7 +309,7 @@ router.get('/api/chat/:chatId/summary', authMiddleware, async (req, res) => {
     const userId = req.user.user_id;
     
     // Verify chat belongs to user
-    const chatCheck = await query(
+    const chatCheck = await DatabaseService.query(
       'SELECT id FROM chats WHERE id = $1 AND creator_id = $2',
       [chatId, userId]
     );

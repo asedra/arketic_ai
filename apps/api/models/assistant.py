@@ -113,6 +113,7 @@ class Assistant(Base):
         secondary="assistant_documents",
         back_populates="assistants"
     )
+    chats = relationship("Chat", back_populates="assistant")
     
     def get_knowledge_bases(self):
         """Get associated knowledge bases"""

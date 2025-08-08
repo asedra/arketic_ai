@@ -463,9 +463,20 @@ class AssistantService:
             if not assistant.can_be_used_by(str(user.id)):
                 raise HTTPException(status_code=403, detail="Access denied to this assistant")
             
-            # Get knowledge base IDs for RAG integration (placeholder for now)
-            knowledge_base_ids = []  # Will be implemented when knowledge base relationships are added
-            document_ids = []  # Will be implemented when document relationships are added
+            # Get knowledge base IDs for RAG integration
+            knowledge_base_ids = [str(kb.id) for kb in assistant.knowledge_bases] if assistant.knowledge_bases else []
+            document_ids = [str(doc.id) for doc in assistant.documents] if assistant.documents else []
+            
+            # Also get knowledge base IDs from documents (if documents are attached but not knowledge bases)
+            if document_ids and not knowledge_base_ids:
+                # Get unique knowledge base IDs from the documents
+                kb_ids_from_docs = set()
+                for doc in assistant.documents:
+                    if hasattr(doc, 'knowledge_base_id') and doc.knowledge_base_id:
+                        kb_ids_from_docs.add(str(doc.knowledge_base_id))
+                knowledge_base_ids = list(kb_ids_from_docs)
+                
+                logger.info(f"Assistant {assistant_id}: Found {len(knowledge_base_ids)} knowledge bases from {len(document_ids)} documents")
             
             return {
                 "id": str(assistant.id),

@@ -1,0 +1,175 @@
+{
+  "test_metadata": {
+    "generated_at": "2025-08-08T07:30:46.427016Z",
+    "base_url": "http://localhost:8000",
+    "test_email": "test@arketic.com",
+    "total_tests": 4,
+    "successful_tests": 4,
+    "failed_tests": 0,
+    "success_rate_percent": 100.0,
+    "average_duration_ms": 55.88,
+    "tested_endpoints": [
+      "POST /api/v1/auth/login",
+      "POST /api/v1/auth/refresh",
+      "GET /api/v1/auth/me",
+      "GET /api/v1/auth/validate"
+    ]
+  },
+  "endpoint_summary": {
+    "/api/v1/auth/login": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 192.02
+    },
+    "/api/v1/auth/refresh": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 22.27
+    },
+    "/api/v1/auth/me": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 6.93
+    },
+    "/api/v1/auth/validate": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 2.3
+    }
+  },
+  "detailed_results": [
+    {
+      "endpoint": "/api/v1/auth/login",
+      "method": "POST",
+      "payload": {
+        "email": "test@arketic.com",
+        "password": "testpass123",
+        "remember_me": false
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyZGE5YTE4LTcyODEtNDlkZS05NTZkLTYzNDczYzI0YjRkZiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDY0MDA0NH0.EPqFxpeUTsy40HdcpmuZrfIPoUR1yr-mk0fGchFWfg0",
+        "refresh_token": "V6B5uyTVl2itbeyXJMg-JzgNiHIrZI45kOVr7Qxt5r8",
+        "token_type": "bearer",
+        "expires_in": 1800,
+        "user": {
+          "id": "f2da9a18-7281-49de-956d-63473c24b4df",
+          "email": "test@arketic.com",
+          "username": "testuser",
+          "first_name": "Test",
+          "last_name": "User",
+          "role": "user",
+          "is_verified": true
+        }
+      },
+      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyZGE5YTE4LTcyODEtNDlkZS05NTZkLTYzNDczYzI0YjRkZiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDY0MDA0NH0.EPqFxpeUTsy40HdcpmuZrfIPoUR1yr-mk0fGchFWfg0\",\"refresh_token\":\"V6B5uyTVl2itbeyXJMg-JzgNiHIrZI45kOVr7Qxt5r8\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"email\":\"test@arketic.com\",\"username\":\"testuser\",\"first_name\":\"Test\",\"last_name\":\"User\",\"role\":\"user\",\"is_verified\":true}}",
+      "timestamp": "2025-08-08T07:30:44.393229Z",
+      "duration_ms": 192.02,
+      "success": true,
+      "error_message": null
+    },
+    {
+      "endpoint": "/api/v1/auth/refresh",
+      "method": "POST",
+      "payload": {
+        "refresh_token": "V6B5uyTVl2itbeyXJMg-JzgNiHIrZI45kOVr7Qxt5r8"
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyZGE5YTE4LTcyODEtNDlkZS05NTZkLTYzNDczYzI0YjRkZiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDY0MDA0NH0.EPqFxpeUTsy40HdcpmuZrfIPoUR1yr-mk0fGchFWfg0",
+        "refresh_token": "HT6VBUs88wyWUYn6Bni_TqdUDPKGg8GmehnmUUsPM74",
+        "token_type": "bearer",
+        "expires_in": 1800,
+        "user": {
+          "id": "f2da9a18-7281-49de-956d-63473c24b4df",
+          "email": "test@arketic.com",
+          "username": "testuser",
+          "first_name": "Test",
+          "last_name": "User",
+          "role": "user",
+          "is_verified": true
+        }
+      },
+      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyZGE5YTE4LTcyODEtNDlkZS05NTZkLTYzNDczYzI0YjRkZiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDY0MDA0NH0.EPqFxpeUTsy40HdcpmuZrfIPoUR1yr-mk0fGchFWfg0\",\"refresh_token\":\"HT6VBUs88wyWUYn6Bni_TqdUDPKGg8GmehnmUUsPM74\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"email\":\"test@arketic.com\",\"username\":\"testuser\",\"first_name\":\"Test\",\"last_name\":\"User\",\"role\":\"user\",\"is_verified\":true}}",
+      "timestamp": "2025-08-08T07:30:44.916282Z",
+      "duration_ms": 22.27,
+      "success": true,
+      "error_message": null
+    },
+    {
+      "endpoint": "/api/v1/auth/me",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyZGE5YTE4LTcyODEtNDlkZS05NTZkLTYzNDczYzI0YjRkZiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDY0MDA0NH0.EPqFxpeUTsy40HdcpmuZrfIPoUR1yr-mk0fGchFWfg0",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "user_id": "f2da9a18-7281-49de-956d-63473c24b4df",
+        "email": "test@arketic.com",
+        "username": "testuser",
+        "roles": [
+          "user"
+        ],
+        "permissions": [
+          "read",
+          "write",
+          "profile:update",
+          "preferences:update"
+        ],
+        "expires_at": "2025-08-08T08:00:44Z",
+        "issued_at": "2025-08-08T07:30:45.422286"
+      },
+      "response_text": "{\"user_id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"email\":\"test@arketic.com\",\"username\":\"testuser\",\"roles\":[\"user\"],\"permissions\":[\"read\",\"write\",\"profile:update\",\"preferences:update\"],\"expires_at\":\"2025-08-08T08:00:44Z\",\"issued_at\":\"2025-08-08T07:30:45.422286\"}",
+      "timestamp": "2025-08-08T07:30:45.423350Z",
+      "duration_ms": 6.93,
+      "success": true,
+      "error_message": null
+    },
+    {
+      "endpoint": "/api/v1/auth/validate",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyZGE5YTE4LTcyODEtNDlkZS05NTZkLTYzNDczYzI0YjRkZiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDY0MDA0NH0.EPqFxpeUTsy40HdcpmuZrfIPoUR1yr-mk0fGchFWfg0",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "valid": true,
+        "user": {
+          "id": "f2da9a18-7281-49de-956d-63473c24b4df",
+          "email": "test@arketic.com",
+          "username": "test@arketic.com",
+          "roles": [
+            "user"
+          ],
+          "permissions": [
+            "read",
+            "write",
+            "profile:update",
+            "preferences:update"
+          ]
+        },
+        "expires_at": "2025-08-08T08:00:44+00:00",
+        "validated_at": "2025-08-08T07:30:45.925307"
+      },
+      "response_text": "{\"valid\":true,\"user\":{\"id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"email\":\"test@arketic.com\",\"username\":\"test@arketic.com\",\"roles\":[\"user\"],\"permissions\":[\"read\",\"write\",\"profile:update\",\"preferences:update\"]},\"expires_at\":\"2025-08-08T08:00:44+00:00\",\"validated_at\":\"2025-08-08T07:30:45.925307\"}",
+      "timestamp": "2025-08-08T07:30:45.926375Z",
+      "duration_ms": 2.3,
+      "success": true,
+      "error_message": null
+    }
+  ]
+}

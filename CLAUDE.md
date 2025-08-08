@@ -62,3 +62,9 @@ Servisleri yönetmek için Docker Compose komutlarını kullanın:
 ├── scripts/          # Yardımcı scriptler
 └── monitoring/       # İzleme yapılandırmaları
 ```
+
+## Klasör Mimarisi Dokümantasyonu
+
+Detaylı klasör yapısı için bakınız: `/home/ali/arketic/FOLDER_ARCHITECTURE.md`
+
+Bu dosya `/apps` dizinindeki tüm servislerin (API, LangChain, Web) detaylı klasör yapısını, dosya organizasyonunu ve modül açıklamalarını içermektedir.

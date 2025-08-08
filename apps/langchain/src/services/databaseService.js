@@ -74,7 +74,8 @@ class DatabaseService {
         max: 20,
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 2000,
-        allowExitOnIdle: false
+        allowExitOnIdle: false,
+        options: '-c search_path=arketic,public'
       });
 
       this.pool.on('error', (err) => {
@@ -103,6 +104,25 @@ class DatabaseService {
       return true;
     } catch (error) {
       logger.error('Failed to connect to database:', error);
+      throw error;
+    }
+  }
+
+  async query(text, params) {
+    if (!this.isConnected) {
+      throw new Error('Database not connected');
+    }
+    
+    try {
+      const client = await this.pool.connect();
+      try {
+        const result = await client.query(text, params);
+        return result;
+      } finally {
+        client.release();
+      }
+    } catch (error) {
+      logger.error('Database query error:', error);
       throw error;
     }
   }

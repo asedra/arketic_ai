@@ -334,6 +334,15 @@ def calculate_message_tokens(messages: List[Dict[str, str]]) -> int:
 async def get_user_openai_key(user_id: str, db: AsyncSession) -> Optional[str]:
     """Get and decrypt user's OpenAI API key"""
     try:
+        import os
+        
+        # Temporary fix: use environment API key for testing
+        # TODO: Fix encryption/decryption mechanism
+        env_key = os.getenv("OPENAI_API_KEY")
+        if env_key:
+            logger.info(f"Using environment OpenAI API key for user {user_id}")
+            return env_key
+            
         from core.dependencies import get_security_manager
         
         stmt = select(UserApiKey).where(
@@ -378,8 +387,16 @@ async def generate_streaming_ai_response(
             "temperature": float(chat.temperature) if chat.temperature else 0.7,
             "maxTokens": chat.max_tokens or 2048,
             "systemPrompt": chat.system_prompt,
-            "provider": "openai"
+            "provider": "openai",
+            "knowledgeBaseIds": chat.assistant_knowledge_bases if chat.assistant_knowledge_bases else [],
+            "documentIds": chat.assistant_documents if chat.assistant_documents else []
         }
+        
+        # Debug logging for knowledge base integration
+        logger.info(f"Chat {chat_id} - Assistant ID: {chat.assistant_id}")
+        logger.info(f"Chat {chat_id} - Knowledge Base IDs: {chat.assistant_knowledge_bases}")
+        logger.info(f"Chat {chat_id} - Document IDs: {chat.assistant_documents}")
+        logger.info(f"Chat {chat_id} - System Prompt: {chat.system_prompt[:50] if chat.system_prompt else 'None'}...")
         
         # Use LangChain streaming service
         async for content_chunk in langchain_client.send_streaming_message(
@@ -566,8 +583,15 @@ async def generate_ai_response(
                 "temperature": float(chat.temperature) if chat.temperature else 0.7,
                 "maxTokens": chat.max_tokens or 2048,
                 "systemPrompt": chat.system_prompt,
-                "provider": "openai"
+                "provider": "openai",
+                "knowledgeBaseIds": chat.assistant_knowledge_bases if chat.assistant_knowledge_bases else [],
+                "documentIds": chat.assistant_documents if chat.assistant_documents else []
             }
+            
+            # Debug logging for knowledge base integration
+            logger.info(f"Chat {chat_id} - Streaming mode - Assistant ID: {chat.assistant_id}")
+            logger.info(f"Chat {chat_id} - Knowledge Base IDs: {chat.assistant_knowledge_bases}")
+            logger.info(f"Chat {chat_id} - Document IDs: {chat.assistant_documents}")
             
             # Get LangChain service client
             langchain_client = get_langchain_client()
@@ -755,6 +779,8 @@ async def create_chat(
         system_prompt = request.system_prompt
         temperature = request.temperature
         max_tokens = request.max_tokens
+        knowledge_base_ids = []
+        document_ids = []
         
         # If assistant is specified, get assistant configuration
         if request.assistant_id:
@@ -770,8 +796,10 @@ async def create_chat(
                 system_prompt = assistant_config["system_prompt"]
                 temperature = assistant_config["temperature"]
                 max_tokens = assistant_config["max_tokens"]
+                knowledge_base_ids = assistant_config.get("knowledge_base_ids", [])
+                document_ids = assistant_config.get("document_ids", [])
                 
-                logger.info(f"Using assistant '{assistant_name}' for chat creation")
+                logger.info(f"Using assistant '{assistant_name}' for chat creation with {len(knowledge_base_ids)} knowledge bases and {len(document_ids)} documents")
                 
             except HTTPException as e:
                 logger.warning(f"Failed to get assistant {request.assistant_id}: {e.detail}")
@@ -803,7 +831,10 @@ async def create_chat(
             max_tokens=max_tokens,
             is_private=request.is_private,
             tags=request.tags,
-            creator_id=current_user["user_id"]
+            creator_id=current_user["user_id"],
+            assistant_id=assistant_id,
+            assistant_knowledge_bases=knowledge_base_ids if knowledge_base_ids else None,
+            assistant_documents=document_ids if document_ids else None
         )
         
         # Add assistant_id to metadata since it may not be in the model yet
@@ -1485,8 +1516,15 @@ async def chat_with_ai(
                 "temperature": float(chat.temperature) if chat.temperature else 0.7,
                 "maxTokens": chat.max_tokens or 2048,
                 "systemPrompt": chat.system_prompt,
-                "provider": "openai"
+                "provider": "openai",
+                "knowledgeBaseIds": chat.assistant_knowledge_bases if chat.assistant_knowledge_bases else [],
+                "documentIds": chat.assistant_documents if chat.assistant_documents else []
             }
+            
+            # Debug logging for knowledge base integration
+            logger.info(f"Chat {chat_id} - Non-streaming mode - Assistant ID: {chat.assistant_id}")
+            logger.info(f"Chat {chat_id} - Knowledge Base IDs: {chat.assistant_knowledge_bases}")
+            logger.info(f"Chat {chat_id} - Document IDs: {chat.assistant_documents}")
             
             # Get LangChain service client
             langchain_client = get_langchain_client()

@@ -71,9 +71,9 @@ class LangChainTester:
         self.db_config = {
             "host": os.getenv("POSTGRES_HOST", "localhost"),
             "port": os.getenv("POSTGRES_PORT", "5432"),
-            "database": os.getenv("POSTGRES_DB", "arketic"),
+            "database": os.getenv("POSTGRES_DB", "arketic_dev"),
             "user": os.getenv("POSTGRES_USER", "arketic"),
-            "password": os.getenv("POSTGRES_PASSWORD", "arketic123")
+            "password": os.getenv("POSTGRES_PASSWORD", "arketic_dev_password")
         }
     
     def log_test_result(self, endpoint: str, method: str, payload: Optional[Dict], 
@@ -304,15 +304,82 @@ class LangChainTester:
         
         return response.status_code in [200, 401, 404]
     
+    def create_test_chat(self):
+        """Create a test chat via API"""
+        print("\n🔧 Creating test chat via API...")
+        
+        # Use real token if available
+        if self.test_data["access_token"]:
+            headers = {"Authorization": f"Bearer {self.test_data['access_token']}"}
+            print("   🔑 Using real JWT token")
+        else:
+            headers = {"Authorization": "Bearer mock-test-token"}
+            print("   🔑 Using mock token")
+        
+        # Create test chat
+        create_url = f"{self.auth_url}/api/v1/chat/chats"
+        payload = {
+            "title": "LangChain Test Chat",
+            "description": "Test chat for LangChain service validation",
+            "chat_type": "direct",
+            "ai_model": "gpt-3.5-turbo",
+            "ai_persona": "helpful assistant",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "is_private": False,
+            "tags": ["test", "langchain"]
+        }
+        
+        try:
+            response = self.session.post(create_url, json=payload, headers=headers, timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                self.test_data["test_chat_id"] = data["id"]
+                print(f"   ✅ Test chat created: {self.test_data['test_chat_id']}")
+                return True
+            else:
+                print(f"   ❌ Failed to create test chat ({response.status_code}): {response.text}")
+                return False
+        except Exception as e:
+            print(f"   ❌ Error creating test chat: {str(e)}")
+            return False
+
     def setup_test_data(self):
-        """Use existing test chat or create one in database for testing"""
+        """Setup test data by creating a new chat"""
         print("\n🔧 Setting up test data...")
         
-        # Use a known existing chat ID for testing
-        # This chat belongs to the test user (42c9a688-e24a-4cd6-b5e2-4e77f1894a6b)
-        self.test_data["test_chat_id"] = "eba51e67-b562-408c-98ac-88b3b9e6a012"
-        print(f"   ✅ Using known test chat: {self.test_data['test_chat_id']}")
-        return True
+        # Try to create a new test chat
+        if self.create_test_chat():
+            return True
+        
+        # Fallback: use existing chat from database
+        try:
+            # Connect to database to get a real chat ID
+            conn = psycopg2.connect(**self.db_config)
+            cursor = conn.cursor()
+            
+            # Get the first available chat from database
+            cursor.execute("SELECT id FROM chats ORDER BY created_at DESC LIMIT 1")
+            result = cursor.fetchone()
+            
+            if result:
+                self.test_data["test_chat_id"] = str(result[0])
+                print(f"   ✅ Using existing chat as fallback: {self.test_data['test_chat_id']}")
+                cursor.close()
+                conn.close()
+                return True
+            else:
+                print("   ❌ No chats found in database")
+                cursor.close()
+                conn.close()
+                return False
+                
+        except Exception as e:
+            print(f"   ❌ Failed to connect to database: {str(e)}")
+            # Use a known existing chat ID as fallback
+            self.test_data["test_chat_id"] = "552b725e-c2a4-4710-93ee-92c294702980"
+            print(f"   ⚠️  Using hardcoded fallback chat ID: {self.test_data['test_chat_id']}")
+            return True
         
         # Original code kept for reference but not executed
         try:
@@ -392,48 +459,31 @@ class LangChainTester:
             return False
     
     def cleanup_test_data(self):
-        """Remove test chat from database only if it was created for testing"""
+        """Remove test chat if it was created for testing"""
         print("\n🧹 Cleaning up test data...")
         
-        # Since we're using a known existing chat, don't delete it
-        if self.test_data.get("test_chat_id") == "eba51e67-b562-408c-98ac-88b3b9e6a012":
-            print(f"   ℹ️  Used existing chat (not deleted): {self.test_data['test_chat_id']}")
-            return True
-        
         if not self.test_data.get("test_chat_id"):
-            print("   ⚠️  No test chat to clean up")
-            return
-        
-        try:
-            # Connect to database
-            conn = psycopg2.connect(**self.db_config)
-            cursor = conn.cursor()
-            
-            # Set search path to include arketic schema
-            cursor.execute("SET search_path TO arketic, public")
-            
-            # Only delete if it's a test chat (has specific title)
-            delete_query = """
-                DELETE FROM chats 
-                WHERE id = %s 
-                AND title = 'Test Chat for LangChain Testing'
-            """
-            cursor.execute(delete_query, (self.test_data["test_chat_id"],))
-            
-            if cursor.rowcount > 0:
-                conn.commit()
-                print(f"   ✅ Test chat deleted: {self.test_data['test_chat_id']}")
-            else:
-                conn.commit()
-                print(f"   ℹ️  Used existing chat (not deleted): {self.test_data['test_chat_id']}")
-            
-            cursor.close()
-            conn.close()
+            print("   ℹ️  No test chat to clean up")
             return True
             
-        except Exception as e:
-            print(f"   ⚠️  Failed to clean up test data: {str(e)}")
-            return False
+        # Delete test chat via API if we created it
+        if self.test_data.get("access_token"):
+            headers = {"Authorization": f"Bearer {self.test_data['access_token']}"}
+            delete_url = f"{self.auth_url}/api/v1/chat/chats/{self.test_data['test_chat_id']}"
+            
+            try:
+                response = self.session.delete(delete_url, headers=headers, timeout=5)
+                if response.status_code in [200, 204, 404]:
+                    print(f"   ✅ Test chat deleted: {self.test_data['test_chat_id']}")
+                else:
+                    print(f"   ⚠️  Could not delete test chat ({response.status_code}): {response.text}")
+                return True
+            except Exception as e:
+                print(f"   ⚠️  Failed to delete test chat: {str(e)}")
+        else:
+            print(f"   ℹ️  Test chat not deleted (no auth): {self.test_data['test_chat_id']}")
+        
+        return True
     
     def test_chat_message_endpoint(self):
         """Test chat message endpoint"""

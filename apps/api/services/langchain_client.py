@@ -95,6 +95,9 @@ class LangChainServiceClient:
                         "model": settings.get("model", "gpt-3.5-turbo"),
                         "temperature": settings.get("temperature", 0.7),
                         "maxTokens": settings.get("maxTokens", 2048),
+                        "systemPrompt": settings.get("systemPrompt"),
+                        "knowledgeBaseIds": settings.get("knowledgeBaseIds", []),
+                        "documentIds": settings.get("documentIds", []),
                         "streaming": False
                     }
                 },
@@ -153,6 +156,9 @@ class LangChainServiceClient:
                         "model": settings.get("model", "gpt-3.5-turbo"),
                         "temperature": settings.get("temperature", 0.7),
                         "maxTokens": settings.get("maxTokens", 2048),
+                        "systemPrompt": settings.get("systemPrompt"),
+                        "knowledgeBaseIds": settings.get("knowledgeBaseIds", []),
+                        "documentIds": settings.get("documentIds", []),
                         "streaming": True
                     }
                 },

@@ -59,6 +59,7 @@ class Chat(Base):
     
     # Foreign keys
     creator_id = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
+    assistant_id = Column(UUID(as_uuid=True), ForeignKey('assistants.id', ondelete='SET NULL'), nullable=True)
     
     # Chat details
     title = Column(String(200), nullable=False)
@@ -82,6 +83,10 @@ class Chat(Base):
     tags = Column(JSON, nullable=True)  # List of tags for organization
     chat_metadata = Column(JSON, nullable=True)  # Additional metadata
     
+    # Assistant Knowledge Integration
+    assistant_knowledge_bases = Column(JSON, nullable=True)  # List of knowledge base IDs from assistant
+    assistant_documents = Column(JSON, nullable=True)  # List of document IDs from assistant
+    
     # Usage tracking
     message_count = Column(Integer, default=0, nullable=False)
     total_tokens_used = Column(Integer, default=0, nullable=False)
@@ -95,6 +100,7 @@ class Chat(Base):
     # Relationships
     messages = relationship("ChatMessage", back_populates="chat", cascade="all, delete-orphan", order_by="ChatMessage.created_at")
     participants = relationship("ChatParticipant", back_populates="chat", cascade="all, delete-orphan")
+    assistant = relationship("Assistant", back_populates="chats")
     
     # Indexes for better query performance
     __table_args__ = (

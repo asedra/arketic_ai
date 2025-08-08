@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useChatStore, useCurrentChat } from '@/lib/stores/chat-store'
+import { useAssistantStore, useAssistantById } from '@/lib/stores/assistant-store'
 import { chatApi } from '@/lib/api-client'
 import { MessageList } from './MessageList'
 import { MessageInput } from './MessageInput'
@@ -28,10 +29,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ className }) => {
     connectionStatus 
   } = useCurrentChat()
   const { sendMessage, deleteChat, isLoading, error, clearError } = useChatStore()
+  const assistant = useAssistantById(currentChat?.assistant_id)
   const [isAtBottom, setIsAtBottom] = useState(true)
   const [lastMessageCount, setLastMessageCount] = useState(0)
   const [showSettings, setShowSettings] = useState(false)
   const [isTestingConnection, setIsTestingConnection] = useState(false)
+  
+  // Load assistants if needed for display
+  const { loadAssistants, assistants } = useAssistantStore()
+  useEffect(() => {
+    if (currentChat?.assistant_id && assistants.length === 0) {
+      loadAssistants()
+    }
+  }, [currentChat?.assistant_id, assistants.length, loadAssistants])
 
   // Track message count changes for auto-scroll
   useEffect(() => {
@@ -157,9 +167,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ className }) => {
               </h2>
               <div className="flex items-center space-x-2 text-sm text-slate-600 dark:text-slate-400 flex-wrap gap-1">
                 <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-md font-mono text-xs shrink-0">
-                  {currentChat.ai_model || 'gpt-3.5-turbo'}
+                  {assistant?.name || currentChat.assistant_name || currentChat.ai_model || 'gpt-3.5-turbo'}
                 </span>
-                {currentChat.ai_persona && (
+                {!assistant && currentChat.ai_persona && (
                   <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-md text-xs font-medium shrink-0">
                     {currentChat.ai_persona}
                   </span>

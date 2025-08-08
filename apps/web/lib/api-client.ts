@@ -941,6 +941,59 @@ export const assistantApi = {
     apiClient.delete<{ message: string; assistant_id: string }>(`/api/v1/assistants/${assistantId}`),
   
   // Knowledge management
+  getAssistantKnowledge: (assistantId: string) =>
+    apiClient.get<{
+      assistant_id: string
+      knowledge_bases: Array<{
+        id: string
+        name: string
+        description?: string
+        type: string
+        document_count: number
+      }>
+      documents: Array<{
+        id: string
+        title: string
+        knowledge_base_id?: string
+        collection_name?: string
+        source_type: string
+        file_name?: string
+      }>
+    }>(`/api/v1/assistants/${assistantId}/knowledge`),
+  
+  updateAssistantKnowledge: (assistantId: string, data: {
+    knowledge_base_ids: string[]
+    document_ids: string[]
+  }) =>
+    apiClient.post<{
+      success: boolean
+      message: string
+      knowledge_base_count: number
+      document_count: number
+    }>(`/api/v1/assistants/${assistantId}/knowledge`, data),
+  
+  getAvailableKnowledge: (assistantId: string) =>
+    apiClient.get<{
+      collections: Array<{
+        id: string
+        name: string
+        description?: string
+        type: string
+        document_count: number
+        is_public: boolean
+        documents: Array<{
+          id: string
+          title: string
+          source_type: string
+          file_name?: string
+          chunk_count?: number
+          token_count?: number
+        }>
+      }>
+      selected_collection_ids: string[]
+      selected_document_ids: string[]
+    }>(`/api/v1/assistants/${assistantId}/available-knowledge`),
+  
   manageKnowledge: (assistantId: string, data: ManageKnowledgeRequest) =>
     apiClient.post<{ message: string; action: string; result: any }>(`/api/v1/assistants/${assistantId}/knowledge`, data),
   

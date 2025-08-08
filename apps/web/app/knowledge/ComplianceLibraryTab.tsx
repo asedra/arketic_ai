@@ -218,12 +218,12 @@ export function ComplianceLibraryTab() {
               
               <DelightfulButton
                 onClick={() => setShowAddModal(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg"
                 glow
                 bounce
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Add New
+                Knowledge Base
               </DelightfulButton>
             </div>
           </div>

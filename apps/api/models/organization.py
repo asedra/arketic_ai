@@ -21,17 +21,17 @@ from core.types import UUID
 
 class PersonRole(str, PyEnum):
     """Person roles within an organization"""
-    ADMIN = "ADMIN"
-    USER = "USER"
-    MANAGER = "MANAGER"
-    VIEWER = "VIEWER"
+    ADMIN = "admin"
+    USER = "user"
+    MANAGER = "manager"
+    VIEWER = "viewer"
 
 
 class PersonStatus(str, PyEnum):
     """Person status"""
-    ACTIVE = "ACTIVE"
-    INACTIVE = "INACTIVE"
-    PENDING = "PENDING"
+    ACTIVE = "active"
+    INACTIVE = "inactive"
+    PENDING = "pending"
 
 
 class OrganizationStatus(str, PyEnum):

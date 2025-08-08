@@ -254,8 +254,8 @@ Organization members/employees directory.
 | department | String(100) | Department | Nullable |
 | site | String(200) | Work site/location | Nullable |
 | location | String(200) | Geographic location | Nullable |
-| role | Enum(PersonRole) | System role (ADMIN, USER, MANAGER, VIEWER) | Not Null |
-| status | Enum(PersonStatus) | Status (ACTIVE, INACTIVE, PENDING) | Not Null |
+| role | Enum(PersonRole) | System role (admin, user, manager, viewer) | Not Null |
+| status | Enum(PersonStatus) | Status (active, inactive, pending) | Not Null |
 | hire_date | DateTime | Hire date | Nullable |
 | manager_id | UUID | Reference to manager | FK(people.id), Nullable |
 | notes | Text | Additional notes | Nullable |

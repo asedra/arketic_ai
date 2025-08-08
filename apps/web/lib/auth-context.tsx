@@ -83,10 +83,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             isLoading: false,
             error: null,
           }))
-        } catch (error) {
-          // If API call fails but we have stored user, continue with stored data
-          if (!storedUser) {
-            throw error
+        } catch (error: any) {
+          console.warn('Failed to fetch user data:', error.message)
+          
+          // If we have stored user data, continue with it
+          if (storedUser) {
+            console.log('Using cached user data')
+            return
+          }
+          
+          // If it's a 401 error, clear tokens and redirect to login
+          if (error.status === 401 || error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+            console.log('Token expired or invalid, clearing auth')
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('refresh_token')
+            localStorage.removeItem('user_data')
+            setState(prev => ({
+              ...prev,
+              user: null,
+              isAuthenticated: false,
+              isLoading: false,
+              error: null,
+            }))
+          } else {
+            // For network errors or other issues, just set not authenticated
+            console.error('Auth initialization error:', error)
+            setState(prev => ({
+              ...prev,
+              user: null,
+              isAuthenticated: false,
+              isLoading: false,
+              error: null,
+            }))
           }
         }
       } else {
@@ -97,15 +125,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           isLoading: false,
         }))
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Auth initialization failed:', error)
-      // Clear invalid tokens
-      authStorage.clear()
+      // Don't show network errors to the user on initial load
+      // Just set as not authenticated
       setState({
         user: null,
         isAuthenticated: false,
         isLoading: false,
-        error: handleAuthError(error).message,
+        error: null,
       })
     }
   }, [])

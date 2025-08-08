@@ -372,10 +372,10 @@ Authorization: Bearer <access_token>
 
 ## Knowledge Management Endpoints
 
-### 6. Manage Assistant Knowledge
+### 6. Update Assistant Knowledge
 
 **Endpoint**: `POST /api/v1/assistants/{assistant_id}/knowledge`  
-**Summary**: Manage assistant's knowledge bases and documents  
+**Summary**: Update assistant's knowledge bases and documents  
 **Authentication**: **Required** (HTTP Bearer)  
 
 **Description**: Add, remove, or replace knowledge bases and documents associated with an assistant.
@@ -425,9 +425,144 @@ Content-Type: application/json
 
 ---
 
+### 7. Get Assistant Knowledge
+
+**Endpoint**: `GET /api/v1/assistants/{assistant_id}/knowledge`  
+**Summary**: Get current knowledge bases and documents for an assistant  
+**Authentication**: **Required** (HTTP Bearer)  
+
+**Description**: Returns the current list of knowledge bases and documents associated with an assistant.
+
+**Headers**:
+```
+Authorization: Bearer <access_token>
+```
+
+**Path Parameters**:
+- `assistant_id` (required): Unique identifier of the assistant
+
+**Successful Response (200)**:
+```json
+{
+  "assistant_id": "assistant-123",
+  "knowledge_count": 2,
+  "document_count": 4,
+  "knowledge_bases": [
+    {
+      "knowledge_base_id": "kb-123",
+      "name": "Python Documentation",
+      "description": "Official Python documentation and tutorials",
+      "document_count": 25
+    },
+    {
+      "knowledge_base_id": "kb-456",
+      "name": "FastAPI Guide",
+      "description": "Complete FastAPI framework guide",
+      "document_count": 15
+    }
+  ],
+  "documents": [
+    {
+      "document_id": "doc-789",
+      "title": "FastAPI Best Practices",
+      "knowledge_base_id": "kb-456",
+      "created_at": "2025-08-01T10:00:00Z"
+    },
+    {
+      "document_id": "doc-101",
+      "title": "Async Programming in Python",
+      "knowledge_base_id": "kb-123",
+      "created_at": "2025-08-02T11:00:00Z"
+    }
+  ]
+}
+```
+
+**Responses**:
+- **200 OK**: Knowledge retrieved successfully
+- **401 Unauthorized**: Invalid or expired access token
+- **403 Forbidden**: Access denied to this assistant
+- **404 Not Found**: Assistant not found
+- **500 Internal Server Error**: Server error
+
+---
+
+### 8. Get Available Knowledge
+
+**Endpoint**: `GET /api/v1/assistants/{assistant_id}/available-knowledge`  
+**Summary**: Get knowledge bases and documents available to add to the assistant  
+**Authentication**: **Required** (HTTP Bearer)  
+
+**Description**: Returns list of knowledge bases and documents that the user has access to and can be added to the assistant.
+
+**Headers**:
+```
+Authorization: Bearer <access_token>
+```
+
+**Path Parameters**:
+- `assistant_id` (required): Unique identifier of the assistant
+
+**Query Parameters**:
+- `search` (optional): Search query for filtering knowledge bases and documents
+- `limit` (optional): Maximum number of results to return (default: 50)
+- `offset` (optional): Number of results to skip for pagination (default: 0)
+
+**Successful Response (200)**:
+```json
+{
+  "total_knowledge_bases": 10,
+  "total_documents": 45,
+  "available_knowledge_bases": [
+    {
+      "knowledge_base_id": "kb-789",
+      "name": "Django Documentation",
+      "description": "Official Django framework documentation",
+      "document_count": 30,
+      "is_public": true,
+      "created_at": "2025-07-15T09:00:00Z"
+    },
+    {
+      "knowledge_base_id": "kb-901",
+      "name": "Machine Learning Basics",
+      "description": "Introduction to ML concepts and algorithms",
+      "document_count": 20,
+      "is_public": false,
+      "created_at": "2025-07-20T14:30:00Z"
+    }
+  ],
+  "available_documents": [
+    {
+      "document_id": "doc-234",
+      "title": "Deep Learning Fundamentals",
+      "knowledge_base_id": "kb-901",
+      "is_public": false,
+      "created_at": "2025-07-21T10:00:00Z"
+    },
+    {
+      "document_id": "doc-345",
+      "title": "REST API Design Guidelines",
+      "knowledge_base_id": null,
+      "is_standalone": true,
+      "is_public": true,
+      "created_at": "2025-07-25T11:30:00Z"
+    }
+  ]
+}
+```
+
+**Responses**:
+- **200 OK**: Available knowledge retrieved successfully
+- **401 Unauthorized**: Invalid or expired access token
+- **403 Forbidden**: Access denied to this assistant
+- **404 Not Found**: Assistant not found
+- **500 Internal Server Error**: Server error
+
+---
+
 ## Chat Integration Endpoints
 
-### 7. Get Assistant Chat Configuration
+### 9. Get Assistant Chat Configuration
 
 **Endpoint**: `GET /api/v1/assistants/{assistant_id}/chat-config`  
 **Summary**: Get assistant configuration for chat integration  
@@ -467,7 +602,7 @@ Authorization: Bearer <access_token>
 
 ---
 
-### 8. Get Available Assistants for Chat
+### 10. Get Available Assistants for Chat
 
 **Endpoint**: `GET /api/v1/chat/assistants/available`  
 **Summary**: Get assistants available for chat integration  
@@ -508,7 +643,7 @@ Authorization: Bearer <access_token>
 
 ## Administrative Endpoints
 
-### 9. Get Available AI Models
+### 11. Get Available AI Models
 
 **Endpoint**: `GET /api/v1/assistants/models/available`  
 **Summary**: Get list of available AI models for assistants  
@@ -548,7 +683,7 @@ Authorization: Bearer <access_token>
 
 ---
 
-### 10. Get Featured Public Assistants
+### 12. Get Featured Public Assistants
 
 **Endpoint**: `GET /api/v1/assistants/public/featured`  
 **Summary**: Get featured public assistants  
@@ -578,7 +713,7 @@ Authorization: Bearer <access_token>
 
 ---
 
-### 11. Log Assistant Usage
+### 13. Log Assistant Usage
 
 **Endpoint**: `POST /api/v1/assistants/{assistant_id}/usage`  
 **Summary**: Log assistant usage for analytics (background task)  
@@ -611,7 +746,7 @@ Authorization: Bearer <access_token>
 
 ---
 
-### 12. Assistant Service Health Check
+### 14. Assistant Service Health Check
 
 **Endpoint**: `GET /api/v1/assistants/health`  
 **Summary**: Health check for assistant service  
@@ -842,7 +977,7 @@ curl -X PUT "http://localhost:8000/api/v1/assistants/assistant-123" \
   }'
 ```
 
-#### 5. Add Knowledge to Assistant
+#### 5. Update Assistant Knowledge
 ```bash
 curl -X POST "http://localhost:8000/api/v1/assistants/assistant-123/knowledge" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
@@ -854,7 +989,19 @@ curl -X POST "http://localhost:8000/api/v1/assistants/assistant-123/knowledge" \
   }'
 ```
 
-#### 6. Create Chat with Assistant
+#### 6. Get Assistant Knowledge
+```bash
+curl -X GET "http://localhost:8000/api/v1/assistants/assistant-123/knowledge" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+#### 7. Get Available Knowledge
+```bash
+curl -X GET "http://localhost:8000/api/v1/assistants/assistant-123/available-knowledge?search=python&limit=10" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+#### 8. Create Chat with Assistant
 ```bash
 curl -X POST "http://localhost:8000/api/v1/chat/chats" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
@@ -866,23 +1013,23 @@ curl -X POST "http://localhost:8000/api/v1/chat/chats" \
   }'
 ```
 
-#### 7. Get Available Models
+#### 9. Get Available Models
 ```bash
 curl -X GET "http://localhost:8000/api/v1/assistants/models/available"
 ```
 
-#### 8. Get Featured Public Assistants
+#### 10. Get Featured Public Assistants
 ```bash
 curl -X GET "http://localhost:8000/api/v1/assistants/public/featured?limit=5"
 ```
 
-#### 9. Search Assistants
+#### 11. Search Assistants
 ```bash
 curl -X GET "http://localhost:8000/api/v1/assistants/?query=python&ai_model=gpt-4o&is_public=true" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
-#### 10. Delete Assistant
+#### 12. Delete Assistant
 ```bash
 curl -X DELETE "http://localhost:8000/api/v1/assistants/assistant-123" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."

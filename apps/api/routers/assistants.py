@@ -9,12 +9,13 @@ Handles AI assistant management operations including:
 """
 
 import logging
-from typing import List, Optional
-from uuid import UUID
+from typing import List, Optional, Dict, Any
+from uuid import UUID, uuid4
 from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, status, Depends, Query, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import text, select, desc, and_
 
 from core.database import get_db
 from core.dependencies import get_current_user_dict
@@ -42,8 +43,11 @@ async def create_assistant(
 ):
     """Create a new AI assistant"""
     try:
-        # Get user object
-        user = await db.get(User, current_user["user_id"])
+        # Get user object using proper async query
+        user_query = select(User).where(User.id == current_user["user_id"])
+        result = await db.execute(user_query)
+        user = result.scalar_one_or_none()
+        
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -79,8 +83,11 @@ async def list_assistants(
 ):
     """List assistants with filtering and pagination"""
     try:
-        # Get user object
-        user = await db.get(User, current_user["user_id"])
+        # Get user object using proper async query
+        user_query = select(User).where(User.id == current_user["user_id"])
+        result = await db.execute(user_query)
+        user = result.scalar_one_or_none()
+        
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -122,8 +129,11 @@ async def get_assistant(
 ):
     """Get a specific assistant by ID"""
     try:
-        # Get user object
-        user = await db.get(User, current_user["user_id"])
+        # Get user object using proper async query
+        user_query = select(User).where(User.id == current_user["user_id"])
+        result = await db.execute(user_query)
+        user = result.scalar_one_or_none()
+        
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -152,8 +162,11 @@ async def update_assistant(
 ):
     """Update an existing assistant"""
     try:
-        # Get user object
-        user = await db.get(User, current_user["user_id"])
+        # Get user object using proper async query
+        user_query = select(User).where(User.id == current_user["user_id"])
+        result = await db.execute(user_query)
+        user = result.scalar_one_or_none()
+        
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -181,8 +194,11 @@ async def delete_assistant(
 ):
     """Delete an assistant (soft delete - marks as archived)"""
     try:
-        # Get user object
-        user = await db.get(User, current_user["user_id"])
+        # Get user object using proper async query
+        user_query = select(User).where(User.id == current_user["user_id"])
+        result = await db.execute(user_query)
+        user = result.scalar_one_or_none()
+        
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -211,8 +227,11 @@ async def manage_assistant_knowledge(
 ):
     """Manage assistant's knowledge bases and documents"""
     try:
-        # Get user object
-        user = await db.get(User, current_user["user_id"])
+        # Get user object using proper async query
+        user_query = select(User).where(User.id == current_user["user_id"])
+        result = await db.execute(user_query)
+        user = result.scalar_one_or_none()
+        
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -245,8 +264,11 @@ async def get_assistant_chat_config(
 ):
     """Get assistant configuration for chat integration"""
     try:
-        # Get user object
-        user = await db.get(User, current_user["user_id"])
+        # Get user object using proper async query
+        user_query = select(User).where(User.id == current_user["user_id"])
+        result = await db.execute(user_query)
+        user = result.scalar_one_or_none()
+        
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -283,8 +305,11 @@ async def log_assistant_usage(
 ):
     """Log assistant usage for analytics (background task)"""
     try:
-        # Get user object
-        user = await db.get(User, current_user["user_id"])
+        # Get user object using proper async query
+        user_query = select(User).where(User.id == current_user["user_id"])
+        result = await db.execute(user_query)
+        user = result.scalar_one_or_none()
+        
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -403,7 +428,6 @@ async def get_featured_public_assistants(
     try:
         # This would be implemented with a featured flag or based on usage stats
         # For now, return most used public assistants
-        from sqlalchemy import select, desc, and_
         from models.assistant import Assistant
         
         query = select(Assistant).where(
@@ -426,6 +450,268 @@ async def get_featured_public_assistants(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to get featured assistants"
+        )
+
+
+# Knowledge association endpoints
+@router.get("/{assistant_id}/knowledge", response_model=Dict[str, Any])
+async def get_assistant_knowledge(
+    assistant_id: str,
+    current_user: dict = Depends(get_current_user_dict),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get knowledge bases and documents associated with an assistant"""
+    try:
+        from models.assistant import Assistant
+        from models.knowledge import KnowledgeBase, KnowledgeDocument
+        
+        # Get assistant with relationships
+        query = select(Assistant).where(Assistant.id == assistant_id)
+        result = await db.execute(query)
+        assistant = result.scalar_one_or_none()
+        
+        if not assistant:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Assistant not found"
+            )
+        
+        # Check permissions
+        if not assistant.can_be_edited_by(str(current_user["user_id"])):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You don't have permission to view this assistant's knowledge"
+            )
+        
+        # Get associated knowledge bases and documents
+        knowledge_bases = []
+        documents = []
+        
+        # Fetch knowledge bases
+        kb_query = text("""
+            SELECT kb.* FROM knowledge_bases kb
+            JOIN assistant_knowledge_bases akb ON kb.id = akb.knowledge_base_id
+            WHERE akb.assistant_id = :assistant_id
+        """)
+        kb_result = await db.execute(kb_query, {"assistant_id": assistant_id})
+        kb_rows = kb_result.fetchall()
+        
+        for row in kb_rows:
+            knowledge_bases.append({
+                "id": str(row.id),
+                "name": row.name,
+                "description": row.description,
+                "type": row.type,
+                "document_count": row.total_documents
+            })
+        
+        # Fetch documents
+        doc_query = text("""
+            SELECT kd.*, kb.name as collection_name FROM knowledge_documents kd
+            JOIN assistant_documents ad ON kd.id = ad.document_id
+            LEFT JOIN knowledge_bases kb ON kd.knowledge_base_id = kb.id
+            WHERE ad.assistant_id = :assistant_id
+        """)
+        doc_result = await db.execute(doc_query, {"assistant_id": assistant_id})
+        doc_rows = doc_result.fetchall()
+        
+        for row in doc_rows:
+            documents.append({
+                "id": str(row.id),
+                "title": row.title,
+                "knowledge_base_id": str(row.knowledge_base_id) if row.knowledge_base_id else None,
+                "collection_name": row.collection_name,
+                "source_type": row.source_type,
+                "file_name": row.file_name
+            })
+        
+        return {
+            "assistant_id": assistant_id,
+            "knowledge_bases": knowledge_bases,
+            "documents": documents
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to get assistant knowledge: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to get assistant knowledge"
+        )
+
+
+@router.post("/{assistant_id}/knowledge", response_model=Dict[str, Any])
+async def update_assistant_knowledge(
+    assistant_id: str,
+    knowledge_data: Dict[str, Any],
+    current_user: dict = Depends(get_current_user_dict),
+    db: AsyncSession = Depends(get_db)
+):
+    """Update knowledge bases and documents associated with an assistant"""
+    try:
+        from models.assistant import Assistant
+        
+        # Get assistant
+        query = select(Assistant).where(Assistant.id == assistant_id)
+        result = await db.execute(query)
+        assistant = result.scalar_one_or_none()
+        
+        if not assistant:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Assistant not found"
+            )
+        
+        # Check permissions
+        if not assistant.can_be_edited_by(str(current_user["user_id"])):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You don't have permission to edit this assistant"
+            )
+        
+        knowledge_base_ids = knowledge_data.get("knowledge_base_ids", [])
+        document_ids = knowledge_data.get("document_ids", [])
+        
+        # Clear existing associations
+        await db.execute(text(
+            "DELETE FROM assistant_knowledge_bases WHERE assistant_id = :assistant_id"
+        ), {"assistant_id": assistant_id})
+        
+        await db.execute(text(
+            "DELETE FROM assistant_documents WHERE assistant_id = :assistant_id"
+        ), {"assistant_id": assistant_id})
+        
+        # Add new knowledge base associations
+        for kb_id in knowledge_base_ids:
+            await db.execute(text("""
+                INSERT INTO assistant_knowledge_bases (id, assistant_id, knowledge_base_id, created_by, created_at)
+                VALUES (:id, :assistant_id, :kb_id, :user_id, :created_at)
+            """), {
+                "id": str(uuid4()),
+                "assistant_id": assistant_id,
+                "kb_id": kb_id,
+                "user_id": str(current_user["user_id"]),
+                "created_at": datetime.utcnow()
+            })
+        
+        # Add new document associations
+        for doc_id in document_ids:
+            await db.execute(text("""
+                INSERT INTO assistant_documents (id, assistant_id, document_id, created_by, created_at)
+                VALUES (:id, :assistant_id, :doc_id, :user_id, :created_at)
+            """), {
+                "id": str(uuid4()),
+                "assistant_id": assistant_id,
+                "doc_id": doc_id,
+                "user_id": str(current_user["user_id"]),
+                "created_at": datetime.utcnow()
+            })
+        
+        await db.commit()
+        
+        return {
+            "success": True,
+            "message": "Knowledge associations updated successfully",
+            "knowledge_base_count": len(knowledge_base_ids),
+            "document_count": len(document_ids)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        await db.rollback()
+        logger.error(f"Failed to update assistant knowledge: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update assistant knowledge"
+        )
+
+
+@router.get("/{assistant_id}/available-knowledge", response_model=Dict[str, Any])
+async def get_available_knowledge(
+    assistant_id: str,
+    current_user: dict = Depends(get_current_user_dict),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get all available knowledge bases and documents for selection"""
+    try:
+        # Check if this is for a new assistant
+        is_new_assistant = assistant_id == 'new'
+        
+        # Get all accessible knowledge bases
+        kb_query = text("""
+            SELECT id, name, description, type, total_documents, is_public
+            FROM knowledge_bases
+            WHERE is_active = true 
+            AND (is_public = true OR creator_id = :user_id)
+            ORDER BY name
+        """)
+        kb_result = await db.execute(kb_query, {"user_id": str(current_user["user_id"])})
+        kb_rows = kb_result.fetchall()
+        
+        collections = []
+        for row in kb_rows:
+            # Get documents for this collection
+            doc_query = text("""
+                SELECT id, title, source_type, file_name, chunk_count, token_count
+                FROM knowledge_documents
+                WHERE knowledge_base_id = :kb_id
+                AND processing_status = 'completed'
+                ORDER BY title
+            """)
+            doc_result = await db.execute(doc_query, {"kb_id": row.id})
+            doc_rows = doc_result.fetchall()
+            
+            documents = [{
+                "id": str(doc.id),
+                "title": doc.title,
+                "source_type": doc.source_type,
+                "file_name": doc.file_name,
+                "chunk_count": doc.chunk_count,
+                "token_count": doc.token_count
+            } for doc in doc_rows]
+            
+            collections.append({
+                "id": str(row.id),
+                "name": row.name,
+                "description": row.description,
+                "type": row.type,
+                "document_count": row.total_documents,
+                "is_public": row.is_public,
+                "documents": documents
+            })
+        
+        # Get current associations (only if not a new assistant)
+        current_kb_ids = []
+        current_doc_ids = []
+        
+        if not is_new_assistant:
+            current_kb_query = text("""
+                SELECT knowledge_base_id FROM assistant_knowledge_bases
+                WHERE assistant_id = :assistant_id
+            """)
+            current_kb_result = await db.execute(current_kb_query, {"assistant_id": assistant_id})
+            current_kb_ids = [str(row.knowledge_base_id) for row in current_kb_result]
+            
+            current_doc_query = text("""
+                SELECT document_id FROM assistant_documents
+                WHERE assistant_id = :assistant_id
+            """)
+            current_doc_result = await db.execute(current_doc_query, {"assistant_id": assistant_id})
+            current_doc_ids = [str(row.document_id) for row in current_doc_result]
+        
+        return {
+            "collections": collections,
+            "selected_collection_ids": current_kb_ids,
+            "selected_document_ids": current_doc_ids
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get available knowledge: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to get available knowledge"
         )
 
 

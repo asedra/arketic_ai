@@ -144,7 +144,7 @@ class DatabaseService {
       const query = `
         INSERT INTO chat_messages 
         (id, chat_id, sender_id, content, message_type, ai_model_used, tokens_used, processing_time_ms, status, is_edited, is_deleted, created_at, updated_at)
-        VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, 'SENT', false, false, NOW(), NOW())
+        VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, 'sent', false, false, NOW(), NOW())
         RETURNING *
       `;
       const values = [

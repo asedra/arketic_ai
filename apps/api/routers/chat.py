@@ -779,10 +779,23 @@ async def create_chat(
                 pass
         
         # Create new chat
+        # Ensure chat_type is lowercase for database enum
+        chat_type_value = request.chat_type
+        logger.info(f"Original chat_type: {chat_type_value}, type: {type(chat_type_value)}")
+        
+        if hasattr(chat_type_value, 'value'):  # It's an enum
+            chat_type_value = chat_type_value.value
+            logger.info(f"ChatType enum converted to: {chat_type_value}")
+        elif isinstance(chat_type_value, str):
+            chat_type_value = chat_type_value.lower()
+            logger.info(f"String converted to lowercase: {chat_type_value}")
+        
+        logger.info(f"Final chat_type_value for database: {chat_type_value}")
+        
         chat = Chat(
             title=request.title,
             description=request.description,
-            chat_type=request.chat_type,
+            chat_type=chat_type_value,
             ai_model=ai_model,
             ai_persona=request.ai_persona,
             system_prompt=system_prompt,
@@ -808,7 +821,7 @@ async def create_chat(
         participant = ChatParticipant(
             chat_id=chat.id,
             user_id=current_user["user_id"],
-            role=ParticipantRole.OWNER
+            role='owner'  # Use string value directly for enum
         )
         
         db.add(participant)
@@ -828,7 +841,7 @@ async def create_chat(
             id=str(chat.id),
             title=chat.title,
             description=chat.description,
-            chat_type=chat.chat_type.value,
+            chat_type=chat.chat_type if isinstance(chat.chat_type, str) else chat.chat_type.value,
             assistant_id=assistant_id,
             assistant_name=assistant_name,
             ai_model=chat.ai_model,
@@ -884,7 +897,7 @@ async def get_user_chats(
                 id=str(chat.id),
                 title=chat.title,
                 description=chat.description,
-                chat_type=chat.chat_type.value,
+                chat_type=chat.chat_type if isinstance(chat.chat_type, str) else chat.chat_type.value,
                 assistant_id=assistant_id,
                 assistant_name=assistant_name,
                 ai_model=chat.ai_model,
@@ -970,7 +983,7 @@ async def get_chat_history(
                 id=str(chat.id),
                 title=chat.title,
                 description=chat.description,
-                chat_type=chat.chat_type.value,
+                chat_type=chat.chat_type if isinstance(chat.chat_type, str) else chat.chat_type.value,
                 assistant_id=assistant_id,
                 assistant_name=assistant_name,
                 ai_model=chat.ai_model,
@@ -1221,7 +1234,7 @@ async def get_chat_participants(
             "participants": [
                 {
                     "user_id": p.user_id,
-                    "role": p.role.value,
+                    "role": p.role if isinstance(p.role, str) else p.role.value,
                     "joined_at": p.joined_at.isoformat(),
                     "can_send_messages": p.can_send_messages,
                     "can_upload_files": p.can_upload_files,

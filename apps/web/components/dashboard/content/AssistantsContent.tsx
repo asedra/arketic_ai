@@ -19,7 +19,6 @@ import {
   Pause,
   Edit,
   Trash2,
-  Eye,
   Copy,
   Brain,
   Zap,
@@ -41,7 +40,8 @@ import {
 import { cn } from '@/lib/utils'
 import { useArketicStore } from '@/lib/state-manager'
 import { 
-  assistantApi, 
+  assistantApi,
+  knowledgeApi, 
   AssistantResponse, 
   AssistantDetailResponse,
   AssistantCreateRequest,
@@ -60,6 +60,7 @@ import { Switch } from '@/components/ui/switch'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import { KnowledgeSelector } from '@/components/assistant/KnowledgeSelector'
 
 interface AssistantsContentProps {
   className?: string
@@ -70,13 +71,11 @@ const AssistantCard = memo(function AssistantCard({
   assistant, 
   onEdit, 
   onDelete, 
-  onView,
   onDuplicate 
 }: { 
   assistant: AssistantResponse
   onEdit: () => void
   onDelete: () => void
-  onView: () => void
   onDuplicate: () => void
 }) {
   const getStatusColor = (status: string) => {
@@ -135,10 +134,6 @@ const AssistantCard = memo(function AssistantCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onView}>
-                <Eye className="h-4 w-4 mr-2" />
-                View Details
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={onEdit}>
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
@@ -217,7 +212,6 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
   // Dialog states
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [showDetailDialog, setShowDetailDialog] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [selectedAssistant, setSelectedAssistant] = useState<AssistantDetailResponse | null>(null)
   
@@ -237,6 +231,12 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
   
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  
+  // Knowledge management states
+  const [availableCollections, setAvailableCollections] = useState<any[]>([])
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([])
+  const [selectedDocumentIds, setSelectedDocumentIds] = useState<string[]>([])
+  const [loadingKnowledge, setLoadingKnowledge] = useState(false)
   
   // Fetch assistants
   const fetchAssistants = async () => {
@@ -291,6 +291,73 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
     }
   }
   
+  // Fetch available knowledge for assistant
+  const fetchAvailableKnowledge = async (assistantId?: string) => {
+    try {
+      setLoadingKnowledge(true)
+      
+      // Use the same endpoint for both new and existing assistants
+      const effectiveId = assistantId || 'new'
+      const response = await assistantApi.getAvailableKnowledge(effectiveId)
+      
+      console.log('Available Knowledge Response:', response)
+      
+      if (response.data) {
+        setAvailableCollections(response.data.collections || [])
+        
+        // Only set selected IDs for existing assistants
+        if (assistantId && assistantId !== 'new') {
+          setSelectedCollectionIds(response.data.selected_collection_ids || [])
+          setSelectedDocumentIds(response.data.selected_document_ids || [])
+        } else {
+          // Clear selections for new assistant
+          setSelectedCollectionIds([])
+          setSelectedDocumentIds([])
+        }
+      } else {
+        setAvailableCollections([])
+      }
+    } catch (err) {
+      console.error('Error fetching knowledge:', err)
+      setAvailableCollections([])
+    } finally {
+      setLoadingKnowledge(false)
+    }
+  }
+  
+  // Handle knowledge selection
+  const handleCollectionToggle = (collectionId: string) => {
+    setSelectedCollectionIds(prev => {
+      if (prev.includes(collectionId)) {
+        return prev.filter(id => id !== collectionId)
+      } else {
+        return [...prev, collectionId]
+      }
+    })
+  }
+  
+  const handleDocumentToggle = (documentId: string) => {
+    setSelectedDocumentIds(prev => {
+      if (prev.includes(documentId)) {
+        return prev.filter(id => id !== documentId)
+      } else {
+        return [...prev, documentId]
+      }
+    })
+  }
+  
+  const handleSelectAllKnowledge = () => {
+    const allCollectionIds = availableCollections.map(c => c.id)
+    const allDocumentIds = availableCollections.flatMap(c => c.documents?.map((d: any) => d.id) || [])
+    setSelectedCollectionIds(allCollectionIds)
+    setSelectedDocumentIds(allDocumentIds)
+  }
+  
+  const handleClearAllKnowledge = () => {
+    setSelectedCollectionIds([])
+    setSelectedDocumentIds([])
+  }
+  
   // Create assistant
   const handleCreateAssistant = async () => {
     if (!formData.name.trim()) {
@@ -304,7 +371,12 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
     
     try {
       setIsSubmitting(true)
-      const response = await assistantApi.createAssistant(formData)
+      const createData = {
+        ...formData,
+        knowledge_base_ids: selectedCollectionIds,
+        document_ids: selectedDocumentIds
+      }
+      const response = await assistantApi.createAssistant(createData)
       
       if (response.data) {
         setShowSuccess(true)
@@ -361,6 +433,13 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
       const response = await assistantApi.updateAssistant(selectedAssistant.id, updateData)
       
       if (response.data) {
+        // Update knowledge associations
+        await assistantApi.updateAssistantKnowledge(selectedAssistant.id, {
+          action: 'replace',  // Use 'replace' to completely replace existing associations
+          knowledge_base_ids: selectedCollectionIds,
+          document_ids: selectedDocumentIds
+        })
+        
         toast({
           title: "Success!",
           description: "Assistant updated successfully",
@@ -409,23 +488,6 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
     }
   }
   
-  // View assistant details
-  const handleViewAssistant = async (assistant: AssistantResponse) => {
-    try {
-      const response = await assistantApi.getAssistant(assistant.id)
-      if (response.data) {
-        setSelectedAssistant(response.data)
-        setShowDetailDialog(true)
-      }
-    } catch (err) {
-      console.error('Error fetching assistant details:', err)
-      toast({
-        title: "Error",
-        description: "Failed to load assistant details",
-        variant: "destructive"
-      })
-    }
-  }
   
   // Edit assistant
   const handleEditAssistant = async (assistant: AssistantResponse) => {
@@ -441,9 +503,13 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
           temperature: response.data.temperature,
           max_tokens: response.data.max_tokens,
           is_public: response.data.is_public,
-          knowledge_base_ids: response.data.knowledge_bases?.map(kb => kb.knowledge_base_id) || [],
-          document_ids: response.data.documents?.map(doc => doc.document_id) || []
+          knowledge_base_ids: response.data.knowledge_bases?.map((kb: any) => kb.id || kb.knowledge_base_id) || [],
+          document_ids: response.data.documents?.map((doc: any) => doc.id || doc.document_id) || []
         })
+        
+        // Load available knowledge and current selections
+        await fetchAvailableKnowledge(assistant.id)
+        
         setShowEditDialog(true)
       }
     } catch (err) {
@@ -473,6 +539,7 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
           document_ids: response.data.documents?.map(doc => doc.document_id) || []
         })
         setShowCreateDialog(true)
+        fetchAvailableKnowledge()
       }
     } catch (err) {
       console.error('Error duplicating assistant:', err)
@@ -513,7 +580,10 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
             </p>
           </div>
           <Button 
-            onClick={() => setShowCreateDialog(true)}
+            onClick={() => {
+              setShowCreateDialog(true)
+              fetchAvailableKnowledge()
+            }}
             className="gap-2"
           >
             <Plus className="h-4 w-4" />
@@ -615,7 +685,10 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
             title="No assistants found"
             message={searchQuery ? "Try adjusting your search or filters" : "Create your first AI assistant to get started"}
             actionLabel="Create Assistant"
-            onAction={() => setShowCreateDialog(true)}
+            onAction={() => {
+              setShowCreateDialog(true)
+              fetchAvailableKnowledge()
+            }}
           />
         ) : (
           <div className={cn(
@@ -632,7 +705,6 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
                   setSelectedAssistant(assistant as AssistantDetailResponse)
                   setShowDeleteDialog(true)
                 }}
-                onView={() => handleViewAssistant(assistant)}
                 onDuplicate={() => handleDuplicateAssistant(assistant)}
               />
             ))}
@@ -649,7 +721,13 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
               </DialogDescription>
             </DialogHeader>
             
-            <div className="space-y-4 py-4">
+            <Tabs defaultValue="general" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="general">General Settings</TabsTrigger>
+                <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="general" className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Name *</Label>
                 <Input
@@ -741,7 +819,28 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
                   onCheckedChange={(checked) => setFormData({ ...formData, is_public: checked })}
                 />
               </div>
-            </div>
+              </TabsContent>
+              
+              <TabsContent value="knowledge" className="mt-4">
+                {loadingKnowledge ? (
+                  <div className="flex items-center justify-center py-8">
+                    <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+                    <span className="ml-2 text-muted-foreground">Loading available knowledge...</span>
+                  </div>
+                ) : (
+                  <KnowledgeSelector
+                    collections={availableCollections}
+                    selectedCollectionIds={selectedCollectionIds}
+                    selectedDocumentIds={selectedDocumentIds}
+                    onCollectionToggle={handleCollectionToggle}
+                    onDocumentToggle={handleDocumentToggle}
+                    onSelectAll={handleSelectAllKnowledge}
+                    onClearAll={handleClearAllKnowledge}
+                    className="h-[400px]"
+                  />
+                )}
+              </TabsContent>
+            </Tabs>
             
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
@@ -771,7 +870,13 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
               </DialogDescription>
             </DialogHeader>
             
-            <div className="space-y-4 py-4">
+            <Tabs defaultValue="general" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="general">General Settings</TabsTrigger>
+                <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="general" className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">Name *</Label>
                 <Input
@@ -857,7 +962,28 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
                   onCheckedChange={(checked) => setFormData({ ...formData, is_public: checked })}
                 />
               </div>
-            </div>
+              </TabsContent>
+              
+              <TabsContent value="knowledge" className="mt-4">
+                {loadingKnowledge ? (
+                  <div className="flex items-center justify-center py-8">
+                    <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+                    <span className="ml-2 text-muted-foreground">Loading available knowledge...</span>
+                  </div>
+                ) : (
+                  <KnowledgeSelector
+                    collections={availableCollections}
+                    selectedCollectionIds={selectedCollectionIds}
+                    selectedDocumentIds={selectedDocumentIds}
+                    onCollectionToggle={handleCollectionToggle}
+                    onDocumentToggle={handleDocumentToggle}
+                    onSelectAll={handleSelectAllKnowledge}
+                    onClearAll={handleClearAllKnowledge}
+                    className="h-[400px]"
+                  />
+                )}
+              </TabsContent>
+            </Tabs>
             
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowEditDialog(false)}>
@@ -872,148 +998,6 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
                 ) : (
                   'Update Assistant'
                 )}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        
-        {/* Assistant Details Dialog */}
-        <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Bot className="h-5 w-5" />
-                {selectedAssistant?.name}
-              </DialogTitle>
-            </DialogHeader>
-            
-            {selectedAssistant && (
-              <Tabs defaultValue="overview" className="mt-4">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="configuration">Configuration</TabsTrigger>
-                  <TabsTrigger value="usage">Usage Stats</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="overview" className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-xs text-slate-500">Status</Label>
-                      <Badge className="mt-1">{selectedAssistant.status}</Badge>
-                    </div>
-                    <div>
-                      <Label className="text-xs text-slate-500">Visibility</Label>
-                      <Badge variant="outline" className="mt-1">
-                        {selectedAssistant.is_public ? 'Public' : 'Private'}
-                      </Badge>
-                    </div>
-                    <div>
-                      <Label className="text-xs text-slate-500">AI Model</Label>
-                      <p className="text-sm font-medium">{selectedAssistant.ai_model_display}</p>
-                    </div>
-                    <div>
-                      <Label className="text-xs text-slate-500">Created</Label>
-                      <p className="text-sm">{new Date(selectedAssistant.created_at).toLocaleString()}</p>
-                    </div>
-                  </div>
-                  
-                  {selectedAssistant.description && (
-                    <div>
-                      <Label className="text-xs text-slate-500">Description</Label>
-                      <p className="text-sm mt-1">{selectedAssistant.description}</p>
-                    </div>
-                  )}
-                  
-                  {selectedAssistant.system_prompt && (
-                    <div>
-                      <Label className="text-xs text-slate-500">System Prompt</Label>
-                      <pre className="text-sm mt-1 p-3 bg-slate-100 dark:bg-slate-800 rounded-lg whitespace-pre-wrap">
-                        {selectedAssistant.system_prompt}
-                      </pre>
-                    </div>
-                  )}
-                </TabsContent>
-                
-                <TabsContent value="configuration" className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-xs text-slate-500">Temperature</Label>
-                      <p className="text-sm font-medium">{selectedAssistant.temperature}</p>
-                    </div>
-                    <div>
-                      <Label className="text-xs text-slate-500">Max Tokens</Label>
-                      <p className="text-sm font-medium">{selectedAssistant.max_tokens}</p>
-                    </div>
-                  </div>
-                  
-                  {selectedAssistant.knowledge_bases && selectedAssistant.knowledge_bases.length > 0 && (
-                    <div>
-                      <Label className="text-xs text-slate-500">Knowledge Bases</Label>
-                      <div className="mt-2 space-y-2">
-                        {selectedAssistant.knowledge_bases.map(kb => (
-                          <Card key={kb.knowledge_base_id} className="p-3">
-                            <h4 className="font-medium text-sm">{kb.name}</h4>
-                            {kb.description && (
-                              <p className="text-xs text-slate-500 mt-1">{kb.description}</p>
-                            )}
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {selectedAssistant.documents && selectedAssistant.documents.length > 0 && (
-                    <div>
-                      <Label className="text-xs text-slate-500">Documents</Label>
-                      <div className="mt-2 space-y-2">
-                        {selectedAssistant.documents.map(doc => (
-                          <Card key={doc.document_id} className="p-3">
-                            <h4 className="font-medium text-sm">{doc.title}</h4>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </TabsContent>
-                
-                <TabsContent value="usage" className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4">
-                    <Card className="p-4">
-                      <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 mb-2">
-                        <MessageSquare className="h-4 w-4" />
-                        <span className="text-xs">Total Messages</span>
-                      </div>
-                      <p className="text-2xl font-bold">{selectedAssistant.total_messages}</p>
-                    </Card>
-                    <Card className="p-4">
-                      <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 mb-2">
-                        <Users className="h-4 w-4" />
-                        <span className="text-xs">Conversations</span>
-                      </div>
-                      <p className="text-2xl font-bold">{selectedAssistant.total_conversations}</p>
-                    </Card>
-                    <Card className="p-4">
-                      <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 mb-2">
-                        <Zap className="h-4 w-4" />
-                        <span className="text-xs">Tokens Used</span>
-                      </div>
-                      <p className="text-2xl font-bold">{selectedAssistant.total_tokens_used.toLocaleString()}</p>
-                    </Card>
-                  </div>
-                  
-                  {selectedAssistant.last_used_at && (
-                    <div>
-                      <Label className="text-xs text-slate-500">Last Used</Label>
-                      <p className="text-sm mt-1">{new Date(selectedAssistant.last_used_at).toLocaleString()}</p>
-                    </div>
-                  )}
-                </TabsContent>
-              </Tabs>
-            )}
-            
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowDetailDialog(false)}>
-                Close
               </Button>
             </DialogFooter>
           </DialogContent>

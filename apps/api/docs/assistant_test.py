@@ -329,6 +329,7 @@ class AssistantTester:
             print("⚠ Skipping knowledge management test - no assistant created")
             return
         
+        # Test POST endpoint - Update Assistant Knowledge
         start_time = time.time()
         endpoint = f"/api/v1/assistants/{self.test_data['test_assistant_id']}/knowledge"
         headers = self.get_auth_headers()
@@ -362,6 +363,23 @@ class AssistantTester:
                 self.log_test_result(endpoint, "POST", payload, headers, 
                                    type('MockResponse', (), {'status_code': 500, 'text': str(e), 'json': lambda: None})(), 
                                    start_time, False, str(e))
+        
+        # Test GET endpoint - Get Assistant Knowledge
+        start_time = time.time()
+        try:
+            response = self.session.get(f"{self.base_url}{endpoint}", headers=headers)
+            success = response.status_code == 200
+            
+            self.log_test_result(endpoint, "GET", None, headers, response, start_time, success)
+            
+            if success:
+                knowledge_data = response.json()
+                print(f"✓ Retrieved assistant knowledge: {knowledge_data.get('knowledge_count', 0)} knowledge bases, {knowledge_data.get('document_count', 0)} documents")
+                
+        except Exception as e:
+            self.log_test_result(endpoint, "GET", None, headers, 
+                               type('MockResponse', (), {'status_code': 500, 'text': str(e), 'json': lambda: None})(), 
+                               start_time, False, str(e))
     
     def test_assistant_chat_config(self):
         """Test getting assistant configuration for chat integration"""
@@ -459,6 +477,34 @@ class AssistantTester:
         
         return None
     
+    def test_available_knowledge(self):
+        """Test getting available knowledge for assistant"""
+        print("\n=== Testing Available Knowledge ===")
+        
+        if not self.test_data["test_assistant_id"]:
+            print("⚠ Skipping available knowledge test - no assistant created")
+            return
+        
+        start_time = time.time()
+        endpoint = f"/api/v1/assistants/{self.test_data['test_assistant_id']}/available-knowledge"
+        headers = self.get_auth_headers()
+        
+        try:
+            response = self.session.get(f"{self.base_url}{endpoint}", headers=headers)
+            success = response.status_code == 200
+            
+            self.log_test_result(endpoint, "GET", None, headers, response, start_time, success)
+            
+            if success:
+                available_data = response.json()
+                print(f"✓ Found {available_data.get('total_knowledge_bases', 0)} available knowledge bases")
+                print(f"✓ Found {available_data.get('total_documents', 0)} available documents")
+                
+        except Exception as e:
+            self.log_test_result(endpoint, "GET", None, headers, 
+                               type('MockResponse', (), {'status_code': 500, 'text': str(e), 'json': lambda: None})(), 
+                               start_time, False, str(e))
+    
     def test_featured_assistants(self):
         """Test getting featured public assistants"""
         print("\n=== Testing Featured Assistants ===")
@@ -550,6 +596,7 @@ class AssistantTester:
         self.test_get_assistant()
         self.test_update_assistant()
         self.test_assistant_knowledge_management()
+        self.test_available_knowledge()
         self.test_assistant_chat_config()
         self.test_featured_assistants()
         self.test_chat_integration()
@@ -626,6 +673,8 @@ class AssistantTester:
                     "Assistant Updates",
                     "Assistant Deletion",
                     "Knowledge Management",
+                    "Get Assistant Knowledge",
+                    "Available Knowledge",
                     "Chat Integration",
                     "Available Models",
                     "Featured Assistants",

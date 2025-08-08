@@ -8,6 +8,11 @@ from .organization import Organization, OrganizationStatus, SubscriptionTier, Pe
 from .chat import Chat, ChatMessage, ChatParticipant, ChatType, MessageType, MessageStatus, ParticipantRole
 from .form import Form, FormTemplate, FormSubmission, FormVersion, FormShare, FormStatus, FormVisibility, FormSharePermission
 
+# Import both models but don't create circular import issues
+# These need to be imported together since they have cross-references
+from .assistant import Assistant, AssistantUsageLog, AIModel, AssistantStatus, assistant_knowledge_bases, assistant_documents
+from .knowledge import KnowledgeBase, KnowledgeDocument, CollectionType, DocumentSourceType, DocumentStatus
+
 # Import the Base class for external usage
 from core.database import Base
 
@@ -51,4 +56,17 @@ __all__ = [
     "FormStatus",
     "FormVisibility",
     "FormSharePermission",
+    
+    # Knowledge models
+    "KnowledgeBase",
+    "KnowledgeDocument",
+    "CollectionType",
+    "DocumentSourceType",
+    "DocumentStatus",
+    
+    # Assistant models
+    "Assistant",
+    "AssistantUsageLog",
+    "AIModel",
+    "AssistantStatus",
 ]

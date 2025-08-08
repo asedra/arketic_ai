@@ -63,7 +63,7 @@ class Chat(Base):
     # Chat details
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
-    chat_type = Column(Enum(ChatType), default=ChatType.DIRECT, nullable=False)
+    chat_type = Column(Enum(ChatType, values_callable=lambda obj: [e.value for e in obj]), default=ChatType.DIRECT, nullable=False)
     
     # AI Configuration
     ai_model = Column(String(50), nullable=True)  # Which AI model to use
@@ -154,7 +154,7 @@ class ChatMessage(Base):
     reply_to_id = Column(UUID(as_uuid=True), ForeignKey('chat_messages.id'), nullable=True)
     
     # Message content
-    message_type = Column(Enum(MessageType), default=MessageType.USER, nullable=False)
+    message_type = Column(Enum(MessageType, values_callable=lambda obj: [e.value for e in obj]), default=MessageType.USER, nullable=False)
     content = Column(Text, nullable=False)
     
     # File attachments
@@ -170,7 +170,7 @@ class ChatMessage(Base):
     ai_confidence_score = Column(Numeric(5, 4), nullable=True)  # 0.0000-1.0000
     
     # Message status and metadata
-    status = Column(Enum(MessageStatus), default=MessageStatus.SENT, nullable=False)
+    status = Column(Enum(MessageStatus, values_callable=lambda obj: [e.value for e in obj]), default=MessageStatus.SENT, nullable=False)
     is_edited = Column(Boolean, default=False, nullable=False)
     is_deleted = Column(Boolean, default=False, nullable=False)
     message_metadata = Column(JSON, nullable=True)
@@ -253,7 +253,7 @@ class ChatParticipant(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     
     # Participant details
-    role = Column(Enum(ParticipantRole), default=ParticipantRole.MEMBER, nullable=False)
+    role = Column(Enum(ParticipantRole, values_callable=lambda obj: [e.value for e in obj]), default=ParticipantRole.MEMBER, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     is_muted = Column(Boolean, default=False, nullable=False)
     

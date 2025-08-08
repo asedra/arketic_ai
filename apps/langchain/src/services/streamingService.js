@@ -19,7 +19,7 @@ export class StreamingService {
         chatId,
         userId,
         content: message,
-        messageType: 'USER',
+        messageType: 'user',
         timestamp: new Date().toISOString()
       });
 

@@ -5,7 +5,6 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { ArketicProvider } from "@/components/providers/ArketicProvider"
 import { AuthProvider } from "@/lib/auth-context"
 import { AuthErrorBoundary } from "@/components/auth/auth-error-boundary"
-import { AuthDebugPanel } from "@/components/auth/auth-debug-panel"
 import { Toaster } from "sonner"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -39,7 +38,6 @@ export default function RootLayout({
                   closeButton
                   duration={4000}
                 />
-                <AuthDebugPanel />
               </ArketicProvider>
             </AuthProvider>
           </AuthErrorBoundary>

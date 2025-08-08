@@ -38,29 +38,30 @@ class AssistantStatus(str, PyEnum):
     ARCHIVED = "archived"
 
 
-# TODO: Uncomment when KnowledgeBase and KnowledgeDocument models are created
 # Association table for many-to-many relationship between assistants and knowledge bases
-# assistant_knowledge_bases = Table(
-#     'assistant_knowledge_bases',
-#     Base.metadata,
-#     Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-#     Column('assistant_id', UUID(as_uuid=True), ForeignKey('assistants.id', ondelete='CASCADE'), nullable=False),
-#     Column('knowledge_base_id', UUID(as_uuid=True), ForeignKey('knowledge_bases.id', ondelete='CASCADE'), nullable=False),
-#     Column('created_at', DateTime, default=datetime.utcnow, nullable=False),
-#     UniqueConstraint('assistant_id', 'knowledge_base_id', name='unique_assistant_knowledge_base')
-# )
+assistant_knowledge_bases = Table(
+    'assistant_knowledge_bases',
+    Base.metadata,
+    Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
+    Column('assistant_id', UUID(as_uuid=True), ForeignKey('assistants.id', ondelete='CASCADE'), nullable=False),
+    Column('knowledge_base_id', UUID(as_uuid=True), ForeignKey('knowledge_bases.id', ondelete='CASCADE'), nullable=False),
+    Column('created_at', DateTime, default=datetime.utcnow, nullable=False),
+    Column('created_by', UUID(as_uuid=True), ForeignKey('users.id', ondelete='SET NULL'), nullable=True),
+    UniqueConstraint('assistant_id', 'knowledge_base_id', name='unique_assistant_knowledge_base')
+)
 
 
 # Association table for many-to-many relationship between assistants and documents
-# assistant_documents = Table(
-#     'assistant_documents',
-#     Base.metadata,
-#     Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-#     Column('assistant_id', UUID(as_uuid=True), ForeignKey('assistants.id', ondelete='CASCADE'), nullable=False),
-#     Column('document_id', UUID(as_uuid=True), ForeignKey('knowledge_documents.id', ondelete='CASCADE'), nullable=False),
-#     Column('created_at', DateTime, default=datetime.utcnow, nullable=False),
-#     UniqueConstraint('assistant_id', 'document_id', name='unique_assistant_document')
-# )
+assistant_documents = Table(
+    'assistant_documents',
+    Base.metadata,
+    Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
+    Column('assistant_id', UUID(as_uuid=True), ForeignKey('assistants.id', ondelete='CASCADE'), nullable=False),
+    Column('document_id', UUID(as_uuid=True), ForeignKey('knowledge_documents.id', ondelete='CASCADE'), nullable=False),
+    Column('created_at', DateTime, default=datetime.utcnow, nullable=False),
+    Column('created_by', UUID(as_uuid=True), ForeignKey('users.id', ondelete='SET NULL'), nullable=True),
+    UniqueConstraint('assistant_id', 'document_id', name='unique_assistant_document')
+)
 
 
 class Assistant(Base):
@@ -100,15 +101,26 @@ class Assistant(Base):
     
     # Relationships
     creator = relationship("User", backref="assistants")
+    # Note: Using string references for forward declarations
+    # These will be resolved when all models are loaded
+    knowledge_bases = relationship(
+        "KnowledgeBase",
+        secondary="assistant_knowledge_bases",
+        back_populates="assistants"
+    )
+    documents = relationship(
+        "KnowledgeDocument",
+        secondary="assistant_documents",
+        back_populates="assistants"
+    )
     
-    # Knowledge relationships - simplified without actual models for now
     def get_knowledge_bases(self):
-        """Get associated knowledge bases (placeholder)"""
-        return []
+        """Get associated knowledge bases"""
+        return self.knowledge_bases
     
     def get_documents(self):
-        """Get associated documents (placeholder)"""
-        return []
+        """Get associated documents"""
+        return self.documents
     
     # Indexes
     __table_args__ = (
@@ -150,12 +162,18 @@ class Assistant(Base):
     @property
     def knowledge_count(self) -> int:
         """Get total knowledge base count"""
-        return len(self.get_knowledge_bases())
+        # If the relationship is loaded, return the count
+        if hasattr(self, 'knowledge_bases') and self.knowledge_bases is not None:
+            return len(self.knowledge_bases)
+        return 0
     
     @property
     def document_count(self) -> int:
         """Get total document count"""
-        return len(self.get_documents())
+        # If the relationship is loaded, return the count
+        if hasattr(self, 'documents') and self.documents is not None:
+            return len(self.documents)
+        return 0
     
     def mark_as_used(self):
         """Mark assistant as recently used"""

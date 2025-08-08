@@ -183,7 +183,9 @@ class AssistantService:
         """Delete an assistant"""
         try:
             # Get and validate assistant
-            assistant = await db.get(Assistant, assistant_id)
+            query = select(Assistant).where(Assistant.id == assistant_id)
+            result = await db.execute(query)
+            assistant = result.scalar_one_or_none()
             
             if not assistant:
                 raise HTTPException(status_code=404, detail="Assistant not found")
@@ -221,8 +223,11 @@ class AssistantService:
     ) -> AssistantListResponse:
         """List assistants with filtering and pagination"""
         try:
-            # Build base query
-            query = select(Assistant).where(
+            # Build base query with eager loading of relationships for counts
+            query = select(Assistant).options(
+                selectinload(Assistant.knowledge_bases),
+                selectinload(Assistant.documents)
+            ).where(
                 or_(
                     Assistant.creator_id == user.id,  # User's assistants
                     and_(Assistant.is_public == True, Assistant.status == "active")  # Public assistants - use string value
@@ -348,7 +353,9 @@ class AssistantService:
         """Manage assistant's knowledge base and document associations"""
         try:
             # Get and validate assistant
-            assistant = await db.get(Assistant, assistant_id)
+            query = select(Assistant).where(Assistant.id == assistant_id)
+            result = await db.execute(query)
+            assistant = result.scalar_one_or_none()
             
             if not assistant:
                 raise HTTPException(status_code=404, detail="Assistant not found")
@@ -424,7 +431,9 @@ class AssistantService:
             db.add(usage_log)
             
             # Update assistant statistics
-            assistant = await db.get(Assistant, assistant_id)
+            query = select(Assistant).where(Assistant.id == assistant_id)
+            result = await db.execute(query)
+            assistant = result.scalar_one_or_none()
             if assistant:
                 if action == "message":
                     assistant.mark_as_used()
@@ -484,8 +493,12 @@ class AssistantService:
         db: AsyncSession,
         assistant_id: UUID
     ) -> Optional[Assistant]:
-        """Get assistant (simplified without relationships for now)"""
-        query = select(Assistant).where(Assistant.id == assistant_id)
+        """Get assistant with relationships loaded"""
+        # Get the assistant with eager loading of relationships
+        query = select(Assistant).options(
+            selectinload(Assistant.knowledge_bases),
+            selectinload(Assistant.documents)
+        ).where(Assistant.id == assistant_id)
         
         result = await db.execute(query)
         return result.scalar_one_or_none()
@@ -497,10 +510,43 @@ class AssistantService:
         knowledge_base_ids: List[UUID],
         user_id: UUID
     ) -> None:
-        """Add knowledge bases to assistant (placeholder)"""
-        # TODO: Implement when knowledge_bases table is available
-        logger.info(f"Placeholder: Adding {len(knowledge_base_ids)} knowledge bases to assistant {assistant_id}")
-        pass
+        """Add knowledge bases to assistant"""
+        if not knowledge_base_ids:
+            return
+            
+        # Verify user has access to each knowledge base
+        for kb_id in knowledge_base_ids:
+            await self._verify_knowledge_base_access(db, kb_id, user_id)
+        
+        # Insert new associations
+        for kb_id in knowledge_base_ids:
+            # Check if association already exists
+            check_query = text("""
+                SELECT id FROM assistant_knowledge_bases
+                WHERE assistant_id = :assistant_id AND knowledge_base_id = :kb_id
+            """)
+            
+            result = await db.execute(check_query, {
+                "assistant_id": str(assistant_id),
+                "kb_id": str(kb_id)
+            })
+            
+            if not result.fetchone():
+                # Insert new association
+                insert_query = text("""
+                    INSERT INTO assistant_knowledge_bases (id, assistant_id, knowledge_base_id, created_by, created_at)
+                    VALUES (:id, :assistant_id, :kb_id, :user_id, :created_at)
+                """)
+                
+                await db.execute(insert_query, {
+                    "id": str(uuid4()),
+                    "assistant_id": str(assistant_id),
+                    "kb_id": str(kb_id),
+                    "user_id": str(user_id),
+                    "created_at": datetime.utcnow()
+                })
+        
+        logger.info(f"Added {len(knowledge_base_ids)} knowledge bases to assistant {assistant_id}")
     
     async def _remove_knowledge_bases(
         self,
@@ -508,10 +554,23 @@ class AssistantService:
         assistant_id: UUID,
         knowledge_base_ids: List[UUID]
     ) -> None:
-        """Remove knowledge bases from assistant (placeholder)"""
-        # TODO: Implement when knowledge_bases table is available
-        logger.info(f"Placeholder: Removing {len(knowledge_base_ids)} knowledge bases from assistant {assistant_id}")
-        pass
+        """Remove knowledge bases from assistant"""
+        if not knowledge_base_ids:
+            return
+            
+        # Delete associations
+        delete_query = text("""
+            DELETE FROM assistant_knowledge_bases
+            WHERE assistant_id = :assistant_id 
+            AND knowledge_base_id = ANY(:kb_ids)
+        """)
+        
+        await db.execute(delete_query, {
+            "assistant_id": str(assistant_id),
+            "kb_ids": [str(kb_id) for kb_id in knowledge_base_ids]
+        })
+        
+        logger.info(f"Removed {len(knowledge_base_ids)} knowledge bases from assistant {assistant_id}")
     
     async def _replace_knowledge_bases(
         self,
@@ -520,11 +579,22 @@ class AssistantService:
         knowledge_base_ids: List[UUID],
         user_id: UUID
     ) -> None:
-        """Replace all knowledge bases for assistant (placeholder)"""
-        # TODO: Implement when knowledge_bases table is available
-        logger.info(f"Placeholder: Replacing knowledge bases for assistant {assistant_id} with {len(knowledge_base_ids)} items")
+        """Replace all knowledge bases for assistant"""
+        # Delete all existing associations
+        delete_query = text("""
+            DELETE FROM assistant_knowledge_bases
+            WHERE assistant_id = :assistant_id
+        """)
+        
+        await db.execute(delete_query, {
+            "assistant_id": str(assistant_id)
+        })
+        
+        # Add new associations
         if knowledge_base_ids:
             await self._add_knowledge_bases(db, assistant_id, knowledge_base_ids, user_id)
+        
+        logger.info(f"Replaced knowledge bases for assistant {assistant_id} with {len(knowledge_base_ids)} items")
     
     async def _add_documents(
         self,
@@ -533,12 +603,43 @@ class AssistantService:
         document_ids: List[UUID],
         user_id: UUID
     ) -> None:
-        """Add documents to assistant (placeholder)"""
-        # TODO: Implement when document tables are available
-        logger.info(f"Placeholder: Adding {len(document_ids)} documents to assistant {assistant_id}")
-        # Verify user has access to documents
+        """Add documents to assistant"""
+        if not document_ids:
+            return
+            
+        # Verify user has access to each document
         for doc_id in document_ids:
             await self._verify_document_access(db, doc_id, user_id)
+        
+        # Insert new associations
+        for doc_id in document_ids:
+            # Check if association already exists
+            check_query = text("""
+                SELECT id FROM assistant_documents
+                WHERE assistant_id = :assistant_id AND document_id = :doc_id
+            """)
+            
+            result = await db.execute(check_query, {
+                "assistant_id": str(assistant_id),
+                "doc_id": str(doc_id)
+            })
+            
+            if not result.fetchone():
+                # Insert new association
+                insert_query = text("""
+                    INSERT INTO assistant_documents (id, assistant_id, document_id, created_by, created_at)
+                    VALUES (:id, :assistant_id, :doc_id, :user_id, :created_at)
+                """)
+                
+                await db.execute(insert_query, {
+                    "id": str(uuid4()),
+                    "assistant_id": str(assistant_id),
+                    "doc_id": str(doc_id),
+                    "user_id": str(user_id),
+                    "created_at": datetime.utcnow()
+                })
+        
+        logger.info(f"Added {len(document_ids)} documents to assistant {assistant_id}")
     
     async def _remove_documents(
         self,
@@ -546,10 +647,23 @@ class AssistantService:
         assistant_id: UUID,
         document_ids: List[UUID]
     ) -> None:
-        """Remove documents from assistant (placeholder)"""
-        # TODO: Implement when document tables are available
-        logger.info(f"Placeholder: Removing {len(document_ids)} documents from assistant {assistant_id}")
-        pass
+        """Remove documents from assistant"""
+        if not document_ids:
+            return
+            
+        # Delete associations
+        delete_query = text("""
+            DELETE FROM assistant_documents
+            WHERE assistant_id = :assistant_id 
+            AND document_id = ANY(:doc_ids)
+        """)
+        
+        await db.execute(delete_query, {
+            "assistant_id": str(assistant_id),
+            "doc_ids": [str(doc_id) for doc_id in document_ids]
+        })
+        
+        logger.info(f"Removed {len(document_ids)} documents from assistant {assistant_id}")
     
     async def _replace_documents(
         self,
@@ -558,11 +672,22 @@ class AssistantService:
         document_ids: List[UUID],
         user_id: UUID
     ) -> None:
-        """Replace all documents for assistant (placeholder)"""
-        # TODO: Implement when document tables are available
-        logger.info(f"Placeholder: Replacing documents for assistant {assistant_id} with {len(document_ids)} items")
+        """Replace all documents for assistant"""
+        # Delete all existing associations
+        delete_query = text("""
+            DELETE FROM assistant_documents
+            WHERE assistant_id = :assistant_id
+        """)
+        
+        await db.execute(delete_query, {
+            "assistant_id": str(assistant_id)
+        })
+        
+        # Add new associations
         if document_ids:
             await self._add_documents(db, assistant_id, document_ids, user_id)
+        
+        logger.info(f"Replaced documents for assistant {assistant_id} with {len(document_ids)} items")
     
     async def _verify_knowledge_base_access(
         self,
@@ -615,9 +740,29 @@ class AssistantService:
         """Convert assistant to detailed response"""
         response_dict = assistant.to_dict(include_config=True)
         
-        # Add knowledge bases and documents info (placeholder for now)
+        # Add knowledge bases info
         response_dict["knowledge_bases"] = []
+        if hasattr(assistant, 'knowledge_bases') and assistant.knowledge_bases:
+            for kb in assistant.knowledge_bases:
+                response_dict["knowledge_bases"].append({
+                    "knowledge_base_id": str(kb.id),
+                    "name": kb.name,
+                    "description": kb.description
+                })
+        
+        # Add documents info
         response_dict["documents"] = []
+        if hasattr(assistant, 'documents') and assistant.documents:
+            for doc in assistant.documents:
+                response_dict["documents"].append({
+                    "document_id": str(doc.id),
+                    "title": doc.title,
+                    "knowledge_base_id": str(doc.knowledge_base_id) if doc.knowledge_base_id else None
+                })
+        
+        # Update counts
+        response_dict["knowledge_count"] = len(response_dict["knowledge_bases"])
+        response_dict["document_count"] = len(response_dict["documents"])
         
         return AssistantDetailResponse(**response_dict)
     

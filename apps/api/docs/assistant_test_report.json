@@ -1,14 +1,14 @@
 {
   "test_metadata": {
-    "generated_at": "2025-08-07T21:33:00.300637Z",
+    "generated_at": "2025-08-08T05:34:36.025037Z",
     "base_url": "http://localhost:8000",
     "test_email": "arketic@arketic.com",
-    "test_assistant_id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
-    "total_tests": 17,
-    "successful_tests": 16,
+    "test_assistant_id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
+    "total_tests": 19,
+    "successful_tests": 18,
     "failed_tests": 1,
-    "success_rate_percent": 94.1,
-    "average_duration_ms": 25.3,
+    "success_rate_percent": 94.7,
+    "average_duration_ms": 17.6,
     "tested_features": [
       "Assistant Creation",
       "Assistant Listing & Search",
@@ -16,6 +16,8 @@
       "Assistant Updates",
       "Assistant Deletion",
       "Knowledge Management",
+      "Get Assistant Knowledge",
+      "Available Knowledge",
       "Chat Integration",
       "Available Models",
       "Featured Assistants",
@@ -23,96 +25,108 @@
     ]
   },
   "rest_api_summary": {
-    "total_calls": 17,
-    "successful_calls": 16,
+    "total_calls": 19,
+    "successful_calls": 18,
     "failed_calls": 1,
-    "success_rate_percent": 94.1,
-    "average_duration_ms": 25.3
+    "success_rate_percent": 94.7,
+    "average_duration_ms": 17.6
   },
   "endpoint_summary": {
     "/api/v1/test/create-admin": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 46.2646484375
+      "avg_duration_ms": 4.229307174682617
     },
     "/api/v1/auth/login": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 220.11780738830566
+      "avg_duration_ms": 177.19459533691406
     },
     "/api/v1/assistants/health": {
       "total_calls": 1,
       "successful_calls": 0,
       "failed_calls": 1,
-      "avg_duration_ms": 1.9185543060302734
+      "avg_duration_ms": 2.0895004272460938
     },
     "/api/v1/assistants/models/available": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 1.6493797302246094
+      "avg_duration_ms": 1.634359359741211
     },
     "/api/v1/assistants/": {
       "total_calls": 2,
       "successful_calls": 2,
       "failed_calls": 0,
-      "avg_duration_ms": 13.611435890197754
+      "avg_duration_ms": 7.814645767211914
     },
     "/api/v1/assistants/?limit=5&page=1": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 18.62931251525879
+      "avg_duration_ms": 13.476133346557617
     },
     "/api/v1/assistants/?sort_by=name&sort_order=asc": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 24.994611740112305
+      "avg_duration_ms": 19.73271369934082
     },
     "/api/v1/assistants/?status=active": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 31.486988067626953
+      "avg_duration_ms": 26.83734893798828
     },
-    "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77": {
+    "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e": {
       "total_calls": 3,
       "successful_calls": 3,
       "failed_calls": 0,
-      "avg_duration_ms": 6.9967905680338545
+      "avg_duration_ms": 7.418394088745117
     },
-    "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/knowledge?action=add": {
+    "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e/knowledge?action=add": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 7.602691650390625
+      "avg_duration_ms": 6.390571594238281
     },
-    "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/knowledge?action=replace": {
+    "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e/knowledge?action=replace": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 14.26243782043457
+      "avg_duration_ms": 12.572526931762695
     },
-    "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/chat-config": {
+    "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e/knowledge": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 4.220247268676758
+      "avg_duration_ms": 4.00233268737793
+    },
+    "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e/available-knowledge": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 4.167318344116211
+    },
+    "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e/chat-config": {
+      "total_calls": 1,
+      "successful_calls": 1,
+      "failed_calls": 0,
+      "avg_duration_ms": 9.689807891845703
     },
     "/api/v1/assistants/public/featured": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 4.3506622314453125
+      "avg_duration_ms": 5.077600479125977
     },
     "/api/v1/chat/assistants/available": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 5.951404571533203
+      "avg_duration_ms": 8.923530578613281
     }
   },
   "detailed_results": [
@@ -124,8 +138,8 @@
       "response_status": 200,
       "response_body": null,
       "response_text": "null",
-      "timestamp": "2025-08-07T21:32:59.979713",
-      "duration_ms": 46.2646484375,
+      "timestamp": "2025-08-08T05:34:35.740694",
+      "duration_ms": 4.229307174682617,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -142,12 +156,12 @@
       },
       "response_status": 200,
       "response_body": {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
-        "refresh_token": "I3kjhID0ojX6QkPg4o-R-iqiUf3xKt8Pf6l7zAeUGVU",
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
+        "refresh_token": "7Q7FbPWPAt-rHY97Ua3dDbY8N3hRp1CylL-NPOkG0_0",
         "token_type": "bearer",
         "expires_in": 1800,
         "user": {
-          "id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+          "id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
           "email": "arketic@arketic.com",
           "username": "arketic",
           "first_name": "Arketic",
@@ -156,9 +170,9 @@
           "is_verified": true
         }
       },
-      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8\",\"refresh_token\":\"I3kjhID0ojX6QkPg4o-R-iqiUf3xKt8Pf6l7zAeUGVU\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"email\":\"arketic@arketic.com\",\"username\":\"arketic\",\"first_name\":\"Arketic\",\"last_name\":\"Admin\",\"role\":\"admin\",\"is_verified\":true}}",
-      "timestamp": "2025-08-07T21:33:00.199891",
-      "duration_ms": 220.11780738830566,
+      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw\",\"refresh_token\":\"7Q7FbPWPAt-rHY97Ua3dDbY8N3hRp1CylL-NPOkG0_0\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"email\":\"arketic@arketic.com\",\"username\":\"arketic\",\"first_name\":\"Arketic\",\"last_name\":\"Admin\",\"role\":\"admin\",\"is_verified\":true}}",
+      "timestamp": "2025-08-08T05:34:35.917935",
+      "duration_ms": 177.19459533691406,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -173,8 +187,8 @@
         "detail": "Not authenticated"
       },
       "response_text": "{\"detail\":\"Not authenticated\"}",
-      "timestamp": "2025-08-07T21:33:00.201914",
-      "duration_ms": 1.9185543060302734,
+      "timestamp": "2025-08-08T05:34:35.920219",
+      "duration_ms": 2.0895004272460938,
       "success": false,
       "error_message": null,
       "test_type": "REST_API"
@@ -184,7 +198,7 @@
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
@@ -257,8 +271,8 @@
         "default_model": "gpt-4o"
       },
       "response_text": "{\"models\":[{\"value\":\"gpt-4o\",\"label\":\"GPT-4o\",\"description\":\"Most capable GPT-4 model, great for complex tasks\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.03},{\"value\":\"gpt-4o-mini\",\"label\":\"GPT-4o Mini\",\"description\":\"Smaller, faster GPT-4 model, good for simple tasks\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.015},{\"value\":\"gpt-4-turbo\",\"label\":\"GPT-4 Turbo\",\"description\":\"Enhanced GPT-4 with improved performance\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.03},{\"value\":\"gpt-4\",\"label\":\"GPT-4\",\"description\":\"Most capable model, best for complex reasoning\",\"max_tokens\":8192,\"cost_per_1k_tokens\":0.06},{\"value\":\"gpt-3.5-turbo\",\"label\":\"GPT-3.5 Turbo\",\"description\":\"Fast and efficient, good for most tasks\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.002},{\"value\":\"gpt-3.5-turbo-16k\",\"label\":\"GPT-3.5 Turbo 16K\",\"description\":\"GPT-3.5 with extended context window\",\"max_tokens\":16384,\"cost_per_1k_tokens\":0.004},{\"value\":\"claude-3-5-sonnet\",\"label\":\"Claude 3.5 Sonnet\",\"description\":\"Anthropic's most capable model\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.03},{\"value\":\"claude-3-opus\",\"label\":\"Claude 3 Opus\",\"description\":\"Anthropic's most powerful model\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.075},{\"value\":\"claude-3-haiku\",\"label\":\"Claude 3 Haiku\",\"description\":\"Fast and cost-effective Anthropic model\",\"max_tokens\":4096,\"cost_per_1k_tokens\":0.0025}],\"default_model\":\"gpt-4o\"}",
-      "timestamp": "2025-08-07T21:33:00.203620",
-      "duration_ms": 1.6493797302246094,
+      "timestamp": "2025-08-08T05:34:35.921889",
+      "duration_ms": 1.634359359741211,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -282,12 +296,12 @@
         }
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
-        "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+        "id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
         "name": "Test AI Assistant",
         "description": "A test assistant for API testing purposes",
         "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -297,14 +311,14 @@
         "max_tokens": 2048,
         "status": "active",
         "is_public": false,
-        "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+        "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
         "total_conversations": 0,
         "total_messages": 0,
         "total_tokens_used": 0,
         "knowledge_count": 0,
         "document_count": 0,
-        "created_at": "2025-08-07T21:33:00.208417",
-        "updated_at": "2025-08-07T21:33:00.208418",
+        "created_at": "2025-08-08T05:34:35.923956",
+        "updated_at": "2025-08-08T05:34:35.923957",
         "last_used_at": null,
         "configuration": {
           "test_mode": true,
@@ -313,9 +327,9 @@
         "knowledge_bases": [],
         "documents": []
       },
-      "response_text": "{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
-      "timestamp": "2025-08-07T21:33:00.218556",
-      "duration_ms": 14.790534973144531,
+      "response_text": "{\"id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T05:34:35.923956\",\"updated_at\":\"2025-08-08T05:34:35.923957\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
+      "timestamp": "2025-08-08T05:34:35.930573",
+      "duration_ms": 8.621931076049805,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -325,14 +339,14 @@
       "method": "GET",
       "payload": {},
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "assistants": [
           {
-            "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+            "id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
             "name": "Test AI Assistant",
             "description": "A test assistant for API testing purposes",
             "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -342,14 +356,214 @@
             "max_tokens": 2048,
             "status": "active",
             "is_public": false,
-            "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
             "total_conversations": 0,
             "total_messages": 0,
             "total_tokens_used": 0,
             "knowledge_count": 0,
             "document_count": 0,
-            "created_at": "2025-08-07T21:33:00.208417",
-            "updated_at": "2025-08-07T21:33:00.208418",
+            "created_at": "2025-08-08T05:34:35.923956",
+            "updated_at": "2025-08-08T05:34:35.923957",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "be656f81-0823-4c39-a6bc-a8d7d1742321",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:57:00.012401",
+            "updated_at": "2025-08-08T04:57:00.012402",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "d79fcf8c-756e-4d4c-befb-1f429ac2ef0d",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:54.425599",
+            "updated_at": "2025-08-08T04:56:54.425600",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "df474db8-5c63-49b8-86bb-d56f34673644",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:41.764104",
+            "updated_at": "2025-08-08T04:56:41.764105",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "e5159115-2659-48bb-adde-9b733f4e9d01",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:11.433898",
+            "updated_at": "2025-08-08T04:56:11.433899",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "d293a561-ae23-4a6c-9466-e297a3b83dc6",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:05.769821",
+            "updated_at": "2025-08-08T04:56:05.769822",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "dcc7ed44-057e-4d95-9c9c-b358b2428a22",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:55:09.628392",
+            "updated_at": "2025-08-08T04:55:09.628393",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "1c1156ed-bfcf-4b1d-a166-5ef6bbf30cc3",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:52:27.161054",
+            "updated_at": "2025-08-08T04:52:27.161055",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "732a6fb8-3e40-4300-aa7f-ee2735b81efe",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:50:16.195526",
+            "updated_at": "2025-08-08T04:50:16.195526",
             "last_used_at": null,
             "configuration": {
               "test_mode": true,
@@ -357,15 +571,15 @@
             }
           }
         ],
-        "total": 1,
+        "total": 9,
         "page": 1,
         "limit": 20,
         "has_next": false,
         "has_prev": false
       },
-      "response_text": "{\"assistants\":[{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":1,\"page\":1,\"limit\":20,\"has_next\":false,\"has_prev\":false}",
-      "timestamp": "2025-08-07T21:33:00.231085",
-      "duration_ms": 12.432336807250977,
+      "response_text": "{\"assistants\":[{\"id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T05:34:35.923956\",\"updated_at\":\"2025-08-08T05:34:35.923957\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"be656f81-0823-4c39-a6bc-a8d7d1742321\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:57:00.012401\",\"updated_at\":\"2025-08-08T04:57:00.012402\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"d79fcf8c-756e-4d4c-befb-1f429ac2ef0d\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:54.425599\",\"updated_at\":\"2025-08-08T04:56:54.425600\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"df474db8-5c63-49b8-86bb-d56f34673644\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:41.764104\",\"updated_at\":\"2025-08-08T04:56:41.764105\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"e5159115-2659-48bb-adde-9b733f4e9d01\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:11.433898\",\"updated_at\":\"2025-08-08T04:56:11.433899\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"d293a561-ae23-4a6c-9466-e297a3b83dc6\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:05.769821\",\"updated_at\":\"2025-08-08T04:56:05.769822\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"dcc7ed44-057e-4d95-9c9c-b358b2428a22\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:55:09.628392\",\"updated_at\":\"2025-08-08T04:55:09.628393\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"1c1156ed-bfcf-4b1d-a166-5ef6bbf30cc3\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:52:27.161054\",\"updated_at\":\"2025-08-08T04:52:27.161055\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"732a6fb8-3e40-4300-aa7f-ee2735b81efe\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:50:16.195526\",\"updated_at\":\"2025-08-08T04:50:16.195526\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":9,\"page\":1,\"limit\":20,\"has_next\":false,\"has_prev\":false}",
+      "timestamp": "2025-08-08T05:34:35.937677",
+      "duration_ms": 7.007360458374023,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -378,14 +592,14 @@
         "page": 1
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "assistants": [
           {
-            "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+            "id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
             "name": "Test AI Assistant",
             "description": "A test assistant for API testing purposes",
             "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -395,14 +609,114 @@
             "max_tokens": 2048,
             "status": "active",
             "is_public": false,
-            "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
             "total_conversations": 0,
             "total_messages": 0,
             "total_tokens_used": 0,
             "knowledge_count": 0,
             "document_count": 0,
-            "created_at": "2025-08-07T21:33:00.208417",
-            "updated_at": "2025-08-07T21:33:00.208418",
+            "created_at": "2025-08-08T05:34:35.923956",
+            "updated_at": "2025-08-08T05:34:35.923957",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "be656f81-0823-4c39-a6bc-a8d7d1742321",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:57:00.012401",
+            "updated_at": "2025-08-08T04:57:00.012402",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "d79fcf8c-756e-4d4c-befb-1f429ac2ef0d",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:54.425599",
+            "updated_at": "2025-08-08T04:56:54.425600",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "df474db8-5c63-49b8-86bb-d56f34673644",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:41.764104",
+            "updated_at": "2025-08-08T04:56:41.764105",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "e5159115-2659-48bb-adde-9b733f4e9d01",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:11.433898",
+            "updated_at": "2025-08-08T04:56:11.433899",
             "last_used_at": null,
             "configuration": {
               "test_mode": true,
@@ -410,15 +724,15 @@
             }
           }
         ],
-        "total": 1,
+        "total": 9,
         "page": 1,
         "limit": 5,
-        "has_next": false,
+        "has_next": true,
         "has_prev": false
       },
-      "response_text": "{\"assistants\":[{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":1,\"page\":1,\"limit\":5,\"has_next\":false,\"has_prev\":false}",
-      "timestamp": "2025-08-07T21:33:00.237282",
-      "duration_ms": 18.62931251525879,
+      "response_text": "{\"assistants\":[{\"id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T05:34:35.923956\",\"updated_at\":\"2025-08-08T05:34:35.923957\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"be656f81-0823-4c39-a6bc-a8d7d1742321\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:57:00.012401\",\"updated_at\":\"2025-08-08T04:57:00.012402\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"d79fcf8c-756e-4d4c-befb-1f429ac2ef0d\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:54.425599\",\"updated_at\":\"2025-08-08T04:56:54.425600\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"df474db8-5c63-49b8-86bb-d56f34673644\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:41.764104\",\"updated_at\":\"2025-08-08T04:56:41.764105\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"e5159115-2659-48bb-adde-9b733f4e9d01\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:11.433898\",\"updated_at\":\"2025-08-08T04:56:11.433899\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":9,\"page\":1,\"limit\":5,\"has_next\":true,\"has_prev\":false}",
+      "timestamp": "2025-08-08T05:34:35.944133",
+      "duration_ms": 13.476133346557617,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -431,14 +745,14 @@
         "sort_order": "asc"
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "assistants": [
           {
-            "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+            "id": "732a6fb8-3e40-4300-aa7f-ee2735b81efe",
             "name": "Test AI Assistant",
             "description": "A test assistant for API testing purposes",
             "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -448,14 +762,214 @@
             "max_tokens": 2048,
             "status": "active",
             "is_public": false,
-            "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
             "total_conversations": 0,
             "total_messages": 0,
             "total_tokens_used": 0,
             "knowledge_count": 0,
             "document_count": 0,
-            "created_at": "2025-08-07T21:33:00.208417",
-            "updated_at": "2025-08-07T21:33:00.208418",
+            "created_at": "2025-08-08T04:50:16.195526",
+            "updated_at": "2025-08-08T04:50:16.195526",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "1c1156ed-bfcf-4b1d-a166-5ef6bbf30cc3",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:52:27.161054",
+            "updated_at": "2025-08-08T04:52:27.161055",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "dcc7ed44-057e-4d95-9c9c-b358b2428a22",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:55:09.628392",
+            "updated_at": "2025-08-08T04:55:09.628393",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "d293a561-ae23-4a6c-9466-e297a3b83dc6",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:05.769821",
+            "updated_at": "2025-08-08T04:56:05.769822",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "e5159115-2659-48bb-adde-9b733f4e9d01",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:11.433898",
+            "updated_at": "2025-08-08T04:56:11.433899",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "df474db8-5c63-49b8-86bb-d56f34673644",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:41.764104",
+            "updated_at": "2025-08-08T04:56:41.764105",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "d79fcf8c-756e-4d4c-befb-1f429ac2ef0d",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:54.425599",
+            "updated_at": "2025-08-08T04:56:54.425600",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "be656f81-0823-4c39-a6bc-a8d7d1742321",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:57:00.012401",
+            "updated_at": "2025-08-08T04:57:00.012402",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T05:34:35.923956",
+            "updated_at": "2025-08-08T05:34:35.923957",
             "last_used_at": null,
             "configuration": {
               "test_mode": true,
@@ -463,15 +977,15 @@
             }
           }
         ],
-        "total": 1,
+        "total": 9,
         "page": 1,
         "limit": 20,
         "has_next": false,
         "has_prev": false
       },
-      "response_text": "{\"assistants\":[{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":1,\"page\":1,\"limit\":20,\"has_next\":false,\"has_prev\":false}",
-      "timestamp": "2025-08-07T21:33:00.243646",
-      "duration_ms": 24.994611740112305,
+      "response_text": "{\"assistants\":[{\"id\":\"732a6fb8-3e40-4300-aa7f-ee2735b81efe\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:50:16.195526\",\"updated_at\":\"2025-08-08T04:50:16.195526\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"1c1156ed-bfcf-4b1d-a166-5ef6bbf30cc3\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:52:27.161054\",\"updated_at\":\"2025-08-08T04:52:27.161055\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"dcc7ed44-057e-4d95-9c9c-b358b2428a22\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:55:09.628392\",\"updated_at\":\"2025-08-08T04:55:09.628393\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"d293a561-ae23-4a6c-9466-e297a3b83dc6\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:05.769821\",\"updated_at\":\"2025-08-08T04:56:05.769822\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"e5159115-2659-48bb-adde-9b733f4e9d01\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:11.433898\",\"updated_at\":\"2025-08-08T04:56:11.433899\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"df474db8-5c63-49b8-86bb-d56f34673644\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:41.764104\",\"updated_at\":\"2025-08-08T04:56:41.764105\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"d79fcf8c-756e-4d4c-befb-1f429ac2ef0d\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:54.425599\",\"updated_at\":\"2025-08-08T04:56:54.425600\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"be656f81-0823-4c39-a6bc-a8d7d1742321\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:57:00.012401\",\"updated_at\":\"2025-08-08T04:57:00.012402\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T05:34:35.923956\",\"updated_at\":\"2025-08-08T05:34:35.923957\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":9,\"page\":1,\"limit\":20,\"has_next\":false,\"has_prev\":false}",
+      "timestamp": "2025-08-08T05:34:35.950398",
+      "duration_ms": 19.73271369934082,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -483,14 +997,14 @@
         "status": "active"
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "assistants": [
           {
-            "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+            "id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
             "name": "Test AI Assistant",
             "description": "A test assistant for API testing purposes",
             "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -500,14 +1014,214 @@
             "max_tokens": 2048,
             "status": "active",
             "is_public": false,
-            "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
             "total_conversations": 0,
             "total_messages": 0,
             "total_tokens_used": 0,
             "knowledge_count": 0,
             "document_count": 0,
-            "created_at": "2025-08-07T21:33:00.208417",
-            "updated_at": "2025-08-07T21:33:00.208418",
+            "created_at": "2025-08-08T05:34:35.923956",
+            "updated_at": "2025-08-08T05:34:35.923957",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "be656f81-0823-4c39-a6bc-a8d7d1742321",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:57:00.012401",
+            "updated_at": "2025-08-08T04:57:00.012402",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "d79fcf8c-756e-4d4c-befb-1f429ac2ef0d",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:54.425599",
+            "updated_at": "2025-08-08T04:56:54.425600",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "df474db8-5c63-49b8-86bb-d56f34673644",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:41.764104",
+            "updated_at": "2025-08-08T04:56:41.764105",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "e5159115-2659-48bb-adde-9b733f4e9d01",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:11.433898",
+            "updated_at": "2025-08-08T04:56:11.433899",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "d293a561-ae23-4a6c-9466-e297a3b83dc6",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:56:05.769821",
+            "updated_at": "2025-08-08T04:56:05.769822",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "dcc7ed44-057e-4d95-9c9c-b358b2428a22",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:55:09.628392",
+            "updated_at": "2025-08-08T04:55:09.628393",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "1c1156ed-bfcf-4b1d-a166-5ef6bbf30cc3",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:52:27.161054",
+            "updated_at": "2025-08-08T04:52:27.161055",
+            "last_used_at": null,
+            "configuration": {
+              "test_mode": true,
+              "created_by": "api_test"
+            }
+          },
+          {
+            "id": "732a6fb8-3e40-4300-aa7f-ee2735b81efe",
+            "name": "Test AI Assistant",
+            "description": "A test assistant for API testing purposes",
+            "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "status": "active",
+            "is_public": false,
+            "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+            "total_conversations": 0,
+            "total_messages": 0,
+            "total_tokens_used": 0,
+            "knowledge_count": 0,
+            "document_count": 0,
+            "created_at": "2025-08-08T04:50:16.195526",
+            "updated_at": "2025-08-08T04:50:16.195526",
             "last_used_at": null,
             "configuration": {
               "test_mode": true,
@@ -515,30 +1229,30 @@
             }
           }
         ],
-        "total": 1,
+        "total": 9,
         "page": 1,
         "limit": 20,
         "has_next": false,
         "has_prev": false
       },
-      "response_text": "{\"assistants\":[{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":1,\"page\":1,\"limit\":20,\"has_next\":false,\"has_prev\":false}",
-      "timestamp": "2025-08-07T21:33:00.250138",
-      "duration_ms": 31.486988067626953,
+      "response_text": "{\"assistants\":[{\"id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T05:34:35.923956\",\"updated_at\":\"2025-08-08T05:34:35.923957\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"be656f81-0823-4c39-a6bc-a8d7d1742321\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:57:00.012401\",\"updated_at\":\"2025-08-08T04:57:00.012402\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"d79fcf8c-756e-4d4c-befb-1f429ac2ef0d\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:54.425599\",\"updated_at\":\"2025-08-08T04:56:54.425600\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"df474db8-5c63-49b8-86bb-d56f34673644\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:41.764104\",\"updated_at\":\"2025-08-08T04:56:41.764105\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"e5159115-2659-48bb-adde-9b733f4e9d01\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:11.433898\",\"updated_at\":\"2025-08-08T04:56:11.433899\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"d293a561-ae23-4a6c-9466-e297a3b83dc6\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:56:05.769821\",\"updated_at\":\"2025-08-08T04:56:05.769822\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"dcc7ed44-057e-4d95-9c9c-b358b2428a22\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:55:09.628392\",\"updated_at\":\"2025-08-08T04:55:09.628393\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"1c1156ed-bfcf-4b1d-a166-5ef6bbf30cc3\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:52:27.161054\",\"updated_at\":\"2025-08-08T04:52:27.161055\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},{\"id\":\"732a6fb8-3e40-4300-aa7f-ee2735b81efe\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T04:50:16.195526\",\"updated_at\":\"2025-08-08T04:50:16.195526\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}}],\"total\":9,\"page\":1,\"limit\":20,\"has_next\":false,\"has_prev\":false}",
+      "timestamp": "2025-08-08T05:34:35.957504",
+      "duration_ms": 26.83734893798828,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+      "endpoint": "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
-        "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+        "id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
         "name": "Test AI Assistant",
         "description": "A test assistant for API testing purposes",
         "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -548,14 +1262,14 @@
         "max_tokens": 2048,
         "status": "active",
         "is_public": false,
-        "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+        "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
         "total_conversations": 0,
         "total_messages": 0,
         "total_tokens_used": 0,
         "knowledge_count": 0,
         "document_count": 0,
-        "created_at": "2025-08-07T21:33:00.208417",
-        "updated_at": "2025-08-07T21:33:00.208418",
+        "created_at": "2025-08-08T05:34:35.923956",
+        "updated_at": "2025-08-08T05:34:35.923957",
         "last_used_at": null,
         "configuration": {
           "test_mode": true,
@@ -564,15 +1278,15 @@
         "knowledge_bases": [],
         "documents": []
       },
-      "response_text": "{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.208418\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
-      "timestamp": "2025-08-07T21:33:00.255338",
-      "duration_ms": 5.115270614624023,
+      "response_text": "{\"id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.7,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T05:34:35.923956\",\"updated_at\":\"2025-08-08T05:34:35.923957\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
+      "timestamp": "2025-08-08T05:34:35.962829",
+      "duration_ms": 5.23829460144043,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+      "endpoint": "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
       "method": "PUT",
       "payload": {
         "name": "Updated Test Assistant",
@@ -581,12 +1295,12 @@
         "status": "active"
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
-        "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+        "id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
         "name": "Updated Test Assistant",
         "description": "Updated description for testing purposes",
         "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -596,14 +1310,14 @@
         "max_tokens": 2048,
         "status": "active",
         "is_public": false,
-        "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+        "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
         "total_conversations": 0,
         "total_messages": 0,
         "total_tokens_used": 0,
         "knowledge_count": 0,
         "document_count": 0,
-        "created_at": "2025-08-07T21:33:00.208417",
-        "updated_at": "2025-08-07T21:33:00.258348",
+        "created_at": "2025-08-08T05:34:35.923956",
+        "updated_at": "2025-08-08T05:34:35.966714",
         "last_used_at": null,
         "configuration": {
           "test_mode": true,
@@ -612,15 +1326,15 @@
         "knowledge_bases": [],
         "documents": []
       },
-      "response_text": "{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.8,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-07T21:33:00.208417\",\"updated_at\":\"2025-08-07T21:33:00.258348\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
-      "timestamp": "2025-08-07T21:33:00.264176",
-      "duration_ms": 8.742809295654297,
+      "response_text": "{\"id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"temperature\":0.8,\"max_tokens\":2048,\"status\":\"active\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"total_messages\":0,\"total_tokens_used\":0,\"knowledge_count\":0,\"document_count\":0,\"created_at\":\"2025-08-08T05:34:35.923956\",\"updated_at\":\"2025-08-08T05:34:35.966714\",\"last_used_at\":null,\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"},\"knowledge_bases\":[],\"documents\":[]}",
+      "timestamp": "2025-08-08T05:34:35.974143",
+      "duration_ms": 11.237382888793945,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/knowledge?action=add",
+      "endpoint": "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e/knowledge?action=add",
       "method": "POST",
       "payload": {
         "action": "add",
@@ -628,7 +1342,7 @@
         "document_ids": []
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
@@ -641,14 +1355,14 @@
         }
       },
       "response_text": "{\"message\":\"Assistant knowledge updated successfully\",\"action\":\"add\",\"result\":{\"knowledge_bases\":[],\"documents\":[]}}",
-      "timestamp": "2025-08-07T21:33:00.271881",
-      "duration_ms": 7.602691650390625,
+      "timestamp": "2025-08-08T05:34:35.980615",
+      "duration_ms": 6.390571594238281,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/knowledge?action=replace",
+      "endpoint": "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e/knowledge?action=replace",
       "method": "POST",
       "payload": {
         "action": "replace",
@@ -656,7 +1370,7 @@
         "document_ids": []
       },
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
@@ -669,25 +1383,67 @@
         }
       },
       "response_text": "{\"message\":\"Assistant knowledge updated successfully\",\"action\":\"replace\",\"result\":{\"knowledge_bases\":[],\"documents\":[]}}",
-      "timestamp": "2025-08-07T21:33:00.278540",
-      "duration_ms": 14.26243782043457,
+      "timestamp": "2025-08-08T05:34:35.986798",
+      "duration_ms": 12.572526931762695,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77/chat-config",
+      "endpoint": "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e/knowledge",
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "assistant_id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
+        "knowledge_bases": [],
+        "documents": []
+      },
+      "response_text": "{\"assistant_id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\",\"knowledge_bases\":[],\"documents\":[]}",
+      "timestamp": "2025-08-08T05:34:35.990841",
+      "duration_ms": 4.00233268737793,
+      "success": true,
+      "error_message": null,
+      "test_type": "REST_API"
+    },
+    {
+      "endpoint": "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e/available-knowledge",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
+        "Content-Type": "application/json"
+      },
+      "response_status": 200,
+      "response_body": {
+        "collections": [],
+        "selected_collection_ids": [],
+        "selected_document_ids": []
+      },
+      "response_text": "{\"collections\":[],\"selected_collection_ids\":[],\"selected_document_ids\":[]}",
+      "timestamp": "2025-08-08T05:34:35.995089",
+      "duration_ms": 4.167318344116211,
+      "success": true,
+      "error_message": null,
+      "test_type": "REST_API"
+    },
+    {
+      "endpoint": "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e/chat-config",
+      "method": "GET",
+      "payload": null,
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "success": true,
         "data": {
-          "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+          "id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
           "name": "Updated Test Assistant",
           "description": "Updated description for testing purposes",
           "system_prompt": "You are a helpful AI assistant for testing. Always respond politely and helpfully.",
@@ -701,11 +1457,11 @@
             "created_by": "api_test"
           }
         },
-        "timestamp": "2025-08-07T21:33:00.281763"
+        "timestamp": "2025-08-08T05:34:36.000366"
       },
-      "response_text": "{\"success\":true,\"data\":{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"temperature\":0.8,\"max_tokens\":2048,\"knowledge_base_ids\":[],\"document_ids\":[],\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},\"timestamp\":\"2025-08-07T21:33:00.281763\"}",
-      "timestamp": "2025-08-07T21:33:00.282833",
-      "duration_ms": 4.220247268676758,
+      "response_text": "{\"success\":true,\"data\":{\"id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"system_prompt\":\"You are a helpful AI assistant for testing. Always respond politely and helpfully.\",\"ai_model\":\"gpt-4o\",\"temperature\":0.8,\"max_tokens\":2048,\"knowledge_base_ids\":[],\"document_ids\":[],\"configuration\":{\"test_mode\":true,\"created_by\":\"api_test\"}},\"timestamp\":\"2025-08-08T05:34:36.000366\"}",
+      "timestamp": "2025-08-08T05:34:36.004850",
+      "duration_ms": 9.689807891845703,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -715,14 +1471,14 @@
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": [],
       "response_text": "[]",
-      "timestamp": "2025-08-07T21:33:00.287260",
-      "duration_ms": 4.3506622314453125,
+      "timestamp": "2025-08-08T05:34:36.010005",
+      "duration_ms": 5.077600479125977,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -732,7 +1488,7 @@
       "method": "GET",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
@@ -741,44 +1497,132 @@
         "data": {
           "assistants": [
             {
-              "id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+              "id": "732a6fb8-3e40-4300-aa7f-ee2735b81efe",
+              "name": "Test AI Assistant",
+              "description": "A test assistant for API testing purposes",
+              "ai_model": "gpt-4o",
+              "ai_model_display": "GPT-4o",
+              "is_public": false,
+              "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+              "total_conversations": 0,
+              "is_owner": true
+            },
+            {
+              "id": "1c1156ed-bfcf-4b1d-a166-5ef6bbf30cc3",
+              "name": "Test AI Assistant",
+              "description": "A test assistant for API testing purposes",
+              "ai_model": "gpt-4o",
+              "ai_model_display": "GPT-4o",
+              "is_public": false,
+              "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+              "total_conversations": 0,
+              "is_owner": true
+            },
+            {
+              "id": "dcc7ed44-057e-4d95-9c9c-b358b2428a22",
+              "name": "Test AI Assistant",
+              "description": "A test assistant for API testing purposes",
+              "ai_model": "gpt-4o",
+              "ai_model_display": "GPT-4o",
+              "is_public": false,
+              "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+              "total_conversations": 0,
+              "is_owner": true
+            },
+            {
+              "id": "d293a561-ae23-4a6c-9466-e297a3b83dc6",
+              "name": "Test AI Assistant",
+              "description": "A test assistant for API testing purposes",
+              "ai_model": "gpt-4o",
+              "ai_model_display": "GPT-4o",
+              "is_public": false,
+              "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+              "total_conversations": 0,
+              "is_owner": true
+            },
+            {
+              "id": "e5159115-2659-48bb-adde-9b733f4e9d01",
+              "name": "Test AI Assistant",
+              "description": "A test assistant for API testing purposes",
+              "ai_model": "gpt-4o",
+              "ai_model_display": "GPT-4o",
+              "is_public": false,
+              "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+              "total_conversations": 0,
+              "is_owner": true
+            },
+            {
+              "id": "df474db8-5c63-49b8-86bb-d56f34673644",
+              "name": "Test AI Assistant",
+              "description": "A test assistant for API testing purposes",
+              "ai_model": "gpt-4o",
+              "ai_model_display": "GPT-4o",
+              "is_public": false,
+              "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+              "total_conversations": 0,
+              "is_owner": true
+            },
+            {
+              "id": "d79fcf8c-756e-4d4c-befb-1f429ac2ef0d",
+              "name": "Test AI Assistant",
+              "description": "A test assistant for API testing purposes",
+              "ai_model": "gpt-4o",
+              "ai_model_display": "GPT-4o",
+              "is_public": false,
+              "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+              "total_conversations": 0,
+              "is_owner": true
+            },
+            {
+              "id": "be656f81-0823-4c39-a6bc-a8d7d1742321",
+              "name": "Test AI Assistant",
+              "description": "A test assistant for API testing purposes",
+              "ai_model": "gpt-4o",
+              "ai_model_display": "GPT-4o",
+              "is_public": false,
+              "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
+              "total_conversations": 0,
+              "is_owner": true
+            },
+            {
+              "id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
               "name": "Updated Test Assistant",
               "description": "Updated description for testing purposes",
               "ai_model": "gpt-4o",
               "ai_model_display": "GPT-4o",
               "is_public": false,
-              "creator_id": "f250caa3-be61-4d45-b2ac-75edf1d49256",
+              "creator_id": "e96575fc-efc1-496c-8e1f-a377ddfc658f",
               "total_conversations": 0,
               "is_owner": true
             }
           ],
-          "total": 1
+          "total": 9
         },
-        "timestamp": "2025-08-07T21:33:00.292189"
+        "timestamp": "2025-08-08T05:34:36.017428"
       },
-      "response_text": "{\"success\":true,\"data\":{\"assistants\":[{\"id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"f250caa3-be61-4d45-b2ac-75edf1d49256\",\"total_conversations\":0,\"is_owner\":true}],\"total\":1},\"timestamp\":\"2025-08-07T21:33:00.292189\"}",
-      "timestamp": "2025-08-07T21:33:00.293294",
-      "duration_ms": 5.951404571533203,
+      "response_text": "{\"success\":true,\"data\":{\"assistants\":[{\"id\":\"732a6fb8-3e40-4300-aa7f-ee2735b81efe\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"is_owner\":true},{\"id\":\"1c1156ed-bfcf-4b1d-a166-5ef6bbf30cc3\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"is_owner\":true},{\"id\":\"dcc7ed44-057e-4d95-9c9c-b358b2428a22\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"is_owner\":true},{\"id\":\"d293a561-ae23-4a6c-9466-e297a3b83dc6\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"is_owner\":true},{\"id\":\"e5159115-2659-48bb-adde-9b733f4e9d01\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"is_owner\":true},{\"id\":\"df474db8-5c63-49b8-86bb-d56f34673644\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"is_owner\":true},{\"id\":\"d79fcf8c-756e-4d4c-befb-1f429ac2ef0d\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"is_owner\":true},{\"id\":\"be656f81-0823-4c39-a6bc-a8d7d1742321\",\"name\":\"Test AI Assistant\",\"description\":\"A test assistant for API testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"is_owner\":true},{\"id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\",\"name\":\"Updated Test Assistant\",\"description\":\"Updated description for testing purposes\",\"ai_model\":\"gpt-4o\",\"ai_model_display\":\"GPT-4o\",\"is_public\":false,\"creator_id\":\"e96575fc-efc1-496c-8e1f-a377ddfc658f\",\"total_conversations\":0,\"is_owner\":true}],\"total\":9},\"timestamp\":\"2025-08-08T05:34:36.017428\"}",
+      "timestamp": "2025-08-08T05:34:36.018998",
+      "duration_ms": 8.923530578613281,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
     },
     {
-      "endpoint": "/api/v1/assistants/99b3a388-edf9-4d8b-9c71-76c0cbcd7c77",
+      "endpoint": "/api/v1/assistants/ac2ba02a-6111-4326-a12a-a2ac6cdd316e",
       "method": "DELETE",
       "payload": null,
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyNTBjYWEzLWJlNjEtNGQ0NS1iMmFjLTc1ZWRmMWQ0OTI1NiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYwNDE4MH0.8x2BoUNFTBYxYZ0xETBQchiKQ8MbvoAcLvcne3OzAd8",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcmtldGljQGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImU5NjU3NWZjLWVmYzEtNDk2Yy04ZTFmLWEzNzdkZGZjNjU4ZiIsImVtYWlsIjoiYXJrZXRpY0BhcmtldGljLmNvbSIsInVzZXJuYW1lIjoiYXJrZXRpYyIsInJvbGVzIjpbImFkbWluIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIiwidXNlcnM6bWFuYWdlIiwicm9sZXM6bWFuYWdlIiwic3lzdGVtOmNvbmZpZ3VyZSIsInJlcG9ydHM6dmlldyIsImFuYWx5dGljczp2aWV3Il0sImV4cCI6MTc1NDYzMzA3NX0.8KGKnvI65opoxPJ5_5XENrCBbI4QDkinjqnBOhXsmgw",
         "Content-Type": "application/json"
       },
       "response_status": 200,
       "response_body": {
         "message": "Assistant 'Updated Test Assistant' deleted successfully",
-        "assistant_id": "99b3a388-edf9-4d8b-9c71-76c0cbcd7c77"
+        "assistant_id": "ac2ba02a-6111-4326-a12a-a2ac6cdd316e"
       },
-      "response_text": "{\"message\":\"Assistant 'Updated Test Assistant' deleted successfully\",\"assistant_id\":\"99b3a388-edf9-4d8b-9c71-76c0cbcd7c77\"}",
-      "timestamp": "2025-08-07T21:33:00.300513",
-      "duration_ms": 7.132291793823242,
+      "response_text": "{\"message\":\"Assistant 'Updated Test Assistant' deleted successfully\",\"assistant_id\":\"ac2ba02a-6111-4326-a12a-a2ac6cdd316e\"}",
+      "timestamp": "2025-08-08T05:34:36.024869",
+      "duration_ms": 5.779504776000977,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"

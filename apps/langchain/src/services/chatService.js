@@ -47,9 +47,9 @@ class ChatService {
       });
 
       for (const msg of chatHistory) {
-        if (msg.message_type === 'USER') {
+        if (msg.message_type === 'user') {
           await memory.chatHistory.addMessage(new HumanMessage(msg.content));
-        } else if (msg.message_type === 'AI') {
+        } else if (msg.message_type === 'ai') {
           await memory.chatHistory.addMessage(new AIMessage(msg.content));
         }
       }
@@ -115,7 +115,7 @@ class ChatService {
         chatId,
         sender_id: userId,
         content: message,
-        messageType: 'USER'
+        messageType: 'user'
       });
 
       let response;
@@ -144,7 +144,7 @@ class ChatService {
         chatId,
         sender_id: null,
         content: response.text,
-        messageType: 'AI',
+        messageType: 'ai',
         aiModelUsed: settings.model || 'gpt-3.5-turbo',
         tokensUsed: tokens,
         processingTimeMs: Date.now() - startTime
@@ -170,7 +170,7 @@ class ChatService {
         chatId,
         sender_id: null,
         content: `Error: ${error.message}`,
-        messageType: 'SYSTEM',
+        messageType: 'system',
         aiModelUsed: settings.model || 'gpt-3.5-turbo',
         processingTimeMs: Date.now() - startTime
       });

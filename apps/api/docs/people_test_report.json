@@ -1,27 +1,90 @@
 {
   "test_metadata": {
-    "generated_at": "2025-08-07T19:52:36.523972Z",
+    "generated_at": "2025-08-08T04:00:27.040214Z",
     "test_suite": "People Management API - Comprehensive Tests",
     "base_url": "http://localhost:8000",
     "test_user": "test@arketic.com",
     "documentation_ref": "/docs/api/PEOPLE.md"
   },
   "test_summary": {
-    "total_tests": 1,
-    "passed": 0,
-    "failed": 1,
+    "total_tests": 17,
+    "passed": 17,
+    "failed": 0,
     "skipped": 0,
     "errors": 0,
-    "success_rate_percent": 0.0,
-    "average_duration_ms": 30016.41
+    "success_rate_percent": 100.0,
+    "average_duration_ms": 14.93
   },
   "endpoint_analysis": {
     "/api/v1/auth/login": {
       "total_calls": 1,
-      "passed": 0,
-      "failed": 1,
+      "passed": 1,
+      "failed": 0,
       "errors": 0,
-      "avg_duration_ms": 30016.41
+      "avg_duration_ms": 180.47
+    },
+    "/api/v1/organization/people/": {
+      "total_calls": 7,
+      "passed": 7,
+      "failed": 0,
+      "errors": 0,
+      "avg_duration_ms": 4.63
+    },
+    "/api/v1/organization/people/?page=1&page_size=5": {
+      "total_calls": 1,
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "avg_duration_ms": 4.49
+    },
+    "/api/v1/organization/people/6511297d-e4cf-469f-aab3-c95e23a7e53c": {
+      "total_calls": 2,
+      "passed": 2,
+      "failed": 0,
+      "errors": 0,
+      "avg_duration_ms": 8.37
+    },
+    "/api/v1/organization/people/b7956a50-e071-4061-8278-38ad38c47b32": {
+      "total_calls": 1,
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "avg_duration_ms": 4.06
+    },
+    "/api/v1/organization/people/fc854c67-6680-4219-a3ae-e71fc0451b40": {
+      "total_calls": 1,
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "avg_duration_ms": 5.31
+    },
+    "/api/v1/organization/people/08b4f570-9013-40e8-a954-b537cebce00b": {
+      "total_calls": 1,
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "avg_duration_ms": 5.79
+    },
+    "/api/v1/organization/people/16785078-9a89-4ca1-bd34-2102e464dd94": {
+      "total_calls": 1,
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "avg_duration_ms": 1.51
+    },
+    "/api/v1/organization/people/1eb109a4-2c2a-4526-9055-def165264e9f": {
+      "total_calls": 1,
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "avg_duration_ms": 1.69
+    },
+    "/api/v1/organization/people/49ff4408-4451-420b-b58c-5e22a22ab605": {
+      "total_calls": 1,
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "avg_duration_ms": 1.39
     }
   },
   "known_issues": {
@@ -40,24 +103,578 @@
       "expected_status": [
         200
       ],
-      "actual_status": 0,
+      "actual_status": 200,
       "payload": {
         "email": "test@arketic.com",
         "password": "testpass123",
         "remember_me": false
       },
+      "response_body": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyZGE5YTE4LTcyODEtNDlkZS05NTZkLTYzNDczYzI0YjRkZiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDYyNzQyNn0.KgD8OuYqDBLO_ArzvmZh7WE9QHGFyIWcyxooKrF3g0A",
+        "refresh_token": "hl7kbU5tHRVQnNlHCQyepqu3PHZrIoTIPvOfYj8R4H0",
+        "token_type": "bearer",
+        "expires_in": 1800,
+        "user": {
+          "id": "f2da9a18-7281-49de-956d-63473c24b4df",
+          "email": "test@arketic.com",
+          "username": "testuser",
+          "first_name": "Test",
+          "last_name": "User",
+          "role": "user",
+          "is_verified": true
+        }
+      },
+      "response_text": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGFya2V0aWMuY29tIiwidXNlcl9pZCI6ImYyZGE5YTE4LTcyODEtNDlkZS05NTZkLTYzNDczYzI0YjRkZiIsImVtYWlsIjoidGVzdEBhcmtldGljLmNvbSIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbInJlYWQiLCJ3cml0ZSIsInByb2ZpbGU6dXBkYXRlIiwicHJlZmVyZW5jZXM6dXBkYXRlIl0sImV4cCI6MTc1NDYyNzQyNn0.KgD8OuYqDBLO_ArzvmZh7WE9QHGFyIWcyxooKrF3g0A\",\"refresh_token\":\"hl7kbU5tHRVQnNlHCQyepqu3PHZrIoTIPvOfYj8R4H0\",\"token_type\":\"bearer\",\"expires_in\":1800,\"user\":{\"id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"email\":\"test@arketic.com\",\"username\":\"testuser\",\"first_name\":\"Test\",\"last_name\":\"User\",\"role\":\"user\",\"is_verified\":true}}",
+      "timestamp": "2025-08-08T04:00:26.264693Z",
+      "duration_ms": 180.47,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Create Person - Success",
+      "endpoint": "/api/v1/organization/people/",
+      "method": "POST",
+      "expected_status": [
+        201
+      ],
+      "actual_status": 201,
+      "payload": {
+        "first_name": "Test",
+        "last_name": "Person",
+        "email": "test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com",
+        "phone": "+1-555-0199",
+        "job_title": "Test Engineer",
+        "department": "Quality Assurance",
+        "site": "Test Site",
+        "location": "Test City, TC",
+        "role": "USER",
+        "manager_id": null,
+        "hire_date": "2025-07-09T07:00:26.264766",
+        "notes": "Test person for API validation"
+      },
+      "response_body": {
+        "first_name": "Test",
+        "last_name": "Person",
+        "email": "test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com",
+        "phone": "+1-555-0199",
+        "job_title": "Test Engineer",
+        "department": "Quality Assurance",
+        "site": "Test Site",
+        "location": "Test City, TC",
+        "role": "USER",
+        "manager_id": null,
+        "hire_date": "2025-07-09T07:00:26.264766",
+        "notes": "Test person for API validation",
+        "id": "6511297d-e4cf-469f-aab3-c95e23a7e53c",
+        "status": "ACTIVE",
+        "full_name": "Test Person",
+        "is_active": true,
+        "created_at": "2025-08-08T04:00:26.267935",
+        "updated_at": "2025-08-08T04:00:26.267936"
+      },
+      "response_text": "{\"first_name\":\"Test\",\"last_name\":\"Person\",\"email\":\"test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com\",\"phone\":\"+1-555-0199\",\"job_title\":\"Test Engineer\",\"department\":\"Quality Assurance\",\"site\":\"Test Site\",\"location\":\"Test City, TC\",\"role\":\"USER\",\"manager_id\":null,\"hire_date\":\"2025-07-09T07:00:26.264766\",\"notes\":\"Test person for API validation\",\"id\":\"6511297d-e4cf-469f-aab3-c95e23a7e53c\",\"status\":\"ACTIVE\",\"full_name\":\"Test Person\",\"is_active\":true,\"created_at\":\"2025-08-08T04:00:26.267935\",\"updated_at\":\"2025-08-08T04:00:26.267936\"}",
+      "timestamp": "2025-08-08T04:00:26.273875Z",
+      "duration_ms": 9.1,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": "Person creation successful - issue may be resolved!"
+    },
+    {
+      "test_name": "Validation - Missing Required Fields",
+      "endpoint": "/api/v1/organization/people/",
+      "method": "POST",
+      "expected_status": [
+        422
+      ],
+      "actual_status": 422,
+      "payload": {
+        "first_name": "Test"
+      },
+      "response_body": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "last_name"
+            ],
+            "msg": "Field required",
+            "input": {
+              "first_name": "Test"
+            },
+            "url": "https://errors.pydantic.dev/2.5/v/missing"
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "email"
+            ],
+            "msg": "Field required",
+            "input": {
+              "first_name": "Test"
+            },
+            "url": "https://errors.pydantic.dev/2.5/v/missing"
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "role"
+            ],
+            "msg": "Field required",
+            "input": {
+              "first_name": "Test"
+            },
+            "url": "https://errors.pydantic.dev/2.5/v/missing"
+          }
+        ]
+      },
+      "response_text": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"last_name\"],\"msg\":\"Field required\",\"input\":{\"first_name\":\"Test\"},\"url\":\"https://errors.pydantic.dev/2.5/v/missing\"},{\"type\":\"missing\",\"loc\":[\"body\",\"email\"],\"msg\":\"Field required\",\"input\":{\"first_name\":\"Test\"},\"url\":\"https://errors.pydantic.dev/2.5/v/missing\"},{\"type\":\"missing\",\"loc\":[\"body\",\"role\"],\"msg\":\"Field required\",\"input\":{\"first_name\":\"Test\"},\"url\":\"https://errors.pydantic.dev/2.5/v/missing\"}]}",
+      "timestamp": "2025-08-08T04:00:26.379434Z",
+      "duration_ms": 5.28,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Validation - Invalid Email Format",
+      "endpoint": "/api/v1/organization/people/",
+      "method": "POST",
+      "expected_status": [
+        422
+      ],
+      "actual_status": 422,
+      "payload": {
+        "first_name": "Test",
+        "last_name": "Person",
+        "email": "not-an-email",
+        "role": "USER"
+      },
+      "response_body": {
+        "detail": [
+          {
+            "type": "value_error",
+            "loc": [
+              "body",
+              "email"
+            ],
+            "msg": "value is not a valid email address: The email address is not valid. It must have exactly one @-sign.",
+            "input": "not-an-email",
+            "ctx": {
+              "reason": "The email address is not valid. It must have exactly one @-sign."
+            }
+          }
+        ]
+      },
+      "response_text": "{\"detail\":[{\"type\":\"value_error\",\"loc\":[\"body\",\"email\"],\"msg\":\"value is not a valid email address: The email address is not valid. It must have exactly one @-sign.\",\"input\":\"not-an-email\",\"ctx\":{\"reason\":\"The email address is not valid. It must have exactly one @-sign.\"}}]}",
+      "timestamp": "2025-08-08T04:00:26.383860Z",
+      "duration_ms": 4.38,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Validation - Invalid Role",
+      "endpoint": "/api/v1/organization/people/",
+      "method": "POST",
+      "expected_status": [
+        422
+      ],
+      "actual_status": 422,
+      "payload": {
+        "first_name": "Test",
+        "last_name": "Person",
+        "email": "test@example.com",
+        "role": "InvalidRole"
+      },
+      "response_body": {
+        "detail": [
+          {
+            "type": "enum",
+            "loc": [
+              "body",
+              "role"
+            ],
+            "msg": "Input should be 'ADMIN', 'USER', 'MANAGER' or 'VIEWER'",
+            "input": "InvalidRole",
+            "ctx": {
+              "expected": "'ADMIN', 'USER', 'MANAGER' or 'VIEWER'"
+            }
+          }
+        ]
+      },
+      "response_text": "{\"detail\":[{\"type\":\"enum\",\"loc\":[\"body\",\"role\"],\"msg\":\"Input should be 'ADMIN', 'USER', 'MANAGER' or 'VIEWER'\",\"input\":\"InvalidRole\",\"ctx\":{\"expected\":\"'ADMIN', 'USER', 'MANAGER' or 'VIEWER'\"}}]}",
+      "timestamp": "2025-08-08T04:00:26.388142Z",
+      "duration_ms": 4.25,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "List People - Basic",
+      "endpoint": "/api/v1/organization/people/",
+      "method": "GET",
+      "expected_status": [
+        200
+      ],
+      "actual_status": 200,
+      "payload": null,
+      "response_body": {
+        "people": [
+          {
+            "first_name": "Test",
+            "last_name": "Person",
+            "email": "test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com",
+            "phone": "+1-555-0199",
+            "job_title": "Test Engineer",
+            "department": "Quality Assurance",
+            "site": "Test Site",
+            "location": "Test City, TC",
+            "role": "USER",
+            "manager_id": null,
+            "hire_date": "2025-07-09T07:00:26.264766",
+            "notes": "Test person for API validation",
+            "id": "6511297d-e4cf-469f-aab3-c95e23a7e53c",
+            "status": "ACTIVE",
+            "full_name": "Test Person",
+            "is_active": true,
+            "created_at": "2025-08-08T04:00:26.267935",
+            "updated_at": "2025-08-08T04:00:26.267936"
+          }
+        ],
+        "total": 1,
+        "page": 1,
+        "page_size": 20,
+        "total_pages": 1
+      },
+      "response_text": "{\"people\":[{\"first_name\":\"Test\",\"last_name\":\"Person\",\"email\":\"test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com\",\"phone\":\"+1-555-0199\",\"job_title\":\"Test Engineer\",\"department\":\"Quality Assurance\",\"site\":\"Test Site\",\"location\":\"Test City, TC\",\"role\":\"USER\",\"manager_id\":null,\"hire_date\":\"2025-07-09T07:00:26.264766\",\"notes\":\"Test person for API validation\",\"id\":\"6511297d-e4cf-469f-aab3-c95e23a7e53c\",\"status\":\"ACTIVE\",\"full_name\":\"Test Person\",\"is_active\":true,\"created_at\":\"2025-08-08T04:00:26.267935\",\"updated_at\":\"2025-08-08T04:00:26.267936\"}],\"total\":1,\"page\":1,\"page_size\":20,\"total_pages\":1}",
+      "timestamp": "2025-08-08T04:00:26.493360Z",
+      "duration_ms": 5.02,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "List People - Pagination",
+      "endpoint": "/api/v1/organization/people/?page=1&page_size=5",
+      "method": "GET",
+      "expected_status": [
+        200
+      ],
+      "actual_status": 200,
+      "payload": null,
+      "response_body": {
+        "people": [
+          {
+            "first_name": "Test",
+            "last_name": "Person",
+            "email": "test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com",
+            "phone": "+1-555-0199",
+            "job_title": "Test Engineer",
+            "department": "Quality Assurance",
+            "site": "Test Site",
+            "location": "Test City, TC",
+            "role": "USER",
+            "manager_id": null,
+            "hire_date": "2025-07-09T07:00:26.264766",
+            "notes": "Test person for API validation",
+            "id": "6511297d-e4cf-469f-aab3-c95e23a7e53c",
+            "status": "ACTIVE",
+            "full_name": "Test Person",
+            "is_active": true,
+            "created_at": "2025-08-08T04:00:26.267935",
+            "updated_at": "2025-08-08T04:00:26.267936"
+          }
+        ],
+        "total": 1,
+        "page": 1,
+        "page_size": 5,
+        "total_pages": 1
+      },
+      "response_text": "{\"people\":[{\"first_name\":\"Test\",\"last_name\":\"Person\",\"email\":\"test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com\",\"phone\":\"+1-555-0199\",\"job_title\":\"Test Engineer\",\"department\":\"Quality Assurance\",\"site\":\"Test Site\",\"location\":\"Test City, TC\",\"role\":\"USER\",\"manager_id\":null,\"hire_date\":\"2025-07-09T07:00:26.264766\",\"notes\":\"Test person for API validation\",\"id\":\"6511297d-e4cf-469f-aab3-c95e23a7e53c\",\"status\":\"ACTIVE\",\"full_name\":\"Test Person\",\"is_active\":true,\"created_at\":\"2025-08-08T04:00:26.267935\",\"updated_at\":\"2025-08-08T04:00:26.267936\"}],\"total\":1,\"page\":1,\"page_size\":5,\"total_pages\":1}",
+      "timestamp": "2025-08-08T04:00:26.497899Z",
+      "duration_ms": 4.49,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Get Person - Success",
+      "endpoint": "/api/v1/organization/people/6511297d-e4cf-469f-aab3-c95e23a7e53c",
+      "method": "GET",
+      "expected_status": [
+        200
+      ],
+      "actual_status": 200,
+      "payload": null,
+      "response_body": {
+        "first_name": "Test",
+        "last_name": "Person",
+        "email": "test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com",
+        "phone": "+1-555-0199",
+        "job_title": "Test Engineer",
+        "department": "Quality Assurance",
+        "site": "Test Site",
+        "location": "Test City, TC",
+        "role": "USER",
+        "manager_id": null,
+        "hire_date": "2025-07-09T07:00:26.264766",
+        "notes": "Test person for API validation",
+        "id": "6511297d-e4cf-469f-aab3-c95e23a7e53c",
+        "status": "ACTIVE",
+        "full_name": "Test Person",
+        "is_active": true,
+        "created_at": "2025-08-08T04:00:26.267935",
+        "updated_at": "2025-08-08T04:00:26.267936"
+      },
+      "response_text": "{\"first_name\":\"Test\",\"last_name\":\"Person\",\"email\":\"test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com\",\"phone\":\"+1-555-0199\",\"job_title\":\"Test Engineer\",\"department\":\"Quality Assurance\",\"site\":\"Test Site\",\"location\":\"Test City, TC\",\"role\":\"USER\",\"manager_id\":null,\"hire_date\":\"2025-07-09T07:00:26.264766\",\"notes\":\"Test person for API validation\",\"id\":\"6511297d-e4cf-469f-aab3-c95e23a7e53c\",\"status\":\"ACTIVE\",\"full_name\":\"Test Person\",\"is_active\":true,\"created_at\":\"2025-08-08T04:00:26.267935\",\"updated_at\":\"2025-08-08T04:00:26.267936\"}",
+      "timestamp": "2025-08-08T04:00:26.602955Z",
+      "duration_ms": 4.83,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Get Person - Not Found",
+      "endpoint": "/api/v1/organization/people/b7956a50-e071-4061-8278-38ad38c47b32",
+      "method": "GET",
+      "expected_status": [
+        404
+      ],
+      "actual_status": 404,
+      "payload": null,
+      "response_body": {
+        "detail": "Person not found"
+      },
+      "response_text": "{\"detail\":\"Person not found\"}",
+      "timestamp": "2025-08-08T04:00:26.607072Z",
+      "duration_ms": 4.06,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Update Person - Not Found",
+      "endpoint": "/api/v1/organization/people/fc854c67-6680-4219-a3ae-e71fc0451b40",
+      "method": "PUT",
+      "expected_status": [
+        404
+      ],
+      "actual_status": 404,
+      "payload": {
+        "job_title": "Updated Title"
+      },
+      "response_body": {
+        "detail": "Person not found"
+      },
+      "response_text": "{\"detail\":\"Person not found\"}",
+      "timestamp": "2025-08-08T04:00:26.712594Z",
+      "duration_ms": 5.31,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Delete Person - Not Found",
+      "endpoint": "/api/v1/organization/people/08b4f570-9013-40e8-a954-b537cebce00b",
+      "method": "DELETE",
+      "expected_status": [
+        404
+      ],
+      "actual_status": 404,
+      "payload": null,
+      "response_body": {
+        "detail": "Person not found"
+      },
+      "response_text": "{\"detail\":\"Person not found\"}",
+      "timestamp": "2025-08-08T04:00:26.818653Z",
+      "duration_ms": 5.79,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Unauthorized - GET /api/v1/organization/people/",
+      "endpoint": "/api/v1/organization/people/",
+      "method": "GET",
+      "expected_status": [
+        401,
+        403
+      ],
+      "actual_status": 403,
+      "payload": null,
+      "response_body": {
+        "detail": "Not authenticated"
+      },
+      "response_text": "{\"detail\":\"Not authenticated\"}",
+      "timestamp": "2025-08-08T04:00:26.921162Z",
+      "duration_ms": 2.27,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Unauthorized - POST /api/v1/organization/people/",
+      "endpoint": "/api/v1/organization/people/",
+      "method": "POST",
+      "expected_status": [
+        401,
+        403
+      ],
+      "actual_status": 403,
+      "payload": {
+        "first_name": "Test",
+        "last_name": "User",
+        "email": "test@test.com",
+        "role": "USER"
+      },
+      "response_body": {
+        "detail": "Not authenticated"
+      },
+      "response_text": "{\"detail\":\"Not authenticated\"}",
+      "timestamp": "2025-08-08T04:00:26.923313Z",
+      "duration_ms": 2.11,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Unauthorized - GET /api/v1/organization/people/16785078-9a89-4ca1-bd34-2102e464dd94",
+      "endpoint": "/api/v1/organization/people/16785078-9a89-4ca1-bd34-2102e464dd94",
+      "method": "GET",
+      "expected_status": [
+        401,
+        403
+      ],
+      "actual_status": 403,
+      "payload": null,
+      "response_body": {
+        "detail": "Not authenticated"
+      },
+      "response_text": "{\"detail\":\"Not authenticated\"}",
+      "timestamp": "2025-08-08T04:00:26.924856Z",
+      "duration_ms": 1.51,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Unauthorized - PUT /api/v1/organization/people/1eb109a4-2c2a-4526-9055-def165264e9f",
+      "endpoint": "/api/v1/organization/people/1eb109a4-2c2a-4526-9055-def165264e9f",
+      "method": "PUT",
+      "expected_status": [
+        401,
+        403
+      ],
+      "actual_status": 403,
+      "payload": {
+        "job_title": "Test"
+      },
+      "response_body": {
+        "detail": "Not authenticated"
+      },
+      "response_text": "{\"detail\":\"Not authenticated\"}",
+      "timestamp": "2025-08-08T04:00:26.926581Z",
+      "duration_ms": 1.69,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Unauthorized - DELETE /api/v1/organization/people/49ff4408-4451-420b-b58c-5e22a22ab605",
+      "endpoint": "/api/v1/organization/people/49ff4408-4451-420b-b58c-5e22a22ab605",
+      "method": "DELETE",
+      "expected_status": [
+        401,
+        403
+      ],
+      "actual_status": 403,
+      "payload": null,
+      "response_body": {
+        "detail": "Not authenticated"
+      },
+      "response_text": "{\"detail\":\"Not authenticated\"}",
+      "timestamp": "2025-08-08T04:00:26.928002Z",
+      "duration_ms": 1.39,
+      "status": "PASS",
+      "error_message": null,
+      "validation_notes": null
+    },
+    {
+      "test_name": "Cleanup - Delete 6511297d...",
+      "endpoint": "/api/v1/organization/people/6511297d-e4cf-469f-aab3-c95e23a7e53c",
+      "method": "DELETE",
+      "expected_status": [
+        204,
+        404
+      ],
+      "actual_status": 204,
+      "payload": null,
       "response_body": null,
-      "response_text": "HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)",
-      "timestamp": "2025-08-07T19:52:36.523886Z",
-      "duration_ms": 30016.41,
-      "status": "FAIL",
-      "error_message": "Authentication failed with status 0",
+      "response_text": "",
+      "timestamp": "2025-08-08T04:00:27.040125Z",
+      "duration_ms": 11.9,
+      "status": "PASS",
+      "error_message": null,
       "validation_notes": null
     }
   ],
   "test_data_summary": {
-    "people_created": 0,
-    "created_person_ids": [],
-    "sample_data": {}
+    "people_created": 1,
+    "created_person_ids": [
+      "6511297d-e4cf-469f-aab3-c95e23a7e53c"
+    ],
+    "sample_data": {
+      "created_person": {
+        "first_name": "Test",
+        "last_name": "Person",
+        "email": "test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com",
+        "phone": "+1-555-0199",
+        "job_title": "Test Engineer",
+        "department": "Quality Assurance",
+        "site": "Test Site",
+        "location": "Test City, TC",
+        "role": "USER",
+        "manager_id": null,
+        "hire_date": "2025-07-09T07:00:26.264766",
+        "notes": "Test person for API validation",
+        "id": "6511297d-e4cf-469f-aab3-c95e23a7e53c",
+        "status": "ACTIVE",
+        "full_name": "Test Person",
+        "is_active": true,
+        "created_at": "2025-08-08T04:00:26.267935",
+        "updated_at": "2025-08-08T04:00:26.267936"
+      },
+      "people_list": {
+        "people": [
+          {
+            "first_name": "Test",
+            "last_name": "Person",
+            "email": "test.person.1754625626264745_cb4b7a_create@testcompany1754625626264745.com",
+            "phone": "+1-555-0199",
+            "job_title": "Test Engineer",
+            "department": "Quality Assurance",
+            "site": "Test Site",
+            "location": "Test City, TC",
+            "role": "USER",
+            "manager_id": null,
+            "hire_date": "2025-07-09T07:00:26.264766",
+            "notes": "Test person for API validation",
+            "id": "6511297d-e4cf-469f-aab3-c95e23a7e53c",
+            "status": "ACTIVE",
+            "full_name": "Test Person",
+            "is_active": true,
+            "created_at": "2025-08-08T04:00:26.267935",
+            "updated_at": "2025-08-08T04:00:26.267936"
+          }
+        ],
+        "total": 1,
+        "page": 1,
+        "page_size": 20,
+        "total_pages": 1
+      }
+    }
   }
 }

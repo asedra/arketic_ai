@@ -10,7 +10,6 @@ import { loginSchema } from "@/lib/auth"
 import { useAuth } from "@/lib/auth-context"
 import type { LoginFormValues } from "@/types/auth"
 import { toast } from "sonner"
-import { AuthDebugPanel } from "@/components/debug/auth-debug-panel"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -138,8 +137,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950 flex items-center justify-center p-4">
-      <AuthDebugPanel />
-      
       <div className="w-full max-w-md relative">
         {/* Logo/Brand Section */}
         <div className="text-center mb-8">

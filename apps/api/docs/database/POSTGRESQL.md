@@ -618,6 +618,48 @@ Assistant usage analytics.
 
 ---
 
+#### `assistant_knowledge_bases`
+Junction table linking assistants to knowledge bases.
+
+| Column | Type | Description | Constraints |
+|--------|------|-------------|-------------|
+| id | UUID | Primary key | PK, Default: gen_random_uuid() |
+| assistant_id | UUID | Reference to assistant | FK(assistants.id), Not Null |
+| knowledge_base_id | UUID | Reference to knowledge base | FK(knowledge_bases.id), Not Null |
+| created_at | DateTime | Creation timestamp | Not Null, Default: now() |
+| created_by | UUID | User who created link | FK(users.id), Nullable |
+
+**Indexes:**
+- `idx_assistant_kb_assistant` (assistant_id)
+- `idx_assistant_kb_knowledge` (knowledge_base_id)
+- `idx_assistant_kb_created` (created_at)
+
+**Constraints:**
+- `unique_assistant_knowledge_base` (assistant_id, knowledge_base_id)
+
+---
+
+#### `assistant_documents`
+Junction table linking assistants to specific documents.
+
+| Column | Type | Description | Constraints |
+|--------|------|-------------|-------------|
+| id | UUID | Primary key | PK, Default: gen_random_uuid() |
+| assistant_id | UUID | Reference to assistant | FK(assistants.id), Not Null |
+| document_id | UUID | Reference to document | FK(knowledge_documents.id), Not Null |
+| created_at | DateTime | Creation timestamp | Not Null, Default: now() |
+| created_by | UUID | User who created link | FK(users.id), Nullable |
+
+**Indexes:**
+- `idx_assistant_doc_assistant` (assistant_id)
+- `idx_assistant_doc_document` (document_id)
+- `idx_assistant_doc_created` (created_at)
+
+**Constraints:**
+- `unique_assistant_document` (assistant_id, document_id)
+
+---
+
 ### Knowledge Management & Vector Search Tables (PgVector)
 
 #### `knowledge_bases`
@@ -637,7 +679,7 @@ Document collections for knowledge management.
 | total_documents | Integer | Document count | Default: 0 |
 | total_chunks | Integer | Chunk count | Default: 0 |
 | total_tokens | Integer | Token count | Default: 0 |
-| metadata | JSON | Additional metadata | Nullable |
+| metadata¹ | JSON | Additional metadata | Nullable |
 | created_at | DateTime | Creation timestamp | Not Null, Default: now() |
 | updated_at | DateTime | Last update timestamp | Not Null, Default: now() |
 
@@ -870,12 +912,72 @@ Platform-wide user settings.
 
 ## Database Migrations
 
-The database uses Alembic for migration management. Key migrations include:
+The database uses Alembic for migration management. 
 
-1. **001-004**: Initial schema setup
-2. **005_add_pgvector_extension**: Added PgVector extension and knowledge management tables
-3. **007_remove_organization_id**: Removed organization constraints from certain tables
-4. **009_add_assistants_tables**: Added AI assistant functionality
+### Migration History
+
+Current migration chain:
+1. **001_initial_setup**: Initial setup with PgVector and base tables
+2. **002_auth_tables**: Authentication and token management tables
+3. **003_people_table**: People management table
+4. **004_chat_tables**: Chat and messaging tables
+5. **005_forms_tables**: Forms and Adaptive Cards tables
+6. **006_assistants_tables**: AI Assistants tables
+7. **007_knowledge_tables**: Knowledge management and vector search tables
+8. **008_settings_tables**: Settings and configuration tables
+9. **009_add_default_user**: Add default user for development and testing
+10. **010_assistant_knowledge_associations**: Add assistant knowledge association tables
+11. **32c808634fc0_add_assistant_id_to_chat_model**: Add assistant_id to chat model
+12. **e982df23d267_add_assistant_knowledge_fields**: Add assistant knowledge fields to chat model
+
+### Migration Strategy
+
+#### Development Environment
+```bash
+# Check current migration version
+docker exec arketic-api-1 alembic current
+
+# View migration history
+docker exec arketic-api-1 alembic history
+
+# Apply all pending migrations
+docker exec arketic-api-1 alembic upgrade head
+
+# Create a new migration
+docker exec arketic-api-1 alembic revision -m "description_of_changes"
+
+# Downgrade to previous version
+docker exec arketic-api-1 alembic downgrade -1
+```
+
+#### Production Environment
+1. **Pre-deployment**:
+   - Test migrations in staging environment
+   - Create database backup
+   - Review migration SQL with `alembic upgrade --sql`
+
+2. **Deployment**:
+   - Apply migrations during maintenance window
+   - Use `alembic upgrade head` in deployment pipeline
+   - Monitor for any errors or performance issues
+
+3. **Rollback Strategy**:
+   - Keep previous version migrations reversible
+   - Test downgrade scripts in staging
+   - Have database backup ready for emergency restore
+
+#### Version Management
+- Migration files use descriptive names (e.g., `001_initial_setup.py`)
+- Each migration includes upgrade and downgrade functions
+- UUID default values are set at database level using `gen_random_uuid()`
+- Foreign key constraints include appropriate CASCADE rules
+
+#### Best Practices
+1. Never edit existing migrations in production
+2. Test migrations with production-like data volumes
+3. Include both schema and data migrations when needed
+4. Document breaking changes in migration files
+5. Use batch operations for large data updates
 
 ## Performance Considerations
 
@@ -923,6 +1025,28 @@ The database uses Alembic for migration management. Key migrations include:
    - Organization-based data separation
    - Role-based access control at multiple levels
 
+## Implementation Notes
+
+### Column Naming Discrepancies
+
+¹ **metadata Column**: In the actual database implementation, the `metadata` column in the `knowledge_bases` table is named `kb_metadata` to avoid potential conflicts with SQLAlchemy's metadata attribute.
+
+### UUID Generation Strategy
+
+The application uses a hybrid approach for UUID generation:
+
+1. **Application-level generation** (Most tables):
+   - UUIDs are generated using Python's `uuid.uuid4()` in SQLAlchemy models
+   - Set as `default=uuid.uuid4` in model definitions
+   - Provides flexibility for application logic
+
+2. **Database-level generation** (Junction tables):
+   - `assistant_knowledge_bases` and `assistant_documents` tables use PostgreSQL's `gen_random_uuid()`
+   - Set as `server_default=sa.text('gen_random_uuid()')` in migrations
+   - Ensures UUIDs are generated even for direct database inserts
+
+This hybrid approach balances application control with database-level consistency.
+
 ## Maintenance Notes
 
 1. **Regular Tasks**:
@@ -943,7 +1067,7 @@ The database uses Alembic for migration management. Key migrations include:
 
 ## Default Test User
 
-The migration 008_settings_tables.py creates a default test user for development and testing purposes:
+The migration 009_add_default_user.py creates a default test admin user for development and testing purposes:
 
 **Credentials:**
 - Email: `test@arketic.com`
@@ -951,7 +1075,7 @@ The migration 008_settings_tables.py creates a default test user for development
 - Username: `testuser`
 
 **User Properties:**
-- Role: `user` (standard user role)
+- Role: `admin` (administrator role)
 - Status: `active`
 - Verified: `true`
 - Active: `true`
@@ -969,10 +1093,11 @@ The migration 008_settings_tables.py creates a default test user for development
 - AI Creativity Level: `5`
 
 **Important Notes:**
-- This user is automatically created during migration 008
+- This user is automatically created during migration 009_add_default_user
 - The password is hashed using bcrypt
 - All required fields are properly set to avoid constraint violations
 - User profiles and preferences are also created with default values
+- Has full admin permissions including user management, role management, and system configuration
 
 **Security Warning:**
 - This test user should ONLY be used in development environments

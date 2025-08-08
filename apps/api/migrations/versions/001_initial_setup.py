@@ -22,6 +22,25 @@ def upgrade() -> None:
     op.execute('CREATE EXTENSION IF NOT EXISTS vector')
     op.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
     
+    # Create enum types if they don't exist
+    op.execute("""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'userrole') THEN
+                CREATE TYPE userrole AS ENUM ('super_admin', 'admin', 'user', 'viewer');
+            END IF;
+        END$$;
+    """)
+    
+    op.execute("""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'userstatus') THEN
+                CREATE TYPE userstatus AS ENUM ('active', 'inactive', 'suspended', 'pending_verification');
+            END IF;
+        END$$;
+    """)
+    
     # Create users table
     op.create_table('users',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
@@ -30,8 +49,8 @@ def upgrade() -> None:
         sa.Column('password_hash', sa.String(255), nullable=False),
         sa.Column('first_name', sa.String(100), nullable=False),
         sa.Column('last_name', sa.String(100), nullable=False),
-        sa.Column('role', sa.Enum('super_admin', 'admin', 'user', 'viewer', name='userrole'), default='user', nullable=False),
-        sa.Column('status', sa.Enum('active', 'inactive', 'suspended', 'pending_verification', name='userstatus'), default='pending_verification', nullable=False),
+        sa.Column('role', postgresql.ENUM('super_admin', 'admin', 'user', 'viewer', name='userrole', create_type=False), default='user', nullable=False),
+        sa.Column('status', postgresql.ENUM('active', 'inactive', 'suspended', 'pending_verification', name='userstatus', create_type=False), default='pending_verification', nullable=False),
         sa.Column('is_verified', sa.Boolean(), default=False, nullable=False),
         sa.Column('is_active', sa.Boolean(), default=True, nullable=False),
         sa.Column('created_at', sa.DateTime(), default=sa.func.now(), nullable=False),
@@ -98,6 +117,25 @@ def upgrade() -> None:
         sa.Column('updated_at', sa.DateTime(), default=sa.func.now(), onupdate=sa.func.now(), nullable=False),
     )
 
+    # Create organization enum types if they don't exist
+    op.execute("""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'organizationstatus') THEN
+                CREATE TYPE organizationstatus AS ENUM ('active', 'inactive', 'suspended', 'trial');
+            END IF;
+        END$$;
+    """)
+    
+    op.execute("""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'subscriptiontier') THEN
+                CREATE TYPE subscriptiontier AS ENUM ('free', 'starter', 'professional', 'enterprise');
+            END IF;
+        END$$;
+    """)
+    
     # Create organizations table
     op.create_table('organizations',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
@@ -116,8 +154,8 @@ def upgrade() -> None:
         sa.Column('logo_url', sa.String(500), nullable=True),
         sa.Column('timezone', sa.String(50), default='UTC', nullable=False),
         sa.Column('default_language', sa.String(10), default='en', nullable=False),
-        sa.Column('status', sa.Enum('active', 'inactive', 'suspended', 'trial', name='organizationstatus'), default='trial', nullable=False),
-        sa.Column('subscription_tier', sa.Enum('free', 'starter', 'professional', 'enterprise', name='subscriptiontier'), default='free', nullable=False),
+        sa.Column('status', postgresql.ENUM('active', 'inactive', 'suspended', 'trial', name='organizationstatus', create_type=False), default='trial', nullable=False),
+        sa.Column('subscription_tier', postgresql.ENUM('free', 'starter', 'professional', 'enterprise', name='subscriptiontier', create_type=False), default='free', nullable=False),
         sa.Column('max_members', sa.Integer(), default=5, nullable=False),
         sa.Column('max_storage_gb', sa.Integer(), default=1, nullable=False),
         sa.Column('max_ai_requests_per_month', sa.Integer(), default=1000, nullable=False),

@@ -22,7 +22,6 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
   const [justSaved, setJustSaved] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const [celebrationStage, setCelebrationStage] = useState(0)
-  const [model, setModel] = useState('gpt-3.5-turbo')
   const [language, setLanguage] = useState<'en' | 'tr'>('en')
   const [hasStoredKey, setHasStoredKey] = useState(false)
   const [testStatus, setTestStatus] = useState<'idle' | 'success' | 'error'>('idle')
@@ -90,8 +89,6 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
         const openaiSettings = response.data.openai
         console.log('✅ Found OpenAI settings:', openaiSettings)
         
-        // Set model parameters from backend
-        setModel(openaiSettings.model || 'gpt-3.5-turbo')
         
         // Show masked placeholder for API key (backend returns masked key for security)
         if (openaiSettings.api_key) {
@@ -212,7 +209,7 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
     try {
       const openaiSettings = {
         api_key: apiKey,
-        model: model
+        model: 'gpt-3.5-turbo'
       }
 
       const response = await settingsApi.updateOpenAISettings(openaiSettings)
@@ -292,7 +289,6 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
     try {
       await settingsApi.clearOpenAISettings()
       setApiKey('')
-      setModel('gpt-3.5-turbo')
       setJustSaved(false)
       setHasStoredKey(false) // Clear stored key status
       localStorage.removeItem('openai-api-key')
@@ -350,7 +346,7 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
       if (hasNewKey && !apiKey.includes('•')) {
         const openaiSettings = {
           api_key: apiKey,
-          model: model
+          model: 'gpt-3.5-turbo'
         }
 
         const saveResponse = await settingsApi.updateOpenAISettings(openaiSettings)
@@ -379,7 +375,7 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
         
         // Add model and response time info if available
         if (modelInfo) {
-          descriptionDetails += `\n${language === 'tr' ? 'Model' : 'Model'}: ${modelInfo.model || model}`
+          descriptionDetails += `\n${language === 'tr' ? 'Model' : 'Model'}: ${modelInfo.model || 'gpt-3.5-turbo'}`
         }
         if (responseTime) {
           descriptionDetails += `\n${language === 'tr' ? 'Yanıt süresi' : 'Response time'}: ${responseTime}ms`
@@ -647,24 +643,6 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div className="space-y-2">
-              <Label htmlFor="model">{language === 'tr' ? 'Model' : 'Model'}</Label>
-              <select
-                id="model"
-                value={model}
-                onChange={(e) => setModel(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
-              >
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                <option value="gpt-4">GPT-4</option>
-                <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                <option value="gpt-4o">GPT-4o</option>
-                <option value="gpt-4o-mini">GPT-4o Mini</option>
-              </select>
-            </div>
-            
-          </div>
           
           <div className="flex gap-3 mt-6">
             <Button 

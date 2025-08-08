@@ -1356,6 +1356,37 @@ async def chat_with_ai(
         # Get and validate chat
         chat = await get_chat_with_validation(chat_id, db)
         
+        # Check if chat has an assistant configured
+        if not chat.assistant_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="This chat does not have an assistant configured. Please create a new chat with an assistant to use AI features."
+            )
+        
+        # Validate that the assistant is active
+        from models.assistant import Assistant
+        assistant_query = select(Assistant).where(
+            and_(
+                Assistant.id == chat.assistant_id,
+                Assistant.status == "active"
+            )
+        )
+        assistant_result = await db.execute(assistant_query)
+        assistant = assistant_result.scalar_one_or_none()
+        
+        if not assistant:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="The assistant associated with this chat is not active or has been deleted. Please create a new chat with an active assistant."
+            )
+        
+        # Log assistant and knowledge base usage
+        logger.info(f"Chat {chat_id} using assistant '{assistant.name}' (ID: {assistant.id})")
+        if chat.assistant_knowledge_bases:
+            logger.info(f"Assistant has {len(chat.assistant_knowledge_bases)} knowledge bases attached")
+        if chat.assistant_documents:
+            logger.info(f"Assistant has {len(chat.assistant_documents)} documents attached")
+        
         # Validate message content
         if not request_body.message or len(request_body.message.strip()) == 0:
             raise HTTPException(

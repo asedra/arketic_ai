@@ -1,6 +1,6 @@
 {
   "test_metadata": {
-    "generated_at": "2025-08-08T09:40:21.051144Z",
+    "generated_at": "2025-08-08T12:23:57.106900Z",
     "base_url": "http://localhost:3001",
     "service_port": 3001,
     "total_tests": 6,
@@ -13,37 +13,37 @@
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 2.51
+      "avg_duration_ms": 1.85
     },
     "/health/database": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 6.98
+      "avg_duration_ms": 4.51
     },
     "/health/redis": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 4.91
+      "avg_duration_ms": 2.82
     },
     "/api/auth-test": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 14.79
+      "avg_duration_ms": 3.27
     },
     "/api/chat/message": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 868.09
+      "avg_duration_ms": 1144.69
     },
     "/metrics": {
       "total_calls": 1,
       "successful_calls": 1,
       "failed_calls": 0,
-      "avg_duration_ms": 3.91
+      "avg_duration_ms": 4.29
     }
   },
   "detailed_results": [
@@ -58,8 +58,8 @@
       "response_body": {
         "status": "healthy",
         "service": "langchain-chat",
-        "timestamp": "2025-08-08T09:40:17.145Z",
-        "uptime": 7238.780557863,
+        "timestamp": "2025-08-08T12:23:52.940Z",
+        "uptime": 16773.355653735,
         "version": "1.0.0",
         "endpoints": [
           "POST /api/chat/message - Process chat message",
@@ -71,9 +71,9 @@
           "GET /metrics - Service metrics"
         ]
       },
-      "response_text": "{\"status\":\"healthy\",\"service\":\"langchain-chat\",\"timestamp\":\"2025-08-08T09:40:17.145Z\",\"uptime\":7238.780557863,\"version\":\"1.0.0\",\"endpoints\":[\"POST /api/chat/message - Process chat message\",\"GET /api/chat/:chatId/history - Get chat history\",\"POST /api/provider/test - Test provider connection\",\"DELETE /api/chat/:chatId/clear - Clear conversation\",\"GET /api/chat/:chatId/summary - Get conversation summary\",\"GET /health - Health check\",\"GET /metrics - Service metrics\"]}",
-      "timestamp": "2025-08-08T09:40:17.146301Z",
-      "duration_ms": 2.51,
+      "response_text": "{\"status\":\"healthy\",\"service\":\"langchain-chat\",\"timestamp\":\"2025-08-08T12:23:52.940Z\",\"uptime\":16773.355653735,\"version\":\"1.0.0\",\"endpoints\":[\"POST /api/chat/message - Process chat message\",\"GET /api/chat/:chatId/history - Get chat history\",\"POST /api/provider/test - Test provider connection\",\"DELETE /api/chat/:chatId/clear - Clear conversation\",\"GET /api/chat/:chatId/summary - Get conversation summary\",\"GET /health - Health check\",\"GET /metrics - Service metrics\"]}",
+      "timestamp": "2025-08-08T12:23:52.941337Z",
+      "duration_ms": 1.85,
       "success": true,
       "error_message": null,
       "test_type": "HEALTH"
@@ -94,8 +94,8 @@
         "waitingCount": 0
       },
       "response_text": "{\"status\":\"healthy\",\"connected\":true,\"poolSize\":1,\"idleCount\":1,\"waitingCount\":0}",
-      "timestamp": "2025-08-08T09:40:17.653947Z",
-      "duration_ms": 6.98,
+      "timestamp": "2025-08-08T12:23:53.446669Z",
+      "duration_ms": 4.51,
       "success": true,
       "error_message": null,
       "test_type": "HEALTH"
@@ -111,15 +111,15 @@
       "response_body": {
         "status": "healthy",
         "connected": true,
-        "latency": "2ms",
+        "latency": "0ms",
         "info": {
-          "server": "# Server\r\nredis_version:7.4.5\r\nredis_git_sha1:00000000\r\nredis_git_dirty:0\r\nredis_build_id:14ef7c78d3983ab\r\nredis_mode:standalone\r\nos:Linux 5.15.167.4-microsoft-standard-WSL2 x86_64\r\narch_bits:64\r\nmonotonic_clock:POSIX clock_gettime\r\nmultiplexing_api:epoll\r\natomicvar_api:c11-builtin\r\ngcc_version:14.2.0\r\nprocess_id:1\r\nprocess_supervised:no\r\nrun_id:45ddc066f31462f7f2a35e97f6daed757ca210fc\r\ntcp_port:6379\r\nserver_time_usec:1754646018157379\r\nuptime_in_seconds:20022\r\nuptime_in_days:0\r\nhz:10\r\nconfigured_hz:10\r\nlru_clock:9815554\r\nexecutable:/data/redis-server\r\nconfig_file:/etc/redis/redis.conf\r\nio_threads_active:0\r\nlistener0:name=tcp,bind=0.0.0.0,port=6379\r\n",
-          "memory": "# Memory\r\nused_memory:1445792\r\nused_memory_human:1.38M\r\nused_memory_rss:13910016\r\nused_memory_rss_human:13.27M\r\nused_memory_peak:1513832\r\nused_memory_peak_human:1.44M\r\nused_memory_peak_perc:95.51%\r\nused_memory_overhead:952672\r\nused_memory_startup:946232\r\nused_memory_dataset:493120\r\nused_memory_dataset_perc:98.71%\r\nallocator_allocated:2049408\r\nallocator_active:2494464\r\nallocator_resident:8798208\r\nallocator_muzzy:0\r\ntotal_system_memory:16655069184\r\ntotal_system_memory_human:15.51G\r\nused_memory_lua:31744\r\nused_memory_vm_eval:31744\r\nused_memory_lua_human:31.00K\r\nused_memory_scripts_eval:0\r\nnumber_of_cached_scripts:0\r\nnumber_of_functions:0\r\nnumber_of_libraries:0\r\nused_memory_vm_functions:32768\r\nused_memory_vm_total:64512\r\nused_memory_vm_total_human:63.00K\r\nused_memory_functions:192\r\nused_memory_scripts:192\r\nused_memory_scripts_human:192B\r\nmaxmemory:268435456\r\nmaxmemory_human:256.00M\r\nmaxmemory_policy:allkeys-lru\r\nallocator_frag_ratio:1.23\r\nallocator_frag_bytes:369024\r\nallocator_rss_ratio:3.53\r\nallocator_rss_bytes:6303744\r\nrss_overhead_ratio:1.58\r\nrss_overhead_bytes:5111808\r\nmem_fragmentation_ratio:9.76\r\nmem_fragmentation_bytes:12484896\r\nmem_not_counted_for_evict:1024\r\nmem_replication_backlog:0\r\nmem_total_replication_buffers:0\r\nmem_clients_slaves:0\r\nmem_clients_normal:3856\r\nmem_cluster_links:0\r\nmem_aof_buffer:1024\r\nmem_allocator:jemalloc-5.3.0\r\nmem_overhead_db_hashtable_rehashing:0\r\nactive_defrag_running:0\r\nlazyfree_pending_objects:0\r\nlazyfreed_objects:0\r\n"
+          "server": "# Server\r\nredis_version:7.4.5\r\nredis_git_sha1:00000000\r\nredis_git_dirty:0\r\nredis_build_id:14ef7c78d3983ab\r\nredis_mode:standalone\r\nos:Linux 5.15.167.4-microsoft-standard-WSL2 x86_64\r\narch_bits:64\r\nmonotonic_clock:POSIX clock_gettime\r\nmultiplexing_api:epoll\r\natomicvar_api:c11-builtin\r\ngcc_version:14.2.0\r\nprocess_id:1\r\nprocess_supervised:no\r\nrun_id:45ddc066f31462f7f2a35e97f6daed757ca210fc\r\ntcp_port:6379\r\nserver_time_usec:1754655833948578\r\nuptime_in_seconds:29837\r\nuptime_in_days:0\r\nhz:10\r\nconfigured_hz:10\r\nlru_clock:9825369\r\nexecutable:/data/redis-server\r\nconfig_file:/etc/redis/redis.conf\r\nio_threads_active:0\r\nlistener0:name=tcp,bind=0.0.0.0,port=6379\r\n",
+          "memory": "# Memory\r\nused_memory:1446736\r\nused_memory_human:1.38M\r\nused_memory_rss:13860864\r\nused_memory_rss_human:13.22M\r\nused_memory_peak:1521184\r\nused_memory_peak_human:1.45M\r\nused_memory_peak_perc:95.11%\r\nused_memory_overhead:954280\r\nused_memory_startup:946232\r\nused_memory_dataset:492456\r\nused_memory_dataset_perc:98.39%\r\nallocator_allocated:2071112\r\nallocator_active:2519040\r\nallocator_resident:8822784\r\nallocator_muzzy:0\r\ntotal_system_memory:16655069184\r\ntotal_system_memory_human:15.51G\r\nused_memory_lua:31744\r\nused_memory_vm_eval:31744\r\nused_memory_lua_human:31.00K\r\nused_memory_scripts_eval:0\r\nnumber_of_cached_scripts:0\r\nnumber_of_functions:0\r\nnumber_of_libraries:0\r\nused_memory_vm_functions:32768\r\nused_memory_vm_total:64512\r\nused_memory_vm_total_human:63.00K\r\nused_memory_functions:192\r\nused_memory_scripts:192\r\nused_memory_scripts_human:192B\r\nmaxmemory:268435456\r\nmaxmemory_human:256.00M\r\nmaxmemory_policy:allkeys-lru\r\nallocator_frag_ratio:1.23\r\nallocator_frag_bytes:371896\r\nallocator_rss_ratio:3.50\r\nallocator_rss_bytes:6303744\r\nrss_overhead_ratio:1.57\r\nrss_overhead_bytes:5038080\r\nmem_fragmentation_ratio:9.72\r\nmem_fragmentation_bytes:12434800\r\nmem_not_counted_for_evict:1024\r\nmem_replication_backlog:0\r\nmem_total_replication_buffers:0\r\nmem_clients_slaves:0\r\nmem_clients_normal:5784\r\nmem_cluster_links:0\r\nmem_aof_buffer:1024\r\nmem_allocator:jemalloc-5.3.0\r\nmem_overhead_db_hashtable_rehashing:0\r\nactive_defrag_running:0\r\nlazyfree_pending_objects:0\r\nlazyfreed_objects:0\r\n"
         }
       },
-      "response_text": "{\"status\":\"healthy\",\"connected\":true,\"latency\":\"2ms\",\"info\":{\"server\":\"# Server\\r\\nredis_version:7.4.5\\r\\nredis_git_sha1:00000000\\r\\nredis_git_dirty:0\\r\\nredis_build_id:14ef7c78d3983ab\\r\\nredis_mode:standalone\\r\\nos:Linux 5.15.167.4-microsoft-standard-WSL2 x86_64\\r\\narch_bits:64\\r\\nmonotonic_clock:POSIX clock_gettime\\r\\nmultiplexing_api:epoll\\r\\natomicvar_api:c11-builtin\\r\\ngcc_version:14.2.0\\r\\nprocess_id:1\\r\\nprocess_supervised:no\\r\\nrun_id:45ddc066f31462f7f2a35e97f6daed757ca210fc\\r\\ntcp_port:",
-      "timestamp": "2025-08-08T09:40:18.159626Z",
-      "duration_ms": 4.91,
+      "response_text": "{\"status\":\"healthy\",\"connected\":true,\"latency\":\"0ms\",\"info\":{\"server\":\"# Server\\r\\nredis_version:7.4.5\\r\\nredis_git_sha1:00000000\\r\\nredis_git_dirty:0\\r\\nredis_build_id:14ef7c78d3983ab\\r\\nredis_mode:standalone\\r\\nos:Linux 5.15.167.4-microsoft-standard-WSL2 x86_64\\r\\narch_bits:64\\r\\nmonotonic_clock:POSIX clock_gettime\\r\\nmultiplexing_api:epoll\\r\\natomicvar_api:c11-builtin\\r\\ngcc_version:14.2.0\\r\\nprocess_id:1\\r\\nprocess_supervised:no\\r\\nrun_id:45ddc066f31462f7f2a35e97f6daed757ca210fc\\r\\ntcp_port:",
+      "timestamp": "2025-08-08T12:23:53.950121Z",
+      "duration_ms": 2.82,
       "success": true,
       "error_message": null,
       "test_type": "HEALTH"
@@ -141,20 +141,24 @@
           "email": "test@arketic.com",
           "username": "testuser",
           "roles": [
-            "user"
+            "admin"
           ],
           "permissions": [
             "read",
             "write",
-            "profile:update",
-            "preferences:update"
+            "admin",
+            "users:manage",
+            "roles:manage",
+            "system:configure",
+            "reports:view",
+            "analytics:view"
           ]
         },
-        "timestamp": "2025-08-08T09:40:18.673Z"
+        "timestamp": "2025-08-08T12:23:54.453Z"
       },
-      "response_text": "{\"success\":true,\"message\":\"Authentication successful\",\"user\":{\"user_id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"email\":\"test@arketic.com\",\"username\":\"testuser\",\"roles\":[\"user\"],\"permissions\":[\"read\",\"write\",\"profile:update\",\"preferences:update\"]},\"timestamp\":\"2025-08-08T09:40:18.673Z\"}",
-      "timestamp": "2025-08-08T09:40:18.674618Z",
-      "duration_ms": 14.79,
+      "response_text": "{\"success\":true,\"message\":\"Authentication successful\",\"user\":{\"user_id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"email\":\"test@arketic.com\",\"username\":\"testuser\",\"roles\":[\"admin\"],\"permissions\":[\"read\",\"write\",\"admin\",\"users:manage\",\"roles:manage\",\"system:configure\",\"reports:view\",\"analytics:view\"]},\"timestamp\":\"2025-08-08T12:23:54.453Z\"}",
+      "timestamp": "2025-08-08T12:23:54.453919Z",
+      "duration_ms": 3.27,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -163,7 +167,7 @@
       "endpoint": "/api/chat/message",
       "method": "POST",
       "payload": {
-        "chatId": "e6fdeeae-8ba2-4773-aca2-0532d5c84353",
+        "chatId": "0d93b5fb-925a-45c9-af8e-e3643c387ed0",
         "message": "Test message",
         "settings": {
           "provider": "openai",
@@ -180,10 +184,10 @@
       "response_status": 200,
       "response_body": {
         "success": true,
-        "chatId": "e6fdeeae-8ba2-4773-aca2-0532d5c84353",
+        "chatId": "0d93b5fb-925a-45c9-af8e-e3643c387ed0",
         "userMessage": {
-          "id": "f15ab824-c9ca-4f51-9b81-6e5eb291d96b",
-          "chat_id": "e6fdeeae-8ba2-4773-aca2-0532d5c84353",
+          "id": "39e39a2d-d9c6-490e-aa8a-164f8866eb2b",
+          "chat_id": "0d93b5fb-925a-45c9-af8e-e3643c387ed0",
           "sender_id": "f2da9a18-7281-49de-956d-63473c24b4df",
           "reply_to_id": null,
           "message_type": "user",
@@ -200,14 +204,14 @@
           "is_edited": false,
           "is_deleted": false,
           "message_metadata": null,
-          "created_at": "2025-08-08T09:40:19.651Z",
-          "updated_at": "2025-08-08T09:40:19.651Z",
+          "created_at": "2025-08-08T12:23:55.707Z",
+          "updated_at": "2025-08-08T12:23:55.707Z",
           "edited_at": null,
           "deleted_at": null
         },
         "aiMessage": {
-          "id": "5baa696b-8811-45b2-a9c5-6881bced3ff6",
-          "chat_id": "e6fdeeae-8ba2-4773-aca2-0532d5c84353",
+          "id": "89012780-750a-4165-b1a3-9a26f82b479c",
+          "chat_id": "0d93b5fb-925a-45c9-af8e-e3643c387ed0",
           "sender_id": null,
           "reply_to_id": null,
           "message_type": "ai",
@@ -218,25 +222,25 @@
           "file_type": null,
           "ai_model_used": "gpt-3.5-turbo",
           "tokens_used": 12,
-          "processing_time_ms": 388,
+          "processing_time_ms": 390,
           "ai_confidence_score": null,
           "status": "sent",
           "is_edited": false,
           "is_deleted": false,
           "message_metadata": null,
-          "created_at": "2025-08-08T09:40:20.038Z",
-          "updated_at": "2025-08-08T09:40:20.038Z",
+          "created_at": "2025-08-08T12:23:56.094Z",
+          "updated_at": "2025-08-08T12:23:56.094Z",
           "edited_at": null,
           "deleted_at": null
         },
-        "processingTime": 391,
+        "processingTime": 393,
         "tokensUsed": 12,
         "provider": "openai",
         "model": "gpt-3.5-turbo"
       },
-      "response_text": "{\"success\":true,\"chatId\":\"e6fdeeae-8ba2-4773-aca2-0532d5c84353\",\"userMessage\":{\"id\":\"f15ab824-c9ca-4f51-9b81-6e5eb291d96b\",\"chat_id\":\"e6fdeeae-8ba2-4773-aca2-0532d5c84353\",\"sender_id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"reply_to_id\":null,\"message_type\":\"user\",\"content\":\"Test message\",\"file_url\":null,\"file_name\":null,\"file_size\":null,\"file_type\":null,\"ai_model_used\":null,\"tokens_used\":0,\"processing_time_ms\":0,\"ai_confidence_score\":null,\"status\":\"sent\",\"is_edited\":false,\"is_deleted\":false,\"mes",
-      "timestamp": "2025-08-08T09:40:20.043310Z",
-      "duration_ms": 868.09,
+      "response_text": "{\"success\":true,\"chatId\":\"0d93b5fb-925a-45c9-af8e-e3643c387ed0\",\"userMessage\":{\"id\":\"39e39a2d-d9c6-490e-aa8a-164f8866eb2b\",\"chat_id\":\"0d93b5fb-925a-45c9-af8e-e3643c387ed0\",\"sender_id\":\"f2da9a18-7281-49de-956d-63473c24b4df\",\"reply_to_id\":null,\"message_type\":\"user\",\"content\":\"Test message\",\"file_url\":null,\"file_name\":null,\"file_size\":null,\"file_type\":null,\"ai_model_used\":null,\"tokens_used\":0,\"processing_time_ms\":0,\"ai_confidence_score\":null,\"status\":\"sent\",\"is_edited\":false,\"is_deleted\":false,\"mes",
+      "timestamp": "2025-08-08T12:23:56.099251Z",
+      "duration_ms": 1144.69,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"
@@ -251,28 +255,28 @@
       },
       "response_status": 200,
       "response_body": {
-        "activeChains": 2,
-        "totalRequests": 5,
-        "averageResponseTime": 579,
+        "activeChains": 4,
+        "totalRequests": 2,
+        "averageResponseTime": 567,
         "memoryUsage": {
-          "rss": 220213248,
-          "heapTotal": 140922880,
-          "heapUsed": 137383952,
-          "external": 9467620,
-          "arrayBuffers": 261831
+          "rss": 222683136,
+          "heapTotal": 148000768,
+          "heapUsed": 135211528,
+          "external": 9403478,
+          "arrayBuffers": 197689
         },
-        "uptime": 7242.181863146,
-        "timestamp": "2025-08-08T09:40:20.546Z",
+        "uptime": 16777.01747975,
+        "timestamp": "2025-08-08T12:23:56.602Z",
         "chatServiceHealth": {
-          "activeChains": 2,
+          "activeChains": 4,
           "cacheHitRate": 0.85,
-          "averageProcessingTime": 579,
+          "averageProcessingTime": 567,
           "status": "healthy"
         }
       },
-      "response_text": "{\"activeChains\":2,\"totalRequests\":5,\"averageResponseTime\":579,\"memoryUsage\":{\"rss\":220213248,\"heapTotal\":140922880,\"heapUsed\":137383952,\"external\":9467620,\"arrayBuffers\":261831},\"uptime\":7242.181863146,\"timestamp\":\"2025-08-08T09:40:20.546Z\",\"chatServiceHealth\":{\"activeChains\":2,\"cacheHitRate\":0.85,\"averageProcessingTime\":579,\"status\":\"healthy\"}}",
-      "timestamp": "2025-08-08T09:40:20.547887Z",
-      "duration_ms": 3.91,
+      "response_text": "{\"activeChains\":4,\"totalRequests\":2,\"averageResponseTime\":567,\"memoryUsage\":{\"rss\":222683136,\"heapTotal\":148000768,\"heapUsed\":135211528,\"external\":9403478,\"arrayBuffers\":197689},\"uptime\":16777.01747975,\"timestamp\":\"2025-08-08T12:23:56.602Z\",\"chatServiceHealth\":{\"activeChains\":4,\"cacheHitRate\":0.85,\"averageProcessingTime\":567,\"status\":\"healthy\"}}",
+      "timestamp": "2025-08-08T12:23:56.603698Z",
+      "duration_ms": 4.29,
       "success": true,
       "error_message": null,
       "test_type": "REST_API"

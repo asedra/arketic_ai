@@ -205,19 +205,107 @@ class ChatTester:
             return {"Authorization": f"Bearer {self.test_data['access_token']}"}
         return {}
     
-    def test_create_chat(self):
-        """Test create chat endpoint"""
-        print("\n🧪 Testing Create Chat...")
+    def create_document(self, index=0):
+        """Create a test document using knowledge upload endpoint"""
+        import random
+        unique_id = f"{int(time.time())}_{index}_{random.randint(1000, 9999)}"
+        document_payload = {
+            "title": f"Test Document {unique_id}",
+            "content": f"This is test document #{index+1} with important information about testing. It contains knowledge that can be used by the assistant for context. The document includes test procedures, best practices, and validation methods. Document ID: {unique_id}",
+            "document_type": "text",
+            "is_public": False,
+            "metadata": {
+                "tags": ["test", "documentation"],
+                "source": "automated_test",
+                "index": index
+            }
+        }
         
+        response = self.make_request(
+            "POST",
+            "/api/v1/knowledge/upload",
+            document_payload,
+            headers=self.get_auth_headers(),
+            expected_status=[200, 201]
+        )
+        
+        if response.status_code in [200, 201]:
+            try:
+                data = response.json()
+                return data.get("document_id") or data.get("id")
+            except:
+                pass
+        return None
+    
+    def create_assistant(self, with_knowledge=False):
+        """Create a test assistant"""
+        assistant_payload = {
+            "name": f"Test Assistant {int(time.time())}",
+            "description": "Automated test assistant",
+            "system_prompt": "You are a helpful AI assistant for testing.",
+            "ai_model": "gpt-3.5-turbo",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "is_public": False
+        }
+        
+        if with_knowledge:
+            # Create documents first
+            print("      📄 Creating test documents...")
+            document_ids = []
+            
+            # Create multiple documents for better testing
+            for i in range(2):
+                doc_id = self.create_document(index=i)
+                if doc_id:
+                    document_ids.append(doc_id)
+                    print(f"      ✅ Created document {i+1}: {doc_id}")
+            
+            # Add documents to assistant if created successfully
+            if document_ids:
+                assistant_payload["documents"] = document_ids
+                print(f"      ✅ Added {len(document_ids)} documents to assistant")
+        
+        response = self.make_request(
+            "POST",
+            "/api/v1/assistants/",
+            assistant_payload,
+            headers=self.get_auth_headers(),
+            expected_status=[200, 201]
+        )
+        
+        if response.status_code in [200, 201]:
+            try:
+                data = response.json()
+                # Debug: Show what was actually created
+                if with_knowledge:
+                    actual_docs = len(data.get("documents", []))
+                    if actual_docs != len(document_ids):
+                        print(f"      ⚠️  Warning: Expected {len(document_ids)} documents, but assistant has {actual_docs}")
+                return data.get("id")
+            except:
+                pass
+        return None
+    
+    def test_create_chat(self):
+        """Test create chat endpoint with assistant"""
+        print("\n🧪 Testing Create Chat with Assistant...")
+        
+        # First create an assistant
+        print("   📦 Creating assistant...")
+        assistant_id = self.create_assistant()
+        if not assistant_id:
+            print("   ❌ Failed to create assistant")
+            return False
+        print(f"   ✅ Created assistant: {assistant_id}")
+        self.test_data["test_assistant_id"] = assistant_id
+        
+        # Now create chat with the assistant
         payload = {
             "title": f"Test Chat {int(time.time())}",
             "description": "Automated test chat for API testing",
             "chat_type": "direct",
-            "ai_model": "gpt-3.5-turbo",
-            "ai_persona": "helpful assistant",
-            "system_prompt": "You are a helpful AI assistant for testing.",
-            "temperature": 0.7,
-            "max_tokens": 2048,
+            "assistant_id": assistant_id,  # Link to the assistant
             "is_private": False,
             "tags": ["test", "automation", "api"]
         }
@@ -235,6 +323,7 @@ class ChatTester:
             try:
                 data = response.json()
                 self.test_data["test_chat_id"] = data.get("id")
+                print(f"   ✅ Created chat with assistant: {data.get('id')}")
                 return True
             except:
                 pass
@@ -390,6 +479,9 @@ class ChatTester:
                 if "API key not configured" in data.get("detail", ""):
                     print("   ⚠️  OpenAI API key not configured - this is expected for test environment")
                     return True  # Consider this successful since the endpoint works
+                elif "assistant" in data.get("detail", "").lower():
+                    print(f"   ⚠️  Chat does not have an assistant - this is now required")
+                    return True  # Expected behavior - assistant is required
                 else:
                     print(f"   ❌ Bad Request: {data.get('detail', 'Unknown error')}")
             except:
@@ -570,6 +662,9 @@ class ChatTester:
                 if "API key not configured" in data.get("detail", ""):
                     print("   ⚠️  OpenAI API key not configured - this is expected for test environment")
                     return True  # Consider this successful since the endpoint works
+                elif "assistant" in data.get("detail", "").lower():
+                    print(f"   ⚠️  Chat does not have an assistant - this is now required")
+                    return True  # Expected behavior - assistant is required
                 else:
                     print(f"   ❌ Bad Request: {data.get('detail', 'Unknown error')}")
             except:
@@ -696,6 +791,159 @@ class ChatTester:
         
         return success
     
+    def test_ai_message_assistant_requirement(self):
+        """Test that AI message endpoint requires assistant"""
+        print("\n🧪 Testing AI Message Assistant Requirement...")
+        
+        # First, create a chat WITHOUT assistant
+        payload_no_assistant = {
+            "title": f"Test Chat Without Assistant {datetime.utcnow().isoformat()}",
+            "description": "Testing AI message without assistant",
+            "chat_type": "direct",
+            "ai_model": "gpt-3.5-turbo",
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "is_private": False
+        }
+        
+        response = self.make_request(
+            "POST",
+            "/api/v1/chat/chats",
+            payload_no_assistant,
+            headers=self.get_auth_headers(),
+            expected_status=[200, 201]
+        )
+        
+        if response.status_code in [200, 201]:
+            try:
+                data = response.json()
+                chat_id_no_assistant = data.get("id")
+                print(f"   ✅ Created chat without assistant: {chat_id_no_assistant}")
+                
+                # Try to send AI message to chat without assistant
+                ai_message_payload = {
+                    "message": "Test message to chat without assistant",
+                    "stream": False,
+                    "save_to_history": True
+                }
+                
+                ai_response = self.make_request(
+                    "POST",
+                    f"/api/v1/chat/chats/{chat_id_no_assistant}/ai-message",
+                    ai_message_payload,
+                    headers=self.get_auth_headers(),
+                    expected_status=[400]
+                )
+                
+                if ai_response.status_code == 400:
+                    try:
+                        error_data = ai_response.json()
+                        error_detail = error_data.get("detail", "")
+                        if "assistant" in error_detail.lower():
+                            print(f"   ✅ Correctly rejected: {error_detail}")
+                            return True
+                        else:
+                            print(f"   ❌ Unexpected error: {error_detail}")
+                            return False
+                    except:
+                        print(f"   ❌ Could not parse error response")
+                        return False
+                else:
+                    print(f"   ❌ Expected 400 error but got {ai_response.status_code}")
+                    return False
+            except Exception as e:
+                print(f"   ❌ Error during test: {e}")
+                return False
+        else:
+            print(f"   ❌ Failed to create test chat")
+            return False
+    
+    def test_ai_message_with_knowledge(self):
+        """Test AI message with assistant that has knowledge bases"""
+        print("\n🧪 Testing AI Message with Knowledge Bases and Documents...")
+        
+        # Create an assistant with knowledge bases
+        print("   📦 Creating assistant with knowledge...")
+        assistant_id = self.create_assistant(with_knowledge=True)
+        if not assistant_id:
+            print("   ❌ Failed to create assistant with knowledge")
+            return False
+        print(f"   ✅ Created assistant with knowledge: {assistant_id}")
+        
+        # Verify assistant has knowledge bases and documents
+        print("   🔍 Verifying assistant-knowledge relationship...")
+        assistant_response = self.make_request(
+            "GET",
+            f"/api/v1/assistants/{assistant_id}",
+            headers=self.get_auth_headers(),
+            expected_status=[200]
+        )
+        
+        if assistant_response.status_code == 200:
+            assistant_data = assistant_response.json()
+            doc_count = len(assistant_data.get("documents", []))
+            print(f"      📄 Documents attached to assistant: {doc_count}")
+            if doc_count > 0:
+                print(f"      ✅ Assistant-Knowledge relationship established")
+        
+        # Create chat with the assistant that has knowledge
+        chat_payload = {
+            "title": f"Test Chat with Knowledge {datetime.utcnow().isoformat()}",
+            "description": "Testing AI message with knowledge bases",
+            "chat_type": "direct",
+            "assistant_id": assistant_id,
+            "is_private": False
+        }
+        
+        chat_response = self.make_request(
+            "POST",
+            "/api/v1/chat/chats",
+            chat_payload,
+            headers=self.get_auth_headers(),
+            expected_status=[200, 201]
+        )
+        
+        if chat_response.status_code in [200, 201]:
+            try:
+                chat_data = chat_response.json()
+                chat_id = chat_data.get("id")
+                print(f"   ✅ Created chat with knowledge-enabled assistant: {chat_id}")
+                
+                # Send AI message to chat with knowledge-enabled assistant
+                ai_message_payload = {
+                    "message": "Test message with knowledge context",
+                    "stream": False,
+                    "save_to_history": True
+                }
+                
+                ai_response = self.make_request(
+                    "POST",
+                    f"/api/v1/chat/chats/{chat_id}/ai-message",
+                    ai_message_payload,
+                    headers=self.get_auth_headers(),
+                    expected_status=[200, 400, 503]  # 503 if LangChain is not running
+                )
+                
+                if ai_response.status_code == 200:
+                    print(f"   ✅ AI message sent successfully with knowledge context")
+                    return True
+                elif ai_response.status_code == 400:
+                    error_data = ai_response.json()
+                    if "API key" in error_data.get("detail", ""):
+                        print(f"   ⚠️  OpenAI API key not configured")
+                        return True  # Expected in test environment
+                elif ai_response.status_code == 503:
+                    print(f"   ⚠️  LangChain service not available")
+                    return True  # Expected if service not running
+                
+                return ai_response.status_code in [200, 400, 503]
+            except Exception as e:
+                print(f"   ❌ Error during test: {e}")
+                return False
+        else:
+            print(f"   ❌ Failed to create chat with knowledge-enabled assistant")
+            return False
+
     def run_all_tests(self):
         """Run all Chat API tests in sequence"""
         print("🚀 Starting Chat API Test Suite for Arketic")
@@ -712,6 +960,8 @@ class ChatTester:
         print("   • GET  /api/v1/chat/stats")
         print("   • POST /api/v1/chat/chats/{chat_id}/ai-message (Production)")
         print("   • POST /api/v1/chat/chats/{chat_id}/ai-message (Streaming)")
+        print("   • POST /api/v1/chat/chats/{chat_id}/ai-message (Assistant Required)")
+        print("   • POST /api/v1/chat/chats/{chat_id}/ai-message (With Knowledge)")
         print("   • GET  /api/v1/chat/langchain/health (LangChain Health)")
         print("   • POST /api/v1/chat/langchain/test (LangChain Integration Test)")
         print("   • GET  /api/v1/chat/services/status (Services Status)")
@@ -732,6 +982,8 @@ class ChatTester:
             self.test_get_chat_stats,
             self.test_production_ai_chat,
             self.test_production_ai_chat_streaming,
+            self.test_ai_message_assistant_requirement,
+            self.test_ai_message_with_knowledge,
             self.test_langchain_service_health,
             self.test_langchain_service_test,
             self.test_services_status

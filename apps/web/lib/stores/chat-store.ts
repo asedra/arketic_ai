@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { chatApi, ChatResponse, MessageResponse, ChatHistoryResponse, settingsApi } from '../api-client'
+import { chatApi, ChatResponse, MessageResponse, ChatHistoryResponse, ChatWithAIRequest, settingsApi } from '../api-client'
 
 export interface ChatMessage extends MessageResponse {
   timestamp: Date
@@ -185,6 +185,20 @@ export const useChatStore = create<ChatStore>()(
           const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2)}`
           
           try {
+            // Get current chat to check assistant_id
+            const state = get()
+            const currentChat = state.chats.find(chat => chat.id === chatId)
+            
+            // Check if chat has an assistant_id
+            if (!currentChat?.assistant_id) {
+              const errorMessage = 'Bu sohbete mesaj göndermek için bir asistan seçmelisiniz. Lütfen önce bir asistan seçin.'
+              set({ 
+                error: errorMessage,
+                isSending: false 
+              })
+              throw new Error(errorMessage)
+            }
+            
             // Add optimistic user message
             const optimisticMessage: ChatMessage = {
               id: tempId,
@@ -216,7 +230,7 @@ export const useChatStore = create<ChatStore>()(
               throw new Error('OpenAI API key not configured. Please set up your API key in Settings to enable AI chat.')
             }
             
-            // Use AI chat endpoint for all messages (with streaming)
+            // Use AI chat endpoint for all messages
             console.log('Chat Store: Sending message via AI endpoint:', { 
               chatId, 
               content, 
@@ -224,12 +238,15 @@ export const useChatStore = create<ChatStore>()(
               contentType: typeof content
             })
             
-            const requestPayload = { 
+            // API dokümantasyonuna göre doğru format - assistant_id dahil
+            const requestPayload: ChatWithAIRequest = { 
               message: content, 
               stream: false, 
-              save_to_history: true 
+              save_to_history: true,
+              assistant_id: currentChat.assistant_id || undefined
             }
             console.log('Chat Store: Request payload:', requestPayload)
+            console.log('Chat Store: Assistant ID:', currentChat.assistant_id)
             
             const response = await chatApi.chatWithAI(chatId, requestPayload)
             console.log('Chat Store: AI message response:', response)

@@ -1270,6 +1270,7 @@ export interface ChatWithAIRequest {
   message: string
   stream?: boolean
   save_to_history?: boolean
+  assistant_id?: string
 }
 
 export interface ChatWithAIResponse {

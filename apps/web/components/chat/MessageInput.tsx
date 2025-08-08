@@ -13,13 +13,15 @@ interface MessageInputProps {
   disabled?: boolean
   placeholder?: string
   className?: string
+  hasAssistant?: boolean
 }
 
 export const MessageInput: React.FC<MessageInputProps> = ({
   onSendMessage,
   disabled = false,
   placeholder = "Type your message...",
-  className
+  className,
+  hasAssistant = true
 }) => {
   const [message, setMessage] = useState('')
   const [isRecording, setIsRecording] = useState(false)
@@ -134,7 +136,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
     console.log('File attachment...')
   }
 
-  const canSend = message.trim().length > 0 && !disabled && hasOpenAISettings && !isCheckingSettings
+  const canSend = message.trim().length > 0 && !disabled && hasOpenAISettings && !isCheckingSettings && hasAssistant
   
   const getPlaceholder = () => {
     if (isCheckingSettings) {
@@ -143,10 +145,13 @@ export const MessageInput: React.FC<MessageInputProps> = ({
     if (!hasOpenAISettings) {
       return "Configure OpenAI API key in Settings to enable AI chat"
     }
+    if (!hasAssistant && !placeholder.includes("Asistan")) {
+      return "Lütfen önce bir asistan seçin"
+    }
     return placeholder
   }
   
-  const isInputDisabled = disabled || !hasOpenAISettings || isCheckingSettings
+  const isInputDisabled = disabled || !hasOpenAISettings || isCheckingSettings || !hasAssistant
 
   return (
     <div className={cn('p-3 md:p-4', className)}>

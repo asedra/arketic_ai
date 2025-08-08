@@ -42,18 +42,22 @@ const providerTestSchema = Joi.object({
 // Helper function to get API key  
 async function getApiKeyForUser(userId, provider = 'openai') {
   try {
-    // For now, use environment variables as fallback since encrypted keys need decryption
-    // TODO: Implement proper key decryption from user_api_keys table
+    // Note: The API key should be passed from the API service
+    // which retrieves it from the database
+    // This function is only used as a fallback for direct calls
+    
+    // Check environment variables as fallback
     const envKey = provider === 'openai' ? process.env.OPENAI_API_KEY : process.env.ANTHROPIC_API_KEY;
     
     if (!envKey) {
-      throw new Error(`No API key available for provider: ${provider}`);
+      logger.warn(`No environment API key available for provider: ${provider}`);
+      return null;
     }
     
     return envKey;
   } catch (error) {
     logger.error('Error getting API key:', error);
-    throw new Error('Failed to retrieve API key');
+    return null;
   }
 }
 
@@ -99,16 +103,26 @@ router.post('/api/chat/message', authMiddleware, async (req, res) => {
     const { chatId, message, settings } = value;
     const userId = req.user.user_id;
     
-    // Get API key from request headers or database
-    const apiKey = req.headers['x-api-key'] || await getApiKeyForUser(userId, settings.provider);
+    // Get API key from request headers or environment fallback
+    const headerApiKey = req.headers['x-api-key'];
+    logger.info(`Received x-api-key header: ${headerApiKey ? `${headerApiKey.substring(0, 10)}...` : 'Not provided'}`);
+    
+    if (!headerApiKey) {
+      logger.warn('No x-api-key header provided, falling back to environment');
+    }
+    
+    const apiKey = headerApiKey || await getApiKeyForUser(userId, settings.provider);
     
     if (!apiKey) {
+      logger.error('No API key available - neither from header nor environment');
       return res.status(400).json({
         error: 'API key not found',
         code: 'API_KEY_MISSING',
-        message: 'Please provide an API key either in headers (x-api-key) or configure it in your settings'
+        message: 'API key must be provided by the API service via x-api-key header. Please ensure your OpenAI API key is configured in the database.'
       });
     }
+    
+    logger.info(`Final API key being used: ${apiKey.substring(0, 10)}...${apiKey.substring(apiKey.length - 4)}`)
 
     // Validate API key before processing
     const validation = await ChatService.validateApiKey(apiKey);
@@ -407,8 +421,10 @@ router.post('/internal/chat/message', internalServiceAuth, async (req, res) => {
     
     // Get API key from request headers
     const apiKey = req.headers['x-api-key'];
+    logger.info(`[Internal] Received x-api-key: ${apiKey ? `${apiKey.substring(0, 10)}...${apiKey.substring(apiKey.length - 4)}` : 'Not provided'}`);
     
     if (!apiKey) {
+      logger.error('[Internal] No API key provided in x-api-key header');
       return res.status(400).json({
         error: 'API key not found',
         code: 'API_KEY_MISSING',

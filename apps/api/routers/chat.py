@@ -332,19 +332,14 @@ def calculate_message_tokens(messages: List[Dict[str, str]]) -> int:
 
 # Helper function to get user's OpenAI API key
 async def get_user_openai_key(user_id: str, db: AsyncSession) -> Optional[str]:
-    """Get and decrypt user's OpenAI API key"""
+    """Get and decrypt user's OpenAI API key from database"""
     try:
         import os
-        
-        # Temporary fix: use environment API key for testing
-        # TODO: Fix encryption/decryption mechanism
-        env_key = os.getenv("OPENAI_API_KEY")
-        if env_key:
-            logger.info(f"Using environment OpenAI API key for user {user_id}")
-            return env_key
-            
         from core.dependencies import get_security_manager
         
+        logger.info(f"Getting OpenAI API key for user {user_id}")
+        
+        # First try to get the key from database
         stmt = select(UserApiKey).where(
             and_(
                 UserApiKey.user_id == user_id,
@@ -357,11 +352,36 @@ async def get_user_openai_key(user_id: str, db: AsyncSession) -> Optional[str]:
         api_key_record = result.scalar_one_or_none()
         
         if api_key_record:
+            logger.info(f"Found OpenAI API key record for user {user_id}")
             security_manager = get_security_manager()
-            return security_manager.decrypt_api_key(api_key_record.encrypted_key)
+            decrypted_key = security_manager.decrypt_api_key(api_key_record.encrypted_key)
+            if decrypted_key:
+                logger.info(f"Successfully decrypted OpenAI API key for user {user_id}, key starts with: {decrypted_key[:10]}...")
+                # Update usage statistics
+                api_key_record.mark_as_used()
+                await db.commit()
+                return decrypted_key
+            else:
+                logger.error(f"Failed to decrypt OpenAI API key for user {user_id}")
+        else:
+            logger.warning(f"No OpenAI API key found in database for user {user_id}")
         
+        # Fallback to environment variable only if no database key found
+        env_key = os.getenv("OPENAI_API_KEY")
+        if env_key:
+            logger.warning(f"Using environment fallback API key for user {user_id}, key starts with: {env_key[:10]}...")
+            return env_key
+        else:
+            logger.error(f"No environment API key available as fallback for user {user_id}")
+            
     except Exception as e:
-        logger.warning(f"Could not retrieve OpenAI API key for user {user_id}: {e}")
+        logger.error(f"Error retrieving OpenAI API key for user {user_id}: {e}")
+        # Try environment variable as last resort
+        import os
+        env_key = os.getenv("OPENAI_API_KEY")
+        if env_key:
+            logger.warning(f"Using environment API key due to error: {e}")
+            return env_key
     
     return None
 
@@ -379,6 +399,7 @@ async def generate_streaming_ai_response(
 ) -> None:
     """Generate streaming AI response using LangChain service"""
     try:
+        logger.info(f"generate_streaming_ai_response called with api_key: {api_key[:10] if api_key else 'None'}...")
         full_content = ""
         
         # Prepare settings for LangChain
@@ -386,7 +407,7 @@ async def generate_streaming_ai_response(
             "model": chat.ai_model or "gpt-3.5-turbo",
             "temperature": float(chat.temperature) if chat.temperature else 0.7,
             "maxTokens": chat.max_tokens or 2048,
-            "systemPrompt": chat.system_prompt,
+            "systemPrompt": chat.system_prompt or "You are a helpful AI assistant.",
             "provider": "openai",
             "knowledgeBaseIds": chat.assistant_knowledge_bases if chat.assistant_knowledge_bases else [],
             "documentIds": chat.assistant_documents if chat.assistant_documents else []
@@ -1546,7 +1567,7 @@ async def chat_with_ai(
                 "model": chat.ai_model or "gpt-3.5-turbo",
                 "temperature": float(chat.temperature) if chat.temperature else 0.7,
                 "maxTokens": chat.max_tokens or 2048,
-                "systemPrompt": chat.system_prompt,
+                "systemPrompt": chat.system_prompt or "You are a helpful AI assistant.",
                 "provider": "openai",
                 "knowledgeBaseIds": chat.assistant_knowledge_bases if chat.assistant_knowledge_bases else [],
                 "documentIds": chat.assistant_documents if chat.assistant_documents else []

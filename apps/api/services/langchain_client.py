@@ -118,6 +118,8 @@ class LangChainServiceClient:
             
         except httpx.HTTPError as e:
             logger.error(f"LangChain service error: {e}")
+            if hasattr(e, 'response') and e.response:
+                logger.error(f"Response body: {e.response.text[:500]}")
             self.circuit_breaker.record_failure()
             
             if self.circuit_breaker.is_open():

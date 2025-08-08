@@ -137,7 +137,7 @@ class ChatService {
       
       const userMessage = await this.dbService.saveMessage({
         chatId,
-        sender_id: userId,
+        sender_id: userId || null,  // Allow null for system/internal messages
         content: message,
         messageType: 'user'
       });

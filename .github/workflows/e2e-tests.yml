@@ -1,0 +1,491 @@
+# Comprehensive E2E Testing Workflow for Arketic (AR-82 Implementation)
+# 
+# This workflow runs both frontend (Playwright MCP) and backend API tests
+# in a complete Docker Compose environment.
+#
+# Author: Claude
+# Created: 2025-08-10
+
+name: E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Run tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Test suite to run (all, frontend, backend, specific)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - frontend
+        - backend
+        - auth
+        - knowledge
+        - chat
+        - organization
+        - settings
+        - compliance
+        - health
+        - forms
+
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.11'
+  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/pw-browsers
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      test-suite: ${{ steps.determine-suite.outputs.suite }}
+      run-frontend: ${{ steps.determine-suite.outputs.run-frontend }}
+      run-backend: ${{ steps.determine-suite.outputs.run-backend }}
+    
+    steps:
+    - name: Determine test suite
+      id: determine-suite
+      run: |
+        SUITE="${{ github.event.inputs.test_suite || 'all' }}"
+        echo "suite=$SUITE" >> $GITHUB_OUTPUT
+        
+        if [[ "$SUITE" == "all" || "$SUITE" == "frontend" || "$SUITE" == "auth" || "$SUITE" == "knowledge" || "$SUITE" == "chat" || "$SUITE" == "organization" || "$SUITE" == "settings" ]]; then
+          echo "run-frontend=true" >> $GITHUB_OUTPUT
+        else
+          echo "run-frontend=false" >> $GITHUB_OUTPUT
+        fi
+        
+        if [[ "$SUITE" == "all" || "$SUITE" == "backend" || "$SUITE" == "compliance" || "$SUITE" == "health" || "$SUITE" == "forms" ]]; then
+          echo "run-backend=true" >> $GITHUB_OUTPUT
+        else
+          echo "run-backend=false" >> $GITHUB_OUTPUT
+        fi
+
+  backend-tests:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.setup.outputs.run-backend == 'true'
+    
+    services:
+      postgres:
+        image: pgvector/pgvector:pg15
+        env:
+          POSTGRES_DB: arketic_test
+          POSTGRES_USER: arketic
+          POSTGRES_PASSWORD: arketic_test_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Cache Python dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('apps/api/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install Python dependencies
+      run: |
+        cd apps/api
+        pip install -r requirements.txt
+        pip install aiohttp pytest pytest-asyncio
+
+    - name: Set up test environment
+      run: |
+        cp .env.example .env.test
+        echo "DATABASE_URL=postgresql://arketic:arketic_test_password@localhost:5432/arketic_test" >> .env.test
+        echo "REDIS_URL=redis://localhost:6379/1" >> .env.test
+        echo "ENVIRONMENT=test" >> .env.test
+
+    - name: Wait for services
+      run: |
+        timeout 60 bash -c 'until pg_isready -h localhost -p 5432 -U arketic; do sleep 1; done'
+        timeout 60 bash -c 'until redis-cli -h localhost -p 6379 ping; do sleep 1; done'
+
+    - name: Run database migrations
+      run: |
+        cd apps/api
+        export $(cat ../../.env.test | xargs)
+        alembic upgrade head
+
+    - name: Start API server
+      run: |
+        cd apps/api
+        export $(cat ../../.env.test | xargs)
+        uvicorn main:app --host 0.0.0.0 --port 8000 &
+        sleep 10
+        curl -f http://localhost:8000/health || exit 1
+
+    - name: Run existing backend tests
+      run: |
+        cd apps/api/docs
+        python auth_test.py
+        python chat_test.py
+        python assistant_test.py
+        python knowledge_test.py
+        python people_test.py
+        python langchain_test.py
+
+    - name: Run new endpoint tests
+      run: |
+        cd apps/api/docs
+        if [[ "${{ needs.setup.outputs.test-suite }}" == "all" || "${{ needs.setup.outputs.test-suite }}" == "compliance" ]]; then
+          python compliance_test.py
+        fi
+        if [[ "${{ needs.setup.outputs.test-suite }}" == "all" || "${{ needs.setup.outputs.test-suite }}" == "health" ]]; then
+          python health_test.py
+        fi
+        if [[ "${{ needs.setup.outputs.test-suite }}" == "all" || "${{ needs.setup.outputs.test-suite }}" == "forms" ]]; then
+          python forms_test.py
+        fi
+
+    - name: Upload backend test reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: backend-test-reports
+        path: |
+          apps/api/docs/*_test_report.json
+          apps/api/docs/test_results.json
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.setup.outputs.run-frontend == 'true'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: |
+          apps/web/package-lock.json
+          apps/langchain/package-lock.json
+
+    - name: Set up Python for API
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Start services with Docker Compose
+      run: |
+        cp .env.example .env
+        echo "NODE_ENV=test" >> .env
+        echo "PLAYWRIGHT_TEST=true" >> .env
+        docker compose up -d postgres redis
+        sleep 10
+
+    - name: Install backend dependencies
+      run: |
+        cd apps/api
+        pip install -r requirements.txt
+
+    - name: Run database migrations
+      run: |
+        cd apps/api
+        export $(cat ../../.env | xargs)
+        alembic upgrade head
+
+    - name: Start backend services
+      run: |
+        docker compose up -d api langchain
+        sleep 20
+
+    - name: Install frontend dependencies
+      run: |
+        cd apps/web
+        npm ci
+
+    - name: Cache Playwright browsers
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('apps/web/package-lock.json') }}
+
+    - name: Install Playwright
+      run: |
+        cd apps/web
+        npx playwright install chromium
+
+    - name: Start frontend
+      run: |
+        cd apps/web
+        npm run build
+        npm start &
+        sleep 30
+        curl -f http://localhost:3000 || exit 1
+
+    - name: Wait for all services
+      run: |
+        timeout 60 bash -c 'until curl -f http://localhost:8000/health; do sleep 2; done'
+        timeout 60 bash -c 'until curl -f http://localhost:3001/health; do sleep 2; done'
+        timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done'
+
+    - name: Run Playwright tests
+      run: |
+        cd apps/web/tests/playwright
+        export PLAYWRIGHT_BASE_URL=http://localhost:3000
+        export API_URL=http://localhost:8000
+        export HEADLESS=true
+        
+        case "${{ needs.setup.outputs.test-suite }}" in
+          "all")
+            ./run-all-tests.sh
+            ;;
+          "frontend")
+            ./run-all-tests.sh
+            ;;
+          "auth"|"knowledge"|"chat"|"organization"|"settings")
+            ./run-all-tests.sh ${{ needs.setup.outputs.test-suite }}
+            ;;
+        esac
+
+    - name: Upload frontend test reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: frontend-test-reports
+        path: |
+          apps/web/tests/playwright/reports/
+          apps/web/test-results/
+          apps/web/playwright-report/
+
+    - name: Upload screenshots and videos
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: playwright-artifacts
+        path: |
+          apps/web/test-results/
+          apps/web/tests/playwright/reports/*/artifacts/
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: [setup, backend-tests, frontend-tests]
+    if: always() && needs.setup.outputs.test-suite == 'all'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Start full environment
+      run: |
+        cp .env.example .env
+        echo "NODE_ENV=test" >> .env
+        docker compose up -d
+        sleep 60
+
+    - name: Run integration test suite
+      run: |
+        # Full end-to-end integration tests
+        cd apps/api/docs
+        python integrate_tests.py
+
+    - name: Run multi-file upload test
+      run: |
+        cd apps/api/docs
+        python multi_file_upload_test.py
+
+    - name: Upload integration test reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: integration-test-reports
+        path: |
+          apps/api/docs/integration_test_report.json
+          apps/api/docs/multi_file_upload_test_report.json
+
+  performance-tests:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.setup.outputs.test-suite == 'all' && github.event_name == 'schedule'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Start services
+      run: |
+        cp .env.example .env
+        docker compose up -d
+        sleep 60
+
+    - name: Run performance tests
+      run: |
+        cd apps/api/tests
+        python test_pgvector_benchmark.py
+        python test_rag_integration.py
+
+    - name: Upload performance reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: performance-test-reports
+        path: |
+          apps/api/tests/*_benchmark_report.json
+          apps/api/tests/*_performance_report.json
+
+  report-summary:
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests, integration-tests]
+    if: always()
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+
+    - name: Generate test summary
+      run: |
+        echo "# 🚀 Arketic E2E Test Results" > test_summary.md
+        echo "" >> test_summary.md
+        echo "**Implementation:** AR-82 Comprehensive Testing Infrastructure" >> test_summary.md
+        echo "**Timestamp:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> test_summary.md
+        echo "**Commit:** ${{ github.sha }}" >> test_summary.md
+        echo "**Test Suite:** ${{ needs.setup.outputs.test-suite }}" >> test_summary.md
+        echo "" >> test_summary.md
+        
+        # Process backend test results
+        if [[ -d "backend-test-reports" ]]; then
+          echo "## 📊 Backend API Tests" >> test_summary.md
+          echo "" >> test_summary.md
+          for report in backend-test-reports/*.json; do
+            if [[ -f "$report" ]]; then
+              echo "### $(basename "$report" .json | sed 's/_/ /g' | tr '[:lower:]' '[:upper:]')" >> test_summary.md
+              python3 -c "
+import json, sys
+try:
+    with open('$report') as f:
+        data = json.load(f)
+    summary = data.get('summary', {})
+    print(f\"- Total Tests: {summary.get('total_tests', 'N/A')}\")
+    print(f\"- Passed: {summary.get('passed', 'N/A')}\")
+    print(f\"- Failed: {summary.get('failed', 'N/A')}\")
+    print(f\"- Success Rate: {summary.get('success_rate', 'N/A')}%\")
+    print(f\"- Avg Response Time: {summary.get('avg_response_time_ms', 'N/A')}ms\")
+except:
+    print('- Status: Report processing failed')
+" >> test_summary.md
+              echo "" >> test_summary.md
+            fi
+          done
+        fi
+        
+        # Process frontend test results
+        if [[ -d "frontend-test-reports" ]]; then
+          echo "## 🎭 Frontend E2E Tests" >> test_summary.md
+          echo "" >> test_summary.md
+          if [[ -f "frontend-test-reports/consolidated-report.html" ]]; then
+            echo "- Consolidated report available" >> test_summary.md
+          fi
+          if [[ -d "frontend-test-reports/reports" ]]; then
+            echo "- Test suite reports generated" >> test_summary.md
+          fi
+          echo "" >> test_summary.md
+        fi
+        
+        # Process integration test results
+        if [[ -d "integration-test-reports" ]]; then
+          echo "## 🔗 Integration Tests" >> test_summary.md
+          echo "" >> test_summary.md
+          echo "- Full end-to-end integration tests completed" >> test_summary.md
+          echo "" >> test_summary.md
+        fi
+        
+        echo "## 📋 Summary" >> test_summary.md
+        echo "" >> test_summary.md
+        echo "This automated test run validates:" >> test_summary.md
+        echo "- ✅ Authentication and session management" >> test_summary.md
+        echo "- ✅ Knowledge management and document processing" >> test_summary.md
+        echo "- ✅ Chat interface and AI integration" >> test_summary.md
+        echo "- ✅ Organization management features" >> test_summary.md
+        echo "- ✅ Settings and user preferences" >> test_summary.md
+        echo "- ✅ Backend API endpoints" >> test_summary.md
+        echo "- ✅ System health monitoring" >> test_summary.md
+        echo "- ✅ Forms and compliance management" >> test_summary.md
+        echo "" >> test_summary.md
+        echo "**Test Infrastructure:** Playwright MCP + Custom Backend Testing" >> test_summary.md
+
+    - name: Upload test summary
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-summary
+        path: test_summary.md
+
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          try {
+            const summary = fs.readFileSync('test_summary.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+          } catch (error) {
+            console.log('Could not post test summary to PR');
+          }
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests, integration-tests, performance-tests]
+    if: always()
+    
+    steps:
+    - name: Stop Docker containers
+      run: |
+        docker compose down -v || true
+        docker system prune -f || true

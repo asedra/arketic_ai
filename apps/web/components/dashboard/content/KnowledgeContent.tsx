@@ -35,7 +35,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useArketicStore } from '@/lib/state-manager'
-import { knowledgeApi, DocumentResponse, CollectionResponse, UploadTextDocumentRequest, SearchRequest, RAGQueryRequest, CollectionRequest } from '@/lib/api-client'
+import { knowledgeApi, DocumentResponse, DocumentEmbeddingsResponse, CollectionResponse, UploadTextDocumentRequest, SearchRequest, RAGQueryRequest, CollectionRequest } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -61,6 +61,7 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
   const [showSuccess, setShowSuccess] = useState(false)
   const [uploadSuccess, setUploadSuccess] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
+  const [fileUploadStatuses, setFileUploadStatuses] = useState<{ name: string; progress: number; status: 'pending' | 'uploading' | 'done' | 'error' }[]>([])
   const [activeTab, setActiveTab] = useState('documents')
   
   // Dialog states
@@ -89,8 +90,11 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
   const [searchResults, setSearchResults] = useState<DocumentResponse[]>([])
   const [ragResponse, setRagResponse] = useState<{ answer: string; sources: DocumentResponse[] } | null>(null)
   const [selectedDocument, setSelectedDocument] = useState<DocumentResponse | null>(null)
+  const [documentEmbeddings, setDocumentEmbeddings] = useState<DocumentEmbeddingsResponse | null>(null)
   const [documentLoading, setDocumentLoading] = useState(false)
+  const [embeddingsLoading, setEmbeddingsLoading] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
+  const [documentDetailTab, setDocumentDetailTab] = useState('content')
   
   
   // Fetch documents
@@ -161,111 +165,183 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
     }
   }
   
-  // Handle file upload
+  // Handle file upload (supports multiple files)
   const handleFileUpload = async (files: FileList) => {
     if (!files || files.length === 0) return
-    
-    const file = files[0]
-    const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2)
     
     setUploading(true)
     setUploadProgress(0)
     setUploadSuccess(false)
     
+    // Initialize file upload statuses
+    const initialStatuses = Array.from(files).map(file => ({
+      name: file.name,
+      progress: 0,
+      status: 'pending' as const
+    }))
+    setFileUploadStatuses(initialStatuses)
+    
     // Show upload started notification
+    const fileCount = files.length
+    const totalSize = Array.from(files).reduce((sum, file) => sum + file.size, 0)
+    const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2)
+    
     toast({
       title: "Upload started",
-      description: `Processing ${file.name} (${fileSizeInMB} MB)...`,
+      description: `Processing ${fileCount} file${fileCount > 1 ? 's' : ''} (${totalSizeMB} MB total)...`,
     })
     
     try {
-      // Validate file size (10MB limit)
-      if (file.size > 10 * 1024 * 1024) {
-        throw new Error(`File size (${fileSizeInMB} MB) exceeds 10MB limit`)
-      }
+      const uploadPromises = []
+      const fileResults: { name: string; success: boolean; error?: string }[] = []
       
-      // Validate file type
-      const allowedTypes = ['.pdf', '.doc', '.docx', '.txt', '.md']
-      const fileExt = '.' + file.name.split('.').pop()?.toLowerCase()
-      if (!allowedTypes.includes(fileExt)) {
-        throw new Error(`File type ${fileExt} is not supported. Allowed: ${allowedTypes.join(', ')}`)
-      }
-      
-      // Only include collection_id if it's actually selected and not empty/none
-      const uploadOptions: any = {
-        description: `Uploaded file: ${file.name}`,
-        onProgress: (progress: number) => {
-          setUploadProgress(progress)
+      // Process each file
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2)
+        
+        // Validate file size (10MB limit per file)
+        if (file.size > 10 * 1024 * 1024) {
+          fileResults.push({
+            name: file.name,
+            success: false,
+            error: `File size (${fileSizeInMB} MB) exceeds 10MB limit`
+          })
+          continue
         }
+        
+        // Validate file type
+        const allowedTypes = ['.pdf', '.doc', '.docx', '.txt', '.md']
+        const fileExt = '.' + file.name.split('.').pop()?.toLowerCase()
+        if (!allowedTypes.includes(fileExt)) {
+          fileResults.push({
+            name: file.name,
+            success: false,
+            error: `File type ${fileExt} is not supported`
+          })
+          continue
+        }
+        
+        // Create upload promise for this file
+        const uploadPromise = (async () => {
+          try {
+            // Update status to uploading
+            setFileUploadStatuses(prev => prev.map((status, idx) => 
+              idx === i ? { ...status, status: 'uploading' } : status
+            ))
+            
+            const uploadOptions: any = {
+              description: `Uploaded file: ${file.name}`,
+              onProgress: (progress: number) => {
+                // Update individual file progress
+                setFileUploadStatuses(prev => prev.map((status, idx) => 
+                  idx === i ? { ...status, progress } : status
+                ))
+                
+                // Update overall progress based on file count
+                const fileProgress = (i * 100 + progress) / files.length
+                setUploadProgress(fileProgress)
+              }
+            }
+            
+            if (selectedCollection && selectedCollection !== 'none' && selectedCollection !== '') {
+              uploadOptions.collection_id = selectedCollection
+            }
+            
+            const response = await knowledgeApi.uploadFile(file, uploadOptions)
+            
+            if (response.data) {
+              // Update status to done
+              setFileUploadStatuses(prev => prev.map((status, idx) => 
+                idx === i ? { ...status, status: 'done', progress: 100 } : status
+              ))
+              
+              fileResults.push({
+                name: file.name,
+                success: true
+              })
+              return response.data
+            }
+          } catch (err: any) {
+            console.error(`Upload error for ${file.name}:`, err)
+            
+            // Update status to error
+            setFileUploadStatuses(prev => prev.map((status, idx) => 
+              idx === i ? { ...status, status: 'error' } : status
+            ))
+            
+            fileResults.push({
+              name: file.name,
+              success: false,
+              error: err.message || 'Unknown error'
+            })
+            return null
+          }
+        })()
+        
+        uploadPromises.push(uploadPromise)
       }
       
-      if (selectedCollection && selectedCollection !== 'none' && selectedCollection !== '') {
-        uploadOptions.collection_id = selectedCollection
-      }
+      // Wait for all uploads to complete
+      const results = await Promise.all(uploadPromises)
+      const successfulUploads = results.filter(r => r !== null)
       
-      const response = await knowledgeApi.uploadFile(file, uploadOptions)
-      
-      if (response.data) {
+      if (successfulUploads.length > 0) {
         setUploadSuccess(true)
         
-        // Enhanced success notification with file details
-        const fileInfo = response.data.file_info || {}
-        const chunks = response.data.chunk_count || 0
-        const tokens = response.data.token_count || 0
-        const processingTime = response.data.processing_time_ms || 0
+        // Show summary notification
+        const successCount = fileResults.filter(r => r.success).length
+        const failCount = fileResults.filter(r => !r.success).length
+        
+        let description = `Successfully uploaded ${successCount} file${successCount > 1 ? 's' : ''}.`
+        if (failCount > 0) {
+          description += `\n${failCount} file${failCount > 1 ? 's' : ''} failed.`
+          
+          // Show details of failed files
+          const failedFiles = fileResults.filter(r => !r.success)
+          failedFiles.forEach(f => {
+            toast({
+              title: `Failed: ${f.name}`,
+              description: f.error,
+              variant: "destructive"
+            })
+          })
+        }
         
         toast({
-          title: "✅ Upload successful!",
-          description: `${file.name} processed successfully.\n📄 ${chunks} chunks, 🔤 ${tokens} tokens\n⏱️ Processed in ${processingTime}ms`,
+          title: "Upload complete!",
+          description,
         })
         
         // Close dialog after short delay to show success state
         setTimeout(() => {
           setShowUploadDialog(false)
           setUploadSuccess(false)
+          setFileUploadStatuses([])
         }, 2000)
         
         await fetchDocuments()
         
         // Show celebration for successful upload
-        setShowSuccess(true)
-        setTimeout(() => setShowSuccess(false), 3000)
+        if (successCount > 0) {
+          setShowSuccess(true)
+          setTimeout(() => setShowSuccess(false), 3000)
+        }
+      } else {
+        // All uploads failed
+        toast({
+          title: "Upload failed",
+          description: "No files were uploaded successfully. Please check the errors and try again.",
+          variant: "destructive"
+        })
       }
     } catch (err: any) {
       console.error('Upload error:', err)
-      
-      // Enhanced error handling with specific messages
-      let errorTitle = "Upload failed"
-      let errorDescription = "Unable to upload file. Please try again."
-      
-      if (err.message) {
-        if (err.message.includes('size')) {
-          errorTitle = "File too large"
-          errorDescription = err.message
-        } else if (err.message.includes('type') || err.message.includes('format')) {
-          errorTitle = "Unsupported file type"  
-          errorDescription = err.message
-        } else if (err.message.includes('network') || err.message.includes('timeout')) {
-          errorTitle = "Connection error"
-          errorDescription = "Network issue. Please check your connection and try again."
-        } else if (err.message.includes('401') || err.message.includes('authentication')) {
-          errorTitle = "Authentication error"
-          errorDescription = "Please sign in again and try uploading."
-        } else if (err.message.includes('duplicate') || err.message.includes('exists')) {
-          errorTitle = "File already exists"
-          errorDescription = "This file has already been uploaded to your knowledge base."
-        } else {
-          errorDescription = err.message
-        }
-      }
-      
       toast({
-        title: `❌ ${errorTitle}`,
-        description: errorDescription,
+        title: "Upload failed",
+        description: err.message || "An unexpected error occurred",
         variant: "destructive"
       })
-      
-      // Reset upload state on error
       setUploadProgress(0)
     } finally {
       setUploading(false)
@@ -428,11 +504,17 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
   // Handle document viewing
   const handleViewDocument = async (documentId: string) => {
     setDocumentLoading(true)
+    setDocumentDetailTab('content') // Reset to content tab
+    setDocumentEmbeddings(null) // Clear previous embeddings
+    
     try {
       const response = await knowledgeApi.getDocument(documentId)
       if (response.data) {
         setSelectedDocument(response.data)
         setShowDocumentDetailDialog(true)
+        
+        // Fetch embeddings in the background
+        fetchDocumentEmbeddings(documentId)
       }
     } catch (err: any) {
       toast({
@@ -442,6 +524,22 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
       })
     } finally {
       setDocumentLoading(false)
+    }
+  }
+  
+  // Fetch document embeddings
+  const fetchDocumentEmbeddings = async (documentId: string) => {
+    setEmbeddingsLoading(true)
+    try {
+      const response = await knowledgeApi.getDocumentEmbeddings(documentId)
+      if (response.data) {
+        setDocumentEmbeddings(response.data)
+      }
+    } catch (err: any) {
+      console.error('Failed to load embeddings:', err)
+      // Don't show error toast, embeddings are optional
+    } finally {
+      setEmbeddingsLoading(false)
     }
   }
 
@@ -999,6 +1097,7 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
                 onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
                 accept=".pdf,.doc,.docx,.txt,.md"
                 disabled={uploading}
+                multiple
               />
               <label
                 htmlFor="file-upload"
@@ -1019,10 +1118,10 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
                     ? "text-blue-700 dark:text-blue-300" 
                     : "text-slate-700 dark:text-slate-300"
                 )}>
-                  {isDragOver ? "Drop your file here!" : "Click to upload or drag and drop"}
+                  {isDragOver ? "Drop your files here!" : "Click to upload or drag and drop"}
                 </span>
                 <span className="text-xs text-slate-500 mt-1">
-                  PDF, DOC, DOCX, TXT, MD files up to 10MB
+                  Multiple files supported • PDF, DOC, DOCX, TXT, MD • Max 10MB per file
                 </span>
               </label>
             </div>
@@ -1048,6 +1147,41 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
                     style={{ width: uploadSuccess ? "100%" : `${uploadProgress}%` }}
                   />
                 </div>
+                
+                {/* Individual file progress */}
+                {fileUploadStatuses.length > 1 && (
+                  <div className="mt-4 space-y-2 max-h-48 overflow-y-auto">
+                    <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">Individual Files:</div>
+                    {fileUploadStatuses.map((fileStatus, idx) => (
+                      <div key={idx} className="bg-slate-50 dark:bg-slate-800 rounded-lg p-2">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="truncate flex-1 mr-2">{fileStatus.name}</span>
+                          <span className={cn(
+                            "font-medium",
+                            fileStatus.status === 'done' && "text-green-600",
+                            fileStatus.status === 'error' && "text-red-600",
+                            fileStatus.status === 'uploading' && "text-blue-600",
+                            fileStatus.status === 'pending' && "text-slate-400"
+                          )}>
+                            {fileStatus.status === 'done' && "✓"}
+                            {fileStatus.status === 'error' && "✗"}
+                            {fileStatus.status === 'uploading' && `${Math.round(fileStatus.progress)}%`}
+                            {fileStatus.status === 'pending' && "Waiting"}
+                          </span>
+                        </div>
+                        {fileStatus.status === 'uploading' && (
+                          <div className="mt-1 w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1">
+                            <div 
+                              className="h-1 bg-blue-600 rounded-full transition-all duration-300"
+                              style={{ width: `${fileStatus.progress}%` }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
                 {uploadSuccess && (
                   <div className="text-center text-sm text-green-600 font-medium animate-fade-in">
                     ✅ Upload successful! Closing in 2 seconds...
@@ -1364,39 +1498,156 @@ const KnowledgeContent = memo(function KnowledgeContent({ className }: Knowledge
                 )}
               </div>
               
-              {/* Document Content */}
-              <div className="flex-1 overflow-auto">
-                {selectedDocument.content ? (
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                      Content
-                    </h3>
-                    <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 border">
-                      <pre className="whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300 font-mono">
-                        {selectedDocument.content}
-                      </pre>
+              {/* Document Content with Tabs */}
+              <Tabs value={documentDetailTab} onValueChange={setDocumentDetailTab} className="flex-1 flex flex-col">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="content">Content</TabsTrigger>
+                  <TabsTrigger value="embeddings" className="flex items-center gap-2">
+                    Embeddings
+                    {documentEmbeddings && (
+                      <Badge variant="secondary" className="text-xs">
+                        {documentEmbeddings.total_chunks}
+                      </Badge>
+                    )}
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="content" className="flex-1 overflow-auto mt-4">
+                  {selectedDocument.content ? (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                        Content
+                      </h3>
+                      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 border">
+                        <pre className="whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300 font-mono">
+                          {selectedDocument.content}
+                        </pre>
+                      </div>
                     </div>
-                  </div>
-                ) : selectedDocument.file_path ? (
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                      File Information
-                    </h3>
-                    <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 border">
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        This is a file-based document. The original file is stored at:
-                      </p>
-                      <p className="text-sm font-mono text-slate-700 dark:text-slate-300 mt-2 bg-slate-100 dark:bg-slate-800 p-2 rounded">
-                        {selectedDocument.file_path}
-                      </p>
+                  ) : selectedDocument.file_path ? (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                        File Information
+                      </h3>
+                      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 border">
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                          This is a file-based document. The original file is stored at:
+                        </p>
+                        <p className="text-sm font-mono text-slate-700 dark:text-slate-300 mt-2 bg-slate-100 dark:bg-slate-800 p-2 rounded">
+                          {selectedDocument.file_path}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-slate-500">
-                    No content available for this document.
-                  </div>
-                )}
-              </div>
+                  ) : (
+                    <div className="text-center py-8 text-slate-500">
+                      No content available for this document.
+                    </div>
+                  )}
+                </TabsContent>
+                
+                <TabsContent value="embeddings" className="flex-1 overflow-auto mt-4">
+                  {embeddingsLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                      <DelightfulLoading type="knowledge" message="Loading embeddings..." />
+                    </div>
+                  ) : documentEmbeddings ? (
+                    <div className="space-y-4">
+                      {/* Embeddings Summary */}
+                      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 border">
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                          Embedding Information
+                        </h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                          <div>
+                            <span className="text-slate-500">Total Chunks:</span>
+                            <p className="font-semibold text-slate-900 dark:text-slate-100">
+                              {documentEmbeddings.total_chunks}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-slate-500">Total Tokens:</span>
+                            <p className="font-semibold text-slate-900 dark:text-slate-100">
+                              {documentEmbeddings.total_tokens}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-slate-500">Model:</span>
+                            <p className="font-semibold text-slate-900 dark:text-slate-100">
+                              {documentEmbeddings.embedding_model}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-slate-500">Dimensions:</span>
+                            <p className="font-semibold text-slate-900 dark:text-slate-100">
+                              {documentEmbeddings.embedding_dimensions}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Embedding Chunks */}
+                      <div className="space-y-3">
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                          Embedding Chunks
+                        </h3>
+                        <div className="space-y-2 max-h-96 overflow-y-auto">
+                          {documentEmbeddings.chunks.map((chunk, index) => (
+                            <div 
+                              key={chunk.chunk_id}
+                              className="border rounded-lg p-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                            >
+                              <div className="flex items-start justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="outline" className="text-xs">
+                                    Chunk {chunk.chunk_index + 1}
+                                  </Badge>
+                                  <span className="text-xs text-slate-500">
+                                    {chunk.token_count} tokens
+                                  </span>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(chunk.chunk_text)
+                                    toast({
+                                      title: "Copied!",
+                                      description: `Chunk ${chunk.chunk_index + 1} copied to clipboard.`
+                                    })
+                                  }}
+                                >
+                                  <Copy className="h-3 w-3" />
+                                </Button>
+                              </div>
+                              <div className="text-sm text-slate-700 dark:text-slate-300 mb-2">
+                                {chunk.chunk_text.length > 200 
+                                  ? `${chunk.chunk_text.substring(0, 200)}...` 
+                                  : chunk.chunk_text}
+                              </div>
+                              <div className="text-xs text-slate-400">
+                                <details>
+                                  <summary className="cursor-pointer hover:text-slate-600">
+                                    View embedding preview
+                                  </summary>
+                                  <div className="mt-2 p-2 bg-slate-100 dark:bg-slate-800 rounded font-mono">
+                                    [{chunk.embedding_preview.map(v => v.toFixed(4)).join(', ')}...]
+                                  </div>
+                                </details>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-slate-500">
+                      <Database className="h-12 w-12 mx-auto mb-3 text-slate-400" />
+                      <p>No embeddings available for this document.</p>
+                      <p className="text-sm mt-1">Embeddings may still be processing.</p>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
               
               {/* Actions */}
               <div className="flex justify-between items-center pt-4 border-t">

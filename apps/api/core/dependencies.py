@@ -160,6 +160,19 @@ async def verify_jwt_token(token: str) -> Optional[Dict[str, Any]]:
         return None
 
 
+async def require_admin(
+    current_user: Dict[str, Any] = Depends(get_current_user_dict)
+) -> Dict[str, Any]:
+    """Dependency to require admin role"""
+    roles = current_user.get("roles", [])
+    if "admin" not in roles:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user
+
+
 # Export dependencies
 __all__ = [
     "get_current_user",
@@ -167,5 +180,6 @@ __all__ = [
     "get_security_manager",
     "initialize_dependencies",
     "verify_jwt_token",
+    "require_admin",
     "security_manager"
 ]

@@ -1,0 +1,149 @@
+# Embedding Provider Configuration
+# This file contains configuration for all supported embedding providers
+
+providers:
+  openai:
+    enabled: true
+    priority: 1
+    models:
+      text-embedding-3-small:
+        dimensions: 1536
+        max_batch_size: 100
+        max_tokens: 8191
+        default: true
+        cost_per_1k_tokens: 0.00002
+      text-embedding-3-large:
+        dimensions: 3072
+        max_batch_size: 100
+        max_tokens: 8191
+        cost_per_1k_tokens: 0.00010
+      text-embedding-ada-002:
+        dimensions: 1536
+        max_batch_size: 100
+        max_tokens: 8191
+        cost_per_1k_tokens: 0.00010
+    rate_limits:
+      requests_per_minute: 3000
+      tokens_per_minute: 1000000
+    fallback_strategy: "next_provider"
+    
+  anthropic:
+    enabled: false  # Not yet available
+    priority: 2
+    models:
+      claude-3-embeddings:
+        dimensions: 1024
+        max_batch_size: 50
+        max_tokens: 4096
+        default: true
+        cost_per_1k_tokens: 0.00008
+    rate_limits:
+      requests_per_minute: 1000
+      tokens_per_minute: 500000
+    fallback_strategy: "next_provider"
+    
+  cohere:
+    enabled: true
+    priority: 3
+    models:
+      embed-english-v3.0:
+        dimensions: 1024
+        max_batch_size: 96
+        max_tokens: 512
+        default: true
+        cost_per_1k_tokens: 0.00001
+      embed-multilingual-v3.0:
+        dimensions: 1024
+        max_batch_size: 96
+        max_tokens: 512
+        cost_per_1k_tokens: 0.00001
+    rate_limits:
+      requests_per_minute: 100
+      tokens_per_minute: 100000
+    fallback_strategy: "next_provider"
+    
+  huggingface:
+    enabled: true
+    priority: 4
+    models:
+      sentence-transformers/all-MiniLM-L6-v2:
+        dimensions: 384
+        max_batch_size: 128
+        max_tokens: 512
+        default: true
+        cost_per_1k_tokens: 0.0
+      sentence-transformers/all-mpnet-base-v2:
+        dimensions: 768
+        max_batch_size: 128
+        max_tokens: 512
+        cost_per_1k_tokens: 0.0
+    rate_limits:
+      requests_per_minute: 1000
+      tokens_per_minute: 200000
+    fallback_strategy: "next_provider"
+    
+  local:
+    enabled: true
+    priority: 5
+    models:
+      placeholder:
+        dimensions: 1536
+        max_batch_size: 1000
+        max_tokens: 10000
+        default: true
+        cost_per_1k_tokens: 0.0
+    rate_limits:
+      requests_per_minute: 10000
+      tokens_per_minute: 10000000
+    fallback_strategy: "none"
+
+# Global settings
+global:
+  max_retries: 3
+  retry_delay_seconds: 1
+  exponential_backoff: true
+  cache_ttl_minutes: 5
+  usage_tracking_enabled: true
+  audit_logging_enabled: true
+  
+# Rate limiting settings
+rate_limiting:
+  enabled: true
+  window_size_seconds: 60
+  burst_multiplier: 1.5
+  user_tier_limits:
+    free:
+      requests_per_minute: 100
+      tokens_per_minute: 10000
+    basic:
+      requests_per_minute: 500
+      tokens_per_minute: 50000
+    premium:
+      requests_per_minute: 2000
+      tokens_per_minute: 500000
+    enterprise:
+      requests_per_minute: 10000
+      tokens_per_minute: 5000000
+      
+# Security settings
+security:
+  api_key_encryption: true
+  api_key_rotation_days: 90
+  audit_retention_days: 180
+  suspicious_activity_threshold: 100  # requests per minute
+  block_suspicious_ips: true
+  
+# Monitoring and alerts
+monitoring:
+  enabled: true
+  metrics_export_interval_seconds: 60
+  alert_thresholds:
+    error_rate_percent: 5
+    latency_p99_ms: 5000
+    provider_failure_count: 10
+  notification_channels:
+    - type: webhook
+      url: "${ALERT_WEBHOOK_URL}"
+    - type: email
+      recipients:
+        - admin@arketic.com

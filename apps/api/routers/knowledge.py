@@ -22,6 +22,7 @@ from schemas.knowledge import (
     DocumentListRequest,
     DocumentListResponse,
     DocumentDetailResponse,
+    DocumentEmbeddingsResponse,
     SearchRequest,
     SearchResponse,
     RAGQueryRequest,
@@ -120,6 +121,43 @@ async def upload_document_file(
         )
 
 
+@router.post(
+    "/knowledge/upload/files",
+    response_model=List[DocumentFileUploadResponse],
+    status_code=status.HTTP_201_CREATED,
+    summary="Upload multiple document files",
+    description="Upload multiple files (PDF, TXT, MD, DOCX) as documents"
+)
+async def upload_document_files(
+    knowledge_base_id: Optional[UUID] = Query(None, description="Knowledge base ID (optional)"),
+    files: List[UploadFile] = File(..., description="Files to upload"),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Upload multiple files as documents.
+    
+    Supports PDF, TXT, MD, and DOCX files.
+    Automatically extracts text and processes each file for embedding.
+    Returns results for each file including success/failure status.
+    """
+    try:
+        results = await knowledge_service.upload_document_files(
+            db=db,
+            user=current_user,
+            knowledge_base_id=knowledge_base_id,
+            files=files
+        )
+        return [DocumentFileUploadResponse(**result) for result in results]
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to upload files: {str(e)}"
+        )
+
+
 @router.get(
     "/knowledge/list",
     response_model=DocumentListResponse,
@@ -209,6 +247,39 @@ async def get_document_details(
         )
 
 
+@router.get(
+    "/knowledge/{document_id}/embeddings",
+    response_model=DocumentEmbeddingsResponse,
+    summary="Get document embeddings",
+    description="Retrieve all embeddings for a specific document"
+)
+async def get_document_embeddings(
+    document_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get all embeddings for a document.
+    
+    Returns embedding chunks with their text content and metadata.
+    Useful for debugging and understanding how documents are processed.
+    """
+    try:
+        result = await knowledge_service.get_document_embeddings(
+            db=db,
+            user=current_user,
+            document_id=document_id
+        )
+        return DocumentEmbeddingsResponse(**result)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get document embeddings: {str(e)}"
+        )
+
+
 @router.delete(
     "/knowledge/{document_id}",
     status_code=status.HTTP_200_OK,
@@ -268,6 +339,7 @@ async def search_documents(
             user=current_user,
             query=request.query,
             knowledge_base_id=request.knowledge_base_id,
+            document_id=request.document_id,
             k=request.k,
             score_threshold=request.score_threshold,
             search_type=request.search_type,
@@ -316,6 +388,7 @@ async def rag_query(
             user=current_user,
             query=request.query,
             knowledge_base_id=request.knowledge_base_id,
+            document_id=request.document_id,
             api_key=x_api_key,
             model=request.model,
             temperature=request.temperature,

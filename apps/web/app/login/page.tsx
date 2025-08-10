@@ -147,7 +147,7 @@ export default function LoginPage() {
             Welcome back
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
-            Sign in to your Arketic account
+            Sign in to Arketic
           </p>
         </div>
 
@@ -185,11 +185,13 @@ export default function LoginPage() {
                       <FormControl>
                         <Input
                           {...field}
+                          name="email"
                           type="email"
                           placeholder="Enter your email"
                           disabled={isLoading}
                           className="h-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
                           autoComplete="email"
+                          required
                         />
                       </FormControl>
                       <FormMessage />
@@ -210,11 +212,13 @@ export default function LoginPage() {
                         <div className="relative">
                           <Input
                             {...field}
+                            name="password"
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter your password"
                             disabled={isLoading}
                             className="h-11 pr-10 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
                             autoComplete="current-password"
+                            required
                           />
                           <Button
                             type="button"

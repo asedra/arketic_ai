@@ -1,0 +1,83 @@
+# Example Endpoint Configuration for Validation
+# Copy and modify this file for each new endpoint you want to validate
+
+# Basic endpoint information
+path: "/api/v1/example/new-feature"
+method: "POST"
+description: "New feature endpoint that handles example data"
+auth_required: true
+expected_status: 201
+performance_threshold_ms: 500
+
+# Request payload schema (optional)
+payload_schema:
+  type: "object"
+  required:
+    - "name"
+    - "data"
+  properties:
+    name:
+      type: "string"
+      minLength: 1
+      maxLength: 100
+    data:
+      type: "object"
+      properties:
+        value:
+          type: "string"
+        count:
+          type: "integer"
+          minimum: 0
+    metadata:
+      type: "object"
+      properties:
+        tags:
+          type: "array"
+          items:
+            type: "string"
+
+# Expected response schema (optional)
+response_schema:
+  type: "object"
+  required:
+    - "id"
+    - "name"
+    - "created_at"
+  properties:
+    id:
+      type: "string"
+      format: "uuid"
+    name:
+      type: "string"
+    data:
+      type: "object"
+    created_at:
+      type: "string"
+      format: "date-time"
+    updated_at:
+      type: "string"
+      format: "date-time"
+
+# Test payloads for validation
+test_payloads:
+  # Valid payload - should succeed
+  - name: "Test Feature"
+    data:
+      value: "sample value"
+      count: 42
+    metadata:
+      tags: ["test", "example"]
+  
+  # Minimal valid payload
+  - name: "Minimal Test"
+    data:
+      value: "minimal"
+      count: 1
+  
+  # Additional valid payload with edge cases
+  - name: "Edge Case Test"
+    data:
+      value: ""
+      count: 0
+    metadata:
+      tags: []

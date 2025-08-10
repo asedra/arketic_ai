@@ -28,6 +28,7 @@ from core.dependencies import initialize_dependencies, get_current_user, get_cur
 # Import routers
 from routers import auth, users, health, organization, compliance, people, chat, monitoring, openai_settings, vector, knowledge, forms, assistants
 from routers import settings as settings_router
+from routers import embedding_tasks, embedding_websocket, embeddings, audit
 
 # Import middleware
 from middleware.security import SecurityMiddleware
@@ -244,6 +245,37 @@ app.include_router(
     assistants.router,
     prefix="/api/v1",
     tags=["AI Assistants"]
+    # Dependencies handled in individual endpoints
+)
+
+# Include embedding tasks router (protected)
+app.include_router(
+    embedding_tasks.router,
+    prefix="/api/v1",
+    tags=["Embedding Tasks"]
+    # Dependencies handled in individual endpoints
+)
+
+# Include embedding WebSocket router
+app.include_router(
+    embedding_websocket.router,
+    prefix="/api/v1",
+    tags=["Embedding WebSocket"]
+)
+
+# Include embeddings router (protected)
+app.include_router(
+    embeddings.router,
+    prefix="/api/embeddings",
+    tags=["Embeddings"]
+    # Dependencies handled in individual endpoints
+)
+
+# Include audit router (protected)
+app.include_router(
+    audit.router,
+    prefix="/api/audit",
+    tags=["Audit"]
     # Dependencies handled in individual endpoints
 )
 

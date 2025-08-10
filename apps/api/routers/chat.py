@@ -8,6 +8,7 @@ import asyncio
 import uuid
 from typing import Dict, List, Optional, Any
 from datetime import datetime
+from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, Request
 from pydantic import BaseModel, Field
@@ -397,17 +398,82 @@ async def generate_streaming_ai_response(
     user_id: str = None,
     auth_token: str = ""
 ) -> None:
-    """Generate streaming AI response using LangChain service"""
+    """Generate streaming AI response using LangChain service with RAG integration"""
     try:
         logger.info(f"generate_streaming_ai_response called with api_key: {api_key[:10] if api_key else 'None'}...")
         full_content = ""
         
+        # Get the user query for RAG retrieval
+        user_query = messages[-1]["content"] if messages and messages[-1].get("role") == "user" else ""
+        
+        # Perform RAG retrieval if knowledge bases are configured
+        rag_context = ""
+        source_documents = []
+        if chat.assistant_knowledge_bases and user_query:
+            try:
+                logger.info(f"AR-75: Performing RAG retrieval for query: {user_query[:100]}...")
+                
+                # Import knowledge service
+                from services.knowledge_service import knowledge_service
+                from models.user import User
+                
+                # Get user object for RAG search
+                if db and user_id:
+                    user_result = await db.execute(select(User).where(User.id == user_id))
+                    user = user_result.scalar_one_or_none()
+                    
+                    if user:
+                        # Perform semantic search across all knowledge bases
+                        for kb_id in chat.assistant_knowledge_bases:
+                            try:
+                                search_result = await knowledge_service.semantic_search(
+                                    db=db,
+                                    user=user,
+                                    query=user_query,
+                                    knowledge_base_id=UUID(kb_id),
+                                    k=3,  # Top 3 most relevant chunks per KB
+                                    score_threshold=0.7,
+                                    search_type="semantic"
+                                )
+                                
+                                # Extract context and sources
+                                for result in search_result.get("results", []):
+                                    rag_context += f"\n[Source: {result['document_title']}]\n{result['content']}\n"
+                                    source_documents.append({
+                                        "title": result["document_title"],
+                                        "document_id": str(result["document_id"]) if result["document_id"] else None,
+                                        "score": result["score"],
+                                        "content": result["content"][:200] + "..." if len(result["content"]) > 200 else result["content"]
+                                    })
+                                
+                                logger.info(f"AR-75: Retrieved {len(search_result.get('results', []))} chunks from KB {kb_id}")
+                                
+                            except Exception as kb_error:
+                                logger.warning(f"AR-75: Failed to search knowledge base {kb_id}: {kb_error}")
+                                continue
+                        
+                        if rag_context:
+                            logger.info(f"AR-75: Total RAG context length: {len(rag_context)} characters")
+                        
+            except Exception as rag_error:
+                logger.warning(f"AR-75: RAG retrieval failed: {rag_error}")
+        
+        # Prepare enhanced system prompt with RAG context
+        system_prompt = chat.system_prompt or "You are a helpful AI assistant."
+        if rag_context:
+            system_prompt = f"""{system_prompt}
+
+KNOWLEDGE BASE CONTEXT:
+{rag_context}
+
+Instructions: Use the above context to provide accurate, detailed answers. When referencing information from the context, mention the source document. If the context doesn't contain relevant information for the user's question, say so and provide a general response based on your training."""
+
         # Prepare settings for LangChain
         settings = {
             "model": chat.ai_model or "gpt-3.5-turbo",
             "temperature": float(chat.temperature) if chat.temperature else 0.7,
             "maxTokens": chat.max_tokens or 2048,
-            "systemPrompt": chat.system_prompt or "You are a helpful AI assistant.",
+            "systemPrompt": system_prompt,
             "provider": "openai",
             "knowledgeBaseIds": chat.assistant_knowledge_bases if chat.assistant_knowledge_bases else [],
             "documentIds": chat.assistant_documents if chat.assistant_documents else []
@@ -467,7 +533,7 @@ async def generate_streaming_ai_response(
                     
                     await session.commit()
         
-        # Broadcast completion
+        # Broadcast completion with source documents
         completion_data = {
             "type": "ai_response_complete",
             "message": {
@@ -481,7 +547,9 @@ async def generate_streaming_ai_response(
                 "processing_time_ms": processing_time_ms,
                 "created_at": datetime.utcnow().isoformat(),
                 "status": "DELIVERED",
-                "is_streaming": False
+                "is_streaming": False,
+                "rag_sources": source_documents if source_documents else [],
+                "rag_enabled": bool(rag_context)
             }
         }
         await manager.broadcast_to_chat(json.dumps(completion_data), chat_id)
@@ -1562,12 +1630,74 @@ async def chat_with_ai(
             }
         
         else:
-            # Non-streaming response using LangChain service with fallback
+            # Non-streaming response using LangChain service with RAG integration
+            
+            # Perform RAG retrieval if knowledge bases are configured
+            rag_context = ""
+            source_documents = []
+            if chat.assistant_knowledge_bases and request_body.message:
+                try:
+                    logger.info(f"AR-75: Performing RAG retrieval for query: {request_body.message[:100]}...")
+                    
+                    # Import knowledge service
+                    from services.knowledge_service import knowledge_service
+                    from models.user import User
+                    
+                    # Get user object for RAG search
+                    user_result = await db.execute(select(User).where(User.id == current_user["user_id"]))
+                    user = user_result.scalar_one_or_none()
+                    
+                    if user:
+                        # Perform semantic search across all knowledge bases
+                        for kb_id in chat.assistant_knowledge_bases:
+                            try:
+                                search_result = await knowledge_service.semantic_search(
+                                    db=db,
+                                    user=user,
+                                    query=request_body.message,
+                                    knowledge_base_id=UUID(kb_id),
+                                    k=3,  # Top 3 most relevant chunks per KB
+                                    score_threshold=0.7,
+                                    search_type="semantic"
+                                )
+                                
+                                # Extract context and sources
+                                for result in search_result.get("results", []):
+                                    rag_context += f"\n[Source: {result['document_title']}]\n{result['content']}\n"
+                                    source_documents.append({
+                                        "title": result["document_title"],
+                                        "document_id": str(result["document_id"]) if result["document_id"] else None,
+                                        "score": result["score"],
+                                        "content": result["content"][:200] + "..." if len(result["content"]) > 200 else result["content"]
+                                    })
+                                
+                                logger.info(f"AR-75: Retrieved {len(search_result.get('results', []))} chunks from KB {kb_id}")
+                                
+                            except Exception as kb_error:
+                                logger.warning(f"AR-75: Failed to search knowledge base {kb_id}: {kb_error}")
+                                continue
+                        
+                        if rag_context:
+                            logger.info(f"AR-75: Total RAG context length: {len(rag_context)} characters")
+                        
+                except Exception as rag_error:
+                    logger.warning(f"AR-75: RAG retrieval failed: {rag_error}")
+            
+            # Prepare enhanced system prompt with RAG context
+            system_prompt = chat.system_prompt or "You are a helpful AI assistant."
+            if rag_context:
+                system_prompt = f"""{system_prompt}
+
+KNOWLEDGE BASE CONTEXT:
+{rag_context}
+
+Instructions: Use the above context to provide accurate, detailed answers. When referencing information from the context, mention the source document. If the context doesn't contain relevant information for the user's question, say so and provide a general response based on your training."""
+            
             settings = {
                 "model": chat.ai_model or "gpt-3.5-turbo",
                 "temperature": float(chat.temperature) if chat.temperature else 0.7,
                 "maxTokens": chat.max_tokens or 2048,
-                "systemPrompt": chat.system_prompt or "You are a helpful AI assistant.",
+                "systemPrompt": system_prompt,
                 "provider": "openai",
                 "knowledgeBaseIds": chat.assistant_knowledge_bases if chat.assistant_knowledge_bases else [],
                 "documentIds": chat.assistant_documents if chat.assistant_documents else []
@@ -1670,7 +1800,9 @@ async def chat_with_ai(
                             "processing_time_ms": ai_message.processing_time_ms,
                             "created_at": ai_message.created_at.isoformat(),
                             "status": ai_message.status.value,
-                            "is_streaming": False
+                            "is_streaming": False,
+                            "rag_sources": source_documents if source_documents else [],
+                            "rag_enabled": bool(rag_context)
                         }
                     }
                     await manager.broadcast_to_chat(json.dumps(ai_message_data), chat_id)
@@ -1704,7 +1836,9 @@ async def chat_with_ai(
                         "processing_time_ms": processing_time_ms,
                         "tokens_used": actual_tokens,
                         "finish_reason": "stop",
-                        "timestamp": datetime.utcnow().isoformat()
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "rag_sources": source_documents if source_documents else [],
+                        "rag_enabled": bool(rag_context)
                     },
                     "chat_info": {
                         "chat_id": chat_id,

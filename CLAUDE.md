@@ -16,6 +16,207 @@ Backend dokümantasyonu aşağıdaki dizinlerde bulunmaktadır:
   - `database/` - Veritabanı şema dokümantasyonu
   - Test dosyaları ve raporları
 
+## ⭐ Comprehensive Testing Infrastructure (AR-82)
+
+### 📋 Test Architecture Overview
+
+Arketic platformu için kapsamlı test altyapısı şu bileşenlerden oluşur:
+
+#### 🎭 Frontend E2E Tests (Playwright MCP)
+- **Lokasyon:** `/home/ali/arketic/apps/web/tests/playwright/`
+- **Test Suites:**
+  - `auth/auth.spec.ts` - Kimlik doğrulama ve oturum yönetimi
+  - `knowledge/knowledge-upload.spec.ts` - Bilgi yönetimi ve dosya yükleme
+  - `chat/chat.spec.ts` - Chat arayüzü ve AI entegrasyonu
+  - `organization/organization.spec.ts` - Organizasyon yönetimi
+  - `settings/settings.spec.ts` - Ayarlar ve kullanıcı tercihleri
+
+#### 🔧 Backend API Tests
+- **Mevcut Testler:** `/home/ali/arketic/apps/api/docs/`
+  - `auth_test.py` - Kimlik doğrulama API testleri
+  - `chat_test.py` - Sohbet API testleri
+  - `assistant_test.py` - Asistan API testleri
+  - `knowledge_test.py` - Bilgi yönetimi API testleri
+  - `people_test.py` - Kişi yönetimi API testleri
+  - `langchain_test.py` - LangChain servis testleri
+
+- **Yeni Endpoint Testleri (AR-82):**
+  - `compliance_test.py` - Uyumluluk yönetimi API testleri
+  - `health_test.py` - Sağlık kontrolü endpoint testleri
+  - `forms_test.py` - Form yönetimi API testleri
+
+### 🚀 Test Execution Methods
+
+#### 1. Yerel Geliştirme (Tüm Testler)
+```bash
+# Tüm test suite'ini çalıştır
+./scripts/run-e2e-tests.sh
+
+# Sadece frontend testleri
+./scripts/run-e2e-tests.sh frontend-only
+
+# Sadece backend testleri  
+./scripts/run-e2e-tests.sh backend-only
+
+# Headed modda çalıştır (Playwright'ı görsel olarak izle)
+./scripts/run-e2e-tests.sh headed
+```
+
+#### 2. Frontend Playwright Tests (Ayrı)
+```bash
+cd apps/web/tests/playwright
+
+# Tüm frontend testleri çalıştır
+./run-all-tests.sh
+
+# Belirli test suite çalıştır
+./run-all-tests.sh auth
+./run-all-tests.sh knowledge
+./run-all-tests.sh chat
+./run-all-tests.sh organization
+./run-all-tests.sh settings
+
+# Kullanılabilir test suite'lerini listele
+./run-all-tests.sh list
+```
+
+#### 3. Backend API Tests (Ayrı)
+```bash
+# Docker container içinde backend testleri çalıştır
+docker exec -it arketic-api-1 bash
+
+# Mevcut API testleri
+cd /app/docs
+python auth_test.py
+python chat_test.py
+python assistant_test.py
+python knowledge_test.py
+python people_test.py
+python langchain_test.py
+
+# Yeni endpoint testleri (AR-82)
+python compliance_test.py
+python health_test.py
+python forms_test.py
+
+# Entegrasyon testleri
+python integrate_tests.py
+python multi_file_upload_test.py
+```
+
+### 📊 Test Reports ve Monitoring
+
+#### Test Raporları
+- **Frontend Reports:** `/apps/web/tests/playwright/reports/`
+- **Backend Reports:** `/apps/api/docs/*_test_report.json`
+- **Consolidated Report:** Test runner tarafından otomatik oluşturulan HTML raporu
+
+#### Mevcut Test Başarı Oranları
+- **auth_test_report.json** - ✅ 4/4 test başarılı (%100)
+- **chat_test_report.json** - ✅ 22/22 test başarılı (%100)  
+- **assistant_test_report.json** - ✅ Asistan testleri
+- **knowledge_test_report.json** - ✅ Bilgi yönetimi testleri
+- **people_test_report.json** - ✅ Kişi yönetimi testleri
+- **langchain_test_report.json** - ✅ LangChain servis testleri
+
+### 🔄 CI/CD Integration
+
+#### GitHub Actions Workflow
+- **Dosya:** `.github/workflows/e2e-tests.yml`
+- **Trigger:** Push to main/develop, PR'lar, günlük schedule
+- **Kapsamı:** 
+  - Backend API testleri (PostgreSQL + Redis ile)
+  - Frontend Playwright testleri (Tam Docker ortamı)
+  - Entegrasyon testleri
+  - Performance testleri
+  - Konsolide rapor oluşturma
+
+#### Test Strategy
+1. **Standalone Testing:** Yeni endpointler için önce izole testler
+2. **Progressive Integration:** Başarılı testler ana suite'e entegre
+3. **Environment Isolation:** Her test ortamı için ayrı veritabanı
+4. **Parallel Execution:** Testler paralel çalıştırılabilir
+5. **Comprehensive Reporting:** JSON + HTML raporları
+
+### 🎯 Test Coverage
+
+#### Frontend Coverage (Playwright MCP)
+- ✅ Authentication flows (login, logout, session management)
+- ✅ Knowledge management (upload, search, document processing)  
+- ✅ Chat interface (messaging, real-time updates, WebSocket)
+- ✅ Organization management (people, compliance, permissions)
+- ✅ Settings and preferences (profile, AI settings, privacy)
+
+#### Backend API Coverage
+- ✅ Existing endpoints (Auth, Chat, Assistants, Knowledge, People, LangChain)
+- ✅ New endpoints (Compliance, Health, Forms) - AR-82
+- ✅ Error handling ve validation
+- ✅ Authentication ve authorization
+- ✅ Performance ve load testing
+- ✅ Database integration (pgvector)
+
+### 🛠️ Test Development Guidelines
+
+#### Frontend Test Development
+```typescript
+// apps/web/tests/playwright/example/example.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Feature Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    // Login helper
+    await loginUser(page);
+    await page.click('text=Feature');
+  });
+
+  test('should perform action', async ({ page }) => {
+    // Test implementation
+  });
+});
+```
+
+#### Backend Test Development
+```python
+# apps/api/docs/new_feature_test.py
+import asyncio
+from datetime import datetime
+from test_base import APITester
+
+class NewFeatureAPITester(APITester):
+    async def test_new_endpoint(self):
+        # Test implementation
+        
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+### 🔍 Troubleshooting Tests
+
+#### Frontend Test Issues
+```bash
+# Debug modu
+HEADLESS=false ./run-all-tests.sh
+
+# Specific browser
+npx playwright test --headed --browser=chromium
+
+# Screenshot on failure
+npx playwright test --screenshot=only-on-failure
+```
+
+#### Backend Test Issues  
+```bash
+# Container logs
+docker logs arketic-api-1 -f
+
+# Service health
+curl http://localhost:8000/health
+curl http://localhost:3001/health
+
+# Database connection
+docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -c "SELECT 1;"
+```
+
 ## Docker Kullanımı - ÖNEMLİ
 
 Bu sistem **Docker konteynerlerinde** çalışmaktadır. Aşağıdaki servislerin tümü Docker Compose ile yönetilmektedir:
@@ -40,7 +241,7 @@ Bu sistem **Docker konteynerlerinde** çalışmaktadır. Aşağıdaki servisleri
 **ASLA** aşağıdaki komutları doğrudan çalıştırmayın:
 - ❌ `npm run dev`
 - ❌ `uvicorn main:app`
-- ❌ `python main.py`
+- ❌ `python3 main.py`
 - ❌ `npm start`
 - ❌ `yarn dev`
 
@@ -104,19 +305,19 @@ docker exec -it arketic-api-1 bash
 
 # Tüm API testlerini çalıştır
 cd /app
-python -m pytest apps/api/tests/ -v
+python3 -m pytest apps/api/tests/ -v
 
 # Belirli bir test dosyasını çalıştır
-python apps/api/docs/auth_test.py
-python apps/api/docs/chat_test.py
-python apps/api/docs/assistant_test.py
-python apps/api/docs/knowledge_test.py
-python apps/api/docs/people_test.py
-python apps/api/docs/langchain_test.py
+python3 apps/api/docs/auth_test.py
+python3 apps/api/docs/chat_test.py
+python3 apps/api/docs/assistant_test.py
+python3 apps/api/docs/knowledge_test.py
+python3 apps/api/docs/people_test.py
+python3 apps/api/docs/langchain_test.py
 
 # Performance/Benchmark testleri
-python apps/api/tests/test_pgvector_benchmark.py
-python apps/api/test_rag_integration.py
+python3 apps/api/tests/test_pgvector_benchmark.py
+python3 apps/api/test_rag_integration.py
 ```
 
 #### Frontend (Web) Testleri:

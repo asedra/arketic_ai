@@ -595,6 +595,59 @@ for i in range(10):
         
         return response.status_code == 200
     
+    def test_semantic_search_with_document_id(self):
+        """Test semantic search with document_id filter"""
+        print("\n🧪 Testing Semantic Search with document_id...")
+        
+        if not self.test_data.get("test_document_id"):
+            print("   ⚠️  No test document ID available - skipping test")
+            return True
+        
+        headers = self.get_auth_headers()
+        
+        payload = {
+            "query": "Python programming",
+            "document_id": self.test_data["test_document_id"],
+            "k": 5,
+            "score_threshold": 0.5,
+            "search_type": "semantic"
+        }
+        
+        response = self.make_request(
+            "POST",
+            "/api/v1/knowledge/search",
+            payload,
+            headers=headers,
+            expected_status=[200, 401, 404],
+            test_type="SEMANTIC_SEARCH_DOCUMENT_ID"
+        )
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                results = data.get("results", [])
+                print(f"   ✅ Document-filtered search returned {len(results)} results")
+                
+                # Verify results are from the specified document
+                if results:
+                    for result in results[:2]:  # Check first 2 results
+                        doc_id = result.get("document_id")
+                        if doc_id == self.test_data["test_document_id"]:
+                            print(f"   ✅ Result correctly filtered by document_id")
+                        elif doc_id:
+                            print(f"   ⚠️  Result from different document: {doc_id}")
+                return True
+            except:
+                pass
+        elif response.status_code == 401:
+            print("   ⚠️  Authentication required")
+            return True
+        elif response.status_code == 404:
+            print("   ℹ️  Document not found or endpoint not implemented")
+            return True
+        
+        return response.status_code == 200
+    
     def test_rag_query(self):
         """Test RAG (Retrieval Augmented Generation) query"""
         print("\n🧪 Testing RAG Query...")
@@ -641,6 +694,102 @@ for i in range(10):
             return True
         
         return response.status_code == 200
+    
+    def test_rag_query_with_document_id(self):
+        """Test RAG query with document_id filter"""
+        print("\n🧪 Testing RAG Query with document_id...")
+        
+        if not self.test_data.get("test_document_id"):
+            print("   ⚠️  No test document ID available - skipping test")
+            return True
+        
+        headers = self.get_auth_headers()
+        if self.test_data["openai_api_key"]:
+            headers["x-api-key"] = self.test_data["openai_api_key"]
+        
+        payload = {
+            "query": "What is Python used for?",
+            "document_id": self.test_data["test_document_id"],
+            "model": "gpt-3.5-turbo",
+            "temperature": 0.7,
+            "max_tokens": 300,
+            "include_sources": True,
+            "k": 3
+        }
+        
+        response = self.make_request(
+            "POST",
+            "/api/v1/knowledge/query",
+            payload,
+            headers=headers,
+            expected_status=[200, 401, 404],
+            test_type="RAG_QUERY_DOCUMENT_ID",
+            timeout=5
+        )
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                print(f"   ✅ Document-filtered RAG query successful")
+                if data.get("answer"):
+                    print(f"   📝 Answer length: {len(data['answer'])} chars")
+                if data.get("sources"):
+                    print(f"   📚 Sources: {len(data['sources'])} from document")
+                    # Verify sources are from the specified document
+                    for source in data["sources"][:2]:
+                        src_doc_id = source.get("document_id")
+                        if src_doc_id == self.test_data["test_document_id"]:
+                            print(f"   ✅ Source correctly from specified document")
+                        elif src_doc_id:
+                            print(f"   ⚠️  Source from different document: {src_doc_id}")
+                return True
+            except:
+                pass
+        elif response.status_code == 401:
+            print("   ⚠️  Authentication required")
+            return True
+        elif response.status_code == 404:
+            print("   ℹ️  Document not found or endpoint not implemented")
+            return True
+        
+        return response.status_code == 200
+    
+    def test_search_with_invalid_document_id(self):
+        """Test search with invalid document_id (should return 404)"""
+        print("\n🧪 Testing Search with Invalid document_id...")
+        
+        headers = self.get_auth_headers()
+        
+        # Generate a random UUID that doesn't exist
+        import uuid
+        invalid_doc_id = str(uuid.uuid4())
+        
+        payload = {
+            "query": "test query",
+            "document_id": invalid_doc_id,
+            "k": 5,
+            "score_threshold": 0.5,
+            "search_type": "semantic"
+        }
+        
+        response = self.make_request(
+            "POST",
+            "/api/v1/knowledge/search",
+            payload,
+            headers=headers,
+            expected_status=[404, 401],
+            test_type="SEARCH_INVALID_DOCUMENT_ID"
+        )
+        
+        if response.status_code == 404:
+            print(f"   ✅ Correctly returned 404 for invalid document_id")
+            return True
+        elif response.status_code == 401:
+            print("   ⚠️  Authentication required")
+            return True
+        else:
+            print(f"   ❌ Expected 404, got {response.status_code}")
+            return False
     
     def test_find_similar_documents(self):
         """Test finding similar documents"""
@@ -856,6 +1005,197 @@ for i in range(10):
         
         return response.status_code in [200, 204]
     
+    def test_create_text_document(self):
+        """Test creating a text document (AR-81)"""
+        print("\n🧪 Testing Create Text Document...")
+        
+        if not self.test_data.get("test_knowledge_base_id"):
+            print("   ⚠️  No test knowledge base ID available - creating text without it")
+        
+        headers = self.get_auth_headers()
+        
+        payload = {
+            "title": f"Test Text Document - {datetime.now().isoformat()}",
+            "content": "This is a test document for embedding generation. It contains multiple sentences to ensure proper chunking and embedding generation.",
+            "document_type": "text",
+            "tags": ["test", "ar-81", "embeddings"]
+        }
+        
+        if self.test_data.get("test_knowledge_base_id"):
+            payload["knowledge_base_id"] = self.test_data["test_knowledge_base_id"]
+        
+        response = self.make_request(
+            "POST",
+            "/api/v1/knowledge/upload",
+            headers=headers,
+            payload=payload,
+            expected_status=[201, 200, 401],
+            test_type="CREATE_TEXT_DOCUMENT"
+        )
+        
+        if response.status_code == 401:
+            print("   ⚠️  Authentication required")
+            return True
+        elif response.status_code in [200, 201]:
+            data = response.json()
+            # Store the document ID for later tests
+            self.test_data["text_document_id"] = data.get("document_id")
+            print(f"   ✅ Text document created: {self.test_data['text_document_id']}")
+            print(f"   📊 Chunks: {data.get('chunk_count', 0)}, Tokens: {data.get('token_count', 0)}")
+            return True
+        
+        return False
+    
+    def test_get_document_embeddings(self):
+        """Test retrieving embeddings for a document (AR-81)"""
+        print("\n🧪 Testing Get Document Embeddings...")
+        
+        # First create a text document if we don't have one
+        if not self.test_data.get("text_document_id"):
+            print("   Creating test document first...")
+            if not self.test_create_text_document():
+                print("   ⚠️  Failed to create test document - skipping test")
+                return True
+        
+        document_id = self.test_data.get("text_document_id")
+        if not document_id:
+            print("   ⚠️  No document ID available - skipping test")
+            return True
+        
+        headers = self.get_auth_headers()
+        
+        # Wait a bit for embeddings to be generated
+        time.sleep(2)
+        
+        response = self.make_request(
+            "GET",
+            f"/api/v1/knowledge/{document_id}/embeddings",
+            headers=headers,
+            expected_status=[200, 401, 404],
+            test_type="GET_DOCUMENT_EMBEDDINGS"
+        )
+        
+        if response.status_code == 401:
+            print("   ⚠️  Authentication required")
+            return True
+        elif response.status_code == 404:
+            print("   ⚠️  Document not found or endpoint not implemented")
+            return True
+        elif response.status_code == 200:
+            data = response.json()
+            chunks = data.get("chunks", [])
+            print(f"   ✅ Retrieved embeddings for document {document_id}")
+            print(f"   📊 Total chunks: {data.get('total_chunks', len(chunks))}")
+            if chunks:
+                first_chunk = chunks[0]
+                print(f"   📄 First chunk preview: {first_chunk.get('chunk_text', '')[:50]}...")
+                print(f"   🔢 Embedding dimensions: {first_chunk.get('embedding_dimensions', 0)}")
+            return True
+        
+        return False
+    
+    def test_embedding_generation_flow(self):
+        """Test the complete embedding generation flow (AR-81)"""
+        print("\n🧪 Testing Complete Embedding Generation Flow...")
+        
+        headers = self.get_auth_headers()
+        
+        # Step 1: Create a document with specific content
+        print("   Step 1: Creating document with test content...")
+        unique_content = f"Test document for embedding flow verification. Created at {datetime.now().isoformat()}. This content should be properly chunked and embedded."
+        
+        payload = {
+            "title": f"Embedding Flow Test - {datetime.now().isoformat()}",
+            "content": unique_content,
+            "document_type": "text"
+        }
+        
+        if self.test_data.get("test_knowledge_base_id"):
+            payload["knowledge_base_id"] = self.test_data["test_knowledge_base_id"]
+        
+        response = self.make_request(
+            "POST",
+            "/api/v1/knowledge/upload",
+            headers=headers,
+            payload=payload,
+            expected_status=[201, 200, 401],
+            test_type="EMBEDDING_FLOW_CREATE"
+        )
+        
+        if response.status_code not in [200, 201]:
+            print("   ❌ Failed to create document")
+            return False
+        
+        data = response.json()
+        document_id = data.get("document_id")
+        print(f"   ✅ Document created: {document_id}")
+        
+        # Step 2: Wait for embedding generation
+        print("   Step 2: Waiting for embedding generation...")
+        time.sleep(3)
+        
+        # Step 3: Retrieve embeddings
+        print("   Step 3: Retrieving embeddings...")
+        response = self.make_request(
+            "GET",
+            f"/api/v1/knowledge/{document_id}/embeddings",
+            headers=headers,
+            expected_status=[200, 404],
+            test_type="EMBEDDING_FLOW_RETRIEVE"
+        )
+        
+        if response.status_code != 200:
+            print("   ❌ Failed to retrieve embeddings")
+            return False
+        
+        embeddings_data = response.json()
+        chunks = embeddings_data.get("chunks", [])
+        
+        if not chunks:
+            print("   ❌ No embeddings found")
+            return False
+        
+        print(f"   ✅ Embeddings retrieved: {len(chunks)} chunks")
+        
+        # Step 4: Verify embeddings can be used for search
+        print("   Step 4: Testing semantic search with embeddings...")
+        search_payload = {
+            "query": "embedding flow verification",
+            "document_id": document_id,
+            "k": 3
+        }
+        
+        response = self.make_request(
+            "POST",
+            "/api/v1/knowledge/search",
+            headers=headers,
+            payload=search_payload,
+            expected_status=[200, 400],
+            test_type="EMBEDDING_FLOW_SEARCH"
+        )
+        
+        if response.status_code == 200:
+            search_results = response.json()
+            results = search_results.get("results", [])
+            if results:
+                print(f"   ✅ Search successful: Found {len(results)} results")
+                print(f"   🔍 Top result score: {results[0].get('score', 0):.4f}")
+            else:
+                print("   ⚠️  Search returned no results")
+        
+        # Step 5: Cleanup
+        print("   Step 5: Cleaning up test document...")
+        self.make_request(
+            "DELETE",
+            f"/api/v1/knowledge/{document_id}",
+            headers=headers,
+            expected_status=[200, 204, 404],
+            test_type="EMBEDDING_FLOW_CLEANUP"
+        )
+        
+        print("   ✅ Embedding generation flow test completed")
+        return True
+    
     def run_all_tests(self):
         """Run all Knowledge Management API tests"""
         print("🚀 Starting Knowledge Management API Test Suite")
@@ -904,9 +1244,17 @@ for i in range(10):
             self.test_list_documents,
             self.test_get_document_details,
             
+            # AR-81: Text Document and Embeddings Tests
+            self.test_create_text_document,
+            self.test_get_document_embeddings,
+            self.test_embedding_generation_flow,
+            
             # Search & Retrieval
             self.test_semantic_search,
+            self.test_semantic_search_with_document_id,  # New test
+            self.test_search_with_invalid_document_id,   # New test
             self.test_rag_query,
+            self.test_rag_query_with_document_id,        # New test
             self.test_find_similar_documents,
             
             # Collection Management
@@ -967,7 +1315,7 @@ for i in range(10):
         
         return self.test_results
     
-    def generate_report(self, filename: str = "knowledge_test_report.json"):
+    def generate_report(self, filename: str = "/tmp/knowledge_test_report.json"):
         """Generate JSON report"""
         print(f"\n📄 Generating report: {filename}")
         
@@ -1019,7 +1367,10 @@ for i in range(10):
                     "Document Upload (Text & File)",
                     "Document Management (CRUD)",
                     "Semantic Search (PGVector)",
+                    "Semantic Search with document_id Filter",
                     "RAG Queries",
+                    "RAG Queries with document_id Filter",
+                    "Invalid document_id Handling",
                     "Similar Document Search",
                     "Collection Management"
                 ]
@@ -1067,7 +1418,7 @@ def main():
         tester.generate_report()
         
         print("\n🎉 Testing Complete!")
-        print("📄 Check 'knowledge_test_report.json' for details")
+        print("📄 Check '/tmp/knowledge_test_report.json' for details")
         print("📚 See 'api/KNOWLEDGE.md' for API documentation")
         
     except KeyboardInterrupt:

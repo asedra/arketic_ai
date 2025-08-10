@@ -18,6 +18,7 @@ export default defineConfig({
     ['html'],
     ['json', { outputFile: 'test-results.json' }],
     ['junit', { outputFile: 'test-results.xml' }],
+    ['allure-playwright', { outputFolder: 'allure-results' }]
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -38,6 +39,12 @@ export default defineConfig({
     
     /* Action timeout */
     actionTimeout: 10000,
+    
+    /* Visual comparisons threshold */
+    expect: {
+      toHaveScreenshot: { threshold: 0.2, mode: 'pixel' },
+      toMatchScreenshot: { threshold: 0.2, mode: 'pixel' },
+    },
   },
 
   /* Configure projects for major browsers */

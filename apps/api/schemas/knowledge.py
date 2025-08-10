@@ -98,10 +98,29 @@ class DocumentDetailResponse(BaseModel):
     error_message: Optional[str]
     tags: Optional[List[str]]
     metadata: Optional[Dict[str, Any]]
+
+
+class EmbeddingChunk(BaseModel):
+    """Model for a single embedding chunk"""
+    chunk_id: UUID
+    chunk_index: int
+    chunk_text: str
+    token_count: int
+    embedding_preview: List[float] = Field(description="First 10 values of the embedding vector")
+    embedding_dimensions: int
     created_at: datetime
-    updated_at: datetime
-    processed_at: Optional[datetime]
-    chunks: Optional[List[Dict[str, Any]]]
+
+
+class DocumentEmbeddingsResponse(BaseModel):
+    """Response model for document embeddings"""
+    document_id: UUID
+    title: str
+    total_chunks: int
+    total_tokens: int
+    embedding_model: str
+    embedding_dimensions: int
+    chunks: List[EmbeddingChunk]
+    metadata: Optional[Dict[str, Any]]
 
 
 # Search & Retrieval Schemas
@@ -110,6 +129,7 @@ class SearchRequest(BaseModel):
     """Request model for semantic search"""
     query: str = Field(..., min_length=1, max_length=1000, description="Search query")
     knowledge_base_id: Optional[UUID] = Field(default=None, description="Limit to specific knowledge base")
+    document_id: Optional[UUID] = Field(default=None, description="Limit search to specific document")
     k: int = Field(default=5, ge=1, le=50, description="Number of results")
     score_threshold: float = Field(default=0.7, ge=0.0, le=1.0, description="Minimum similarity score")
     search_type: Literal["semantic", "keyword", "hybrid"] = Field(default="semantic")
@@ -139,6 +159,7 @@ class RAGQueryRequest(BaseModel):
     """Request model for RAG query"""
     query: str = Field(..., min_length=1, max_length=1000, description="Question to answer")
     knowledge_base_id: Optional[UUID] = Field(default=None, description="Knowledge base to search (optional)")
+    document_id: Optional[UUID] = Field(default=None, description="Limit search to specific document")
     model: str = Field(default="gpt-3.5-turbo", description="LLM model to use")
     temperature: float = Field(default=0.7, ge=0.0, le=2.0, description="Temperature for generation")
     max_tokens: int = Field(default=500, ge=1, le=4096, description="Max tokens for response")

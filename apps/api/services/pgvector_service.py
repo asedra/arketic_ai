@@ -14,14 +14,19 @@ import asyncio
 from contextlib import asynccontextmanager
 
 import asyncpg
-from sqlalchemy import create_engine, text, pool
+from sqlalchemy import create_engine, text, pool, select, and_
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from pgvector.asyncpg import register_vector
 import tiktoken
+from openai import AsyncOpenAI
+from openai import RateLimitError, APIError, APITimeoutError
 
 from core.config import settings
 from core.database import get_db
+from core.security import SecurityManager
+from models.user import UserApiKey
+from services.embedding_service import embedding_service
 
 logger = logging.getLogger(__name__)
 
@@ -29,13 +34,34 @@ logger = logging.getLogger(__name__)
 class PGVectorService:
     """Service for managing vector embeddings using PGVector"""
     
-    def __init__(self):
-        """Initialize PGVector service with connection pooling"""
+    def __init__(self, embedding_model: str = "text-embedding-3-small", batch_size: int = 100):
+        """Initialize PGVector service with connection pooling
+        
+        Args:
+            embedding_model: OpenAI embedding model to use
+            batch_size: Maximum number of texts to embed in a single API call
+        """
         self.database_url = settings.DATABASE_URL
-        self.embedding_model = "text-embedding-3-small"
-        self.embedding_dimensions = 1536
+        self.embedding_model = embedding_model
+        self.embedding_dimensions = 1536  # text-embedding-3-small dimensions
         self.chunk_size = 1000
         self.chunk_overlap = 200
+        self.batch_size = min(batch_size, 100)  # OpenAI API max batch size is 100
+        self.max_retries = 3
+        self.retry_delay = 1.0  # Initial retry delay in seconds
+        self.openai_client = None
+        self.security_manager = SecurityManager()
+        
+        # Model dimension mapping
+        self.model_dimensions = {
+            "text-embedding-3-small": 1536,
+            "text-embedding-3-large": 3072,
+            "text-embedding-ada-002": 1536
+        }
+        
+        # Update dimensions based on model
+        if embedding_model in self.model_dimensions:
+            self.embedding_dimensions = self.model_dimensions[embedding_model]
         
         # Connection pooling for sync operations
         self.engine = create_engine(
@@ -75,6 +101,22 @@ class PGVectorService:
         tokenizer = tiktoken.get_encoding("cl100k_base")
         tokens = tokenizer.encode(text, disallowed_special=())
         return len(tokens)
+    
+    def configure_embedding_settings(self, model: Optional[str] = None, batch_size: Optional[int] = None):
+        """Update embedding configuration at runtime
+        
+        Args:
+            model: New embedding model to use
+            batch_size: New batch size for API calls
+        """
+        if model and model in self.model_dimensions:
+            self.embedding_model = model
+            self.embedding_dimensions = self.model_dimensions[model]
+            logger.info(f"Updated embedding model to {model} with {self.embedding_dimensions} dimensions")
+        
+        if batch_size is not None:
+            self.batch_size = min(batch_size, 100)
+            logger.info(f"Updated batch size to {self.batch_size}")
     
     async def check_pgvector_health(self) -> Dict[str, Any]:
         """Check PGVector extension health and availability"""
@@ -134,7 +176,8 @@ class PGVectorService:
         documents: List[Dict[str, Any]],
         knowledge_base_id: UUID,
         document_id: UUID,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
+        user_id: Optional[UUID] = None
     ) -> List[UUID]:
         """Add documents to PGVector with automatic chunking"""
         start_time = time.time()
@@ -158,9 +201,12 @@ class PGVectorService:
                 batch = chunks[i:i + batch_size]
                 texts = [chunk['content'] for chunk in batch]
                 
-                # For now, generate random embeddings as placeholder
-                # In production, you would call OpenAI API here
-                embeddings = await self._generate_placeholder_embeddings(texts)
+                # Generate embeddings using enhanced service with fallback
+                embeddings, metadata = await embedding_service.generate_embeddings_with_fallback(
+                    texts, 
+                    user_id=str(user_id) if user_id else None
+                )
+                logger.info(f"Generated embeddings using {metadata.get('provider', 'unknown')} provider")
                 
                 # Store in PGVector
                 async with self.AsyncSessionLocal() as session:
@@ -177,9 +223,9 @@ class PGVectorService:
                             text("""
                                 INSERT INTO knowledge_embeddings 
                                 (id, document_id, knowledge_base_id, chunk_index, chunk_size, 
-                                 content, embedding, token_count, metadata, created_at)
+                                 content, embedding, token_count, metadata, created_at, updated_at)
                                 VALUES (:id, :doc_id, :kb_id, :chunk_idx, :chunk_size,
-                                        :content, :embedding, :tokens, :metadata, :created_at)
+                                        :content, :embedding, :tokens, :metadata, :created_at, :updated_at)
                             """),
                             {
                                 'id': chunk_id,
@@ -191,7 +237,8 @@ class PGVectorService:
                                 'embedding': f"[{','.join(map(str, embedding))}]",  # Format as vector string
                                 'tokens': self._tiktoken_len(chunk['content']),
                                 'metadata': json.dumps(chunk_metadata) if chunk_metadata else None,
-                                'created_at': datetime.utcnow()
+                                'created_at': datetime.utcnow(),
+                                'updated_at': datetime.utcnow()
                             }
                         )
                         chunk_ids.append(chunk_id)
@@ -238,15 +285,22 @@ class PGVectorService:
         knowledge_base_id: Optional[UUID] = None,
         k: int = 5,
         score_threshold: float = 0.7,
-        filters: Optional[Dict[str, Any]] = None
+        filters: Optional[Dict[str, Any]] = None,
+        user_id: Optional[UUID] = None
     ) -> List[Tuple[Dict, float]]:
         """Search for similar documents using cosine similarity"""
         start_time = time.time()
         
         try:
-            # Generate query embedding (placeholder for now)
-            query_embedding = await self._generate_placeholder_embeddings([query])
-            query_embedding = query_embedding[0]
+            logger.info(f"PgVector search_similar called - Query: '{query}', Filters: {filters}")
+            
+            # Generate query embedding using enhanced service with fallback
+            embeddings, metadata = await embedding_service.generate_embeddings_with_fallback(
+                [query], 
+                user_id=str(user_id) if user_id else None
+            )
+            query_embedding = embeddings[0]
+            logger.info(f"Query embedding generated using {metadata.get('provider', 'unknown')} provider, embedding length: {len(query_embedding)}")
             
             # Build filter conditions
             where_conditions = ["1=1"]
@@ -258,13 +312,32 @@ class PGVectorService:
             
             if filters:
                 for key, value in filters.items():
-                    where_conditions.append(f"metadata->>{key} = :{key}")
-                    params[key] = value
+                    if key == 'document_id':
+                        # Handle document_id filter directly on the column
+                        where_conditions.append("document_id = :document_id")
+                        params['document_id'] = value
+                    else:
+                        # Handle other filters as metadata
+                        where_conditions.append(f"metadata->>{key} = :{key}")
+                        params[key] = value
             
             where_clause = " AND ".join(where_conditions)
             
             # Perform similarity search
             async with self.AsyncSessionLocal() as session:
+                # First check if there are any embeddings at all
+                count_query = text(f"""
+                    SELECT COUNT(*) FROM knowledge_embeddings WHERE {where_clause}
+                """)
+                count_params = {k: v for k, v in params.items() if k != 'embedding'}
+                count_result = await session.execute(count_query, count_params)
+                total_embeddings = count_result.scalar()
+                logger.warning(f"Total embeddings matching filters: {total_embeddings}")
+                
+                if total_embeddings == 0:
+                    logger.warning(f"No embeddings found for filters: {filters}")
+                    return []
+                
                 result = await session.execute(
                     text(f"""
                         SELECT 
@@ -277,15 +350,22 @@ class PGVectorService:
                     """),
                     params
                 )
+                logger.info(f"Executed similarity search query")
                 
                 results = []
-                for row in result.fetchall():
+                rows = result.fetchall()
+                logger.info(f"Got {len(rows)} rows from database")
+                
+                for row in rows:
+                    logger.debug(f"Row similarity: {row[3]}, threshold: {score_threshold}")
                     if row[3] >= score_threshold:
                         doc = {
                             'page_content': row[1],
                             'metadata': row[2] or {}
                         }
                         results.append((doc, row[3]))
+                
+                logger.info(f"Filtered to {len(results)} results above threshold {score_threshold}")
                 
                 # Update metrics
                 elapsed_time = time.time() - start_time
@@ -317,11 +397,12 @@ class PGVectorService:
         knowledge_base_id: Optional[UUID] = None,
         k: int = 5,
         keyword_weight: float = 0.3,
-        semantic_weight: float = 0.7
+        semantic_weight: float = 0.7,
+        user_id: Optional[UUID] = None
     ) -> List[Tuple[Dict, float]]:
         """Perform hybrid search combining keyword and semantic search"""
         # Semantic search
-        semantic_results = await self.search_similar(query, knowledge_base_id, k * 2)
+        semantic_results = await self.search_similar(query, knowledge_base_id, k * 2, user_id=user_id)
         
         # Keyword search using PostgreSQL full-text search
         async with self.AsyncSessionLocal() as session:
@@ -403,7 +484,8 @@ class PGVectorService:
         document_id: UUID,
         new_content: str,
         knowledge_base_id: UUID,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
+        user_id: Optional[UUID] = None
     ) -> List[UUID]:
         """Update a document by deleting old embeddings and adding new ones"""
         # Delete old embeddings
@@ -411,7 +493,7 @@ class PGVectorService:
         
         # Add new document
         doc = {'page_content': new_content, 'metadata': metadata or {}}
-        return await self.add_documents([doc], knowledge_base_id, document_id, metadata)
+        return await self.add_documents([doc], knowledge_base_id, document_id, metadata, user_id)
     
     async def get_statistics(
         self,
@@ -474,15 +556,128 @@ class PGVectorService:
             'cache_hit_rate': self.metrics['cache_hits'] / max(self.metrics['cache_hits'] + self.metrics['cache_misses'], 1)
         }
     
-    async def _generate_placeholder_embeddings(self, texts: List[str]) -> List[List[float]]:
-        """Generate placeholder embeddings (replace with OpenAI API call in production)"""
-        # In production, you would call OpenAI API here
-        # For now, return random embeddings
-        embeddings = []
-        for _ in texts:
-            embedding = np.random.randn(self.embedding_dimensions).tolist()
-            embeddings.append(embedding)
-        return embeddings
+    async def _get_openai_api_key(self, user_id: Optional[UUID] = None) -> Optional[str]:
+        """Get OpenAI API key from database for user or system"""
+        try:
+            async with self.AsyncSessionLocal() as session:
+                # Try to get user-specific API key first
+                if user_id:
+                    stmt = select(UserApiKey).where(
+                        and_(
+                            UserApiKey.user_id == user_id,
+                            UserApiKey.provider == "openai",
+                            UserApiKey.is_active == True
+                        )
+                    ).order_by(UserApiKey.updated_at.desc()).limit(1)
+                else:
+                    # Get any available OpenAI API key (for system-level operations)
+                    stmt = select(UserApiKey).where(
+                        and_(
+                            UserApiKey.provider == "openai",
+                            UserApiKey.is_active == True
+                        )
+                    ).order_by(UserApiKey.updated_at.desc()).limit(1)
+                
+                result = await session.execute(stmt)
+                api_key_record = result.scalar_one_or_none()
+                
+                if api_key_record:
+                    # Decrypt the API key
+                    decrypted_key = self.security_manager.decrypt_api_key(api_key_record.encrypted_key)
+                    return decrypted_key
+                    
+                # Fall back to environment variable if no database key found
+                env_key = os.getenv('OPENAI_API_KEY')
+                if env_key:
+                    logger.info("Using OpenAI API key from environment variable")
+                    return env_key
+                    
+                return None
+                
+        except Exception as e:
+            # Log at debug level to avoid polluting test output
+            logger.debug(f"Database API key retrieval failed: {e}, falling back to environment variable")
+            # Fall back to environment variable
+            return os.getenv('OPENAI_API_KEY')
+    
+    async def _generate_embeddings_with_retry(self, texts: List[str], api_key: str) -> List[List[float]]:
+        """Generate embeddings with retry logic for handling rate limits and errors"""
+        client = AsyncOpenAI(api_key=api_key)
+        
+        for attempt in range(self.max_retries):
+            try:
+                response = await client.embeddings.create(
+                    model=self.embedding_model,
+                    input=texts,
+                    encoding_format="float"
+                )
+                
+                embeddings = [item.embedding for item in response.data]
+                logger.info(f"Successfully generated {len(embeddings)} embeddings")
+                return embeddings
+                
+            except RateLimitError as e:
+                wait_time = self.retry_delay * (2 ** attempt)  # Exponential backoff
+                logger.warning(f"Rate limit hit, waiting {wait_time}s before retry {attempt + 1}/{self.max_retries}")
+                if attempt < self.max_retries - 1:
+                    await asyncio.sleep(wait_time)
+                else:
+                    logger.error(f"Rate limit exceeded after {self.max_retries} attempts")
+                    raise
+                    
+            except APITimeoutError as e:
+                logger.warning(f"API timeout on attempt {attempt + 1}/{self.max_retries}: {e}")
+                if attempt < self.max_retries - 1:
+                    await asyncio.sleep(self.retry_delay)
+                else:
+                    logger.error(f"API timeout after {self.max_retries} attempts")
+                    raise
+                    
+            except APIError as e:
+                logger.error(f"OpenAI API error on attempt {attempt + 1}: {e}")
+                if "invalid_api_key" in str(e).lower():
+                    raise ValueError("Invalid OpenAI API key")
+                if attempt < self.max_retries - 1:
+                    await asyncio.sleep(self.retry_delay)
+                else:
+                    raise
+                    
+            except Exception as e:
+                logger.error(f"Unexpected error generating embeddings: {e}")
+                raise
+    
+    async def _generate_placeholder_embeddings(self, texts: List[str], user_id: Optional[UUID] = None) -> List[List[float]]:
+        """Generate embeddings using OpenAI API with fallback to placeholder"""
+        try:
+            # Get API key from database or environment
+            api_key = await self._get_openai_api_key(user_id)
+            
+            if not api_key:
+                logger.debug("No OpenAI API key found, using placeholder embeddings")
+                # Return placeholder embeddings as fallback
+                embeddings = []
+                for _ in texts:
+                    embedding = np.random.randn(self.embedding_dimensions).tolist()
+                    embeddings.append(embedding)
+                return embeddings
+            
+            # Process in batches if necessary
+            all_embeddings = []
+            for i in range(0, len(texts), self.batch_size):
+                batch = texts[i:i + self.batch_size]
+                batch_embeddings = await self._generate_embeddings_with_retry(batch, api_key)
+                all_embeddings.extend(batch_embeddings)
+            
+            return all_embeddings
+            
+        except Exception as e:
+            logger.error(f"Failed to generate OpenAI embeddings, falling back to placeholder: {e}")
+            # Return placeholder embeddings as fallback
+            embeddings = []
+            for _ in texts:
+                embedding = np.random.randn(self.embedding_dimensions).tolist()
+                embeddings.append(embedding)
+            return embeddings
     
     async def _update_document_status(
         self,

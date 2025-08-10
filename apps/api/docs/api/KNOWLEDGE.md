@@ -270,7 +270,81 @@ Authorization: Bearer <jwt_token>
 
 ---
 
-### 5. Delete Document
+### 5. Get Document Embeddings
+
+**Endpoint**: `GET /api/v1/knowledge/:id/embeddings`  
+**Summary**: Retrieve all embeddings for a specific document  
+**Authentication**: **Required**  
+
+**Headers**:
+```
+Authorization: Bearer <jwt_token>
+```
+
+**URL Parameters**:
+- `id`: UUID of the document
+
+**Successful Response (200)**:
+```json
+{
+  "document_id": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Python Programming Guide",
+  "total_chunks": 3,
+  "total_tokens": 450,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_dimensions": 1536,
+  "chunks": [
+    {
+      "chunk_id": "abc123",
+      "chunk_index": 0,
+      "chunk_text": "Python is a high-level programming language...",
+      "token_count": 150,
+      "embedding_preview": [0.1234, -0.5678, 0.9012, ...],
+      "embedding_dimensions": 1536,
+      "created_at": "2024-01-01T12:00:00Z"
+    },
+    {
+      "chunk_id": "def456",
+      "chunk_index": 1,
+      "chunk_text": "It supports multiple programming paradigms...",
+      "token_count": 145,
+      "embedding_preview": [0.2345, -0.6789, 0.0123, ...],
+      "embedding_dimensions": 1536,
+      "created_at": "2024-01-01T12:00:00Z"
+    }
+  ],
+  "metadata": {
+    "category": "programming"
+  }
+}
+```
+
+**Response Fields**:
+- `document_id`: UUID of the document
+- `title`: Document title
+- `total_chunks`: Total number of embedding chunks
+- `total_tokens`: Total token count across all chunks
+- `embedding_model`: Model used for embeddings
+- `embedding_dimensions`: Dimension size of embeddings
+- `chunks`: Array of embedding chunks
+  - `chunk_id`: Unique identifier for the chunk
+  - `chunk_index`: Sequential index of the chunk
+  - `chunk_text`: Text content of the chunk
+  - `token_count`: Number of tokens in the chunk
+  - `embedding_preview`: First 10 values of the embedding vector
+  - `embedding_dimensions`: Dimension size of this embedding
+  - `created_at`: Timestamp when embedding was created
+- `metadata`: Additional document metadata
+
+**Responses**:
+- **200 OK**: Embeddings retrieved successfully
+- **401 Unauthorized**: Invalid or missing token
+- **403 Forbidden**: Access denied to document
+- **404 Not Found**: Document not found or no embeddings available
+
+---
+
+### 6. Delete Document
 
 **Endpoint**: `DELETE /api/v1/knowledge/:id`  
 **Summary**: Delete a document and all its embeddings  
@@ -320,6 +394,7 @@ Content-Type: application/json
 {
   "query": "Python programming features",
   "knowledge_base_id": "123e4567-e89b-12d3-a456-426614174000",
+  "document_id": "789e4567-e89b-12d3-a456-426614174000",
   "k": 5,
   "score_threshold": 0.7,
   "search_type": "semantic",
@@ -332,11 +407,14 @@ Content-Type: application/json
 
 **Field Descriptions**:
 - `query` (required): Search query (max 1000 chars)
-- `knowledge_base_id`: Limit search to specific knowledge base
+- `knowledge_base_id`: Limit search to specific knowledge base (optional)
+- `document_id`: Limit search to specific document (optional)
 - `k`: Number of results to return (default: 5, max: 50)
 - `score_threshold`: Minimum similarity score (0-1, default: 0.7)
 - `search_type`: Type of search ("semantic", "keyword", "hybrid")
 - `filters`: Additional filters as JSON object
+
+**Note**: You can use `document_id` alone, with `knowledge_base_id`, or neither. When `document_id` is provided, the search is limited to chunks within that specific document.
 
 **Successful Response (200)**:
 ```json
@@ -386,6 +464,7 @@ x-api-key: <openai_or_anthropic_api_key> (optional)
 {
   "query": "What are the key features of Python?",
   "knowledge_base_id": "123e4567-e89b-12d3-a456-426614174000",
+  "document_id": "789e4567-e89b-12d3-a456-426614174000",
   "model": "gpt-3.5-turbo",
   "temperature": 0.7,
   "max_tokens": 500,
@@ -397,13 +476,16 @@ x-api-key: <openai_or_anthropic_api_key> (optional)
 
 **Field Descriptions**:
 - `query` (required): Question to answer
-- `knowledge_base_id` (required): Knowledge base to search
+- `knowledge_base_id`: Knowledge base to search (optional)
+- `document_id`: Limit context to specific document (optional)
 - `model`: LLM model to use (default: "gpt-3.5-turbo")
 - `temperature`: Creativity level (0-2, default: 0.7)
 - `max_tokens`: Max response tokens (default: 500)
 - `include_sources`: Include source documents (default: true)
 - `k`: Number of documents to retrieve (default: 5)
 - `system_prompt`: Custom system prompt
+
+**Note**: You can use `document_id` to generate answers based only on content from a specific document. This is useful for document-specific summaries or focused Q&A.
 
 **Successful Response (200)**:
 ```json
@@ -700,7 +782,8 @@ interface DocumentUploadResponse {
 ```typescript
 interface SearchRequest {
   query: string;              // Max 1000 chars
-  knowledge_base_id?: string; // UUID
+  knowledge_base_id?: string; // UUID (optional)
+  document_id?: string;       // UUID (optional) - filter to specific document
   k?: number;                 // 1-50, default 5
   score_threshold?: number;   // 0-1, default 0.7
   search_type?: 'semantic' | 'keyword' | 'hybrid';
@@ -722,12 +805,13 @@ interface SearchResult {
 ```typescript
 interface RAGQueryRequest {
   query: string;
-  knowledge_base_id: string;
-  model?: string;             // Default: gpt-3.5-turbo
-  temperature?: number;       // 0-2, default 0.7
-  max_tokens?: number;        // Default: 500
-  include_sources?: boolean;  // Default: true
-  k?: number;                 // Default: 5
+  knowledge_base_id?: string;  // UUID (optional)
+  document_id?: string;        // UUID (optional) - limit context to specific document
+  model?: string;              // Default: gpt-3.5-turbo
+  temperature?: number;        // 0-2, default 0.7
+  max_tokens?: number;         // Default: 500
+  include_sources?: boolean;   // Default: true
+  k?: number;                  // Default: 5
   system_prompt?: string;
 }
 
@@ -896,7 +980,48 @@ curl -X POST http://localhost:8000/api/v1/knowledge/query \
   }'
 ```
 
-### Example 2: File Upload
+### Example 2: Document-Specific Search and RAG
+
+```bash
+# Search within a specific document
+DOC_ID="789e4567-e89b-12d3-a456-426614174000"
+
+# 1. Search only within a specific document
+curl -X POST http://localhost:8000/api/v1/knowledge/search \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "function definitions",
+    "document_id": "'$DOC_ID'",
+    "k": 5,
+    "score_threshold": 0.5
+  }'
+
+# 2. RAG query limited to specific document
+curl -X POST http://localhost:8000/api/v1/knowledge/query \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $OPENAI_KEY" \
+  -d '{
+    "query": "Summarize the main points",
+    "document_id": "'$DOC_ID'",
+    "model": "gpt-3.5-turbo",
+    "include_sources": true
+  }'
+
+# 3. Search with both knowledge_base_id and document_id
+curl -X POST http://localhost:8000/api/v1/knowledge/search \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "implementation details",
+    "knowledge_base_id": "'$KB_ID'",
+    "document_id": "'$DOC_ID'",
+    "k": 3
+  }'
+```
+
+### Example 3: File Upload
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/knowledge/upload/file \
@@ -905,7 +1030,7 @@ curl -X POST http://localhost:8000/api/v1/knowledge/upload/file \
   -F "file=@document.pdf"
 ```
 
-### Example 3: Collection Management
+### Example 4: Collection Management
 
 ```bash
 # Create collection

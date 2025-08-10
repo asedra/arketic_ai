@@ -1,0 +1,87 @@
+{
+  "test_metadata": {
+    "test_type": "AR-71 Chat Enhancement with Assistant Selection",
+    "generated_at": "2025-08-10T11:30:01.569604",
+    "base_url": "http://localhost:8000",
+    "total_tests": 5,
+    "passed_tests": 5,
+    "failed_tests": 0,
+    "success_rate_percent": 100.0
+  },
+  "test_results": [
+    {
+      "test_name": "Authentication",
+      "success": true,
+      "message": "Authenticated as user f2da9a18-7281-49de-956d-63473c24b4df",
+      "timestamp": "2025-08-10T11:30:01.516362",
+      "response_data": null
+    },
+    {
+      "test_name": "Available Assistants Endpoint",
+      "success": true,
+      "message": "Found 41 available assistants",
+      "timestamp": "2025-08-10T11:30:01.528571",
+      "response_data": {
+        "assistant_count": 41,
+        "assistants": [
+          {
+            "id": "a2ce7ab9-eae5-40fc-83d5-b3c77f0018bc",
+            "name": "aaaaaawwwww",
+            "description": "",
+            "ai_model": "gpt-4o",
+            "ai_model_display": "GPT-4o",
+            "is_public": false,
+            "creator_id": "f2da9a18-7281-49de-956d-63473c24b4df",
+            "total_conversations": 10,
+            "is_owner": true
+          },
+          {
+            "id": "ea7f4470-a406-44c2-99f3-a98b4b8a0309",
+            "name": "aaaatest",
+            "description": "Automated test assistant",
+            "ai_model": "gpt-3.5-turbo",
+            "ai_model_display": "GPT-3.5 Turbo",
+            "is_public": false,
+            "creator_id": "f2da9a18-7281-49de-956d-63473c24b4df",
+            "total_conversations": 4,
+            "is_owner": true
+          }
+        ]
+      }
+    },
+    {
+      "test_name": "Chat Creation with Assistant (aaaaaawwwww)",
+      "success": true,
+      "message": "Chat bb47aacb-f13e-4230-a2c1-9819d1aa9bc9 created with assistant aaaaaawwwww (a2ce7ab9-eae5-40fc-83d5-b3c77f0018bc)",
+      "timestamp": "2025-08-10T11:30:01.553995",
+      "response_data": {
+        "chat_id": "bb47aacb-f13e-4230-a2c1-9819d1aa9bc9",
+        "assistant_id": "a2ce7ab9-eae5-40fc-83d5-b3c77f0018bc",
+        "assistant_name": "aaaaaawwwww",
+        "ai_model": "gpt-4o"
+      }
+    },
+    {
+      "test_name": "Chat History with Assistant Info",
+      "success": true,
+      "message": "Assistant ID: a2ce7ab9-eae5-40fc-83d5-b3c77f0018bc, Assistant Name: aaaaaawwwww",
+      "timestamp": "2025-08-10T11:30:01.564034",
+      "response_data": {
+        "chat_id": "bb47aacb-f13e-4230-a2c1-9819d1aa9bc9",
+        "assistant_id": "a2ce7ab9-eae5-40fc-83d5-b3c77f0018bc",
+        "assistant_name": "aaaaaawwwww",
+        "ai_model": "gpt-4o",
+        "title": "Test Chat with aaaaaawwwww"
+      }
+    },
+    {
+      "test_name": "Chat Listing Shows Assistant Info",
+      "success": true,
+      "message": "Found 41 chats with assistant information",
+      "timestamp": "2025-08-10T11:30:01.569493",
+      "response_data": {
+        "chats_with_assistants": 41
+      }
+    }
+  ]
+}

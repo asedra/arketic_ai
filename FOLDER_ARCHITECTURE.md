@@ -1,8 +1,22 @@
 # Arketic Proje Klasör Mimarisi
 
-## 📁 /apps Dizini Yapısı
+## 📁 Proje Kök Dizin Yapısı
 
-Bu dokümantasyon, Arketic projesinin `/apps` klasöründeki üç ana servisin detaylı yapısını açıklamaktadır.
+```
+/home/ali/arketic/
+├── apps/                 # Ana uygulama servisleri
+│   ├── api/             # FastAPI backend servisi
+│   ├── langchain/       # LangChain Node.js servisi
+│   └── web/             # Next.js frontend uygulaması
+├── scripts/             # Yardımcı ve deployment scriptleri
+├── monitoring/          # İzleme ve loglama yapılandırmaları
+├── nginx/               # Nginx yapılandırması
+├── tools/               # Geliştirme araçları
+├── archive/             # Arşivlenmiş dokümantasyon
+├── docker-compose.yml   # Docker orkestrasyon
+├── CLAUDE.md           # Proje yönergeleri
+└── FOLDER_ARCHITECTURE.md # Bu dosya
+```
 
 ---
 
@@ -32,10 +46,11 @@ FastAPI tabanlı REST API servisi. PostgreSQL (pgvector), Redis ve AI entegrasyo
 - `form.py` - Dinamik form yapıları
 - `settings.py` - Kullanıcı ve sistem ayarları
 - `organization.py` - Organizasyon yapıları
+- `people.py` - Kişi yönetimi modeli
 
 #### 📂 **routers/** - API Endpoint'leri
 - `auth.py` - Kimlik doğrulama ve yetkilendirme
-- `chat.py` - Sohbet işlemleri
+- `chat.py` - Sohbet işlemleri ve WebSocket
 - `assistants.py` - Asistan yönetimi
 - `knowledge.py` - Bilgi tabanı CRUD işlemleri
 - `people.py` - Kişi yönetimi
@@ -65,27 +80,24 @@ FastAPI tabanlı REST API servisi. PostgreSQL (pgvector), Redis ve AI entegrasyo
 - `people.py` - Kişi veri şemaları
 - `forms.py` - Form yapı şemaları
 - `user.py` - Kullanıcı şemaları
+- `chat.py` - Sohbet şemaları
 
 #### 📂 **middleware/** - Ara Katman Yazılımları
 - `logging.py` - Request/response loglama
 - `rate_limit.py` - Rate limiting
 - `security.py` - Güvenlik kontrolleri
+- `auth.py` - Kimlik doğrulama middleware
 
 #### 📂 **migrations/** - Alembic Veritabanı Migrasyonları
-- `versions/` - Sıralı migration dosyaları
-  - `001_initial_setup.py` - İlk kurulum
-  - `002_auth_tables.py` - Kimlik doğrulama tabloları
-  - `003_people_table.py` - Kişi tablosu
-  - `004_chat_tables.py` - Sohbet tabloları
-  - `005_forms_tables.py` - Form tabloları
-  - `006_assistants_tables.py` - Asistan tabloları
-  - `007_knowledge_tables.py` - Bilgi tabanı tabloları
-  - `008_settings_tables.py` - Ayarlar tabloları
-  - `009_add_default_user.py` - Varsayılan kullanıcı
-  - `010_assistant_knowledge_associations.py` - İlişki tabloları
+- `alembic.ini` - Alembic konfigürasyonu
+- `env.py` - Migration environment setup
+- `script.py.mako` - Migration şablon dosyası
+- **versions/** - Migration dosyaları dizini
+  - Numerik sıralı migration dosyaları
+  - Her migration dosyası veritabanı şema değişikliklerini içerir
 
 #### 📂 **docs/** - API Dokümantasyonu
-- `api/` - Endpoint dokümantasyonları
+- **api/** - Endpoint dokümantasyonları
   - `AUTH.md` - Kimlik doğrulama API'leri
   - `CHAT.md` - Sohbet API'leri
   - `ASSISTANTS.md` - Asistan API'leri
@@ -93,20 +105,37 @@ FastAPI tabanlı REST API servisi. PostgreSQL (pgvector), Redis ve AI entegrasyo
   - `PEOPLE.md` - Kişi yönetimi API'leri
   - `LANGCHAIN.md` - LangChain entegrasyonu
   - `OPENAI_SETTINGS.md` - OpenAI ayarları
-- `database/` - Veritabanı dokümantasyonu
+- **database/** - Veritabanı dokümantasyonu
   - `POSTGRESQL.md` - PostgreSQL şema dokümantasyonu
   - `REDIS.md` - Redis kullanım dokümantasyonu
+- Test dosyaları ve raporları
+  - `auth_test.py` - Kimlik doğrulama testleri
+  - `chat_test.py` - Sohbet sistemi testleri
+  - `assistant_test.py` - Asistan testleri
+  - `knowledge_test.py` - Bilgi yönetimi testleri
+  - `people_test.py` - Kişi yönetimi testleri
+  - `langchain_test.py` - LangChain entegrasyon testleri
+  - JSON formatında test raporları
 
 #### 📂 **tests/** - Test Dosyaları
-- Test suitleri ve benchmark testleri
+- Unit ve integration test dosyaları
 - `test_pgvector_benchmark.py` - Vektör DB performans testleri
+- `test_rag_integration.py` - RAG entegrasyon testleri
+
+#### 📂 **uploads/** - Yüklenen Dosyalar
+- Kullanıcılar tarafından yüklenen dokümanlar
+- Geçici dosya depolama
+
+#### 📂 **logs/** - Log Dosyaları
+- Uygulama log dosyaları
+- Error ve debug logları
 
 #### 📄 **Ana Dosyalar**
 - `main.py` - FastAPI uygulama entry point
 - `Dockerfile` - Docker container tanımı
 - `requirements.txt` - Python bağımlılıkları
-- `alembic.ini` - Alembic konfigürasyonu
-- `healthcheck.py` - Container health check
+- `.env` - Çevre değişkenleri (production'da gizli)
+- `healthcheck.py` - Container health check scripti
 
 ---
 
@@ -121,37 +150,36 @@ Node.js tabanlı AI servisi. LangChain framework'ü ile doküman işleme, embedd
 
 ##### 📂 **config/** - Konfigürasyon
 - `config.js` - Uygulama ayarları
-- `index.js` - Konfigürasyon export'ları
+- `database.js` - Veritabanı konfigürasyonu
+- `redis.js` - Redis konfigürasyonu
 
 ##### 📂 **routes/** - API Route'ları
-- `chain.js` - LangChain zincir işlemleri
-- `chat.js` - Sohbet endpoint'leri
-- `completion.js` - Text completion
-- `documents.js` - Doküman yönetimi
-- `embedding.js` - Embedding oluşturma
-- `health.js` - Sağlık kontrolleri
+- `chatRoutes.js` - Sohbet endpoint'leri
+- `chainRoutes.js` - LangChain zincir işlemleri
+- `completionRoutes.js` - Text completion
+- `documentRoutes.js` - Doküman yönetimi
+- `embeddingRoutes.js` - Embedding oluşturma
+- `healthRoutes.js` - Sağlık kontrolleri
 
 ##### 📂 **services/** - Servis Katmanı
 - `chatService.js` - Sohbet iş mantığı
-- `langchain.js` - LangChain entegrasyonları
+- `langchainService.js` - LangChain entegrasyonları
 - `databaseService.js` - Veritabanı işlemleri
 - `redisService.js` - Redis cache yönetimi
 - `streamingService.js` - Streaming yanıtlar
-- `socket.js` - WebSocket yönetimi
-
-##### 📂 **services/knowledge/** - Bilgi İşleme
-- **chunking/** - Metin parçalama stratejileri
-  - `fixedSizeChunker.js` - Sabit boyutlu parçalama
-  - `recursiveChunker.js` - Recursive parçalama
-  - `semanticChunker.js` - Anlamsal parçalama
-- **embeddings/** - Embedding servisleri
-  - `embeddingService.js` - Vektör oluşturma
-- **parsers/** - Doküman ayrıştırıcılar
-  - `pdfParser.js` - PDF işleme
-  - `docxParser.js` - Word doküman işleme
-  - `markdownParser.js` - Markdown işleme
-  - `textParser.js` - Düz metin işleme
-- `documentProcessor.js` - Ana doküman işleyici
+- **knowledge/** - Bilgi işleme servisleri
+  - **chunking/** - Metin parçalama stratejileri
+    - `fixedSizeChunker.js` - Sabit boyutlu parçalama
+    - `recursiveChunker.js` - Recursive parçalama
+    - `semanticChunker.js` - Anlamsal parçalama
+  - **embeddings/** - Embedding servisleri
+    - `embeddingService.js` - Vektör oluşturma
+  - **parsers/** - Doküman ayrıştırıcılar
+    - `pdfParser.js` - PDF işleme
+    - `docxParser.js` - Word doküman işleme
+    - `markdownParser.js` - Markdown işleme
+    - `textParser.js` - Düz metin işleme
+  - `documentProcessor.js` - Ana doküman işleyici
 
 ##### 📂 **middleware/** - Ara Katmanlar
 - `auth.js` - JWT kimlik doğrulama
@@ -162,19 +190,28 @@ Node.js tabanlı AI servisi. LangChain framework'ü ile doküman işleme, embedd
 
 ##### 📂 **websocket/** - WebSocket
 - `socketServer.js` - Socket.io server
+- `handlers.js` - WebSocket event handler'ları
 
 ##### 📂 **utils/** - Yardımcı Fonksiyonlar
 - `logger.js` - Winston logger
+- `validators.js` - Veri validasyon fonksiyonları
 
 ##### 📂 **tests/** - Test Dosyaları
 - Unit ve integration testler
-- `chatService.test.js` - Chat servis testleri
-- `knowledge/` - Bilgi işleme testleri
+- **knowledge/** - Bilgi işleme testleri
+
+#### 📂 **scripts/** - Yardımcı Scriptler
+- Geliştirme ve deployment scriptleri
+
+#### 📂 **logs/** - Log Dosyaları
+- Servis log dosyaları
 
 #### 📄 **Ana Dosyalar**
 - `index.js` - Ana uygulama dosyası
 - `package.json` - Node.js bağımlılıkları
+- `package-lock.json` - Bağımlılık kilidi
 - `Dockerfile` - Docker container tanımı
+- `.env` - Çevre değişkenleri
 - `jest.config.js` - Jest test konfigürasyonu
 
 ---
@@ -188,14 +225,15 @@ Next.js 14 App Router kullanılan modern React uygulaması. TypeScript, Tailwind
 
 #### 📂 **app/** - Next.js App Router
 
-##### 📄 **Ana Sayfalar**
-- `page.tsx` - Ana sayfa
+##### 📄 **Ana Dosyalar**
 - `layout.tsx` - Root layout
+- `page.tsx` - Ana sayfa
 - `globals.css` - Global stiller
 - `loading.tsx` - Yükleme ekranı
 - `not-found.tsx` - 404 sayfası
+- `providers.tsx` - React context provider'ları
 
-##### 📂 **Sayfa Dizinleri**
+##### 📂 **Route Dizinleri**
 - **login/** - Giriş sayfası
 - **signup/** - Kayıt sayfası
 - **forgot-password/** - Şifre sıfırlama
@@ -203,24 +241,41 @@ Next.js 14 App Router kullanılan modern React uygulaması. TypeScript, Tailwind
 - **my-organization/** - Organizasyon yönetimi
   - `OptimizedPage.tsx` - Performans optimizasyonlu sayfa
   - `PeopleTab.tsx` - Kişi yönetimi sekmesi
-  - `OrgChartTab/` - Organizasyon şeması
-  - `ServicesTab/` - Servis yönetimi
-  - `IsoTab/` - ISO compliance yönetimi
-  - `IsoDocumentsTab/` - Doküman yönetimi
+  - **OrgChartTab/** - Organizasyon şeması
+  - **ServicesTab/** - Servis yönetimi
+  - **IsoTab/** - ISO compliance yönetimi
+  - **IsoDocumentsTab/** - Doküman yönetimi
+  - **components/** - Organizasyon bileşenleri
+  - **mock/** - Mock data
 - **knowledge/** - Bilgi tabanı yönetimi
-  - `ComplianceLibraryTab.tsx` - Uyumluluk kütüphanesi
-  - `components/` - Bilgi tabanı bileşenleri
-- **forms/** - Form tasarımcısı
-  - `designer/` - Form tasarım arayüzü
+  - **components/** - Bilgi tabanı bileşenleri
+  - **types/** - TypeScript tip tanımlamaları
+  - **mock/** - Mock data
+- **forms/** - Form yönetimi
+  - **designer/** - Form tasarım arayüzü
 - **api/** - API route'ları
-  - `health/` - Sağlık kontrolü
+  - **health/** - Sağlık kontrolü
+- **api-test/** - API test sayfası
 
 #### 📂 **components/** - React Bileşenleri
 
 ##### 📂 **ui/** - Temel UI Bileşenleri (shadcn/ui)
-- 50+ temel UI bileşeni (button, dialog, form, table vb.)
+- 50+ temel UI bileşeni
+  - `accordion.tsx` - Akordeon bileşeni
+  - `alert.tsx` - Uyarı bileşeni
+  - `button.tsx` - Buton bileşeni
+  - `card.tsx` - Kart bileşeni
+  - `dialog.tsx` - Dialog/Modal bileşeni
+  - `form.tsx` - Form bileşenleri
+  - `input.tsx` - Input bileşeni
+  - `select.tsx` - Select bileşeni
+  - `table.tsx` - Tablo bileşeni
+  - `tabs.tsx` - Tab bileşeni
+  - `toast.tsx` - Toast bildirimi
+  - Ve diğer UI bileşenleri...
 - `delightful-*.tsx` - Özel animasyonlu bileşenler
 - `virtualized-list.tsx` - Performans optimizasyonlu listeler
+- **__tests__/** - UI bileşen testleri
 
 ##### 📂 **dashboard/** - Dashboard Bileşenleri
 - `DashboardContainer.tsx` - Ana container
@@ -242,6 +297,7 @@ Next.js 14 App Router kullanılan modern React uygulaması. TypeScript, Tailwind
 - `AIChatSettings.tsx` - AI ayarları
 - `ConnectionStatus.tsx` - Bağlantı durumu
 - `TypingIndicator.tsx` - Yazıyor göstergesi
+- **__tests__/** - Sohbet bileşen testleri
 
 ##### 📂 **forms/** - Form Bileşenleri
 - `AdaptiveCardDesigner.tsx` - Adaptive Card tasarımcısı
@@ -251,26 +307,35 @@ Next.js 14 App Router kullanılan modern React uygulaması. TypeScript, Tailwind
 
 ##### 📂 **assistant/** - Asistan Bileşenleri
 - `KnowledgeSelector.tsx` - Bilgi tabanı seçici
+- `AssistantCard.tsx` - Asistan kartı
+- `AssistantSettings.tsx` - Asistan ayarları
 
 ##### 📂 **auth/** - Kimlik Doğrulama Bileşenleri
 - `protected-route.tsx` - Korumalı route wrapper
 - `user-dropdown.tsx` - Kullanıcı menüsü
 - `token-expiry-indicator.tsx` - Token süre göstergesi
+- `LoginForm.tsx` - Giriş formu
+- `RegisterForm.tsx` - Kayıt formu
 
 ##### 📂 **providers/** - Context Provider'ları
 - `ArketicProvider.tsx` - Ana uygulama provider
 - `error-provider.tsx` - Hata yönetimi provider
+- `auth-provider.tsx` - Kimlik doğrulama provider
 
-##### 📂 **optimized/** - Performans Optimizasyonlu Bileşenler
-- `LazyImage.tsx` - Lazy loading resimler
-- `VirtualizedTable.tsx` - Sanal tablo
-- `VirtualizedOrgChart.tsx` - Sanal org şeması
+##### 📂 **demo/** - Demo Bileşenleri
+- Demo ve örnek bileşenler
+
+##### 📂 **debug/** - Debug Bileşenleri
+- Geliştirme ortamı debug araçları
 
 #### 📂 **lib/** - Yardımcı Kütüphaneler
 
 ##### 📂 **stores/** - Zustand State Store'ları
 - `chat-store.ts` - Sohbet state yönetimi
 - `assistant-store.ts` - Asistan state yönetimi
+- `auth-store.ts` - Kimlik doğrulama state'i
+- `organization-store.ts` - Organizasyon state'i
+- **__tests__/** - Store testleri
 
 ##### 📂 **ai/** - AI Entegrasyonları
 - `ai-client.ts` - AI istemci
@@ -279,11 +344,7 @@ Next.js 14 App Router kullanılan modern React uygulaması. TypeScript, Tailwind
 - `adaptive-cards-service.ts` - Adaptive Cards servisi
 
 ##### 📂 **hooks/** - Custom React Hook'ları
-- `useApi.ts` - API çağrıları
-- `useSession.ts` - Session yönetimi
-- `useDebounce.ts` - Debounce hook
-- `useLocalStorage.ts` - Local storage
-- `useNotifications.ts` - Bildirim yönetimi
+- React custom hook'ları (varsa)
 
 ##### 📂 **validation/** - Veri Validasyonu
 - Form ve data validasyon kuralları
@@ -295,19 +356,33 @@ Next.js 14 App Router kullanılan modern React uygulaması. TypeScript, Tailwind
 - `config.ts` - Uygulama konfigürasyonu
 - `cache.ts` - Cache yönetimi
 - `performance.ts` - Performans monitörleme
+- `state-manager.ts` - Global state yönetimi
+- **__tests__/** - Lib testleri
+
+#### 📂 **hooks/** - Global Custom Hook'lar
+- `useApi.ts` - API çağrıları
+- `useSession.ts` - Session yönetimi
+- `useDebounce.ts` - Debounce hook
+- `useLocalStorage.ts` - Local storage
+- `useNotifications.ts` - Bildirim yönetimi
 
 #### 📂 **types/** - TypeScript Tip Tanımlamaları
 - `auth.ts` - Kimlik doğrulama tipleri
 - `index.ts` - Genel tipler
+- `api.ts` - API response tipleri
+- `forms.ts` - Form tipleri
+
+#### 📂 **data/** - Statik Data
+- Mock data ve sabit veriler
 
 #### 📂 **public/** - Statik Dosyalar
 - `favicon.ico` - Site ikonu
 - `manifest.json` - PWA manifest
 - `sw.js` - Service worker
-- Placeholder görseller
+- Placeholder görseller ve statik asset'ler
 
 #### 📂 **styles/** - Stil Dosyaları
-- `globals.css` - Global CSS ve Tailwind direktifleri
+- Global CSS dosyaları (varsa)
 
 #### 📄 **Konfigürasyon Dosyaları**
 - `next.config.mjs` - Next.js konfigürasyonu
@@ -315,7 +390,58 @@ Next.js 14 App Router kullanılan modern React uygulaması. TypeScript, Tailwind
 - `tsconfig.json` - TypeScript konfigürasyonu
 - `middleware.ts` - Next.js middleware
 - `components.json` - shadcn/ui konfigürasyonu
+- `package.json` - Node.js bağımlılıkları
+- `package-lock.json` - Bağımlılık kilidi
+- `postcss.config.mjs` - PostCSS konfigürasyonu
+- `jest.config.js` - Jest test konfigürasyonu
 - `playwright.config.ts` - E2E test konfigürasyonu
+- `Dockerfile` - Docker container tanımı
+- `.env.local` - Yerel çevre değişkenleri
+
+---
+
+## 📁 /scripts - Yardımcı Scriptler
+
+- `dev-setup.sh` - Geliştirme ortamı kurulumu
+- `dev.sh` - Geliştirme sunucusu başlatma
+- `docker-dev.sh` - Docker geliştirme ortamı
+- `validate-dev-env.sh` - Ortam doğrulama
+- `validate-docker-env.py` - Docker ortam doğrulama
+- `deploy.sh` - Production deployment
+- `backup.sh` - Veritabanı yedekleme
+- `restore.sh` - Veritabanı geri yükleme
+- `fix-migrations.sh` - Migration düzeltme
+- `init-db.sql` - Veritabanı başlangıç scripti
+- `migrate-web-app.js` - Web app migration
+- `start-dev.sh` - Hızlı başlatma scripti
+
+---
+
+## 📁 /monitoring - İzleme Yapılandırmaları
+
+- `prometheus.yml` - Prometheus metrik toplama
+- `loki-config.yml` - Loki log aggregation
+- `promtail-config.yml` - Promtail log shipper
+
+---
+
+## 📁 Diğer Dizinler
+
+### 📁 /nginx
+- Nginx reverse proxy yapılandırmaları
+
+### 📁 /tools
+- Geliştirme ve yardımcı araçlar
+
+### 📁 /archive
+- **mockup-docs/** - Arşivlenmiş dokümantasyon
+  - **analysis-reports/** - Analiz raporları
+  - **reference-configs/** - Referans yapılandırmalar
+  - **deployment-configs/** - Deployment yapılandırmaları
+  - **documentation/** - Eski dokümantasyon
+
+### 📁 /.claude
+- **agents/** - Claude AI agent yapılandırmaları
 
 ---
 
@@ -348,3 +474,5 @@ Her servis kendi Dockerfile'ına sahiptir ve docker-compose.yml ile orkestre edi
 4. **Type Safety**: TypeScript kullanımı ile tip güvenliği
 5. **API First**: Backend API'ler tam dokümante edilmiş
 6. **Modüler Yapı**: Her servis kendi sorumluluk alanına sahip
+7. **Test Coverage**: Her servis için kapsamlı test suite'leri
+8. **Monitoring**: Prometheus, Loki ile tam izleme desteği

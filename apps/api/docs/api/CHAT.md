@@ -9,6 +9,35 @@ This document provides comprehensive documentation for the Chat API endpoints in
 **Authentication Method**: HTTP Bearer Token  
 **WebSocket URL**: `ws://localhost:8000`
 
+### Endpoints Summary
+
+The Chat API provides 13 endpoints organized into the following categories:
+
+**Core Chat Management**
+1. `POST /api/v1/chat/chats` - Create a new chat
+2. `GET /api/v1/chat/chats` - Get user's chats
+3. `GET /api/v1/chat/chats/{chat_id}` - Get chat history
+
+**Message Management**
+4. `POST /api/v1/chat/chats/{chat_id}/messages` - Send message
+5. `POST /api/v1/chat/chats/{chat_id}/typing` - Send typing indicator
+
+**WebSocket**
+6. `ws://localhost:8000/api/v1/chat/chats/{chat_id}/ws` - Real-time WebSocket
+
+**Participants & Status**
+7. `GET /api/v1/chat/chats/{chat_id}/participants` - Get participants
+8. `GET /api/v1/chat/stats` - Get system statistics
+
+**LangChain Integration**
+9. `GET /api/v1/chat/langchain/health` - LangChain health check
+10. `POST /api/v1/chat/langchain/test` - Test LangChain integration
+11. `GET /api/v1/chat/services/status` - Services status dashboard
+12. `POST /api/v1/chat/chats/{chat_id}/ai-message` - Chat with AI via LangChain
+
+**Assistant Management**
+13. `GET /api/v1/chat/assistants/available` - Get available assistants
+
 ---
 
 ## Table of Contents
@@ -19,10 +48,12 @@ This document provides comprehensive documentation for the Chat API endpoints in
 4. [WebSocket Real-time Communication](#websocket-real-time-communication)
 5. [Chat Participants & Status](#chat-participants--status)
 6. [Testing & Monitoring Endpoints](#testing--monitoring-endpoints)
-7. [Request/Response Schemas](#requestresponse-schemas)
-8. [Error Handling](#error-handling)
-9. [AI Integration Features](#ai-integration-features)
-10. [Examples](#examples)
+7. [LangChain Service Integration](#langchain-service-integration)
+8. [Assistant Management](#assistant-management)
+9. [Request/Response Schemas](#requestresponse-schemas)
+10. [Error Handling](#error-handling)
+11. [AI Integration Features](#ai-integration-features)
+12. [Examples](#examples)
 
 ---
 
@@ -502,6 +533,8 @@ Authorization: Bearer <access_token>
 ```
 
 ---
+
+## LangChain Service Integration
 
 ### 9. LangChain Service Health Check
 
@@ -1111,9 +1144,84 @@ Content-Type: application/json
 
 ---
 
+## Assistant Management
+
+### 13. Get Available Assistants for Chat
+
+**Endpoint**: `GET /api/v1/chat/assistants/available`  
+**Summary**: Get list of AI assistants available for chat integration  
+**Authentication**: **Required** (HTTP Bearer)  
+
+**Description**: Returns a list of all AI assistants that the current user can access for chat conversations. Includes both public assistants and user's own assistants with their configuration details.
+
+**Headers**:
+```
+Authorization: Bearer <access_token>
+```
+
+**Successful Response (200)**:
+```json
+{
+  "success": true,
+  "data": {
+    "assistants": [
+      {
+        "id": "asst-123",
+        "name": "Python Expert",
+        "description": "Specialized assistant for Python programming questions",
+        "ai_model": "gpt-4",
+        "ai_model_display": "GPT-4",
+        "is_public": true,
+        "creator_id": "user-789",
+        "total_conversations": 45,
+        "is_owner": false
+      },
+      {
+        "id": "asst-456",
+        "name": "My Custom Assistant",
+        "description": "Personal assistant with custom instructions",
+        "ai_model": "gpt-3.5-turbo",
+        "ai_model_display": "GPT-3.5 Turbo",
+        "is_public": false,
+        "creator_id": "user-456",
+        "total_conversations": 12,
+        "is_owner": true
+      }
+    ],
+    "total": 2
+  },
+  "timestamp": "2024-01-01T12:36:00Z"
+}
+```
+
+**Response Fields**:
+- `id`: Unique identifier of the assistant
+- `name`: Display name of the assistant
+- `description`: Description of the assistant's capabilities
+- `ai_model`: Technical model identifier (e.g., "gpt-4")
+- `ai_model_display`: Human-readable model name
+- `is_public`: Whether the assistant is publicly available
+- `creator_id`: ID of the user who created the assistant
+- `total_conversations`: Number of conversations using this assistant
+- `is_owner`: Whether the current user owns this assistant
+
+**Responses**:
+- **200 OK**: Assistants retrieved successfully
+- **401 Unauthorized**: Invalid or expired access token
+- **404 Not Found**: User not found
+- **500 Internal Server Error**: Server error
+
+**Usage Notes**:
+- Results include both public assistants and user's private assistants
+- Assistants are sorted alphabetically by name
+- Use the assistant ID when creating a new chat with `assistant_id` parameter
+- Owner status determines if user can edit/delete the assistant
+
+---
+
 ## Support
 
 For questions or issues related to the Chat API, please refer to the main project documentation or contact the development team.
 
-**Last Updated**: 2025-08-07  
-**API Version**: 1.0.0
+**Last Updated**: 2025-08-08  
+**API Version**: 1.0.1

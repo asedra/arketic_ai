@@ -720,6 +720,27 @@ export interface DocumentResponse {
   file_type?: string
 }
 
+export interface EmbeddingChunk {
+  chunk_id: string
+  chunk_index: number
+  chunk_text: string
+  token_count: number
+  embedding_preview: number[]
+  embedding_dimensions: number
+  created_at: string
+}
+
+export interface DocumentEmbeddingsResponse {
+  document_id: string
+  title: string
+  total_chunks: number
+  total_tokens: number
+  embedding_model: string
+  embedding_dimensions: number
+  chunks: EmbeddingChunk[]
+  metadata?: Record<string, any>
+}
+
 export interface SearchRequest {
   query: string
   limit?: number
@@ -774,6 +795,9 @@ export const knowledgeApi = {
   
   getDocument: (documentId: string) =>
     apiClient.get<DocumentResponse>(`/api/v1/knowledge/${documentId}`),
+  
+  getDocumentEmbeddings: (documentId: string) =>
+    apiClient.get<DocumentEmbeddingsResponse>(`/api/v1/knowledge/${documentId}/embeddings`),
   
   deleteDocument: (documentId: string) =>
     apiClient.delete(`/api/v1/knowledge/${documentId}`),

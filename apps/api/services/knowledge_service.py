@@ -334,6 +334,63 @@ class KnowledgeService:
             logger.error(f"Failed to upload file: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Failed to process file: {str(e)}")
     
+    async def upload_document_files(
+        self,
+        db: AsyncSession,
+        user: User,
+        knowledge_base_id: Optional[UUID],
+        files: List[UploadFile]
+    ) -> List[Dict[str, Any]]:
+        """Upload multiple files as documents"""
+        results = []
+        
+        # If no knowledge_base_id provided, create a default one or use user's default
+        if not knowledge_base_id:
+            knowledge_base_id = await self._get_or_create_default_kb(db, user)
+        
+        for file in files:
+            try:
+                # Process each file individually
+                result = await self.upload_document_file(
+                    db=db,
+                    user=user,
+                    knowledge_base_id=knowledge_base_id,
+                    file=file
+                )
+                results.append(result)
+            except HTTPException as e:
+                # Include failed file in results with error information
+                results.append({
+                    "document_id": None,
+                    "chunk_ids": [],
+                    "chunk_count": 0,
+                    "token_count": 0,
+                    "processing_time_ms": 0,
+                    "status": "failed",
+                    "file_info": {
+                        "filename": file.filename,
+                        "error": e.detail
+                    }
+                })
+                logger.error(f"Failed to upload file {file.filename}: {e.detail}")
+            except Exception as e:
+                # Include failed file in results with error information
+                results.append({
+                    "document_id": None,
+                    "chunk_ids": [],
+                    "chunk_count": 0,
+                    "token_count": 0,
+                    "processing_time_ms": 0,
+                    "status": "failed",
+                    "file_info": {
+                        "filename": file.filename,
+                        "error": str(e)
+                    }
+                })
+                logger.error(f"Failed to upload file {file.filename}: {str(e)}")
+        
+        return results
+    
     async def list_documents(
         self,
         db: AsyncSession,
@@ -563,6 +620,7 @@ class KnowledgeService:
         user: User,
         query: str,
         knowledge_base_id: Optional[UUID] = None,
+        document_id: Optional[UUID] = None,
         k: int = 5,
         score_threshold: float = 0.7,
         search_type: str = "semantic",
@@ -570,11 +628,28 @@ class KnowledgeService:
     ) -> Dict[str, Any]:
         """Perform semantic search"""
         try:
+            logger.info(f"Starting semantic search - Query: '{query}', Document ID: {document_id}, KB ID: {knowledge_base_id}")
             start_time = datetime.utcnow()
             
             # Add user context to filters
             if not filters:
                 filters = {}
+            
+            # If document_id is specified, add it to filters
+            if document_id:
+                filters['document_id'] = str(document_id)
+                logger.info(f"Filtering by document_id: {document_id}")
+                # Also verify the document belongs to the user or is accessible
+                await self._verify_document_access(db, document_id, user)
+                
+                # Check if document has embeddings
+                check_query = text("""
+                    SELECT COUNT(*) FROM knowledge_embeddings 
+                    WHERE document_id = :doc_id
+                """)
+                result = await db.execute(check_query, {"doc_id": str(document_id)})
+                embedding_count = result.scalar()
+                logger.warning(f"Document {document_id} has {embedding_count} embeddings")
             
             # If knowledge base specified, verify access
             if knowledge_base_id:
@@ -582,6 +657,7 @@ class KnowledgeService:
             
             # Perform search based on type
             try:
+                logger.info(f"Performing {search_type} search with filters: {filters}")
                 if search_type == "semantic":
                     results = await pgvector_service.search_similar(
                         query,
@@ -590,6 +666,7 @@ class KnowledgeService:
                         score_threshold,
                         filters
                     )
+                    logger.info(f"PgVector search returned {len(results)} results")
                 elif search_type == "hybrid":
                     results = await pgvector_service.hybrid_search(
                         query,
@@ -610,8 +687,16 @@ class KnowledgeService:
             search_results = []
             for doc, score in results:
                 # Get document title from metadata or database
-                doc_id = doc.metadata.get('document_id')
-                title = doc.metadata.get('title', 'Unknown')
+                # Handle both dict and object formats
+                if isinstance(doc, dict):
+                    page_content = doc.get('page_content', '')
+                    metadata = doc.get('metadata', {})
+                else:
+                    page_content = getattr(doc, 'page_content', '')
+                    metadata = getattr(doc, 'metadata', {})
+                
+                doc_id = metadata.get('document_id')
+                title = metadata.get('title', 'Unknown')
                 
                 if doc_id:
                     title_query = text("SELECT title FROM knowledge_documents WHERE id = :doc_id")
@@ -621,12 +706,12 @@ class KnowledgeService:
                         title = title_row.title
                 
                 search_results.append({
-                    "content": doc.page_content,
+                    "content": page_content,
                     "score": score,
                     "document_id": UUID(doc_id) if doc_id else None,
                     "document_title": title,
-                    "chunk_index": doc.metadata.get('chunk_index', 0),
-                    "metadata": doc.metadata
+                    "chunk_index": metadata.get('chunk_index', 0),
+                    "metadata": metadata
                 })
             
             execution_time = (datetime.utcnow() - start_time).total_seconds() * 1000
@@ -654,6 +739,7 @@ class KnowledgeService:
         user: User,
         query: str,
         knowledge_base_id: Optional[UUID],
+        document_id: Optional[UUID],
         api_key: str,
         model: str = "gpt-3.5-turbo",
         temperature: float = 0.7,
@@ -666,6 +752,13 @@ class KnowledgeService:
         try:
             start_time = datetime.utcnow()
             
+            # Prepare filters for document_id if specified
+            filters = {}
+            if document_id:
+                filters['document_id'] = str(document_id)
+                # Verify the document belongs to the user or is accessible
+                await self._verify_document_access(db, document_id, user)
+            
             # If knowledge_base_id provided, verify access
             if knowledge_base_id:
                 await self._verify_knowledge_base_access(db, knowledge_base_id, user)
@@ -676,7 +769,7 @@ class KnowledgeService:
                 knowledge_base_id,
                 k,
                 0.5,  # Lower threshold for RAG
-                {}
+                filters
             )
             
             if not search_results:
@@ -753,6 +846,102 @@ class KnowledgeService:
         except Exception as e:
             logger.error(f"RAG query failed: {str(e)}")
             raise HTTPException(status_code=500, detail=f"RAG query failed: {str(e)}")
+    
+    async def get_document_embeddings(
+        self,
+        db: AsyncSession,
+        user: User,
+        document_id: UUID
+    ) -> Dict[str, Any]:
+        """Get all embeddings for a specific document"""
+        try:
+            # Get document info
+            doc_query = text("""
+                SELECT d.*, kb.is_public, kb.creator_id, kb.embedding_model, kb.embedding_dimensions
+                FROM knowledge_documents d
+                JOIN knowledge_bases kb ON d.knowledge_base_id = kb.id
+                WHERE d.id = :doc_id
+            """)
+            
+            doc_result = await db.execute(doc_query, {"doc_id": str(document_id)})
+            doc = doc_result.fetchone()
+            
+            if not doc:
+                raise HTTPException(status_code=404, detail="Document not found")
+            
+            # Check access (simplified without organization)
+            if not doc.is_public and str(user.id) != str(doc.creator_id):
+                raise HTTPException(status_code=403, detail="Access denied")
+            
+            # Get embeddings with metadata
+            embed_query = text("""
+                SELECT 
+                    id as chunk_id,
+                    chunk_index,
+                    content as chunk_text,
+                    embedding,
+                    token_count,
+                    created_at
+                FROM knowledge_embeddings
+                WHERE document_id = :doc_id
+                ORDER BY chunk_index ASC
+            """)
+            
+            embed_result = await db.execute(embed_query, {"doc_id": str(document_id)})
+            embeddings = embed_result.fetchall()
+            
+            if not embeddings:
+                raise HTTPException(status_code=404, detail="No embeddings found for this document")
+            
+            # Format embeddings
+            chunks = []
+            total_tokens = 0
+            for embed in embeddings:
+                # Get first 10 values of embedding vector for preview
+                embedding_preview = []
+                if embed.embedding:
+                    # Handle different embedding storage formats
+                    if isinstance(embed.embedding, str):
+                        # If stored as string, parse it
+                        import json
+                        try:
+                            embedding_list = json.loads(embed.embedding)
+                            embedding_preview = embedding_list[:10] if len(embedding_list) >= 10 else embedding_list
+                        except:
+                            embedding_preview = []
+                    elif isinstance(embed.embedding, list):
+                        embedding_preview = embed.embedding[:10]
+                    else:
+                        # For pgvector format, convert to list
+                        embedding_preview = list(embed.embedding)[:10] if embed.embedding else []
+                
+                chunks.append({
+                    "chunk_id": str(embed.chunk_id),
+                    "chunk_index": embed.chunk_index,
+                    "chunk_text": embed.chunk_text,
+                    "token_count": embed.token_count or 0,
+                    "embedding_preview": embedding_preview,
+                    "embedding_dimensions": doc.embedding_dimensions or 1536,
+                    "created_at": embed.created_at
+                })
+                total_tokens += embed.token_count or 0
+            
+            return {
+                "document_id": document_id,
+                "title": doc.title,
+                "total_chunks": len(chunks),
+                "total_tokens": total_tokens,
+                "embedding_model": doc.embedding_model or "text-embedding-3-small",
+                "embedding_dimensions": doc.embedding_dimensions or 1536,
+                "chunks": chunks,
+                "metadata": doc.metadata
+            }
+            
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Failed to get document embeddings: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Failed to get embeddings: {str(e)}")
     
     async def find_similar_documents(
         self,
@@ -864,6 +1053,33 @@ class KnowledgeService:
         row = result.fetchone()
         if not row:
             raise HTTPException(status_code=404, detail="Knowledge base not found or access denied")
+        
+        return row
+    
+    async def _verify_document_access(
+        self,
+        db: AsyncSession,
+        document_id: UUID,
+        user: User
+    ) -> Dict[str, Any]:
+        """Verify user has access to document"""
+        query = text("""
+            SELECT kd.* FROM knowledge_documents kd
+            JOIN knowledge_bases kb ON kd.knowledge_base_id = kb.id
+            WHERE kd.id = :doc_id AND (
+                kb.is_public = true OR
+                kb.creator_id = :user_id
+            )
+        """)
+        
+        result = await db.execute(query, {
+            "doc_id": str(document_id),
+            "user_id": str(user.id)
+        })
+        
+        row = result.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Document not found or access denied")
         
         return row
     
@@ -982,20 +1198,18 @@ class KnowledgeService:
                     )
                 
                 return text_content.strip()
-                
+            
             except Exception as e:
-                logger.error(f"PDF extraction failed for {filename}: {str(e)}")
-                if "No text content could be extracted" in str(e):
-                    raise
+                logger.error(f"Failed to process PDF file: {str(e)}")
                 raise HTTPException(
-                    status_code=422, 
-                    detail=f"Failed to extract text from PDF: {str(e)}"
+                    status_code=422,
+                    detail=f"Failed to process PDF file: {str(e)}"
                 )
         
         elif file_ext == '.docx':
             if not DocxDocument:
                 raise HTTPException(
-                    status_code=500, 
+                    status_code=500,
                     detail="DOCX processing library not available. Please install python-docx."
                 )
             
@@ -1003,26 +1217,29 @@ class KnowledgeService:
                 # Create a BytesIO object from the content
                 docx_file = BytesIO(content)
                 
-                # Read the DOCX
+                # Read the DOCX file
                 doc = DocxDocument(docx_file)
                 
                 # Extract text from all paragraphs
                 text_content = ""
                 for paragraph in doc.paragraphs:
                     if paragraph.text.strip():
-                        text_content += paragraph.text + "\n"
+                        text_content += paragraph.text.strip() + "\n\n"
                 
-                # Also extract text from tables if any
+                # Also extract text from tables
                 for table in doc.tables:
                     for row in table.rows:
+                        row_text = []
                         for cell in row.cells:
                             if cell.text.strip():
-                                text_content += cell.text + " "
-                        text_content += "\n"
+                                row_text.append(cell.text.strip())
+                        if row_text:
+                            text_content += " | ".join(row_text) + "\n"
+                    text_content += "\n"
                 
                 if not text_content.strip():
                     raise HTTPException(
-                        status_code=422, 
+                        status_code=422,
                         detail="No text content could be extracted from the DOCX file."
                     )
                 
@@ -1033,7 +1250,7 @@ class KnowledgeService:
                 if "No text content could be extracted" in str(e):
                     raise
                 raise HTTPException(
-                    status_code=422, 
+                    status_code=422,
                     detail=f"Failed to extract text from DOCX: {str(e)}"
                 )
         

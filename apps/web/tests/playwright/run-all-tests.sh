@@ -114,13 +114,12 @@ run_test_suite() {
     local exit_code=0
     npx playwright test \
         "$test_file" \
-        --config="$TEST_DIR/../playwright.config.ts" \
+        --config="/home/ali/arketic/apps/web/playwright.config.ts" \
         --reporter=html,json,junit \
-        --output-dir="$REPORT_DIR/$suite/artifacts" \
         --retries="$RETRIES" \
         --workers="$WORKERS" \
         --timeout="$TIMEOUT" \
-        --headed=$([ "$HEADLESS" = "false" ] && echo "true" || echo "false") \
+        $([ "$HEADLESS" = "false" ] && echo "--headed" || echo "") \
         || exit_code=$?
     
     # Move reports to suite-specific directory

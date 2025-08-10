@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Copy, ThumbsUp, ThumbsDown, MoreHorizontal, Bot, User, Loader2 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { LoadingSpinner } from '@/components/ui/loading'
+import { MessageSources, RAGSource } from './MessageSources'
 
 interface MessageListProps {
   messages: ChatMessage[]
@@ -206,6 +207,17 @@ export const MessageList: React.FC<MessageListProps> = ({
                       </Badge>
                     )}
                   </div>
+                )}
+
+                {/* RAG Sources for AI Messages */}
+                {isAI && !isStreaming && message.rag_sources && message.rag_sources.length > 0 && (
+                  <MessageSources 
+                    sources={message.rag_sources as RAGSource[]}
+                    isCompact={true}
+                    onSourceClick={(source) => {
+                      console.log('Source clicked:', source)
+                    }}
+                  />
                 )}
 
                 {/* Message Status */}

@@ -564,6 +564,98 @@ class ApiClient {
     })
   }
 
+  // Multi-file upload with progress tracking
+  async uploadMultipleFiles<T = any>(
+    endpoint: string,
+    files: File[],
+    options: {
+      onProgress?: (fileIndex: number, progress: number) => void
+      onFileComplete?: (fileIndex: number, result: any) => void
+      additionalData?: Record<string, any>
+      config?: RequestConfig
+    } = {}
+  ): Promise<ApiResponse<T>> {
+    const { onProgress, onFileComplete, additionalData = {}, config = {} } = options
+    
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      const formData = new FormData()
+
+      // Append all files to the FormData
+      files.forEach((file) => {
+        formData.append("files", file)
+      })
+      
+      // Append additional data
+      Object.entries(additionalData).forEach(([key, value]) => {
+        formData.append(key, String(value))
+      })
+
+      xhr.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable && onProgress) {
+          const progress = (event.loaded / event.total) * 100
+          // For multi-file upload, we report overall progress
+          onProgress(-1, progress)
+        }
+      })
+
+      xhr.addEventListener("load", () => {
+        try {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const response = JSON.parse(xhr.responseText)
+            
+            // Call onFileComplete for each file result if available
+            if (onFileComplete && response.successful) {
+              response.successful.forEach((result: any, index: number) => {
+                onFileComplete(index, result)
+              })
+            }
+            
+            resolve(response)
+          } else {
+            const error = new ServerError(`Upload failed: ${xhr.statusText}`)
+            reject(error)
+          }
+        } catch (error) {
+          reject(new ServerError("Invalid response from server"))
+        }
+      })
+
+      xhr.addEventListener("error", () => {
+        reject(new NetworkError("Upload failed"))
+      })
+
+      xhr.addEventListener("timeout", () => {
+        reject(new NetworkError("Upload timeout"))
+      })
+
+      xhr.timeout = config.timeout || this.defaultTimeout * 2 // Double timeout for multiple files
+      xhr.open("POST", `${this.baseURL}${endpoint}`)
+      
+      // Add auth headers automatically
+      this.getAuthHeaders().then(authHeaders => {
+        const allHeaders = { ...authHeaders, ...config.headers as Record<string, string> || {} }
+        Object.entries(allHeaders).forEach(([key, value]) => {
+          if (key.toLowerCase() !== "content-type") { // Let browser set content-type for FormData
+            xhr.setRequestHeader(key, value)
+          }
+        })
+        
+        xhr.send(formData)
+      }).catch(error => {
+        console.error('Failed to get auth headers for multi-file upload:', error)
+        // Send without auth headers as fallback
+        const headers = config.headers as Record<string, string> || {}
+        Object.entries(headers).forEach(([key, value]) => {
+          if (key.toLowerCase() !== "content-type") {
+            xhr.setRequestHeader(key, value)
+          }
+        })
+        xhr.send(formData)
+      })
+    })
+  }
+
   // Batch requests
   async batch<T = any>(
     requests: Array<{
@@ -631,11 +723,11 @@ export const apiClient = new ApiClient()
 
 // Authentication API
 export const authApi = {
-  login: (credentials: { email: string; password: string; rememberMe?: boolean }) => {
+  login: (credentials: { email: string; password: string; remember_me?: boolean }) => {
     console.log('🔑 AuthAPI Login called with:', {
       email: credentials.email,
       password: credentials.password ? '[REDACTED]' : 'undefined',
-      rememberMe: credentials.rememberMe
+      remember_me: credentials.remember_me
     })
     return apiClient.post('/api/v1/auth/login', credentials)
   },
@@ -646,6 +738,9 @@ export const authApi = {
   logout: () =>
     apiClient.post('/api/v1/auth/logout'),
   
+  refreshToken: (data: { refresh_token: string }) =>
+    apiClient.post('/api/v1/auth/refresh', data),
+  
   refresh: () => {
     const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null
     if (!refreshToken) {
@@ -653,6 +748,9 @@ export const authApi = {
     }
     return apiClient.post('/api/v1/auth/refresh', { refresh_token: refreshToken })
   },
+  
+  validateToken: () =>
+    apiClient.get('/api/v1/auth/validate'),
   
   getMe: () =>
     apiClient.get('/api/v1/auth/me'),
@@ -711,9 +809,14 @@ export interface DocumentResponse {
   title: string
   content?: string
   file_path?: string
+  file_url?: string
   description?: string
   tags?: string[]
   collection_id?: string
+  status?: string
+  chunk_count?: number
+  token_count?: number
+  metadata?: Record<string, any>
   created_at: string
   updated_at: string
   file_size?: number
@@ -723,11 +826,12 @@ export interface DocumentResponse {
 export interface EmbeddingChunk {
   chunk_id: string
   chunk_index: number
-  chunk_text: string
+  text: string
   token_count: number
-  embedding_preview: number[]
+  embedding: number[]
   embedding_dimensions: number
   created_at: string
+  metadata?: Record<string, any>
 }
 
 export interface DocumentEmbeddingsResponse {
@@ -765,8 +869,11 @@ export interface CollectionResponse {
   id: string
   name: string
   description?: string
+  type?: string
+  is_public?: boolean
+  embedding_model?: string
   metadata?: Record<string, any>
-  document_count: number
+  document_count?: number
   created_at: string
   updated_at: string
 }
@@ -790,11 +897,47 @@ export const knowledgeApi = {
     )
   },
   
-  listDocuments: (limit = 50, offset = 0) =>
-    apiClient.get<DocumentResponse[]>(`/api/v1/knowledge/list?limit=${limit}&offset=${offset}`),
+  uploadMultipleFiles: (files: File[], options: {
+    description?: string
+    tags?: string[]
+    collection_id?: string
+    onProgress?: (fileIndex: number, progress: number) => void
+    onFileComplete?: (fileIndex: number, result: DocumentResponse | ApiError) => void
+  } = {}) => {
+    const { onProgress, onFileComplete, ...additionalData } = options
+    return apiClient.uploadMultipleFiles<{
+      successful: DocumentResponse[]
+      failed: Array<{ file_name: string; error: string }>
+      total_processed: number
+    }>(
+      "/api/v1/knowledge/upload/files",
+      files,
+      { onProgress, onFileComplete, additionalData }
+    )
+  },
+  
+  listDocuments: (params?: { collection_id?: string; page?: number; limit?: number }) =>
+    apiClient.get<{ documents: DocumentResponse[]; total: number }>(`/api/v1/knowledge/list`, { 
+      params: params || {} 
+    }),
   
   getDocument: (documentId: string) =>
     apiClient.get<DocumentResponse>(`/api/v1/knowledge/${documentId}`),
+  
+  uploadDocument: (data: {
+    knowledge_base_id?: string
+    title: string
+    content: string
+    description?: string
+    source_type?: string
+    metadata?: Record<string, any>
+  }) =>
+    apiClient.post<DocumentResponse>("/api/v1/knowledge/upload", data),
+  
+  uploadDocumentFile: (formData: FormData) =>
+    apiClient.post<DocumentResponse>("/api/v1/knowledge/upload/file", formData, {
+      headers: { "Content-Type": "multipart/form-data" }
+    }),
   
   getDocumentEmbeddings: (documentId: string) =>
     apiClient.get<DocumentEmbeddingsResponse>(`/api/v1/knowledge/${documentId}/embeddings`),
@@ -818,6 +961,9 @@ export const knowledgeApi = {
   
   listCollections: () =>
     apiClient.get<CollectionResponse[]>("/api/v1/collections"),
+  
+  getCollection: (collectionId: string) =>
+    apiClient.get<CollectionResponse>(`/api/v1/collections/${collectionId}`),
   
   updateCollection: (collectionId: string, data: Partial<CollectionRequest>) =>
     apiClient.put<CollectionResponse>(`/api/v1/collections/${collectionId}`, data),
@@ -1378,25 +1524,60 @@ export interface ChatWithAIResponse {
   success: boolean
   message: string
   streaming: boolean
-  data: {
-    user_message?: MessageResponse
-    ai_response?: MessageResponse & {
-      model_used: string
-      processing_time_ms: number
-      tokens_used: {
-        input: number
-        output: number
-        total: number
-      }
-      finish_reason: string
+  data: ChatWithAIData
+  user_message?: MessageResponse
+  ai_response?: MessageResponse & {
+    model_used: string
+    processing_time_ms: number
+    tokens_used: {
+      input: number
+      output: number
+      total: number
     }
-    chat_info: {
-      chat_id: string
-      total_messages: number
-      total_tokens_used: number
-    }
+    finish_reason: string
+    rag_sources?: Array<{
+      title: string
+      document_id?: string | null
+      content?: string
+      similarity_score?: number
+      chunk_id?: string
+      page_number?: number
+      url?: string
+      metadata?: Record<string, any>
+    }>
+    rag_enabled?: boolean
   }
+  rag_sources?: Array<{
+    title: string
+    document_id?: string | null
+    content?: string
+    similarity_score?: number
+    chunk_id?: string
+    page_number?: number
+    url?: string
+    metadata?: Record<string, any>
+  }>
+  rag_enabled?: boolean
   timestamp: string
+}
+
+export interface ChatWithAIData {
+  user_message?: MessageResponse
+  ai_response?: MessageResponse & {
+    model_used: string
+    processing_time_ms: number
+    tokens_used: {
+      input: number
+      output: number
+      total: number
+    }
+    finish_reason: string
+  }
+  chat_info: {
+    chat_id: string
+    total_messages: number
+    total_tokens_used: number
+  }
 }
 
 export interface OpenAITestRequest {

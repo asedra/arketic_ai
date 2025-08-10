@@ -70,12 +70,16 @@ class KnowledgeTester:
         }
         
         # Database connection info
+        # Use 'postgres' hostname when running inside Docker, 'localhost' otherwise
+        is_docker = os.path.exists('/.dockerenv')
+        default_host = "postgres" if is_docker else "localhost"
+        
         self.db_config = {
-            "host": os.getenv("POSTGRES_HOST", "localhost"),
+            "host": os.getenv("POSTGRES_HOST", default_host),
             "port": os.getenv("POSTGRES_PORT", "5432"),
-            "database": os.getenv("POSTGRES_DB", "arketic"),
+            "database": os.getenv("POSTGRES_DB", "arketic_dev"),
             "user": os.getenv("POSTGRES_USER", "arketic"),
-            "password": os.getenv("POSTGRES_PASSWORD", "arketic123")
+            "password": os.getenv("POSTGRES_PASSWORD", "arketic_dev_password")
         }
         
         # Sample test documents

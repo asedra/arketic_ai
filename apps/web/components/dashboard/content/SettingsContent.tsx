@@ -977,6 +977,75 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
                   )}
                 </div>
                 
+                {/* Password Lock Settings */}
+                <div className="border rounded-lg p-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Lock className="h-4 w-4" />
+                        <Label className="text-base font-medium">
+                          {language === 'tr' ? 'Şifre Kilidi' : 'Password Lock'}
+                        </Label>
+                      </div>
+                      <p className="text-sm text-slate-500">
+                        {language === 'tr' 
+                          ? 'Belirli bir süre işlem yapılmadığında oturumu kilitle'
+                          : 'Lock session after period of inactivity'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4 pl-6">
+                    <div className="space-y-2">
+                      <Label className="text-sm">
+                        {language === 'tr' ? 'Oturum Zaman Aşımı (Dakika)' : 'Session Timeout (Minutes)'}
+                      </Label>
+                      <div className="flex items-center gap-4">
+                        <Slider
+                          value={[systemSettings.session_timeout_minutes || 60]}
+                          onValueChange={([value]) => handleSystemSettingChange('session_timeout_minutes', value)}
+                          min={5}
+                          max={1440}
+                          step={5}
+                          className="flex-1"
+                        />
+                        <span className="w-16 text-center font-mono">
+                          {systemSettings.session_timeout_minutes || 60}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500">
+                        {language === 'tr' 
+                          ? `${systemSettings.session_timeout_minutes || 60} dakika işlem yapılmadığında oturum kilitlenir`
+                          : `Session will lock after ${systemSettings.session_timeout_minutes || 60} minutes of inactivity`}
+                      </p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label className="text-sm">
+                        {language === 'tr' ? 'Kullanıcı Başına Maksimum Oturum' : 'Maximum Sessions Per User'}
+                      </Label>
+                      <div className="flex items-center gap-4">
+                        <Slider
+                          value={[systemSettings.max_sessions_per_user || 5]}
+                          onValueChange={([value]) => handleSystemSettingChange('max_sessions_per_user', value)}
+                          min={1}
+                          max={20}
+                          step={1}
+                          className="flex-1"
+                        />
+                        <span className="w-12 text-center font-mono">
+                          {systemSettings.max_sessions_per_user || 5}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500">
+                        {language === 'tr' 
+                          ? 'Bir kullanıcının aynı anda açık olabilecek maksimum oturum sayısı'
+                          : 'Maximum number of concurrent sessions allowed per user'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
                 {/* Email Verification Settings */}
                 <div className="border rounded-lg p-4 space-y-4">
                   <div className="flex items-center justify-between">

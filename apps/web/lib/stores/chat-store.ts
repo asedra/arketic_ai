@@ -7,6 +7,17 @@ export interface ChatMessage extends MessageResponse {
   isAI: boolean
   isUser: boolean
   isStreaming?: boolean
+  rag_sources?: Array<{
+    title: string
+    document_id?: string | null
+    content?: string
+    similarity_score?: number
+    chunk_id?: string
+    page_number?: number
+    url?: string
+    metadata?: Record<string, any>
+  }>
+  rag_enabled?: boolean
 }
 
 export interface Chat extends ChatResponse {
@@ -289,7 +300,10 @@ export const useChatStore = create<ChatStore>()(
                 }
                 const aiMessage = {
                   ...chatApi.formatMessage(aiResponseWithType),
-                  isStreaming: false
+                  isStreaming: false,
+                  // Add RAG sources if available
+                  rag_sources: response.data.rag_sources || response.data.ai_response.rag_sources,
+                  rag_enabled: response.data.rag_enabled || response.data.ai_response.rag_enabled
                 }
                 
                 console.log('Chat Store: Formatted AI message:', aiMessage)
@@ -297,7 +311,9 @@ export const useChatStore = create<ChatStore>()(
                   message_type: aiMessage.message_type,
                   isAI: aiMessage.isAI,
                   isUser: aiMessage.isUser,
-                  sender_id: aiMessage.sender_id
+                  sender_id: aiMessage.sender_id,
+                  rag_sources: aiMessage.rag_sources,
+                  rag_enabled: aiMessage.rag_enabled
                 })
                 
                 set(state => ({
@@ -507,7 +523,10 @@ export const useChatStore = create<ChatStore>()(
                   if (data.message) {
                     const completedMessage = {
                       ...chatApi.formatMessage(data.message),
-                      isStreaming: false
+                      isStreaming: false,
+                      // Add RAG sources if available
+                      rag_sources: data.message.rag_sources || data.rag_sources,
+                      rag_enabled: data.message.rag_enabled || data.rag_enabled
                     }
                     get().updateMessage(chatId, data.message.id, completedMessage)
                   }
@@ -516,7 +535,12 @@ export const useChatStore = create<ChatStore>()(
                 case 'ai_response':
                   // Handle non-streaming AI responses (fallback)
                   if (data.message) {
-                    get().addMessage(chatId, data.message)
+                    const messageWithSources = {
+                      ...data.message,
+                      rag_sources: data.message.rag_sources || data.rag_sources,
+                      rag_enabled: data.message.rag_enabled || data.rag_enabled
+                    }
+                    get().addMessage(chatId, messageWithSources)
                   }
                   break
                   

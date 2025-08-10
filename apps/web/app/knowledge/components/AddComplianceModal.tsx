@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { X, Upload, Link, FileText, Type, FolderPlus, Search, Sparkles, Bot, FileUp, Database, Shield } from "lucide-react"
+import { useState, useRef, useCallback } from "react"
+import { X, Upload, Link, FileText, Type, FolderPlus, Search, Sparkles, Bot, FileUp, Database, Shield, CheckCircle, XCircle, AlertCircle, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -21,6 +21,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Progress } from "@/components/ui/progress"
+import { knowledgeApi } from "@/lib/api-client"
+import { useToast } from "@/hooks/use-toast"
 
 interface AddComplianceModalProps {
   isOpen: boolean
@@ -44,6 +47,14 @@ interface FormData {
   collectionName?: string
 }
 
+interface FileUploadStatus {
+  file: File
+  status: 'pending' | 'uploading' | 'success' | 'error'
+  progress: number
+  error?: string
+  result?: any
+}
+
 export function AddComplianceModal({ isOpen, onClose, onSave }: AddComplianceModalProps) {
   const [formData, setFormData] = useState<FormData>({
     title: '',
@@ -63,6 +74,11 @@ export function AddComplianceModal({ isOpen, onClose, onSave }: AddComplianceMod
 
   const [newTag, setNewTag] = useState('')
   const [activeTab, setActiveTab] = useState('add')
+  const [selectedFiles, setSelectedFiles] = useState<FileUploadStatus[]>([])
+  const [isUploading, setIsUploading] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { toast } = useToast()
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -79,9 +95,135 @@ export function AddComplianceModal({ isOpen, onClose, onSave }: AddComplianceMod
     setFormData(prev => ({ ...prev, tags: prev.tags.filter(tag => tag !== tagToRemove) }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFileSelect = (files: FileList | null) => {
+    if (!files || files.length === 0) return
+
+    const newFiles: FileUploadStatus[] = Array.from(files).map(file => ({
+      file,
+      status: 'pending' as const,
+      progress: 0
+    }))
+
+    setSelectedFiles(prev => [...prev, ...newFiles])
+  }
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
-    onSave(formData)
+    setIsDragging(true)
+  }, [])
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+  }, [])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    handleFileSelect(e.dataTransfer.files)
+  }, [])
+
+  const removeFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const uploadFiles = async () => {
+    if (selectedFiles.length === 0) return
+
+    setIsUploading(true)
+
+    try {
+      // Update all files to uploading status
+      setSelectedFiles(prev => prev.map(f => ({ ...f, status: 'uploading' as const })))
+
+      const filesToUpload = selectedFiles.map(f => f.file)
+      
+      const result = await knowledgeApi.uploadMultipleFiles(filesToUpload, {
+        description: formData.description,
+        tags: formData.tags,
+        onProgress: (fileIndex, progress) => {
+          if (fileIndex === -1) {
+            // Overall progress
+            setSelectedFiles(prev => prev.map(f => ({
+              ...f,
+              progress: f.status === 'uploading' ? progress : f.progress
+            })))
+          } else {
+            // Individual file progress
+            setSelectedFiles(prev => prev.map((f, i) => 
+              i === fileIndex ? { ...f, progress } : f
+            ))
+          }
+        },
+        onFileComplete: (fileIndex, result) => {
+          setSelectedFiles(prev => prev.map((f, i) => 
+            i === fileIndex 
+              ? { ...f, status: 'success' as const, progress: 100, result }
+              : f
+          ))
+        }
+      })
+
+      // Handle the overall result
+      if (result.data.successful.length > 0) {
+        toast({
+          title: "Upload Complete",
+          description: `Successfully uploaded ${result.data.successful.length} file(s)`,
+        })
+      }
+
+      if (result.data.failed.length > 0) {
+        result.data.failed.forEach((failure: any, index: number) => {
+          const fileIndex = selectedFiles.findIndex(f => f.file.name === failure.file_name)
+          if (fileIndex !== -1) {
+            setSelectedFiles(prev => prev.map((f, i) => 
+              i === fileIndex 
+                ? { ...f, status: 'error' as const, error: failure.error }
+                : f
+            ))
+          }
+        })
+        
+        toast({
+          title: "Some files failed",
+          description: `${result.data.failed.length} file(s) failed to upload`,
+          variant: "destructive"
+        })
+      }
+
+      // Close modal if all successful
+      if (result.data.failed.length === 0) {
+        setTimeout(() => {
+          handleClose()
+        }, 1500)
+      }
+    } catch (error) {
+      console.error('Upload error:', error)
+      toast({
+        title: "Upload Failed",
+        description: "Failed to upload files. Please try again.",
+        variant: "destructive"
+      })
+      
+      // Mark all files as error
+      setSelectedFiles(prev => prev.map(f => ({
+        ...f,
+        status: 'error' as const,
+        error: 'Upload failed'
+      })))
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (formData.uploadMethod === 'file' && selectedFiles.length > 0) {
+      await uploadFiles()
+    } else {
+      onSave(formData)
+    }
   }
 
   const resetForm = () => {
@@ -101,6 +243,9 @@ export function AddComplianceModal({ isOpen, onClose, onSave }: AddComplianceMod
       collectionName: ''
     })
     setNewTag('')
+    setSelectedFiles([])
+    setIsUploading(false)
+    setIsDragging(false)
   }
 
   const handleClose = () => {
@@ -275,21 +420,142 @@ export function AddComplianceModal({ isOpen, onClose, onSave }: AddComplianceMod
               )}
 
               {formData.uploadMethod === 'file' && (
-                <div className="border-3 border-dashed border-green-300 rounded-xl p-8 text-center bg-gradient-to-br from-green-50 to-emerald-50">
-                  <FileUp className="h-12 w-12 text-green-500 mx-auto mb-4" />
-                  <p className="text-lg font-semibold text-gray-800 mb-2">
-                    Drop your file here or click to browse
-                  </p>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Supports PDF, DOCX, TXT (max 10MB)
-                  </p>
-                  <Button 
-                    type="button" 
-                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg"
+                <div className="space-y-4">
+                  {/* Drag and Drop Zone */}
+                  <div 
+                    className={`border-3 border-dashed rounded-xl p-8 text-center transition-all ${
+                      isDragging 
+                        ? 'border-green-500 bg-gradient-to-br from-green-100 to-emerald-100 scale-105' 
+                        : 'border-green-300 bg-gradient-to-br from-green-50 to-emerald-50'
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
                   >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Choose File
-                  </Button>
+                    <FileUp className={`h-12 w-12 mx-auto mb-4 ${isDragging ? 'text-green-600 animate-bounce' : 'text-green-500'}`} />
+                    <p className="text-lg font-semibold text-gray-800 mb-2">
+                      Drop your files here or click to browse
+                    </p>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Supports PDF, DOCX, TXT, MD (max 10MB per file, multiple files allowed)
+                    </p>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      accept=".pdf,.docx,.txt,.md"
+                      onChange={(e) => handleFileSelect(e.target.files)}
+                      className="hidden"
+                    />
+                    <Button 
+                      type="button" 
+                      onClick={() => fileInputRef.current?.click()}
+                      className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg"
+                      disabled={isUploading}
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Choose Files
+                    </Button>
+                  </div>
+
+                  {/* Selected Files List */}
+                  {selectedFiles.length > 0 && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-semibold text-gray-700">Selected Files ({selectedFiles.length})</h4>
+                        {!isUploading && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setSelectedFiles([])}
+                          >
+                            Clear All
+                          </Button>
+                        )}
+                      </div>
+                      
+                      <div className="max-h-64 overflow-y-auto space-y-2">
+                        {selectedFiles.map((fileStatus, index) => (
+                          <div 
+                            key={index} 
+                            className="flex items-center justify-between p-3 bg-white border rounded-lg"
+                          >
+                            <div className="flex items-center space-x-3 flex-1">
+                              {/* Status Icon */}
+                              <div className="flex-shrink-0">
+                                {fileStatus.status === 'pending' && (
+                                  <FileText className="h-5 w-5 text-gray-400" />
+                                )}
+                                {fileStatus.status === 'uploading' && (
+                                  <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />
+                                )}
+                                {fileStatus.status === 'success' && (
+                                  <CheckCircle className="h-5 w-5 text-green-500" />
+                                )}
+                                {fileStatus.status === 'error' && (
+                                  <XCircle className="h-5 w-5 text-red-500" />
+                                )}
+                              </div>
+                              
+                              {/* File Info */}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900 truncate">
+                                  {fileStatus.file.name}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  {(fileStatus.file.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+                                {fileStatus.error && (
+                                  <p className="text-xs text-red-500 mt-1">{fileStatus.error}</p>
+                                )}
+                              </div>
+                              
+                              {/* Progress Bar */}
+                              {fileStatus.status === 'uploading' && (
+                                <div className="w-32">
+                                  <Progress value={fileStatus.progress} className="h-2" />
+                                  <p className="text-xs text-gray-500 mt-1">{Math.round(fileStatus.progress)}%</p>
+                                </div>
+                              )}
+                              
+                              {/* Remove Button */}
+                              {!isUploading && fileStatus.status !== 'success' && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeFile(index)}
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Upload Summary */}
+                      {selectedFiles.some(f => f.status === 'success' || f.status === 'error') && (
+                        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                          <div className="flex items-center justify-between text-sm">
+                            <div className="flex items-center space-x-4">
+                              <span className="flex items-center text-green-600">
+                                <CheckCircle className="h-4 w-4 mr-1" />
+                                {selectedFiles.filter(f => f.status === 'success').length} Successful
+                              </span>
+                              {selectedFiles.some(f => f.status === 'error') && (
+                                <span className="flex items-center text-red-600">
+                                  <XCircle className="h-4 w-4 mr-1" />
+                                  {selectedFiles.filter(f => f.status === 'error').length} Failed
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -468,11 +734,24 @@ export function AddComplianceModal({ isOpen, onClose, onSave }: AddComplianceMod
 
           {/* Actions */}
           <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={handleClose}>
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isUploading}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg">
-              Save Document
+            <Button 
+              type="submit" 
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg"
+              disabled={isUploading || (formData.uploadMethod === 'file' && selectedFiles.length === 0)}
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Uploading...
+                </>
+              ) : formData.uploadMethod === 'file' ? (
+                `Upload ${selectedFiles.length} File${selectedFiles.length !== 1 ? 's' : ''}`
+              ) : (
+                'Save Document'
+              )}
             </Button>
           </div>
             </form>

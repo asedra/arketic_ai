@@ -1,0 +1,1920 @@
+<testsuites id="" name="" tests="98" failures="66" skipped="0" errors="0" time="98.854234">
+<testsuite name="auth/auth.spec.ts" timestamp="2025-08-10T19:19:47.905Z" hostname="chromium" tests="14" failures="6" skipped="0" time="263.252" errors="0">
+<testcase name="Authentication Flows › should display login page for unauthenticated users" classname="auth/auth.spec.ts" time="11.556">
+</testcase>
+<testcase name="Authentication Flows › should successfully log in with valid credentials" classname="auth/auth.spec.ts" time="20.483">
+</testcase>
+<testcase name="Authentication Flows › should show error for invalid credentials" classname="auth/auth.spec.ts" time="13.411">
+</testcase>
+<testcase name="Authentication Flows › should validate email format" classname="auth/auth.spec.ts" time="11.956">
+</testcase>
+<testcase name="Authentication Flows › should require both email and password" classname="auth/auth.spec.ts" time="11.83">
+</testcase>
+<testcase name="Session Management › should successfully log out" classname="auth/auth.spec.ts" time="30.57">
+<failure message="auth.spec.ts:110:7 should successfully log out" type="FAILURE">
+<![CDATA[  [chromium] › auth/auth.spec.ts:110:7 › Session Management › should successfully log out ──────────
+
+    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+
+       98 |
+       99 | test.describe('Session Management', () => {
+    > 100 |   test.beforeEach(async ({ page }) => {
+          |        ^
+      101 |     // Login first
+      102 |     await page.goto(BASE_URL);
+      103 |     await page.waitForSelector('input[name="email"]', { state: 'visible' });
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:100:8
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      105 |     await page.fill('input[name="password"]', TEST_USER.password);
+      106 |     await page.click('button[type="submit"]');
+    > 107 |     await page.waitForURL(url => url.pathname === '/dashboard' || url.pathname === '/', { timeout: 30000 });
+          |                ^
+      108 |   });
+      109 |
+      110 |   test('should successfully log out', async ({ page }) => {
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:107:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Management-should-successfully-log-out-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Management-should-successfully-log-out-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Session-Management-should-successfully-log-out-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Session-Management-should-successfully-log-out-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Management-should-successfully-log-out-chromium/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Management-should-successfully-log-out-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Session Management › should persist session on page refresh" classname="auth/auth.spec.ts" time="30.495">
+<failure message="auth.spec.ts:122:7 should persist session on page refresh" type="FAILURE">
+<![CDATA[  [chromium] › auth/auth.spec.ts:122:7 › Session Management › should persist session on page refresh 
+
+    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+
+       98 |
+       99 | test.describe('Session Management', () => {
+    > 100 |   test.beforeEach(async ({ page }) => {
+          |        ^
+      101 |     // Login first
+      102 |     await page.goto(BASE_URL);
+      103 |     await page.waitForSelector('input[name="email"]', { state: 'visible' });
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:100:8
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      105 |     await page.fill('input[name="password"]', TEST_USER.password);
+      106 |     await page.click('button[type="submit"]');
+    > 107 |     await page.waitForURL(url => url.pathname === '/dashboard' || url.pathname === '/', { timeout: 30000 });
+          |                ^
+      108 |   });
+      109 |
+      110 |   test('should successfully log out', async ({ page }) => {
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:107:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-chromium/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Session Management › should handle session expiry gracefully" classname="auth/auth.spec.ts" time="30.456">
+<failure message="auth.spec.ts:131:7 should handle session expiry gracefully" type="FAILURE">
+<![CDATA[  [chromium] › auth/auth.spec.ts:131:7 › Session Management › should handle session expiry gracefully 
+
+    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+
+       98 |
+       99 | test.describe('Session Management', () => {
+    > 100 |   test.beforeEach(async ({ page }) => {
+          |        ^
+      101 |     // Login first
+      102 |     await page.goto(BASE_URL);
+      103 |     await page.waitForSelector('input[name="email"]', { state: 'visible' });
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:100:8
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      105 |     await page.fill('input[name="password"]', TEST_USER.password);
+      106 |     await page.click('button[type="submit"]');
+    > 107 |     await page.waitForURL(url => url.pathname === '/dashboard' || url.pathname === '/', { timeout: 30000 });
+          |                ^
+      108 |   });
+      109 |
+      110 |   test('should successfully log out', async ({ page }) => {
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:107:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-chromium/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Registration Flow › should navigate to signup page" classname="auth/auth.spec.ts" time="14.617">
+</testcase>
+<testcase name="Registration Flow › should validate signup form" classname="auth/auth.spec.ts" time="12.169">
+<failure message="auth.spec.ts:165:7 should validate signup form" type="FAILURE">
+<![CDATA[  [chromium] › auth/auth.spec.ts:165:7 › Registration Flow › should validate signup form ───────────
+
+    Error: expect.toBeVisible: Error: strict mode violation: locator('text=First name is required').or(locator('text=Required')) resolved to 3 elements:
+        1) <p id="«Ral9tml7»-form-item-message" class="text-sm font-medium text-destructive">First name is required</p> aka getByText('First name is required')
+        2) <p id="«Ril9tml7»-form-item-message" class="text-sm font-medium text-destructive">Last name is required</p> aka getByText('Last name is required')
+        3) <p id="«R3l9tml7»-form-item-message" class="text-sm font-medium text-destructive">Email is required</p> aka getByText('Email is required')
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('text=First name is required').or(locator('text=Required'))
+
+
+      173 |     
+      174 |     // Check for validation messages (react-hook-form shows messages)
+    > 175 |     await expect(page.locator('text=First name is required').or(page.locator('text=Required'))).toBeVisible({ timeout: 5000 });
+          |                                                                                                 ^
+      176 |   });
+      177 | });
+      178 |
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:175:97
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-chromium/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Password Reset Flow › should navigate to forgot password page" classname="auth/auth.spec.ts" time="14.057">
+</testcase>
+<testcase name="Password Reset Flow › should handle password reset request" classname="auth/auth.spec.ts" time="12.523">
+<failure message="auth.spec.ts:194:7 should handle password reset request" type="FAILURE">
+<![CDATA[  [chromium] › auth/auth.spec.ts:194:7 › Password Reset Flow › should handle password reset request 
+
+    Error: expect.toBeVisible: Error: strict mode violation: locator('text=/Check your email|Reset link sent/') resolved to 4 elements:
+        1) <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Check your email</h1> aka getByRole('heading', { name: 'Check your email' })
+        2) <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Reset link sent!</h2> aka getByRole('heading', { name: 'Reset link sent!' })
+        3) <div class="" data-title="">Reset link sent!</div> aka getByLabel('Notifications alt+T').getByText('Reset link sent!')
+        4) <div class="" data-description="">Check your email for password reset instructions.</div> aka getByText('Check your email for password')
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('text=/Check your email|Reset link sent/')
+
+
+      205 |     
+      206 |     // Should show success message (check for the actual text from the component)
+    > 207 |     await expect(page.locator('text=/Check your email|Reset link sent/')).toBeVisible({ timeout: 10000 });
+          |                                                                           ^
+      208 |   });
+      209 | });
+      210 |
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:207:75
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-chromium/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication State Management › should handle concurrent login attempts" classname="auth/auth.spec.ts" time="20.771">
+</testcase>
+<testcase name="Authentication State Management › should handle logout from multiple tabs" classname="auth/auth.spec.ts" time="28.358">
+<failure message="auth.spec.ts:241:7 should handle logout from multiple tabs" type="FAILURE">
+<![CDATA[  [chromium] › auth/auth.spec.ts:241:7 › Authentication State Management › should handle logout from multiple tabs 
+
+    TimeoutError: page.waitForSelector: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="email"]') to be visible
+
+
+      248 |     for (const page of [page1, page2]) {
+      249 |       await page.goto(BASE_URL);
+    > 250 |       await page.waitForSelector('input[name="email"]', { state: 'visible' });
+          |                  ^
+      251 |       await page.fill('input[name="email"]', TEST_USER.email);
+      252 |       await page.fill('input[name="password"]', TEST_USER.password);
+      253 |       await page.click('button[type="submit"]');
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:250:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-chromium/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-chromium/test-failed-2.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="auth/auth.spec.ts" timestamp="2025-08-10T19:19:47.905Z" hostname="firefox" tests="14" failures="7" skipped="0" time="166.716" errors="0">
+<testcase name="Authentication Flows › should display login page for unauthenticated users" classname="auth/auth.spec.ts" time="5.765">
+</testcase>
+<testcase name="Authentication Flows › should successfully log in with valid credentials" classname="auth/auth.spec.ts" time="14.858">
+<failure message="auth.spec.ts:41:7 should successfully log in with valid credentials" type="FAILURE">
+<![CDATA[  [firefox] › auth/auth.spec.ts:41:7 › Authentication Flows › should successfully log in with valid credentials 
+
+    TimeoutError: page.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="email"]')
+        - locator resolved to <input disabled required="" type="email" name="email" autocomplete="email" aria-invalid="false" id="«Rahtml7»-form-item" value="test@arketic.com" placeholder="Enter your email" aria-describedby="«Rahtml7»-form-item-description" class="flex w-full rounded-md border px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-…/>
+        - fill("test@arketic.com")
+      - attempting fill action
+        2 × waiting for element to be visible, enabled and editable
+          - element is not enabled
+        - retrying fill action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and editable
+          - element is not enabled
+        - retrying fill action
+          - waiting 100ms
+        19 × waiting for element to be visible, enabled and editable
+           - element is not enabled
+         - retrying fill action
+           - waiting 500ms
+
+
+      41 |   test('should successfully log in with valid credentials', async ({ page }) => {
+      42 |     // Fill login form
+    > 43 |     await page.fill('input[name="email"]', TEST_USER.email);
+         |                ^
+      44 |     await page.fill('input[name="password"]', TEST_USER.password);
+      45 |     
+      46 |     // Submit form
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:43:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-F-fd1d9-g-in-with-valid-credentials-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-F-fd1d9-g-in-with-valid-credentials-firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Authentication-F-fd1d9-g-in-with-valid-credentials-firefox/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Authentication-F-fd1d9-g-in-with-valid-credentials-firefox/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-F-fd1d9-g-in-with-valid-credentials-firefox/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-F-fd1d9-g-in-with-valid-credentials-firefox/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flows › should show error for invalid credentials" classname="auth/auth.spec.ts" time="6.911">
+</testcase>
+<testcase name="Authentication Flows › should validate email format" classname="auth/auth.spec.ts" time="9.967">
+</testcase>
+<testcase name="Authentication Flows › should require both email and password" classname="auth/auth.spec.ts" time="13.313">
+</testcase>
+<testcase name="Session Management › should successfully log out" classname="auth/auth.spec.ts" time="21.474">
+<failure message="auth.spec.ts:110:7 should successfully log out" type="FAILURE">
+<![CDATA[  [firefox] › auth/auth.spec.ts:110:7 › Session Management › should successfully log out ───────────
+
+    TimeoutError: page.waitForURL: Timeout 5000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/login**" until "load"
+    ============================================================
+
+      116 |     
+      117 |     // Should redirect to login page
+    > 118 |     await page.waitForURL('**/login**', { timeout: 5000 });
+          |                ^
+      119 |     await expect(page.locator('input[name="email"]')).toBeVisible();
+      120 |   });
+      121 |
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:118:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Management-should-successfully-log-out-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Management-should-successfully-log-out-firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Session-Management-should-successfully-log-out-firefox/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Session-Management-should-successfully-log-out-firefox/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Management-should-successfully-log-out-firefox/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Management-should-successfully-log-out-firefox/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Session Management › should persist session on page refresh" classname="auth/auth.spec.ts" time="20.418">
+<failure message="auth.spec.ts:122:7 should persist session on page refresh" type="FAILURE">
+<![CDATA[  [firefox] › auth/auth.spec.ts:122:7 › Session Management › should persist session on page refresh 
+
+    TimeoutError: page.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="email"]')
+        - locator resolved to <input disabled required="" type="email" name="email" autocomplete="email" aria-invalid="false" id="«Rahtml7»-form-item" value="test@arketic.com" placeholder="Enter your email" aria-describedby="«Rahtml7»-form-item-description" class="flex w-full rounded-md border px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-…/>
+        - fill("test@arketic.com")
+      - attempting fill action
+        2 × waiting for element to be visible, enabled and editable
+          - element is not enabled
+        - retrying fill action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and editable
+          - element is not enabled
+        - retrying fill action
+          - waiting 100ms
+        19 × waiting for element to be visible, enabled and editable
+           - element is not enabled
+         - retrying fill action
+           - waiting 500ms
+
+
+      102 |     await page.goto(BASE_URL);
+      103 |     await page.waitForSelector('input[name="email"]', { state: 'visible' });
+    > 104 |     await page.fill('input[name="email"]', TEST_USER.email);
+          |                ^
+      105 |     await page.fill('input[name="password"]', TEST_USER.password);
+      106 |     await page.click('button[type="submit"]');
+      107 |     await page.waitForURL(url => url.pathname === '/dashboard' || url.pathname === '/', { timeout: 30000 });
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:104:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-firefox/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-firefox/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-firefox/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-10b80-ist-session-on-page-refresh-firefox/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Session Management › should handle session expiry gracefully" classname="auth/auth.spec.ts" time="27.017">
+<failure message="auth.spec.ts:131:7 should handle session expiry gracefully" type="FAILURE">
+<![CDATA[  [firefox] › auth/auth.spec.ts:131:7 › Session Management › should handle session expiry gracefully 
+
+    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/login**" until "load"
+    ============================================================
+
+      140 |     
+      141 |     // Should redirect to login
+    > 142 |     await page.waitForURL('**/login**', { timeout: 15000 });
+          |                ^
+      143 |     await expect(page.locator('input[name="email"]')).toBeVisible();
+      144 |   });
+      145 | });
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:142:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-firefox/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-firefox/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-firefox/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-firefox/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Registration Flow › should navigate to signup page" classname="auth/auth.spec.ts" time="9.71">
+</testcase>
+<testcase name="Registration Flow › should validate signup form" classname="auth/auth.spec.ts" time="5.482">
+<failure message="auth.spec.ts:165:7 should validate signup form" type="FAILURE">
+<![CDATA[  [firefox] › auth/auth.spec.ts:165:7 › Registration Flow › should validate signup form ────────────
+
+    Error: expect.toBeVisible: Error: strict mode violation: locator('text=First name is required').or(locator('text=Required')) resolved to 3 elements:
+        1) <p id="«Ral9tml7»-form-item-message" class="text-sm font-medium text-destructive">First name is required</p> aka getByText('First name is required')
+        2) <p id="«Ril9tml7»-form-item-message" class="text-sm font-medium text-destructive">Last name is required</p> aka getByText('Last name is required')
+        3) <p id="«R3l9tml7»-form-item-message" class="text-sm font-medium text-destructive">Email is required</p> aka getByText('Email is required')
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('text=First name is required').or(locator('text=Required'))
+
+
+      173 |     
+      174 |     // Check for validation messages (react-hook-form shows messages)
+    > 175 |     await expect(page.locator('text=First name is required').or(page.locator('text=Required'))).toBeVisible({ timeout: 5000 });
+          |                                                                                                 ^
+      176 |   });
+      177 | });
+      178 |
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:175:97
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-firefox/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-firefox/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-firefox/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-firefox/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Password Reset Flow › should navigate to forgot password page" classname="auth/auth.spec.ts" time="5.337">
+</testcase>
+<testcase name="Password Reset Flow › should handle password reset request" classname="auth/auth.spec.ts" time="3.595">
+<failure message="auth.spec.ts:194:7 should handle password reset request" type="FAILURE">
+<![CDATA[  [firefox] › auth/auth.spec.ts:194:7 › Password Reset Flow › should handle password reset request ─
+
+    Error: expect.toBeVisible: Error: strict mode violation: locator('text=/Check your email|Reset link sent/') resolved to 4 elements:
+        1) <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Check your email</h1> aka getByRole('heading', { name: 'Check your email' })
+        2) <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Reset link sent!</h2> aka getByRole('heading', { name: 'Reset link sent!' })
+        3) <div class="" data-title="">Reset link sent!</div> aka getByLabel('Notifications alt+T').getByText('Reset link sent!')
+        4) <div class="" data-description="">Check your email for password reset instructions.</div> aka getByText('Check your email for password')
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('text=/Check your email|Reset link sent/')
+
+
+      205 |     
+      206 |     // Should show success message (check for the actual text from the component)
+    > 207 |     await expect(page.locator('text=/Check your email|Reset link sent/')).toBeVisible({ timeout: 10000 });
+          |                                                                           ^
+      208 |   });
+      209 | });
+      210 |
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:207:75
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-firefox/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-firefox/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-firefox/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-firefox/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication State Management › should handle concurrent login attempts" classname="auth/auth.spec.ts" time="7.154">
+</testcase>
+<testcase name="Authentication State Management › should handle logout from multiple tabs" classname="auth/auth.spec.ts" time="15.715">
+<failure message="auth.spec.ts:241:7 should handle logout from multiple tabs" type="FAILURE">
+<![CDATA[  [firefox] › auth/auth.spec.ts:241:7 › Authentication State Management › should handle logout from multiple tabs 
+
+    TimeoutError: page.waitForSelector: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="email"]') to be visible
+
+
+      248 |     for (const page of [page1, page2]) {
+      249 |       await page.goto(BASE_URL);
+    > 250 |       await page.waitForSelector('input[name="email"]', { state: 'visible' });
+          |                  ^
+      251 |       await page.fill('input[name="email"]', TEST_USER.email);
+      252 |       await page.fill('input[name="password"]', TEST_USER.password);
+      253 |       await page.click('button[type="submit"]');
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:250:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-firefox/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-firefox/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-firefox/test-failed-2.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-firefox/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-firefox/error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="auth/auth.spec.ts" timestamp="2025-08-10T19:19:47.905Z" hostname="webkit" tests="14" failures="14" skipped="0" time="0.054" errors="0">
+<testcase name="Authentication Flows › should display login page for unauthenticated users" classname="auth/auth.spec.ts" time="0.005">
+<failure message="auth.spec.ts:30:7 should display login page for unauthenticated users" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:30:7 › Authentication Flows › should display login page for unauthenticated users 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=319276
+    [pid=319276][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=319276][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=319276][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 319282 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=319276
+      - [pid=319276][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=319276][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=319276][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 319282 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should successfully log in with valid credentials" classname="auth/auth.spec.ts" time="0.006">
+<failure message="auth.spec.ts:41:7 should successfully log in with valid credentials" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:41:7 › Authentication Flows › should successfully log in with valid credentials 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=319720
+    [pid=319720][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=319720][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=319720][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 319731 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=319720
+      - [pid=319720][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=319720][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=319720][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 319731 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should show error for invalid credentials" classname="auth/auth.spec.ts" time="0.004">
+<failure message="auth.spec.ts:57:7 should show error for invalid credentials" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:57:7 › Authentication Flows › should show error for invalid credentials 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=319578
+    [pid=319578][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=319578][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=319578][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 319584 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=319578
+      - [pid=319578][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=319578][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=319578][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 319584 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should validate email format" classname="auth/auth.spec.ts" time="0.006">
+<failure message="auth.spec.ts:72:7 should validate email format" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:72:7 › Authentication Flows › should validate email format ──────────
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=319601
+    [pid=319601][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=319601][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=319601][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 319610 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=319601
+      - [pid=319601][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=319601][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=319601][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 319610 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should require both email and password" classname="auth/auth.spec.ts" time="0.006">
+<failure message="auth.spec.ts:86:7 should require both email and password" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:86:7 › Authentication Flows › should require both email and password 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=319912
+    [pid=319912][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=319912][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=319912][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 319918 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=319912
+      - [pid=319912][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=319912][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=319912][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 319918 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Session Management › should successfully log out" classname="auth/auth.spec.ts" time="0.004">
+<failure message="auth.spec.ts:110:7 should successfully log out" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:110:7 › Session Management › should successfully log out ────────────
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=320104
+    [pid=320104][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=320104][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=320104][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320110 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=320104
+      - [pid=320104][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=320104][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=320104][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320110 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Session Management › should persist session on page refresh" classname="auth/auth.spec.ts" time="0.004">
+<failure message="auth.spec.ts:122:7 should persist session on page refresh" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:122:7 › Session Management › should persist session on page refresh ─
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=320189
+    [pid=320189][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=320189][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=320189][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320195 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=320189
+      - [pid=320189][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=320189][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=320189][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320195 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Session Management › should handle session expiry gracefully" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:131:7 should handle session expiry gracefully" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:131:7 › Session Management › should handle session expiry gracefully 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=320201
+    [pid=320201][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=320201][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=320201][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320207 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=320201
+      - [pid=320201][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=320201][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=320201][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320207 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Registration Flow › should navigate to signup page" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:148:7 should navigate to signup page" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:148:7 › Registration Flow › should navigate to signup page ──────────
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=320226
+    [pid=320226][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=320226][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=320226][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320232 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=320226
+      - [pid=320226][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=320226][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=320226][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320232 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Registration Flow › should validate signup form" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:165:7 should validate signup form" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:165:7 › Registration Flow › should validate signup form ─────────────
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=320262
+    [pid=320262][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=320262][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=320262][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320268 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=320262
+      - [pid=320262][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=320262][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=320262][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320268 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Password Reset Flow › should navigate to forgot password page" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:180:7 should navigate to forgot password page" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:180:7 › Password Reset Flow › should navigate to forgot password page 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=320377
+    [pid=320377][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=320377][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=320377][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320383 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=320377
+      - [pid=320377][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=320377][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=320377][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320383 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Password Reset Flow › should handle password reset request" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:194:7 should handle password reset request" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:194:7 › Password Reset Flow › should handle password reset request ──
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=320549
+    [pid=320549][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=320549][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=320549][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320555 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=320549
+      - [pid=320549][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=320549][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=320549][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320555 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication State Management › should handle concurrent login attempts" classname="auth/auth.spec.ts" time="0.002">
+<failure message="auth.spec.ts:212:7 should handle concurrent login attempts" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:212:7 › Authentication State Management › should handle concurrent login attempts 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=320583
+    [pid=320583][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=320583][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=320583][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320589 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=320583
+      - [pid=320583][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=320583][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=320583][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320589 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication State Management › should handle logout from multiple tabs" classname="auth/auth.spec.ts" time="0.002">
+<failure message="auth.spec.ts:241:7 should handle logout from multiple tabs" type="FAILURE">
+<![CDATA[  [webkit] › auth/auth.spec.ts:241:7 › Authentication State Management › should handle logout from multiple tabs 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=320592
+    [pid=320592][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=320592][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=320592][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320598 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=320592
+      - [pid=320592][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=320592][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=320592][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 320598 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="auth/auth.spec.ts" timestamp="2025-08-10T19:19:47.905Z" hostname="Mobile Chrome" tests="14" failures="7" skipped="0" time="122.235" errors="0">
+<testcase name="Authentication Flows › should display login page for unauthenticated users" classname="auth/auth.spec.ts" time="2.124">
+</testcase>
+<testcase name="Authentication Flows › should successfully log in with valid credentials" classname="auth/auth.spec.ts" time="4.769">
+</testcase>
+<testcase name="Authentication Flows › should show error for invalid credentials" classname="auth/auth.spec.ts" time="12.031">
+<failure message="auth.spec.ts:57:7 should show error for invalid credentials" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth/auth.spec.ts:57:7 › Authentication Flows › should show error for invalid credentials 
+
+    TimeoutError: page.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="email"]')
+        - locator resolved to <input disabled required="" type="email" name="email" autocomplete="email" aria-invalid="false" id="«Rahtml7»-form-item" value="test@arketic.com" placeholder="Enter your email" aria-describedby="«Rahtml7»-form-item-description" class="flex w-full rounded-md border px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-…/>
+        - fill("invalid@example.com")
+      - attempting fill action
+        2 × waiting for element to be visible, enabled and editable
+          - element is not enabled
+        - retrying fill action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and editable
+          - element is not enabled
+        - retrying fill action
+          - waiting 100ms
+        19 × waiting for element to be visible, enabled and editable
+           - element is not enabled
+         - retrying fill action
+           - waiting 500ms
+
+
+      57 |   test('should show error for invalid credentials', async ({ page }) => {
+      58 |     // Fill with invalid credentials
+    > 59 |     await page.fill('input[name="email"]', 'invalid@example.com');
+         |                ^
+      60 |     await page.fill('input[name="password"]', 'wrongpassword');
+      61 |     
+      62 |     // Submit form
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:59:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-F-f5432-ror-for-invalid-credentials-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-F-f5432-ror-for-invalid-credentials-Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Authentication-F-f5432-ror-for-invalid-credentials-Mobile-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Authentication-F-f5432-ror-for-invalid-credentials-Mobile-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-F-f5432-ror-for-invalid-credentials-Mobile-Chrome/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-F-f5432-ror-for-invalid-credentials-Mobile-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Flows › should validate email format" classname="auth/auth.spec.ts" time="2.492">
+</testcase>
+<testcase name="Authentication Flows › should require both email and password" classname="auth/auth.spec.ts" time="2.685">
+</testcase>
+<testcase name="Session Management › should successfully log out" classname="auth/auth.spec.ts" time="16.875">
+<failure message="auth.spec.ts:110:7 should successfully log out" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth/auth.spec.ts:110:7 › Session Management › should successfully log out ─────
+
+    TimeoutError: page.waitForURL: Timeout 5000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/login**" until "load"
+    ============================================================
+
+      116 |     
+      117 |     // Should redirect to login page
+    > 118 |     await page.waitForURL('**/login**', { timeout: 5000 });
+          |                ^
+      119 |     await expect(page.locator('input[name="email"]')).toBeVisible();
+      120 |   });
+      121 |
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:118:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Management-should-successfully-log-out-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Management-should-successfully-log-out-Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Session-Management-should-successfully-log-out-Mobile-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Session-Management-should-successfully-log-out-Mobile-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Management-should-successfully-log-out-Mobile-Chrome/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Management-should-successfully-log-out-Mobile-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Session Management › should persist session on page refresh" classname="auth/auth.spec.ts" time="5.984">
+</testcase>
+<testcase name="Session Management › should handle session expiry gracefully" classname="auth/auth.spec.ts" time="27.316">
+<failure message="auth.spec.ts:131:7 should handle session expiry gracefully" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth/auth.spec.ts:131:7 › Session Management › should handle session expiry gracefully 
+
+    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/login**" until "load"
+      navigated to "http://localhost:3000/dashboard"
+      navigated to "http://localhost:3000/dashboard"
+      navigated to "http://localhost:3000/dashboard"
+    ============================================================
+
+      140 |     
+      141 |     // Should redirect to login
+    > 142 |     await page.waitForURL('**/login**', { timeout: 15000 });
+          |                ^
+      143 |     await expect(page.locator('input[name="email"]')).toBeVisible();
+      144 |   });
+      145 | });
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:142:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Mobile-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Mobile-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Mobile-Chrome/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Mobile-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Registration Flow › should navigate to signup page" classname="auth/auth.spec.ts" time="8.362">
+</testcase>
+<testcase name="Registration Flow › should validate signup form" classname="auth/auth.spec.ts" time="3.227">
+<failure message="auth.spec.ts:165:7 should validate signup form" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth/auth.spec.ts:165:7 › Registration Flow › should validate signup form ──────
+
+    Error: expect.toBeVisible: Error: strict mode violation: locator('text=First name is required').or(locator('text=Required')) resolved to 3 elements:
+        1) <p id="«Ral9tml7»-form-item-message" class="text-sm font-medium text-destructive">First name is required</p> aka getByText('First name is required')
+        2) <p id="«Ril9tml7»-form-item-message" class="text-sm font-medium text-destructive">Last name is required</p> aka getByText('Last name is required')
+        3) <p id="«R3l9tml7»-form-item-message" class="text-sm font-medium text-destructive">Email is required</p> aka getByText('Email is required')
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('text=First name is required').or(locator('text=Required'))
+
+
+      173 |     
+      174 |     // Check for validation messages (react-hook-form shows messages)
+    > 175 |     await expect(page.locator('text=First name is required').or(page.locator('text=Required'))).toBeVisible({ timeout: 5000 });
+          |                                                                                                 ^
+      176 |   });
+      177 | });
+      178 |
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:175:97
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-Mobile-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-Mobile-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-Mobile-Chrome/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-Mobile-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Password Reset Flow › should navigate to forgot password page" classname="auth/auth.spec.ts" time="3.75">
+</testcase>
+<testcase name="Password Reset Flow › should handle password reset request" classname="auth/auth.spec.ts" time="4.78">
+<failure message="auth.spec.ts:194:7 should handle password reset request" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth/auth.spec.ts:194:7 › Password Reset Flow › should handle password reset request 
+
+    Error: expect.toBeVisible: Error: strict mode violation: locator('text=/Check your email|Reset link sent/') resolved to 4 elements:
+        1) <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Check your email</h1> aka getByRole('heading', { name: 'Check your email' })
+        2) <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Reset link sent!</h2> aka getByRole('heading', { name: 'Reset link sent!' })
+        3) <div class="" data-title="">Reset link sent!</div> aka getByLabel('Notifications alt+T').getByText('Reset link sent!')
+        4) <div class="" data-description="">Check your email for password reset instructions.</div> aka getByText('Check your email for password')
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('text=/Check your email|Reset link sent/')
+
+
+      205 |     
+      206 |     // Should show success message (check for the actual text from the component)
+    > 207 |     await expect(page.locator('text=/Check your email|Reset link sent/')).toBeVisible({ timeout: 10000 });
+          |                                                                           ^
+      208 |   });
+      209 | });
+      210 |
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:207:75
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Mobile-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Mobile-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Mobile-Chrome/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Mobile-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication State Management › should handle concurrent login attempts" classname="auth/auth.spec.ts" time="14.671">
+<failure message="auth.spec.ts:212:7 should handle concurrent login attempts" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth/auth.spec.ts:212:7 › Authentication State Management › should handle concurrent login attempts 
+
+    TimeoutError: page.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="email"]')
+        - locator resolved to <input disabled required="" type="email" name="email" autocomplete="email" aria-invalid="false" id="«Rahtml7»-form-item" value="test@arketic.com" placeholder="Enter your email" aria-describedby="«Rahtml7»-form-item-description" class="flex w-full rounded-md border px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-…/>
+        - fill("test@arketic.com")
+      - attempting fill action
+        2 × waiting for element to be visible, enabled and editable
+          - element is not enabled
+        - retrying fill action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and editable
+          - element is not enabled
+        - retrying fill action
+          - waiting 100ms
+        20 × waiting for element to be visible, enabled and editable
+           - element is not enabled
+         - retrying fill action
+           - waiting 500ms
+
+
+      225 |     
+      226 |     // Login from first tab
+    > 227 |     await page1.fill('input[name="email"]', TEST_USER.email);
+          |                 ^
+      228 |     await page1.fill('input[name="password"]', TEST_USER.password);
+      229 |     await page1.click('button[type="submit"]');
+      230 |     await page1.waitForURL(url => url.pathname === '/dashboard' || url.pathname === '/', { timeout: 30000 });
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:227:17
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-S-dbefd-e-concurrent-login-attempts-Mobile-Chrome/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-S-dbefd-e-concurrent-login-attempts-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Authentication-S-dbefd-e-concurrent-login-attempts-Mobile-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-dbefd-e-concurrent-login-attempts-Mobile-Chrome/test-failed-2.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-dbefd-e-concurrent-login-attempts-Mobile-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-dbefd-e-concurrent-login-attempts-Mobile-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication State Management › should handle logout from multiple tabs" classname="auth/auth.spec.ts" time="13.169">
+<failure message="auth.spec.ts:241:7 should handle logout from multiple tabs" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth/auth.spec.ts:241:7 › Authentication State Management › should handle logout from multiple tabs 
+
+    TimeoutError: page.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="email"]')
+        - locator resolved to <input disabled required="" type="email" name="email" autocomplete="email" aria-invalid="false" id="«Rahtml7»-form-item" value="test@arketic.com" placeholder="Enter your email" aria-describedby="«Rahtml7»-form-item-description" class="flex w-full rounded-md border px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-…/>
+        - fill("test@arketic.com")
+      - attempting fill action
+        2 × waiting for element to be visible, enabled and editable
+          - element is not enabled
+        - retrying fill action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and editable
+          - element is not enabled
+        - retrying fill action
+          - waiting 100ms
+        20 × waiting for element to be visible, enabled and editable
+           - element is not enabled
+         - retrying fill action
+           - waiting 500ms
+
+
+      249 |       await page.goto(BASE_URL);
+      250 |       await page.waitForSelector('input[name="email"]', { state: 'visible' });
+    > 251 |       await page.fill('input[name="email"]', TEST_USER.email);
+          |                  ^
+      252 |       await page.fill('input[name="password"]', TEST_USER.password);
+      253 |       await page.click('button[type="submit"]');
+      254 |       await page.waitForURL(url => url.pathname === '/dashboard' || url.pathname === '/', { timeout: 30000 });
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:251:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Mobile-Chrome/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Mobile-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Mobile-Chrome/test-failed-2.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Mobile-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Mobile-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="auth/auth.spec.ts" timestamp="2025-08-10T19:19:47.905Z" hostname="Mobile Safari" tests="14" failures="14" skipped="0" time="0.051" errors="0">
+<testcase name="Authentication Flows › should display login page for unauthenticated users" classname="auth/auth.spec.ts" time="0.004">
+<failure message="auth.spec.ts:30:7 should display login page for unauthenticated users" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:30:7 › Authentication Flows › should display login page for unauthenticated users 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322056
+    [pid=322056][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322056][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322056][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322066 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322056
+      - [pid=322056][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322056][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322056][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322066 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should successfully log in with valid credentials" classname="auth/auth.spec.ts" time="0.004">
+<failure message="auth.spec.ts:41:7 should successfully log in with valid credentials" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:41:7 › Authentication Flows › should successfully log in with valid credentials 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322249
+    [pid=322249][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322249][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322249][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322255 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322249
+      - [pid=322249][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322249][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322249][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322255 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should show error for invalid credentials" classname="auth/auth.spec.ts" time="0.007">
+<failure message="auth.spec.ts:57:7 should show error for invalid credentials" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:57:7 › Authentication Flows › should show error for invalid credentials 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322268
+    [pid=322268][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322268][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322268][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322274 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322268
+      - [pid=322268][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322268][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322268][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322274 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should validate email format" classname="auth/auth.spec.ts" time="0.006">
+<failure message="auth.spec.ts:72:7 should validate email format" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:72:7 › Authentication Flows › should validate email format ───
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322328
+    [pid=322328][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322328][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322328][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322339 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322328
+      - [pid=322328][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322328][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322328][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322339 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should require both email and password" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:86:7 should require both email and password" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:86:7 › Authentication Flows › should require both email and password 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322377
+    [pid=322377][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322377][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322377][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322383 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322377
+      - [pid=322377][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322377][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322377][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322383 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Session Management › should successfully log out" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:110:7 should successfully log out" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:110:7 › Session Management › should successfully log out ─────
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322403
+    [pid=322403][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322403][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322403][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322409 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322403
+      - [pid=322403][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322403][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322403][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322409 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Session Management › should persist session on page refresh" classname="auth/auth.spec.ts" time="0.004">
+<failure message="auth.spec.ts:122:7 should persist session on page refresh" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:122:7 › Session Management › should persist session on page refresh 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322444
+    [pid=322444][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322444][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322444][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322450 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322444
+      - [pid=322444][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322444][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322444][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322450 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Session Management › should handle session expiry gracefully" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:131:7 should handle session expiry gracefully" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:131:7 › Session Management › should handle session expiry gracefully 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322473
+    [pid=322473][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322473][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322473][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322479 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322473
+      - [pid=322473][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322473][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322473][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322479 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Registration Flow › should navigate to signup page" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:148:7 should navigate to signup page" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:148:7 › Registration Flow › should navigate to signup page ───
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322500
+    [pid=322500][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322500][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322500][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322506 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322500
+      - [pid=322500][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322500][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322500][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322506 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Registration Flow › should validate signup form" classname="auth/auth.spec.ts" time="0.002">
+<failure message="auth.spec.ts:165:7 should validate signup form" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:165:7 › Registration Flow › should validate signup form ──────
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322520
+    [pid=322520][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322520][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322520][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322526 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322520
+      - [pid=322520][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322520][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322520][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322526 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Password Reset Flow › should navigate to forgot password page" classname="auth/auth.spec.ts" time="0.004">
+<failure message="auth.spec.ts:180:7 should navigate to forgot password page" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:180:7 › Password Reset Flow › should navigate to forgot password page 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322554
+    [pid=322554][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322554][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322554][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322560 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322554
+      - [pid=322554][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322554][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322554][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322560 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Password Reset Flow › should handle password reset request" classname="auth/auth.spec.ts" time="0.002">
+<failure message="auth.spec.ts:194:7 should handle password reset request" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:194:7 › Password Reset Flow › should handle password reset request 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322581
+    [pid=322581][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322581][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322581][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322587 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322581
+      - [pid=322581][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322581][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322581][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322587 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication State Management › should handle concurrent login attempts" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:212:7 should handle concurrent login attempts" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:212:7 › Authentication State Management › should handle concurrent login attempts 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322627
+    [pid=322627][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322627][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322627][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322633 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322627
+      - [pid=322627][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322627][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322627][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322633 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication State Management › should handle logout from multiple tabs" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:241:7 should handle logout from multiple tabs" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth/auth.spec.ts:241:7 › Authentication State Management › should handle logout from multiple tabs 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+    <launched> pid=322680
+    [pid=322680][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+    [pid=322680][err] LLVM ERROR: inconsistency in registered CommandLine options
+    [pid=322680][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322686 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+    Call log:
+      - <launching> /root/.cache/ms-playwright/webkit-2191/pw_run.sh --inspector-pipe --no-startup-window
+      - <launched> pid=322680
+      - [pid=322680][err] : CommandLine Error: Option 'spirv-expand-step' registered more than once!
+      - [pid=322680][err] LLVM ERROR: inconsistency in registered CommandLine options
+      - [pid=322680][err] /root/.cache/ms-playwright/webkit-2191/pw_run.sh: line 24: 322686 Aborted                 (core dumped) WEBKIT_FORCE_COMPLEX_TEXT="1" "$MINIBROWSER" "$@"
+
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="auth/auth.spec.ts" timestamp="2025-08-10T19:19:47.905Z" hostname="Microsoft Edge" tests="14" failures="14" skipped="0" time="0.028" errors="0">
+<testcase name="Authentication Flows › should display login page for unauthenticated users" classname="auth/auth.spec.ts" time="0.002">
+<failure message="auth.spec.ts:30:7 should display login page for unauthenticated users" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:30:7 › Authentication Flows › should display login page for unauthenticated users 
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should successfully log in with valid credentials" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:41:7 should successfully log in with valid credentials" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:41:7 › Authentication Flows › should successfully log in with valid credentials 
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should show error for invalid credentials" classname="auth/auth.spec.ts" time="0.001">
+<failure message="auth.spec.ts:57:7 should show error for invalid credentials" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:57:7 › Authentication Flows › should show error for invalid credentials 
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should validate email format" classname="auth/auth.spec.ts" time="0.002">
+<failure message="auth.spec.ts:72:7 should validate email format" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:72:7 › Authentication Flows › should validate email format ──
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication Flows › should require both email and password" classname="auth/auth.spec.ts" time="0.001">
+<failure message="auth.spec.ts:86:7 should require both email and password" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:86:7 › Authentication Flows › should require both email and password 
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Session Management › should successfully log out" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:110:7 should successfully log out" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:110:7 › Session Management › should successfully log out ────
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Session Management › should persist session on page refresh" classname="auth/auth.spec.ts" time="0.002">
+<failure message="auth.spec.ts:122:7 should persist session on page refresh" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:122:7 › Session Management › should persist session on page refresh 
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Session Management › should handle session expiry gracefully" classname="auth/auth.spec.ts" time="0.001">
+<failure message="auth.spec.ts:131:7 should handle session expiry gracefully" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:131:7 › Session Management › should handle session expiry gracefully 
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Registration Flow › should navigate to signup page" classname="auth/auth.spec.ts" time="0.001">
+<failure message="auth.spec.ts:148:7 should navigate to signup page" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:148:7 › Registration Flow › should navigate to signup page ──
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Registration Flow › should validate signup form" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:165:7 should validate signup form" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:165:7 › Registration Flow › should validate signup form ─────
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Password Reset Flow › should navigate to forgot password page" classname="auth/auth.spec.ts" time="0.002">
+<failure message="auth.spec.ts:180:7 should navigate to forgot password page" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:180:7 › Password Reset Flow › should navigate to forgot password page 
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Password Reset Flow › should handle password reset request" classname="auth/auth.spec.ts" time="0.001">
+<failure message="auth.spec.ts:194:7 should handle password reset request" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:194:7 › Password Reset Flow › should handle password reset request 
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication State Management › should handle concurrent login attempts" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:212:7 should handle concurrent login attempts" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:212:7 › Authentication State Management › should handle concurrent login attempts 
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+<testcase name="Authentication State Management › should handle logout from multiple tabs" classname="auth/auth.spec.ts" time="0.003">
+<failure message="auth.spec.ts:241:7 should handle logout from multiple tabs" type="FAILURE">
+<![CDATA[  [Microsoft Edge] › auth/auth.spec.ts:241:7 › Authentication State Management › should handle logout from multiple tabs 
+
+    Error: browserType.launch: Chromium distribution 'msedge' is not found at /opt/microsoft/msedge/msedge
+    Run "npx playwright install msedge"
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="auth/auth.spec.ts" timestamp="2025-08-10T19:19:47.905Z" hostname="Google Chrome" tests="14" failures="4" skipped="0" time="138.485" errors="0">
+<testcase name="Authentication Flows › should display login page for unauthenticated users" classname="auth/auth.spec.ts" time="4.453">
+</testcase>
+<testcase name="Authentication Flows › should successfully log in with valid credentials" classname="auth/auth.spec.ts" time="7.751">
+</testcase>
+<testcase name="Authentication Flows › should show error for invalid credentials" classname="auth/auth.spec.ts" time="4.989">
+</testcase>
+<testcase name="Authentication Flows › should validate email format" classname="auth/auth.spec.ts" time="5.137">
+</testcase>
+<testcase name="Authentication Flows › should require both email and password" classname="auth/auth.spec.ts" time="4.048">
+</testcase>
+<testcase name="Session Management › should successfully log out" classname="auth/auth.spec.ts" time="15.463">
+</testcase>
+<testcase name="Session Management › should persist session on page refresh" classname="auth/auth.spec.ts" time="12.857">
+</testcase>
+<testcase name="Session Management › should handle session expiry gracefully" classname="auth/auth.spec.ts" time="26.478">
+<failure message="auth.spec.ts:131:7 should handle session expiry gracefully" type="FAILURE">
+<![CDATA[  [Google Chrome] › auth/auth.spec.ts:131:7 › Session Management › should handle session expiry gracefully 
+
+    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/login**" until "load"
+      navigated to "http://localhost:3000/dashboard"
+      navigated to "http://localhost:3000/dashboard"
+      navigated to "http://localhost:3000/dashboard"
+      navigated to "http://localhost:3000/dashboard"
+      navigated to "http://localhost:3000/dashboard"
+      navigated to "http://localhost:3000/dashboard"
+      navigated to "http://localhost:3000/dashboard"
+    ============================================================
+
+      140 |     
+      141 |     // Should redirect to login
+    > 142 |     await page.waitForURL('**/login**', { timeout: 15000 });
+          |                ^
+      143 |     await expect(page.locator('input[name="email"]')).toBeVisible();
+      144 |   });
+      145 | });
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:142:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Google-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Google-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Google-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Google-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Google-Chrome/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Session-Manageme-46be5-e-session-expiry-gracefully-Google-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Registration Flow › should navigate to signup page" classname="auth/auth.spec.ts" time="6.281">
+</testcase>
+<testcase name="Registration Flow › should validate signup form" classname="auth/auth.spec.ts" time="5.899">
+<failure message="auth.spec.ts:165:7 should validate signup form" type="FAILURE">
+<![CDATA[  [Google Chrome] › auth/auth.spec.ts:165:7 › Registration Flow › should validate signup form ──────
+
+    Error: expect.toBeVisible: Error: strict mode violation: locator('text=First name is required').or(locator('text=Required')) resolved to 3 elements:
+        1) <p id="«Ral9tml7»-form-item-message" class="text-sm font-medium text-destructive">First name is required</p> aka getByText('First name is required')
+        2) <p id="«Ril9tml7»-form-item-message" class="text-sm font-medium text-destructive">Last name is required</p> aka getByText('Last name is required')
+        3) <p id="«R3l9tml7»-form-item-message" class="text-sm font-medium text-destructive">Email is required</p> aka getByText('Email is required')
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('text=First name is required').or(locator('text=Required'))
+
+
+      173 |     
+      174 |     // Check for validation messages (react-hook-form shows messages)
+    > 175 |     await expect(page.locator('text=First name is required').or(page.locator('text=Required'))).toBeVisible({ timeout: 5000 });
+          |                                                                                                 ^
+      176 |   });
+      177 | });
+      178 |
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:175:97
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-Google-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-Google-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Registration-Flow-should-validate-signup-form-Google-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-Google-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-Google-Chrome/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Registration-Flow-should-validate-signup-form-Google-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Password Reset Flow › should navigate to forgot password page" classname="auth/auth.spec.ts" time="8.872">
+</testcase>
+<testcase name="Password Reset Flow › should handle password reset request" classname="auth/auth.spec.ts" time="5.717">
+<failure message="auth.spec.ts:194:7 should handle password reset request" type="FAILURE">
+<![CDATA[  [Google Chrome] › auth/auth.spec.ts:194:7 › Password Reset Flow › should handle password reset request 
+
+    Error: expect.toBeVisible: Error: strict mode violation: locator('text=/Check your email|Reset link sent/') resolved to 4 elements:
+        1) <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Check your email</h1> aka getByRole('heading', { name: 'Check your email' })
+        2) <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Reset link sent!</h2> aka getByRole('heading', { name: 'Reset link sent!' })
+        3) <div class="" data-title="">Reset link sent!</div> aka getByLabel('Notifications alt+T').getByText('Reset link sent!')
+        4) <div class="" data-description="">Check your email for password reset instructions.</div> aka getByText('Check your email for password')
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('text=/Check your email|Reset link sent/')
+
+
+      205 |     
+      206 |     // Should show success message (check for the actual text from the component)
+    > 207 |     await expect(page.locator('text=/Check your email|Reset link sent/')).toBeVisible({ timeout: 10000 });
+          |                                                                           ^
+      208 |   });
+      209 | });
+      210 |
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:207:75
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Google-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Google-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Google-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Google-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Google-Chrome/video.webm]]
+
+[[ATTACHMENT|test-results/auth-auth-Password-Reset-F-d0f94-ndle-password-reset-request-Google-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication State Management › should handle concurrent login attempts" classname="auth/auth.spec.ts" time="13.346">
+</testcase>
+<testcase name="Authentication State Management › should handle logout from multiple tabs" classname="auth/auth.spec.ts" time="17.194">
+<failure message="auth.spec.ts:241:7 should handle logout from multiple tabs" type="FAILURE">
+<![CDATA[  [Google Chrome] › auth/auth.spec.ts:241:7 › Authentication State Management › should handle logout from multiple tabs 
+
+    TimeoutError: page.waitForSelector: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="email"]') to be visible
+
+
+      248 |     for (const page of [page1, page2]) {
+      249 |       await page.goto(BASE_URL);
+    > 250 |       await page.waitForSelector('input[name="email"]', { state: 'visible' });
+          |                  ^
+      251 |       await page.fill('input[name="email"]', TEST_USER.email);
+      252 |       await page.fill('input[name="password"]', TEST_USER.password);
+      253 |       await page.click('button[type="submit"]');
+        at /home/ali/arketic/apps/web/tests/playwright/auth/auth.spec.ts:250:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Google-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Google-Chrome/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Google-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Google-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Google-Chrome/test-failed-2.png]]
+
+[[ATTACHMENT|test-results/auth-auth-Authentication-S-00fd5-e-logout-from-multiple-tabs-Google-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

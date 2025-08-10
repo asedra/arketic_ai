@@ -51,6 +51,25 @@ class TokenResponse(BaseModel):
         }
 
 
+class RegisterRequest(BaseModel):
+    """Registration request schema"""
+    email: EmailStr = Field(..., description="User email address")
+    password: str = Field(..., min_length=8, description="User password")
+    firstName: str = Field(..., min_length=1, max_length=50, description="First name", alias="first_name")
+    lastName: str = Field(..., min_length=1, max_length=50, description="Last name", alias="last_name")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "email": "newuser@example.com",
+                "password": "SecurePass123!",
+                "firstName": "John",
+                "lastName": "Doe"
+            }
+        }
+        populate_by_name = True  # Allow both camelCase and snake_case
+
+
 class RefreshTokenRequest(BaseModel):
     """Refresh token request schema"""
     refresh_token: str = Field(..., description="JWT refresh token")

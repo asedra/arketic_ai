@@ -1,0 +1,107 @@
+# Page snapshot
+
+```yaml
+- text: C Arketic AI Platform
+- button "29m":
+  - img
+  - text: 29m
+- button "New Chat":
+  - img
+  - text: New Chat
+- text: AI Chat
+- button "All Chats":
+  - img
+  - text: All Chats
+- text: Platform
+- button "Analytics":
+  - img
+  - text: Analytics
+- button "AI Chat":
+  - img
+  - text: AI Chat
+- button "Knowledge":
+  - img
+  - text: Knowledge
+- button "Forms":
+  - img
+  - text: Forms
+- button "Assistants":
+  - img
+  - text: Assistants
+- button "My Organization":
+  - img
+  - text: My Organization
+- button "Workflow":
+  - img
+  - text: Workflow
+- button "Data Sources":
+  - img
+  - text: Data Sources
+- button "Settings":
+  - img
+  - text: Settings
+- button "test@arketic.com":
+  - img
+  - text: test@arketic.com
+- button "Sign Out"
+- img
+- textbox "Search across all data..."
+- button:
+  - img
+- button:
+  - img
+- button "User":
+  - img "User"
+- main:
+  - heading "Analytics Dashboard" [level=1]
+  - paragraph: Monitor your AI platform performance and insights
+  - img
+  - text: Live
+  - img
+  - text: Last 30 days Total Revenue
+  - img
+  - text: $45,231.89
+  - img
+  - text: +20.1% from last month Active Users
+  - img
+  - text: 2,350
+  - img
+  - text: +180.1% from last month Chat Sessions
+  - img
+  - text: 12,234
+  - img
+  - text: +19% from last month Automation Rate
+  - img
+  - text: 89.3%
+  - img
+  - text: +2.5% from last month
+  - img
+  - text: Usage Trends Chart component will be added here
+  - img
+  - text: Performance Metrics Performance chart component will be added here Recent Activity
+  - img
+  - paragraph: New chat session started
+  - paragraph: User john.doe@company.com
+  - text: 1 min ago
+  - img
+  - paragraph: New chat session started
+  - paragraph: User john.doe@company.com
+  - text: 2 min ago
+  - img
+  - paragraph: New chat session started
+  - paragraph: User john.doe@company.com
+  - text: 3 min ago
+  - img
+  - paragraph: New chat session started
+  - paragraph: User john.doe@company.com
+  - text: 4 min ago
+  - img
+  - paragraph: New chat session started
+  - paragraph: User john.doe@company.com
+  - text: 5 min ago
+- region "Notifications alt+T"
+- region "Notifications alt+T"
+- button "Open Next.js Dev Tools":
+  - img
+- alert: Arketic AI Platform - Analytics Dashboard
+```

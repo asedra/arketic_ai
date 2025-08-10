@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, or_, desc, func, select
 from sqlalchemy.exc import SQLAlchemyError
 
-from core.database import get_db, get_db_session
+from core.database import get_db, get_db_session, async_session_maker
 from core.dependencies import get_current_user_dict, verify_jwt_token
 from core.monitoring import performance_monitor
 from models.chat import Chat, ChatMessage, ChatParticipant, ChatType, MessageType, MessageStatus, ParticipantRole
@@ -40,6 +40,17 @@ ws_router = APIRouter()
 # Add tags for better API documentation
 router.tags = ["Chat API - Real-time messaging with AI integration"]
 ws_router.tags = ["Chat WebSocket - Real-time connections"]
+
+# Helper function to safely access database object attributes after potential rollback
+def _safe_get_chat_value(obj, attr_name, default_value):
+    """Safely get attribute from database object, handling detached objects gracefully"""
+    try:
+        if obj and hasattr(obj, attr_name):
+            return getattr(obj, attr_name, default_value)
+        return default_value
+    except Exception:
+        # Object might be detached from session, return default
+        return default_value
 
 # Pydantic models for requests/responses
 class CreateChatRequest(BaseModel):
@@ -393,7 +404,6 @@ async def generate_streaming_ai_response(
     chat: Chat,
     ai_message_id: Optional[str],
     start_time: datetime,
-    db: Optional[AsyncSession] = None,
     api_key: str = None,
     user_id: str = None,
     auth_token: str = ""
@@ -416,44 +426,46 @@ async def generate_streaming_ai_response(
                 # Import knowledge service
                 from services.knowledge_service import knowledge_service
                 from models.user import User
+                from core.dependencies import get_db_session
                 
-                # Get user object for RAG search
-                if db and user_id:
-                    user_result = await db.execute(select(User).where(User.id == user_id))
-                    user = user_result.scalar_one_or_none()
-                    
-                    if user:
-                        # Perform semantic search across all knowledge bases
-                        for kb_id in chat.assistant_knowledge_bases:
-                            try:
-                                search_result = await knowledge_service.semantic_search(
-                                    db=db,
-                                    user=user,
-                                    query=user_query,
-                                    knowledge_base_id=UUID(kb_id),
-                                    k=3,  # Top 3 most relevant chunks per KB
-                                    score_threshold=0.7,
-                                    search_type="semantic"
-                                )
-                                
-                                # Extract context and sources
-                                for result in search_result.get("results", []):
-                                    rag_context += f"\n[Source: {result['document_title']}]\n{result['content']}\n"
-                                    source_documents.append({
-                                        "title": result["document_title"],
-                                        "document_id": str(result["document_id"]) if result["document_id"] else None,
-                                        "score": result["score"],
-                                        "content": result["content"][:200] + "..." if len(result["content"]) > 200 else result["content"]
-                                    })
-                                
-                                logger.info(f"AR-75: Retrieved {len(search_result.get('results', []))} chunks from KB {kb_id}")
-                                
-                            except Exception as kb_error:
-                                logger.warning(f"AR-75: Failed to search knowledge base {kb_id}: {kb_error}")
-                                continue
+                # Get user object for RAG search with a new session
+                if user_id:
+                    async with get_db_session() as rag_session:
+                        user_result = await rag_session.execute(select(User).where(User.id == user_id))
+                        user = user_result.scalar_one_or_none()
                         
-                        if rag_context:
-                            logger.info(f"AR-75: Total RAG context length: {len(rag_context)} characters")
+                        if user:
+                            # Perform semantic search across all knowledge bases
+                            for kb_id in chat.assistant_knowledge_bases:
+                                try:
+                                    search_result = await knowledge_service.semantic_search(
+                                        db=rag_session,
+                                        user=user,
+                                        query=user_query,
+                                        knowledge_base_id=UUID(kb_id),
+                                        k=3,  # Top 3 most relevant chunks per KB
+                                        score_threshold=0.7,
+                                        search_type="semantic"
+                                    )
+                                    
+                                    # Extract context and sources
+                                    for result in search_result.get("results", []):
+                                        rag_context += f"\n[Source: {result['document_title']}]\n{result['content']}\n"
+                                        source_documents.append({
+                                            "title": result["document_title"],
+                                            "document_id": str(result["document_id"]) if result["document_id"] else None,
+                                            "score": result["score"],
+                                            "content": result["content"][:200] + "..." if len(result["content"]) > 200 else result["content"]
+                                        })
+                                    
+                                    logger.info(f"AR-75: Retrieved {len(search_result.get('results', []))} chunks from KB {kb_id}")
+                                    
+                                except Exception as kb_error:
+                                    logger.warning(f"AR-75: Failed to search knowledge base {kb_id}: {kb_error}")
+                                    continue
+                            
+                            if rag_context:
+                                logger.info(f"AR-75: Total RAG context length: {len(rag_context)} characters")
                         
             except Exception as rag_error:
                 logger.warning(f"AR-75: RAG retrieval failed: {rag_error}")
@@ -517,21 +529,34 @@ Instructions: Use the above context to provide accurate, detailed answers. When 
         total_tokens = input_tokens + output_tokens
         
         # Update AI message in database if saving to history
-        if db and ai_message_id:
-            async with db as session:
-                ai_message_query = select(ChatMessage).where(ChatMessage.id == ai_message_id)
-                result = await session.execute(ai_message_query)
-                ai_message = result.scalar_one_or_none()
-                
-                if ai_message:
-                    ai_message.content = full_content
-                    ai_message.processing_time_ms = processing_time_ms
-                    ai_message.tokens_used = total_tokens
+        if ai_message_id:
+            # Create a new database session for the background task
+            try:
+                async with get_db_session() as new_session:
+                    ai_message_query = select(ChatMessage).where(ChatMessage.id == ai_message_id)
+                    result = await new_session.execute(ai_message_query)
+                    ai_message = result.scalar_one_or_none()
                     
-                    # Update chat totals
-                    chat.total_tokens_used += total_tokens
-                    
-                    await session.commit()
+                    if ai_message:
+                        ai_message.content = full_content
+                        ai_message.processing_time_ms = processing_time_ms
+                        ai_message.tokens_used = total_tokens
+                        
+                        # Fetch the chat object in the same session to update it
+                        chat_query = select(Chat).where(Chat.id == chat_id)
+                        chat_result = await new_session.execute(chat_query)
+                        chat_in_session = chat_result.scalar_one_or_none()
+                        
+                        if chat_in_session:
+                            # Update chat totals
+                            chat_in_session.total_tokens_used += total_tokens
+                            chat_in_session.message_count += 1
+                            chat_in_session.last_activity_at = datetime.utcnow()
+                        
+                        logger.info(f"Successfully updated AI message and chat statistics for streaming response in chat {chat_id}")
+            except Exception as e:
+                logger.error(f"Failed to update AI message and chat stats for chat {chat_id}: {e}")
+                # Continue without saving updates - the response was already sent to the user
         
         # Broadcast completion with source documents
         completion_data = {
@@ -592,212 +617,229 @@ async def generate_ai_response(
     start_time = datetime.utcnow()
     
     try:
-        # Use proper database session management
-        async with get_db_session() as db:
-            # Get chat details
-            chat_query = select(Chat).where(Chat.id == chat_id)
-            chat_result = await db.execute(chat_query)
-            chat = chat_result.scalar_one_or_none()
-            
-            if not chat:
-                logger.error(f"Chat {chat_id} not found for AI response generation")
-                return
-            
-            # Get recent chat history for context
-            history_query = select(ChatMessage).where(
-                and_(
-                    ChatMessage.chat_id == chat_id,
-                    ChatMessage.is_deleted == False
+        # Use regular database session for streaming (needs immediate commits)
+        db = None
+        db = async_session_maker()
+        # Begin explicit transaction management for streaming
+        
+        # Get chat details
+        chat_query = select(Chat).where(Chat.id == chat_id)
+        chat_result = await db.execute(chat_query)
+        chat = chat_result.scalar_one_or_none()
+        
+        if not chat:
+            logger.error(f"Chat {chat_id} not found for AI response generation")
+            return
+        
+        # Get recent chat history for context
+        history_query = select(ChatMessage).where(
+            and_(
+                ChatMessage.chat_id == chat_id,
+                ChatMessage.is_deleted == False
+            )
+        ).order_by(ChatMessage.created_at.desc()).limit(10)
+        
+        history_result = await db.execute(history_query)
+        recent_messages = list(reversed(history_result.scalars().all()))  # Reverse to chronological order
+        
+        # Prepare conversation history for AI
+        messages = []
+        
+        # Add system prompt if available
+        if chat.system_prompt:
+            messages.append({"role": "system", "content": chat.system_prompt})
+        
+        # Add recent chat history
+        for msg in recent_messages[:-1]:  # Exclude the latest message (current user message)
+            if msg.message_type == MessageType.USER:
+                messages.append({"role": "user", "content": msg.content})
+            elif msg.message_type == MessageType.AI:
+                messages.append({"role": "assistant", "content": msg.content})
+        
+        # Add current user message
+        messages.append({"role": "user", "content": user_message})
+        
+        # Create initial AI message for streaming updates
+        ai_message = ChatMessage(
+            chat_id=chat.id,
+            sender_id=None,  # AI messages don't have a user sender
+            content="",  # Start with empty content
+            message_type=MessageType.AI,
+            ai_model_used=chat.ai_model or "gpt-3.5-turbo",
+            tokens_used=0,
+            processing_time_ms=0
+        )
+        
+        db.add(ai_message)
+        await db.commit()
+        await db.refresh(ai_message)
+        
+        # Broadcast AI message start
+        ai_start_data = {
+            "type": "ai_response_start",
+            "message": {
+                "id": str(ai_message.id),
+                "chat_id": str(ai_message.chat_id),
+                "sender_id": None,
+                "content": "",
+                "message_type": ai_message.message_type.value,
+                "ai_model_used": ai_message.ai_model_used,
+                "created_at": ai_message.created_at.isoformat(),
+                "status": ai_message.status.value,
+                "is_streaming": True
+            }
+        }
+        await websocket_manager.broadcast_to_chat(
+            json.dumps(ai_start_data), 
+            chat_id
+        )
+        
+        # Prepare settings for LangChain service
+        settings = {
+            "model": chat.ai_model or "gpt-3.5-turbo",
+            "temperature": float(chat.temperature) if chat.temperature else 0.7,
+            "maxTokens": chat.max_tokens or 2048,
+            "systemPrompt": chat.system_prompt,
+            "provider": "openai",
+            "knowledgeBaseIds": chat.assistant_knowledge_bases if chat.assistant_knowledge_bases else [],
+            "documentIds": chat.assistant_documents if chat.assistant_documents else []
+        }
+        
+        # Debug logging for knowledge base integration
+        logger.info(f"Chat {chat_id} - Streaming mode - Assistant ID: {chat.assistant_id}")
+        logger.info(f"Chat {chat_id} - Knowledge Base IDs: {chat.assistant_knowledge_bases}")
+        logger.info(f"Chat {chat_id} - Document IDs: {chat.assistant_documents}")
+        
+        # Get LangChain service client
+        langchain_client = get_langchain_client()
+        
+        # Stream response chunks using LangChain service
+        full_content = ""
+        processing_start = datetime.utcnow()
+        
+        try:
+            # Try LangChain service first for streaming
+            async for chunk in langchain_client.send_streaming_message(
+                chat_id=str(chat_id),
+                message=user_message,
+                user_id=str(ai_message.sender_id) if ai_message.sender_id else "system",
+                api_key=openai_key,
+                settings=settings,
+                auth_token=""
+            ):
+                full_content += chunk
+                
+                # Broadcast chunk to WebSocket
+                chunk_data = {
+                    "type": "ai_response_chunk",
+                    "message_id": str(ai_message.id),
+                    "chat_id": chat_id,
+                    "chunk": chunk,
+                    "full_content": full_content
+                }
+                await websocket_manager.broadcast_to_chat(
+                    json.dumps(chunk_data),
+                    chat_id
                 )
-            ).order_by(ChatMessage.created_at.desc()).limit(10)
-            
-            history_result = await db.execute(history_query)
-            recent_messages = list(reversed(history_result.scalars().all()))  # Reverse to chronological order
-            
-            # Prepare conversation history for AI
-            messages = []
-            
-            # Add system prompt if available
-            if chat.system_prompt:
-                messages.append({"role": "system", "content": chat.system_prompt})
-            
-            # Add recent chat history
-            for msg in recent_messages[:-1]:  # Exclude the latest message (current user message)
-                if msg.message_type == MessageType.USER:
-                    messages.append({"role": "user", "content": msg.content})
-                elif msg.message_type == MessageType.AI:
-                    messages.append({"role": "assistant", "content": msg.content})
-            
-            # Add current user message
-            messages.append({"role": "user", "content": user_message})
-            
-            # Create initial AI message for streaming updates
-            ai_message = ChatMessage(
-                chat_id=chat.id,
-                sender_id=None,  # AI messages don't have a user sender
-                content="",  # Start with empty content
-                message_type=MessageType.AI,
-                ai_model_used=chat.ai_model or "gpt-3.5-turbo",
-                tokens_used=0,
-                processing_time_ms=0
-            )
-            
-            db.add(ai_message)
-            await db.commit()
-            await db.refresh(ai_message)
-            
-            # Broadcast AI message start
-            ai_start_data = {
-                "type": "ai_response_start",
-                "message": {
-                    "id": str(ai_message.id),
-                    "chat_id": str(ai_message.chat_id),
-                    "sender_id": None,
-                    "content": "",
-                    "message_type": ai_message.message_type.value,
-                    "ai_model_used": ai_message.ai_model_used,
-                    "created_at": ai_message.created_at.isoformat(),
-                    "status": ai_message.status.value,
-                    "is_streaming": True
-                }
-            }
-            await websocket_manager.broadcast_to_chat(
-                json.dumps(ai_start_data), 
-                chat_id
-            )
-            
-            # Prepare settings for LangChain service
-            settings = {
-                "model": chat.ai_model or "gpt-3.5-turbo",
-                "temperature": float(chat.temperature) if chat.temperature else 0.7,
-                "maxTokens": chat.max_tokens or 2048,
-                "systemPrompt": chat.system_prompt,
-                "provider": "openai",
-                "knowledgeBaseIds": chat.assistant_knowledge_bases if chat.assistant_knowledge_bases else [],
-                "documentIds": chat.assistant_documents if chat.assistant_documents else []
-            }
-            
-            # Debug logging for knowledge base integration
-            logger.info(f"Chat {chat_id} - Streaming mode - Assistant ID: {chat.assistant_id}")
-            logger.info(f"Chat {chat_id} - Knowledge Base IDs: {chat.assistant_knowledge_bases}")
-            logger.info(f"Chat {chat_id} - Document IDs: {chat.assistant_documents}")
-            
-            # Get LangChain service client
-            langchain_client = get_langchain_client()
-            
-            # Stream response chunks using LangChain service
-            full_content = ""
-            processing_start = datetime.utcnow()
-            
-            try:
-                # Try LangChain service first for streaming
-                async for chunk in langchain_client.send_streaming_message(
-                    chat_id=str(chat_id),
-                    message=user_message,
-                    user_id=str(ai_message.sender_id) if ai_message.sender_id else "system",
-                    api_key=openai_key,
-                    settings=settings,
-                    auth_token=""
-                ):
-                    full_content += chunk
-                    
-                    # Broadcast chunk to WebSocket
-                    chunk_data = {
-                        "type": "ai_response_chunk",
-                        "message_id": str(ai_message.id),
-                        "chat_id": chat_id,
-                        "chunk": chunk,
-                        "full_content": full_content
-                    }
-                    await websocket_manager.broadcast_to_chat(
-                        json.dumps(chunk_data),
-                        chat_id
-                    )
-                    
-            except Exception as langchain_error:
-                logger.warning(f"LangChain service failed, using direct OpenAI fallback: {langchain_error}")
                 
-                # Fallback to direct OpenAI streaming
-                from services.ai_service import OpenAIProvider
-                openai_provider = OpenAIProvider(openai_key)
-                
-                async for chunk in openai_provider.generate_streaming_response(
-                    messages,
-                    model=chat.ai_model or "gpt-3.5-turbo",
-                    temperature=float(chat.temperature) if chat.temperature else 0.7,
-                    max_tokens=chat.max_tokens or 2048
-                ):
-                    full_content += chunk
-                    
-                    # Broadcast chunk to WebSocket
-                    chunk_data = {
-                        "type": "ai_response_chunk",
-                        "message_id": str(ai_message.id),
-                        "chat_id": chat_id,
-                        "chunk": chunk,
-                        "full_content": full_content
-                    }
-                    await websocket_manager.broadcast_to_chat(
-                        json.dumps(chunk_data),
-                        chat_id
-                    )
+        except Exception as langchain_error:
+            logger.warning(f"LangChain service failed, using direct OpenAI fallback: {langchain_error}")
             
-            end_time = datetime.utcnow()
-            processing_time_ms = int((end_time - processing_start).total_seconds() * 1000)
+            # Fallback to direct OpenAI streaming
+            from services.ai_service import OpenAIProvider
+            openai_provider = OpenAIProvider(openai_key)
             
-            # Update AI message with final content and get token count
-            ai_message.content = full_content
-            ai_message.processing_time_ms = processing_time_ms
-            
-            # Calculate tokens used for prompt and response
-            prompt_tokens = calculate_message_tokens(messages)
-            completion_tokens = estimate_tokens(full_content)
-            total_tokens = prompt_tokens + completion_tokens
-            
-            ai_message.tokens_used = total_tokens
-            chat.total_tokens_used += total_tokens
-            
-            # Update chat statistics
-            chat.message_count += 1
-            chat.last_activity_at = datetime.utcnow()
-            
-            # Record metrics for monitoring
-            performance_monitor.record_ai_api_call(
-                provider="langchain_service",
+            async for chunk in openai_provider.generate_streaming_response(
+                messages,
                 model=chat.ai_model or "gpt-3.5-turbo",
-                duration=processing_time_ms / 1000.0,
-                tokens_used={
-                    "input": prompt_tokens,
-                    "output": completion_tokens,
-                    "total": total_tokens
+                temperature=float(chat.temperature) if chat.temperature else 0.7,
+                max_tokens=chat.max_tokens or 2048
+            ):
+                full_content += chunk
+                
+                # Broadcast chunk to WebSocket
+                chunk_data = {
+                    "type": "ai_response_chunk",
+                    "message_id": str(ai_message.id),
+                    "chat_id": chat_id,
+                    "chunk": chunk,
+                    "full_content": full_content
                 }
-            )
-            
-            # Database will auto-commit due to get_db_session()
-            
-            # Broadcast completion
-            completion_data = {
-                "type": "ai_response_complete",
-                "message": {
-                    "id": str(ai_message.id),
-                    "chat_id": str(ai_message.chat_id),
-                    "sender_id": None,
-                    "content": ai_message.content,
-                    "message_type": ai_message.message_type.value,
-                    "ai_model_used": ai_message.ai_model_used,
-                    "tokens_used": ai_message.tokens_used,
-                    "processing_time_ms": ai_message.processing_time_ms,
-                    "created_at": ai_message.created_at.isoformat(),
-                    "status": ai_message.status.value,
-                    "is_streaming": False
-                }
+                await websocket_manager.broadcast_to_chat(
+                    json.dumps(chunk_data),
+                    chat_id
+                )
+        
+        end_time = datetime.utcnow()
+        processing_time_ms = int((end_time - processing_start).total_seconds() * 1000)
+        
+        # Update AI message with final content and get token count
+        ai_message.content = full_content
+        ai_message.processing_time_ms = processing_time_ms
+        
+        # Calculate tokens used for prompt and response
+        prompt_tokens = calculate_message_tokens(messages)
+        completion_tokens = estimate_tokens(full_content)
+        total_tokens = prompt_tokens + completion_tokens
+        
+        ai_message.tokens_used = total_tokens
+        
+        # Update chat statistics using a separate session to avoid transaction conflicts
+        try:
+            # Use a fresh database session for updates to avoid conflicts
+            async with get_db_session() as update_session:
+                # Get fresh instances in the new session
+                chat_query = select(Chat).where(Chat.id == chat_id)
+                chat_result = await update_session.execute(chat_query)
+                chat_in_session = chat_result.scalar_one_or_none()
+                
+                if chat_in_session:
+                    chat_in_session.total_tokens_used += total_tokens
+                    chat_in_session.message_count += 1
+                    chat_in_session.last_activity_at = datetime.utcnow()
+                    logger.info(f"Successfully updated chat statistics for {chat_id}")
+                else:
+                    logger.warning(f"Chat {chat_id} not found for statistics update")
+                    
+        except Exception as db_error:
+            logger.error(f"Failed to update chat statistics for {chat_id}: {db_error}")
+            # Continue without updating statistics
+        
+        # Record metrics for monitoring
+        performance_monitor.record_ai_api_call(
+            provider="langchain_service",
+            model=chat.ai_model or "gpt-3.5-turbo",
+            duration=processing_time_ms / 1000.0,
+            tokens_used={
+                "input": prompt_tokens,
+                "output": completion_tokens,
+                "total": total_tokens
             }
-            await websocket_manager.broadcast_to_chat(
-                json.dumps(completion_data), 
-                chat_id
-            )
-            
-            logger.info(f"Generated streaming AI response for chat {chat_id}, processing time: {processing_time_ms}ms")
+        )
+        
+        # Broadcast completion
+        completion_data = {
+            "type": "ai_response_complete",
+            "message": {
+                "id": str(ai_message.id),
+                "chat_id": str(ai_message.chat_id),
+                "sender_id": None,
+                "content": ai_message.content,
+                "message_type": ai_message.message_type.value,
+                "ai_model_used": ai_message.ai_model_used,
+                "tokens_used": ai_message.tokens_used,
+                "processing_time_ms": ai_message.processing_time_ms,
+                "created_at": ai_message.created_at.isoformat(),
+                "status": ai_message.status.value,
+                "is_streaming": False
+            }
+        }
+        await websocket_manager.broadcast_to_chat(
+            json.dumps(completion_data), 
+            chat_id
+        )
+        
+        logger.info(f"Generated streaming AI response for chat {chat_id}, processing time: {processing_time_ms}ms")
         
     except AIServiceError as e:
         duration = (datetime.utcnow() - start_time).total_seconds()
@@ -847,6 +889,13 @@ async def generate_ai_response(
             "timestamp": datetime.utcnow().isoformat()
         }
         await websocket_manager.broadcast_to_chat(json.dumps(error_data), chat_id)
+    finally:
+        # Ensure proper session cleanup
+        if db:
+            try:
+                await db.close()
+            except Exception as close_error:
+                logger.error(f"Error closing database session: {close_error}")
 
 @router.post("/chats", response_model=ChatResponse)
 async def create_chat(
@@ -889,6 +938,8 @@ async def create_chat(
                 document_ids = assistant_config.get("document_ids", [])
                 
                 logger.info(f"Using assistant '{assistant_name}' for chat creation with {len(knowledge_base_ids)} knowledge bases and {len(document_ids)} documents")
+                logger.info(f"AR-99: Assistant knowledge_base_ids: {knowledge_base_ids}")
+                logger.info(f"AR-99: Assistant document_ids: {document_ids}")
                 
             except HTTPException as e:
                 logger.warning(f"Failed to get assistant {request.assistant_id}: {e.detail}")
@@ -1495,6 +1546,10 @@ async def chat_with_ai(
         # Initialize LangChain client
         langchain_client = get_langchain_client()
         
+        # Initialize RAG variables
+        rag_context = ""
+        source_documents = []
+        
         # Get recent chat history for context (if chat history exists)
         messages = []
         
@@ -1529,38 +1584,64 @@ async def chat_with_ai(
         # Save user message to history if requested
         user_message_id = None
         if request_body.save_to_history:
-            user_message = ChatMessage(
-                chat_id=chat_id,
-                sender_id=current_user["user_id"],
-                content=request_body.message,
-                message_type=MessageType.USER
-            )
-            
-            db.add(user_message)
-            chat.last_activity_at = datetime.utcnow()
-            chat.message_count += 1
-            participant.message_count += 1
-            
-            await db.commit()
-            await db.refresh(user_message)
-            user_message_id = str(user_message.id)
-            
-            # Broadcast user message via WebSocket
             try:
-                message_data = {
-                    "type": "new_message",
-                    "message": {
-                        "id": user_message_id,
-                        "chat_id": str(user_message.chat_id),
-                        "sender_id": user_message.sender_id,
-                        "content": user_message.content,
-                        "message_type": user_message.message_type.value,
-                        "created_at": user_message.created_at.isoformat()
+                user_message = ChatMessage(
+                    chat_id=chat_id,
+                    sender_id=current_user["user_id"],
+                    content=request_body.message,
+                    message_type=MessageType.USER
+                )
+                
+                db.add(user_message)
+                chat.last_activity_at = datetime.utcnow()
+                chat.message_count += 1
+                participant.message_count += 1
+                
+                await db.commit()
+                await db.refresh(user_message)
+                user_message_id = str(user_message.id)
+            except Exception as db_error:
+                logger.error(f"Failed to save user message to database: {db_error}")
+                await db.rollback()
+                # Re-fetch chat to reset state after rollback
+                chat = await get_chat_with_validation(chat_id, db)
+                # Continue without saving user message to history
+                logger.warning(f"User message not saved to history due to database error")
+            
+            # Broadcast user message via WebSocket only if we have a valid user message
+            if user_message_id and 'user_message' in locals():
+                try:
+                    message_data = {
+                        "type": "new_message",
+                        "message": {
+                            "id": user_message_id,
+                            "chat_id": str(user_message.chat_id),
+                            "sender_id": user_message.sender_id,
+                            "content": user_message.content,
+                            "message_type": user_message.message_type.value,
+                            "created_at": user_message.created_at.isoformat()
+                        }
                     }
-                }
-                await manager.broadcast_to_chat(json.dumps(message_data), chat_id)
-            except Exception as ws_error:
-                logger.warning(f"Failed to broadcast user message via WebSocket: {ws_error}")
+                    await manager.broadcast_to_chat(json.dumps(message_data), chat_id)
+                except Exception as ws_error:
+                    logger.warning(f"Failed to broadcast user message via WebSocket: {ws_error}")
+            else:
+                # Broadcast a simple user message without database-dependent data
+                try:
+                    simple_user_data = {
+                        "type": "new_message", 
+                        "message": {
+                            "id": None,
+                            "chat_id": chat_id,
+                            "sender_id": current_user["user_id"],
+                            "content": request_body.message,
+                            "message_type": "USER",
+                            "created_at": datetime.utcnow().isoformat()
+                        }
+                    }
+                    await manager.broadcast_to_chat(json.dumps(simple_user_data), chat_id)
+                except Exception as ws_error:
+                    logger.warning(f"Failed to broadcast simple user message via WebSocket: {ws_error}")
         
         # Record start time for performance monitoring
         start_time = datetime.utcnow()
@@ -1579,26 +1660,33 @@ async def chat_with_ai(
             )
             
             if request_body.save_to_history:
-                db.add(ai_message)
-                await db.commit()
-                await db.refresh(ai_message)
+                try:
+                    db.add(ai_message)
+                    await db.commit()
+                    await db.refresh(ai_message)
+                except Exception as db_error:
+                    logger.error(f"Failed to save initial AI message for streaming: {db_error}")
+                    await db.rollback()
+                    # Continue without saving to history
+                    ai_message = None
                 
-                # Broadcast AI message start
-                ai_start_data = {
-                    "type": "ai_response_start",
-                    "message": {
-                        "id": str(ai_message.id),
-                        "chat_id": str(ai_message.chat_id),
-                        "sender_id": None,
-                        "content": "",
-                        "message_type": ai_message.message_type.value,
-                        "ai_model_used": ai_message.ai_model_used,
-                        "created_at": ai_message.created_at.isoformat(),
-                        "status": ai_message.status.value,
-                        "is_streaming": True
+                # Broadcast AI message start only if we have a valid AI message
+                if ai_message:
+                    ai_start_data = {
+                        "type": "ai_response_start",
+                        "message": {
+                            "id": str(ai_message.id),
+                            "chat_id": str(ai_message.chat_id),
+                            "sender_id": None,
+                            "content": "",
+                            "message_type": ai_message.message_type.value,
+                            "ai_model_used": ai_message.ai_model_used,
+                            "created_at": ai_message.created_at.isoformat(),
+                            "status": ai_message.status.value,
+                            "is_streaming": True
+                        }
                     }
-                }
-                await manager.broadcast_to_chat(json.dumps(ai_start_data), chat_id)
+                    await manager.broadcast_to_chat(json.dumps(ai_start_data), chat_id)
             
             # Generate streaming response in background
             background_tasks.add_task(
@@ -1607,9 +1695,8 @@ async def chat_with_ai(
                 messages,
                 langchain_client,
                 chat,
-                ai_message.id if request_body.save_to_history else None,
+                ai_message.id if (request_body.save_to_history and ai_message) else None,
                 start_time,
-                db if request_body.save_to_history else None,
                 openai_key,
                 str(current_user["user_id"]),
                 auth_header
@@ -1621,7 +1708,7 @@ async def chat_with_ai(
                 "streaming": True,
                 "data": {
                     "user_message_id": user_message_id,
-                    "ai_message_id": str(ai_message.id) if request_body.save_to_history else None,
+                    "ai_message_id": str(ai_message.id) if (request_body.save_to_history and ai_message) else None,
                     "chat_id": chat_id,
                     "model_used": chat.ai_model or "gpt-3.5-turbo",
                     "stream_via": "websocket"
@@ -1633,8 +1720,6 @@ async def chat_with_ai(
             # Non-streaming response using LangChain service with RAG integration
             
             # Perform RAG retrieval if knowledge bases are configured
-            rag_context = ""
-            source_documents = []
             if chat.assistant_knowledge_bases and request_body.message:
                 try:
                     logger.info(f"AR-75: Performing RAG retrieval for query: {request_body.message[:100]}...")
@@ -1766,53 +1851,126 @@ Instructions: Use the above context to provide accurate, detailed answers. When 
             # Save AI response to history if requested
             ai_message_id = None
             if request_body.save_to_history:
-                ai_message = ChatMessage(
-                    chat_id=chat_id,
-                    sender_id=None,
-                    content=ai_response_content,
-                    message_type=MessageType.AI,
-                    ai_model_used=chat.ai_model or "gpt-3.5-turbo",
-                    tokens_used=actual_tokens["total"],
-                    processing_time_ms=processing_time_ms
-                )
-                
-                db.add(ai_message)
-                chat.message_count += 1
-                chat.last_activity_at = datetime.utcnow()
-                chat.total_tokens_used += actual_tokens["total"]
-                
-                await db.commit()
-                await db.refresh(ai_message)
-                ai_message_id = str(ai_message.id)
-                
-                # Broadcast AI response via WebSocket
                 try:
-                    ai_message_data = {
-                        "type": "ai_response_complete",
-                        "message": {
-                            "id": ai_message_id,
-                            "chat_id": str(ai_message.chat_id),
-                            "sender_id": None,
-                            "content": ai_message.content,
-                            "message_type": ai_message.message_type.value,
-                            "ai_model_used": ai_message.ai_model_used,
-                            "tokens_used": ai_message.tokens_used,
-                            "processing_time_ms": ai_message.processing_time_ms,
-                            "created_at": ai_message.created_at.isoformat(),
-                            "status": ai_message.status.value,
-                            "is_streaming": False,
-                            "rag_sources": source_documents if source_documents else [],
-                            "rag_enabled": bool(rag_context)
+                    # Safely get ai_model without accessing database object during transaction
+                    safe_ai_model = "gpt-3.5-turbo"  # Default fallback
+                    try:
+                        if chat and hasattr(chat, 'ai_model') and chat.ai_model:
+                            safe_ai_model = chat.ai_model
+                    except Exception:
+                        # chat object might be detached or invalid
+                        safe_ai_model = "gpt-3.5-turbo"
+                    
+                    ai_message = ChatMessage(
+                        chat_id=chat_id,
+                        sender_id=None,
+                        content=ai_response_content,
+                        message_type=MessageType.AI,
+                        ai_model_used=safe_ai_model,
+                        tokens_used=actual_tokens["total"],
+                        processing_time_ms=processing_time_ms
+                    )
+                    
+                    db.add(ai_message)
+                    # Safely update chat statistics without accessing potentially detached object
+                    try:
+                        chat.message_count += 1
+                        chat.last_activity_at = datetime.utcnow()
+                        chat.total_tokens_used += actual_tokens["total"]
+                    except Exception:
+                        # If chat object access fails, continue without updating statistics
+                        logger.warning("Could not update chat statistics due to detached object")
+                    
+                    await db.commit()
+                    await db.refresh(ai_message)
+                    ai_message_id = str(ai_message.id)
+                except Exception as db_error:
+                    logger.error(f"Failed to save AI message to database: {db_error}")
+                    # Rollback to reset session state, but don't re-raise
+                    try:
+                        await db.rollback()
+                    except Exception as rollback_error:
+                        logger.error(f"Error during rollback: {rollback_error}")
+                    
+                    # Set ai_message to None to indicate save failure
+                    ai_message = None
+                    ai_message_id = None
+                    # Continue without saving to history
+                    logger.warning(f"AI response generated but not saved to history due to database error")
+                
+                # Try to broadcast AI response via WebSocket with full data if we have a valid AI message
+                broadcast_successful = False
+                if ai_message_id and 'ai_message' in locals() and ai_message is not None:
+                    try:
+                        # Check if ai_message is still attached to session by testing attribute access
+                        _ = ai_message.id
+                        ai_message_data = {
+                            "type": "ai_response_complete",
+                            "message": {
+                                "id": ai_message_id,
+                                "chat_id": str(ai_message.chat_id),
+                                "sender_id": None,
+                                "content": ai_message.content,
+                                "message_type": ai_message.message_type.value,
+                                "ai_model_used": ai_message.ai_model_used,
+                                "tokens_used": ai_message.tokens_used,
+                                "processing_time_ms": ai_message.processing_time_ms,
+                                "created_at": ai_message.created_at.isoformat(),
+                                "status": ai_message.status.value,
+                                "is_streaming": False,
+                                "rag_sources": source_documents if source_documents else [],
+                                "rag_enabled": bool(rag_context)
+                            }
                         }
-                    }
-                    await manager.broadcast_to_chat(json.dumps(ai_message_data), chat_id)
-                except Exception as ws_error:
-                    logger.warning(f"Failed to broadcast AI message via WebSocket: {ws_error}")
+                        await manager.broadcast_to_chat(json.dumps(ai_message_data), chat_id)
+                        broadcast_successful = True
+                    except Exception as ws_error:
+                        logger.warning(f"Failed to broadcast AI message via WebSocket: {ws_error}")
+                
+                # If broadcasting with full data failed, broadcast simpler response
+                if not broadcast_successful:
+                    # Broadcast a simpler response without database-dependent data
+                    try:
+                        # Safely get ai_model without accessing database object after rollback
+                        safe_ai_model = "gpt-3.5-turbo"  # Default fallback
+                        try:
+                            if chat and hasattr(chat, 'ai_model'):
+                                safe_ai_model = chat.ai_model or "gpt-3.5-turbo"
+                        except Exception:
+                            # chat object might be detached, use fallback
+                            safe_ai_model = "gpt-3.5-turbo"
+                        
+                        simple_ai_data = {
+                            "type": "ai_response_complete",
+                            "message": {
+                                "id": None,
+                                "chat_id": chat_id,
+                                "sender_id": None,
+                                "content": ai_response_content,
+                                "message_type": "AI",
+                                "ai_model_used": safe_ai_model,
+                                "tokens_used": actual_tokens["total"],
+                                "processing_time_ms": processing_time_ms,
+                                "created_at": datetime.utcnow().isoformat(),
+                                "status": "delivered",
+                                "is_streaming": False,
+                                "rag_sources": source_documents if source_documents else [],
+                                "rag_enabled": bool(rag_context)
+                            }
+                        }
+                        await manager.broadcast_to_chat(json.dumps(simple_ai_data), chat_id)
+                    except Exception as ws_error:
+                        logger.warning(f"Failed to broadcast simple AI message via WebSocket: {ws_error}")
             
-            # Record metrics
+            # Record metrics - safely access ai_model
+            try:
+                safe_model = chat.ai_model if chat else "gpt-3.5-turbo"
+            except Exception:
+                safe_model = "gpt-3.5-turbo"
+            
             performance_monitor.record_ai_api_call(
                 provider=provider,
-                model=chat.ai_model or "gpt-3.5-turbo",
+                model=safe_model or "gpt-3.5-turbo",
                 duration=processing_time_ms / 1000.0,
                 tokens_used=actual_tokens
             )
@@ -1832,7 +1990,7 @@ Instructions: Use the above context to provide accurate, detailed answers. When 
                     "ai_response": {
                         "id": ai_message_id,
                         "content": ai_response_content,
-                        "model_used": chat.ai_model or "gpt-3.5-turbo",
+                        "model_used": safe_model or "gpt-3.5-turbo",  # Use the safely obtained model
                         "processing_time_ms": processing_time_ms,
                         "tokens_used": actual_tokens,
                         "finish_reason": "stop",
@@ -1842,8 +2000,9 @@ Instructions: Use the above context to provide accurate, detailed answers. When 
                     },
                     "chat_info": {
                         "chat_id": chat_id,
-                        "total_messages": chat.message_count,
-                        "total_tokens_used": chat.total_tokens_used
+                        # Safely get chat statistics without accessing detached object
+                        "total_messages": _safe_get_chat_value(chat, 'message_count', 0),
+                        "total_tokens_used": _safe_get_chat_value(chat, 'total_tokens_used', 0)
                     }
                 },
                 "timestamp": datetime.utcnow().isoformat()

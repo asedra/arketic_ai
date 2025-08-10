@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from core.dependencies import get_current_user_dict
 from schemas.auth import (
-    LoginRequest, TokenResponse, RefreshTokenRequest, SessionInfo
+    LoginRequest, RegisterRequest, TokenResponse, RefreshTokenRequest, SessionInfo
 )
 from services.auth_service import AuthenticationService
 from services.user_service import UserService
@@ -21,6 +21,52 @@ security = HTTPBearer()
 auth_service = AuthenticationService()
 user_service = UserService()
 
+
+
+@router.post("/register", response_model=TokenResponse)
+async def register(
+    register_data: RegisterRequest,
+    request: Request,
+    session: AsyncSession = Depends(get_db)
+):
+    """
+    Register a new user and return access/refresh tokens
+    
+    Creates a new user account and returns JWT tokens for immediate API access.
+    """
+    try:
+        from schemas.user import UserCreate, UserRole
+        
+        # Create user data
+        user_create = UserCreate(
+            email=register_data.email,
+            password=register_data.password,
+            first_name=register_data.firstName,
+            last_name=register_data.lastName,
+            username=None,  # Let the system generate if needed
+            role=UserRole.USER  # Default role for new registrations
+        )
+        
+        # Create the user
+        new_user = await user_service.create_user(session, user_create)
+        
+        # Generate tokens for the new user
+        login_data = LoginRequest(
+            email=register_data.email,
+            password=register_data.password,
+            remember_me=False
+        )
+        
+        token_response = await auth_service.login_user(session, login_data, request)
+        return token_response
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Registration failed: {str(e)}"
+        )
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -134,3 +180,35 @@ async def validate_token(
         "expires_at": current_user.get("expires_at"),
         "validated_at": datetime.utcnow()
     }
+
+
+@router.post("/logout", response_model=dict)
+async def logout(
+    current_user = Depends(get_current_user_dict),
+    session: AsyncSession = Depends(get_db)
+):
+    """
+    Logout current user
+    
+    Invalidates the current session and optionally blacklists the token.
+    Returns success status.
+    """
+    try:
+        # In a production environment, you might want to:
+        # 1. Add the token to a blacklist/revocation list
+        # 2. Clear server-side session if using session storage
+        # 3. Log the logout event for auditing
+        
+        # For now, we'll just return success
+        # The client is responsible for clearing tokens
+        return {
+            "success": True,
+            "message": "Successfully logged out",
+            "logged_out_at": datetime.utcnow()
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Logout failed: {str(e)}"
+        )

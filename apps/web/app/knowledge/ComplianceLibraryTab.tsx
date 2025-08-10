@@ -15,12 +15,14 @@ import { ComplianceSidebar } from "./components/ComplianceSidebar"
 import { ComplianceCard } from "./components/ComplianceCard"
 import { ComplianceTable } from "./components/ComplianceTable"
 import { AddComplianceModal } from "./components/AddComplianceModal"
-import { complianceApi } from "@/lib/api-client"
+import { complianceApi, knowledgeApi, DocumentResponse } from "@/lib/api-client"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 import complianceData from "./mock/compliance.json"
 
 export function ComplianceLibraryTab() {
+  const router = useRouter()
   const [documents, setDocuments] = useState<ComplianceDocument[]>(complianceData)
   const [filters, setFilters] = useState<ComplianceFilters>({})
   const [viewMode, setViewMode] = useState<ViewMode>("cards")
@@ -340,7 +342,7 @@ export function ComplianceLibraryTab() {
                     >
                       <ComplianceCard 
                         document={doc}
-                        onView={() => console.log("View", doc.id)}
+                        onView={() => router.push(`/knowledge/${doc.id}`)}
                         onEdit={() => console.log("Edit", doc.id)}
                         onDelete={() => console.log("Delete", doc.id)}
                       />
@@ -351,7 +353,7 @@ export function ComplianceLibraryTab() {
                 <div className="animate-slide-in-up">
                   <ComplianceTable 
                     documents={filteredDocuments}
-                    onView={(id: string) => console.log("View", id)}
+                    onView={(id: string) => router.push(`/knowledge/${id}`)}
                     onEdit={(id: string) => console.log("Edit", id)}
                     onDelete={(id: string) => console.log("Delete", id)}
                   />

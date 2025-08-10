@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server'
 
 // Define protected routes
 const protectedRoutes = [
+  '/',  // Root route now requires auth and redirects to dashboard
   '/dashboard',
   '/my-organization',
   '/knowledge',
@@ -27,18 +28,42 @@ const protectedApiRoutes = [
   '/api/v1/settings',
 ]
 
+// Helper function to validate JWT token
+function isTokenValid(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    const expiryTime = payload.exp * 1000
+    return Date.now() < expiryTime
+  } catch {
+    return false
+  }
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const token = request.cookies.get('auth_token')?.value || 
                 request.headers.get('Authorization')?.replace('Bearer ', '')
 
+  // Validate token if present
+  const isValidToken = token ? isTokenValid(token) : false
+
+  // Special handling for root path
+  if (pathname === '/') {
+    if (!isValidToken) {
+      // Redirect unauthenticated users to login
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+    // Redirect authenticated users to dashboard
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
   // Check if route is protected
   const isProtectedRoute = protectedRoutes.some(route => 
-    pathname.startsWith(route)
+    pathname === route || (route !== '/' && pathname.startsWith(route))
   )
   
   const isPublicRoute = publicRoutes.some(route => 
-    pathname === route || (route === '/' && pathname === '/')
+    pathname === route
   )
 
   const isProtectedApiRoute = protectedApiRoutes.some(route =>
@@ -47,7 +72,7 @@ export function middleware(request: NextRequest) {
 
   // Handle protected API routes
   if (isProtectedApiRoute) {
-    if (!token) {
+    if (!isValidToken) {
       return new NextResponse(
         JSON.stringify({ 
           error: 'Unauthorized', 
@@ -64,7 +89,7 @@ export function middleware(request: NextRequest) {
 
   // Handle protected page routes
   if (isProtectedRoute) {
-    if (!token) {
+    if (!isValidToken) {
       // Store the attempted URL for redirect after login
       const redirectUrl = new URL('/login', request.url)
       redirectUrl.searchParams.set('redirect', pathname)
@@ -74,7 +99,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Handle public routes when already authenticated
-  if (isPublicRoute && token && (pathname === '/login' || pathname === '/signup')) {
+  if (isPublicRoute && isValidToken && (pathname === '/login' || pathname === '/signup')) {
     // Redirect to dashboard if already authenticated
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
@@ -85,7 +110,7 @@ export function middleware(request: NextRequest) {
   }
 
   // All other routes require authentication
-  if (!token) {
+  if (!isValidToken) {
     // Store the attempted URL for redirect after login
     const redirectUrl = new URL('/login', request.url)
     redirectUrl.searchParams.set('redirect', pathname)

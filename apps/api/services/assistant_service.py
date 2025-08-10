@@ -464,8 +464,36 @@ class AssistantService:
                 raise HTTPException(status_code=403, detail="Access denied to this assistant")
             
             # Get knowledge base IDs for RAG integration
-            knowledge_base_ids = [str(kb.id) for kb in assistant.knowledge_bases] if assistant.knowledge_bases else []
-            document_ids = [str(doc.id) for doc in assistant.documents] if assistant.documents else []
+            logger.info(f"AR-99 Debug: Assistant {assistant_id} loaded with relationships")
+            logger.info(f"AR-99 Debug: assistant.knowledge_bases type: {type(assistant.knowledge_bases)}")
+            
+            # Try to manually query knowledge bases if relationship fails
+            try:
+                knowledge_base_ids = [str(kb.id) for kb in assistant.knowledge_bases] if assistant.knowledge_bases else []
+                document_ids = [str(doc.id) for doc in assistant.documents] if assistant.documents else []
+            except Exception as rel_error:
+                logger.warning(f"AR-99: Failed to load relationships directly: {rel_error}")
+                # Fallback: Query the association table directly
+                from sqlalchemy import text
+                kb_query = text("""
+                    SELECT knowledge_base_id 
+                    FROM assistant_knowledge_bases 
+                    WHERE assistant_id = :assistant_id
+                """)
+                kb_result = await db.execute(kb_query, {"assistant_id": str(assistant_id)})
+                kb_rows = kb_result.fetchall()
+                knowledge_base_ids = [str(row[0]) for row in kb_rows] if kb_rows else []
+                
+                doc_query = text("""
+                    SELECT document_id 
+                    FROM assistant_documents 
+                    WHERE assistant_id = :assistant_id
+                """)
+                doc_result = await db.execute(doc_query, {"assistant_id": str(assistant_id)})
+                doc_rows = doc_result.fetchall()
+                document_ids = [str(row[0]) for row in doc_rows] if doc_rows else []
+                
+                logger.info(f"AR-99: Loaded from association tables - KBs: {knowledge_base_ids}, Docs: {document_ids}")
             
             # Also get knowledge base IDs from documents (if documents are attached but not knowledge bases)
             if document_ids and not knowledge_base_ids:

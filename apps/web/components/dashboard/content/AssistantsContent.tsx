@@ -60,7 +60,7 @@ import { Switch } from '@/components/ui/switch'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
-import { KnowledgeSelector } from '@/components/assistant/KnowledgeSelector'
+import { KnowledgeSelector } from '@/components/assistants/knowledge-selector'
 
 interface AssistantsContentProps {
   className?: string
@@ -837,6 +837,9 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
                     onSelectAll={handleSelectAllKnowledge}
                     onClearAll={handleClearAllKnowledge}
                     className="h-[400px]"
+                    showPreviewCards={true}
+                    enableDragDrop={true}
+                    onOrderChange={(items) => console.log('Order changed:', items)}
                   />
                 )}
               </TabsContent>
@@ -980,6 +983,9 @@ const AssistantsContent = memo(function AssistantsContent({ className }: Assista
                     onSelectAll={handleSelectAllKnowledge}
                     onClearAll={handleClearAllKnowledge}
                     className="h-[400px]"
+                    showPreviewCards={true}
+                    enableDragDrop={true}
+                    onOrderChange={(items) => console.log('Order changed:', items)}
                   />
                 )}
               </TabsContent>

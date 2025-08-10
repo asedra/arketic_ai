@@ -6,6 +6,10 @@
 
 import dynamic from 'next/dynamic'
 import { LoadingSpinner } from '@/components/dashboard/LoadingSpinner'
+import { ProtectedRoute } from '@/components/auth/protected-route'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 
 // Dynamically import the dashboard container for better performance
 const DashboardContainer = dynamic(
@@ -21,7 +25,23 @@ const DashboardContainer = dynamic(
 )
 
 export default function HomePage() {
-  return <DashboardContainer />
+  const router = useRouter()
+  const { isAuthenticated, isLoading } = useAuth()
+  
+  useEffect(() => {
+    // Redirect authenticated users to dashboard
+    if (!isLoading && isAuthenticated) {
+      router.replace('/dashboard')
+    }
+  }, [isAuthenticated, isLoading, router])
+  
+  // For authenticated users, redirect to dashboard
+  // For unauthenticated users, the ProtectedRoute will redirect to login
+  return (
+    <ProtectedRoute requireAuth={true} redirectTo="/login">
+      <DashboardContainer />
+    </ProtectedRoute>
+  )
 }
 
 /*

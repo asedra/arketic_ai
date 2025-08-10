@@ -1,0 +1,57 @@
+# Page snapshot
+
+```yaml
+- img
+- heading "Create account" [level=1]
+- paragraph: Start your journey with Arketic AI
+- text: Sign Up Create your account to get started First Name
+- textbox "First Name"
+- paragraph: First name is required
+- text: Last Name
+- textbox "Last Name"
+- paragraph: Last name is required
+- text: Email Address
+- textbox "Email Address"
+- paragraph: Email is required
+- text: Password
+- textbox "Create a strong password"
+- button:
+  - img
+- paragraph: Password must be at least 8 characters
+- text: Confirm Password
+- textbox "Confirm your password"
+- button:
+  - img
+- paragraph: Please confirm your password
+- checkbox "I agree to the Terms of Service and Privacy Policy"
+- text: I agree to the
+- link "Terms of Service":
+  - /url: /terms
+- text: and
+- link "Privacy Policy":
+  - /url: /privacy
+- paragraph: You must accept the terms and conditions
+- button "Create Account":
+  - text: Create Account
+  - img
+- text: Already have an account?
+- link "Sign in":
+  - /url: /login
+- heading "Demo Info:" [level=3]
+- paragraph:
+  - strong: "Error test:"
+  - text: Use email "taken@example.com"
+- paragraph:
+  - strong: "Success:"
+  - text: Any other valid email + strong password
+- region "Notifications alt+T":
+  - list:
+    - listitem:
+      - button "Close toast":
+        - img
+      - img
+      - text: Dashboard initialized successfully
+- button "Open Next.js Dev Tools":
+  - img
+- alert
+```

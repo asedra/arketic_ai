@@ -13,6 +13,7 @@ from schemas.auth import LoginRequest, TokenResponse
 from core.security import get_security_manager
 from .user_service import UserService
 from .token_service import TokenService
+from .system_settings_service import get_system_settings_service
 
 
 class AuthenticationService:
@@ -22,6 +23,7 @@ class AuthenticationService:
         self._security_manager = None
         self.user_service = UserService()
         self.token_service = TokenService()
+        self.system_settings_service = get_system_settings_service()
     
     @property
     def security_manager(self):
@@ -65,12 +67,18 @@ class AuthenticationService:
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
+        # Check if account lockout is enabled
+        lockout_settings = await self.system_settings_service.get_lockout_settings(session)
+        
         # Check password
         if not self.security_manager.verify_password(login_data.password, user_for_auth.password_hash):
             # Invalid password
             if ip_address:
                 self.security_manager.record_failed_attempt(login_data.email, ip_address)
-            await self.user_service.increment_failed_login_attempts(session, str(user_for_auth.id))
+            
+            # Only increment failed attempts and potentially lock account if lockout is enabled
+            if lockout_settings["enabled"]:
+                await self.user_service.increment_failed_login_attempts(session, str(user_for_auth.id))
             
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -83,7 +91,8 @@ class AuthenticationService:
             detail = "Account is inactive"
             status_code = status.HTTP_422_UNPROCESSABLE_ENTITY  # Default for test compatibility
             
-            if user_for_auth.is_locked:
+            # Only check for lockout if the feature is enabled
+            if lockout_settings["enabled"] and user_for_auth.is_locked:
                 detail = "Account is temporarily locked due to failed login attempts"
                 status_code = status.HTTP_403_FORBIDDEN  # Keep 403 for security locks
             elif user_for_auth.status == UserStatus.SUSPENDED:

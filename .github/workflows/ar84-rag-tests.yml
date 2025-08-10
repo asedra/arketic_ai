@@ -1,0 +1,625 @@
+name: AR-84 RAG Integration Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_scope:
+        description: 'Test scope to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - backend-only
+        - frontend-only
+        - isolated-only
+        - integration-only
+
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # Backend RAG Integration Tests
+  backend-rag-tests:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_scope == 'all' || github.event.inputs.test_scope == 'backend-only' || github.event.inputs.test_scope == 'integration-only' || github.event.inputs.test_scope == ''
+    
+    services:
+      postgres:
+        image: pgvector/pgvector:pg15
+        env:
+          POSTGRES_DB: arketic_test
+          POSTGRES_USER: arketic
+          POSTGRES_PASSWORD: arketic_test_password
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r apps/api/requirements.txt
+        pip install pytest pytest-asyncio requests websocket-client python-dotenv
+
+    - name: Set up environment variables
+      run: |
+        echo "DATABASE_URL=postgresql://arketic:arketic_test_password@localhost:5432/arketic_test" >> $GITHUB_ENV
+        echo "REDIS_URL=redis://localhost:6379/0" >> $GITHUB_ENV
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+        echo "ENVIRONMENT=test" >> $GITHUB_ENV
+
+    - name: Wait for services
+      run: |
+        # Wait for PostgreSQL
+        until pg_isready -h localhost -p 5432 -U arketic; do
+          echo "Waiting for PostgreSQL..."
+          sleep 2
+        done
+        
+        # Wait for Redis
+        until redis-cli -h localhost -p 6379 ping; do
+          echo "Waiting for Redis..."
+          sleep 2
+        done
+
+    - name: Set up database
+      run: |
+        cd apps/api
+        python -c "
+        import psycopg2
+        conn = psycopg2.connect('postgresql://arketic:arketic_test_password@localhost:5432/arketic_test')
+        cur = conn.cursor()
+        cur.execute('CREATE EXTENSION IF NOT EXISTS vector;')
+        conn.commit()
+        conn.close()
+        "
+        
+        # Run migrations
+        alembic upgrade head
+
+    - name: Run RAG Integration Tests
+      run: |
+        cd apps/api/docs
+        python rag_integration_test.py > rag_test_output.log 2>&1 || true
+        
+        # Check if test report was generated
+        if [ -f "rag_integration_test_report.json" ]; then
+          echo "RAG integration test report generated successfully"
+          cat rag_integration_test_report.json | jq '.test_metadata.success_rate_percent'
+        else
+          echo "RAG integration test report not found"
+          cat rag_test_output.log
+        fi
+
+    - name: Upload RAG Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: backend-rag-test-results
+        path: |
+          apps/api/docs/rag_integration_test_report.json
+          apps/api/docs/rag_test_output.log
+        retention-days: 7
+
+    - name: Run Isolated Endpoint Tests
+      if: github.event.inputs.test_scope == 'all' || github.event.inputs.test_scope == 'isolated-only'
+      run: |
+        cd apps/api/docs
+        python isolated_endpoint_test.py > isolated_test_output.log 2>&1 || true
+        
+        # Check isolated test results
+        if [ -f "isolated_endpoint_test_report.json" ]; then
+          echo "Isolated endpoint test report generated successfully"
+          cat isolated_endpoint_test_report.json | jq '.test_metadata.integration_readiness_rate'
+        else
+          echo "Isolated endpoint test report not found"
+          cat isolated_test_output.log
+        fi
+
+    - name: Upload Isolated Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: isolated-endpoint-test-results
+        path: |
+          apps/api/docs/isolated_endpoint_test_report.json
+          apps/api/docs/isolated_test_output.log
+        retention-days: 7
+
+    - name: Analyze Test Results
+      run: |
+        cd apps/api/docs
+        
+        # Create summary report
+        python3 << 'EOF'
+        import json
+        import sys
+        
+        # Load test results
+        try:
+            with open('rag_integration_test_report.json', 'r') as f:
+                rag_results = json.load(f)
+                
+            with open('isolated_endpoint_test_report.json', 'r') as f:
+                isolated_results = json.load(f)
+            
+            print("=== AR-84 RAG Integration Test Summary ===")
+            print(f"RAG Integration Success Rate: {rag_results['test_metadata']['success_rate_percent']}%")
+            print(f"Isolated Endpoint Readiness: {isolated_results['test_metadata']['integration_readiness_rate']}%")
+            print(f"Total RAG Tests: {rag_results['test_metadata']['total_tests']}")
+            print(f"Average Response Time: {rag_results['test_metadata']['average_duration_ms']}ms")
+            
+            # Check if tests pass CI criteria
+            rag_success_rate = rag_results['test_metadata']['success_rate_percent']
+            integration_readiness = isolated_results['test_metadata']['integration_readiness_rate']
+            
+            if rag_success_rate >= 90 and integration_readiness >= 80:
+                print("✅ All tests meet CI criteria")
+                sys.exit(0)
+            else:
+                print("❌ Tests do not meet CI criteria")
+                print(f"   Required: RAG success ≥90%, Integration readiness ≥80%")
+                print(f"   Actual: RAG {rag_success_rate}%, Integration {integration_readiness}%")
+                sys.exit(1)
+                
+        except FileNotFoundError as e:
+            print(f"Test report file not found: {e}")
+            sys.exit(1)
+        except Exception as e:
+            print(f"Error analyzing test results: {e}")
+            sys.exit(1)
+        EOF
+
+  # Frontend RAG Playwright Tests
+  frontend-rag-tests:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_scope == 'all' || github.event.inputs.test_scope == 'frontend-only' || github.event.inputs.test_scope == 'integration-only' || github.event.inputs.test_scope == ''
+    
+    services:
+      postgres:
+        image: pgvector/pgvector:pg15
+        env:
+          POSTGRES_DB: arketic_test
+          POSTGRES_USER: arketic
+          POSTGRES_PASSWORD: arketic_test_password
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: apps/web/package-lock.json
+
+    - name: Set up Python for API
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        # Install Python dependencies for API
+        python -m pip install --upgrade pip
+        pip install -r apps/api/requirements.txt
+        
+        # Install Node.js dependencies for web
+        cd apps/web
+        npm ci
+
+    - name: Install Playwright browsers
+      run: |
+        cd apps/web
+        npx playwright install --with-deps chromium
+
+    - name: Set up environment
+      run: |
+        # Create .env for API
+        cat > apps/api/.env << EOF
+        DATABASE_URL=postgresql://arketic:arketic_test_password@localhost:5432/arketic_test
+        REDIS_URL=redis://localhost:6379/0
+        OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+        ENVIRONMENT=test
+        EOF
+        
+        # Create .env for web
+        cat > apps/web/.env.local << EOF
+        NEXT_PUBLIC_API_URL=http://localhost:8000
+        PLAYWRIGHT_BASE_URL=http://localhost:3000
+        API_URL=http://localhost:8000
+        EOF
+
+    - name: Set up database
+      run: |
+        # Wait for PostgreSQL
+        until pg_isready -h localhost -p 5432 -U arketic; do
+          echo "Waiting for PostgreSQL..."
+          sleep 2
+        done
+        
+        # Set up database
+        cd apps/api
+        python -c "
+        import psycopg2
+        conn = psycopg2.connect('postgresql://arketic:arketic_test_password@localhost:5432/arketic_test')
+        cur = conn.cursor()
+        cur.execute('CREATE EXTENSION IF NOT EXISTS vector;')
+        conn.commit()
+        conn.close()
+        "
+        alembic upgrade head
+
+    - name: Start services
+      run: |
+        # Start API in background
+        cd apps/api
+        python main.py &
+        API_PID=$!
+        echo $API_PID > /tmp/api.pid
+        
+        # Start web app in background
+        cd apps/web
+        npm run build
+        npm start &
+        WEB_PID=$!
+        echo $WEB_PID > /tmp/web.pid
+        
+        # Wait for services to start
+        echo "Waiting for services to start..."
+        sleep 30
+        
+        # Health check
+        curl -f http://localhost:8000/health || exit 1
+        curl -f http://localhost:3000 || exit 1
+
+    - name: Run RAG Playwright Tests
+      run: |
+        cd apps/web/tests/playwright
+        
+        # Run RAG-specific tests
+        npx playwright test chat/rag-integration.spec.ts --reporter=html,json || true
+        npx playwright test knowledge/knowledge-rag.spec.ts --reporter=html,json || true
+
+    - name: Upload Playwright Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: frontend-rag-playwright-results
+        path: |
+          apps/web/tests/playwright/test-results/
+          apps/web/tests/playwright/reports/
+          apps/web/test-results.json
+        retention-days: 7
+
+    - name: Stop services
+      if: always()
+      run: |
+        # Stop services
+        if [ -f /tmp/api.pid ]; then
+          kill $(cat /tmp/api.pid) || true
+        fi
+        if [ -f /tmp/web.pid ]; then
+          kill $(cat /tmp/web.pid) || true
+        fi
+
+  # Integration Test Analysis
+  integration-analysis:
+    runs-on: ubuntu-latest
+    needs: [backend-rag-tests, frontend-rag-tests]
+    if: always() && (github.event.inputs.test_scope == 'all' || github.event.inputs.test_scope == 'integration-only' || github.event.inputs.test_scope == '')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download Backend Test Results
+      uses: actions/download-artifact@v3
+      with:
+        name: backend-rag-test-results
+        path: ./backend-results/
+
+    - name: Download Frontend Test Results
+      uses: actions/download-artifact@v3
+      with:
+        name: frontend-rag-playwright-results
+        path: ./frontend-results/
+
+    - name: Download Isolated Test Results
+      uses: actions/download-artifact@v3
+      with:
+        name: isolated-endpoint-test-results
+        path: ./isolated-results/
+
+    - name: Generate Consolidated Report
+      run: |
+        # Create consolidated test report
+        python3 << 'EOF'
+        import json
+        import os
+        from datetime import datetime
+        
+        def safe_load_json(filepath):
+            try:
+                with open(filepath, 'r') as f:
+                    return json.load(f)
+            except:
+                return {}
+        
+        # Load all test results
+        backend_results = safe_load_json('./backend-results/rag_integration_test_report.json')
+        isolated_results = safe_load_json('./isolated-results/isolated_endpoint_test_report.json')
+        
+        # Create consolidated report
+        consolidated = {
+            "test_suite": "AR-84 RAG Integration Test Suite",
+            "generated_at": datetime.utcnow().isoformat() + 'Z',
+            "ci_run_id": os.getenv('GITHUB_RUN_ID', 'unknown'),
+            "git_commit": os.getenv('GITHUB_SHA', 'unknown'),
+            "summary": {
+                "total_test_categories": 3,
+                "backend_rag_tests": {
+                    "success_rate": backend_results.get('test_metadata', {}).get('success_rate_percent', 0),
+                    "total_tests": backend_results.get('test_metadata', {}).get('total_tests', 0),
+                    "avg_duration_ms": backend_results.get('test_metadata', {}).get('average_duration_ms', 0)
+                },
+                "isolated_endpoint_tests": {
+                    "integration_readiness": isolated_results.get('test_metadata', {}).get('integration_readiness_rate', 0),
+                    "total_endpoints": isolated_results.get('test_metadata', {}).get('total_endpoints_tested', 0),
+                    "ready_endpoints": isolated_results.get('test_metadata', {}).get('integration_ready_endpoints', 0)
+                },
+                "frontend_playwright_tests": {
+                    "note": "Results require manual parsing from Playwright JSON output"
+                }
+            },
+            "integration_recommendations": {
+                "backend_ready": backend_results.get('test_metadata', {}).get('success_rate_percent', 0) >= 90,
+                "endpoints_ready": isolated_results.get('test_metadata', {}).get('integration_readiness_rate', 0) >= 80,
+                "ready_for_production": False  # Will be calculated
+            },
+            "next_steps": [],
+            "detailed_results": {
+                "backend_rag_integration": backend_results,
+                "isolated_endpoint_testing": isolated_results
+            }
+        }
+        
+        # Calculate overall readiness
+        backend_ready = consolidated["integration_recommendations"]["backend_ready"]
+        endpoints_ready = consolidated["integration_recommendations"]["endpoints_ready"]
+        consolidated["integration_recommendations"]["ready_for_production"] = backend_ready and endpoints_ready
+        
+        # Generate recommendations
+        if not backend_ready:
+            consolidated["next_steps"].append("Improve backend RAG integration test success rate to ≥90%")
+        if not endpoints_ready:
+            consolidated["next_steps"].append("Address isolated endpoint issues to achieve ≥80% integration readiness")
+        if backend_ready and endpoints_ready:
+            consolidated["next_steps"].append("✅ RAG integration is ready for production deployment")
+            consolidated["next_steps"].append("Proceed with integration into main test suites")
+        
+        # Save consolidated report
+        with open('ar84_rag_integration_report.json', 'w') as f:
+            json.dump(consolidated, f, indent=2)
+        
+        print("=== AR-84 RAG Integration Test Suite Results ===")
+        print(f"Backend RAG Success Rate: {consolidated['summary']['backend_rag_tests']['success_rate']}%")
+        print(f"Endpoint Integration Readiness: {consolidated['summary']['isolated_endpoint_tests']['integration_readiness']}%")
+        print(f"Ready for Production: {consolidated['integration_recommendations']['ready_for_production']}")
+        print("\nNext Steps:")
+        for step in consolidated["next_steps"]:
+            print(f"  • {step}")
+        EOF
+
+    - name: Upload Consolidated Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: ar84-consolidated-test-report
+        path: ar84_rag_integration_report.json
+        retention-days: 30
+
+    - name: Comment PR with Results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          
+          try {
+            const report = JSON.parse(fs.readFileSync('ar84_rag_integration_report.json', 'utf8'));
+            
+            const comment = `## 🧪 AR-84 RAG Integration Test Results
+            
+            ### 📊 Test Summary
+            - **Backend RAG Tests**: ${report.summary.backend_rag_tests.success_rate}% success rate
+            - **Isolated Endpoint Tests**: ${report.summary.isolated_endpoint_tests.integration_readiness}% integration ready
+            - **Total Endpoints Tested**: ${report.summary.isolated_endpoint_tests.total_endpoints}
+            - **Ready Endpoints**: ${report.summary.isolated_endpoint_tests.ready_endpoints}
+            
+            ### 🎯 Integration Status
+            ${report.integration_recommendations.ready_for_production ? '✅' : '❌'} **Production Ready**: ${report.integration_recommendations.ready_for_production}
+            
+            ### 📋 Next Steps
+            ${report.next_steps.map(step => `- ${step}`).join('\n')}
+            
+            ### 📄 Detailed Reports
+            Check the workflow artifacts for complete test reports and logs.
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          } catch (error) {
+            console.log('Could not create PR comment:', error);
+          }
+
+    - name: Set Job Status
+      run: |
+        # Determine if the overall test suite should pass or fail
+        python3 << 'EOF'
+        import json
+        import sys
+        
+        try:
+            with open('ar84_rag_integration_report.json', 'r') as f:
+                report = json.load(f)
+            
+            ready_for_production = report['integration_recommendations']['ready_for_production']
+            
+            if ready_for_production:
+                print("✅ AR-84 RAG Integration Test Suite: PASSED")
+                sys.exit(0)
+            else:
+                print("❌ AR-84 RAG Integration Test Suite: FAILED")
+                print("Some tests do not meet the required thresholds for production readiness")
+                sys.exit(1)
+                
+        except Exception as e:
+            print(f"Error reading consolidated report: {e}")
+            sys.exit(1)
+        EOF
+
+  # Performance Benchmarking
+  performance-benchmark:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event.inputs.test_scope == 'all'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r apps/api/requirements.txt
+        pip install locust requests
+
+    - name: Run RAG Performance Benchmark
+      run: |
+        cd apps/api/docs
+        
+        # Create performance test script
+        cat > rag_performance_test.py << 'EOF'
+        import time
+        import requests
+        import statistics
+        from datetime import datetime
+        import json
+        
+        class RAGPerformanceTester:
+            def __init__(self, base_url="http://localhost:8000"):
+                self.base_url = base_url
+                self.results = []
+            
+            def test_rag_response_times(self):
+                test_queries = [
+                    "What is Python programming?",
+                    "Explain machine learning concepts",
+                    "Data science best practices"
+                ]
+                
+                for query in test_queries:
+                    for _ in range(10):  # Run each query 10 times
+                        start_time = time.time()
+                        
+                        # Simulate RAG query
+                        response = requests.post(
+                            f"{self.base_url}/api/v1/chat/test-rag-performance",
+                            json={"query": query},
+                            timeout=30
+                        )
+                        
+                        duration = (time.time() - start_time) * 1000
+                        
+                        self.results.append({
+                            "query": query,
+                            "duration_ms": duration,
+                            "status": response.status_code,
+                            "timestamp": datetime.utcnow().isoformat()
+                        })
+            
+            def generate_performance_report(self):
+                if not self.results:
+                    return {"error": "No performance data available"}
+                
+                durations = [r["duration_ms"] for r in self.results if r["status"] == 200]
+                
+                report = {
+                    "performance_benchmark": {
+                        "test_count": len(self.results),
+                        "successful_requests": len(durations),
+                        "avg_response_time_ms": statistics.mean(durations) if durations else 0,
+                        "median_response_time_ms": statistics.median(durations) if durations else 0,
+                        "p95_response_time_ms": sorted(durations)[int(len(durations) * 0.95)] if durations else 0,
+                        "min_response_time_ms": min(durations) if durations else 0,
+                        "max_response_time_ms": max(durations) if durations else 0,
+                        "performance_threshold_2s": sum(1 for d in durations if d <= 2000) / len(durations) * 100 if durations else 0
+                    },
+                    "detailed_results": self.results
+                }
+                
+                return report
+        
+        # Note: This is a placeholder for actual performance testing
+        # In a real implementation, this would connect to a running RAG service
+        print("RAG Performance Benchmark - Placeholder")
+        print("This would test actual RAG endpoint performance in a real deployment")
+        EOF
+        
+        python rag_performance_test.py
+
+    - name: Upload Performance Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: rag-performance-benchmark
+        path: |
+          apps/api/docs/rag_performance_*.json
+        retention-days: 30

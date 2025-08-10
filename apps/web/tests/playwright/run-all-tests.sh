@@ -77,6 +77,8 @@ declare -A TEST_SUITES=(
     ["auth"]="Authentication and Session Management"
     ["knowledge"]="Knowledge Management and Document Upload"
     ["chat"]="Chat Interface and AI Integration"
+    ["rag-chat"]="RAG Integration in Chat Interface"
+    ["knowledge-rag"]="RAG Integration in Knowledge Management"
     ["organization"]="Organization Management and People"
     ["settings"]="Settings and User Preferences"
 )
@@ -94,10 +96,24 @@ run_test_suite() {
     export PLAYWRIGHT_REPORT_DIR="$REPORT_DIR/$suite"
     mkdir -p "$PLAYWRIGHT_REPORT_DIR"
     
+    # Determine test file path
+    local test_file=""
+    case "$suite" in
+        "rag-chat")
+            test_file="$TEST_DIR/chat/rag-integration.spec.ts"
+            ;;
+        "knowledge-rag")
+            test_file="$TEST_DIR/knowledge/knowledge-rag.spec.ts"
+            ;;
+        *)
+            test_file="$TEST_DIR/$suite/$suite.spec.ts"
+            ;;
+    esac
+    
     # Run the test suite
     local exit_code=0
     npx playwright test \
-        "$TEST_DIR/$suite/$suite.spec.ts" \
+        "$test_file" \
         --config="$TEST_DIR/../playwright.config.ts" \
         --reporter=html,json,junit \
         --output-dir="$REPORT_DIR/$suite/artifacts" \
@@ -297,7 +313,7 @@ main() {
 
 # Handle script arguments
 case "${1:-}" in
-    "auth"|"knowledge"|"chat"|"organization"|"settings")
+    "auth"|"knowledge"|"chat"|"rag-chat"|"knowledge-rag"|"organization"|"settings")
         # Run specific test suite
         suite="$1"
         if [[ -v "TEST_SUITES[$suite]" ]]; then

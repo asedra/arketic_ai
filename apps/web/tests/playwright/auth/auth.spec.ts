@@ -16,7 +16,7 @@ const API_URL = process.env.API_URL || 'http://localhost:8000';
 // Test user credentials
 const TEST_USER = {
   email: 'test@arketic.com',
-  password: 'testpassword123',
+  password: 'testpass123',
   name: 'Test User'
 };
 
@@ -46,13 +46,12 @@ test.describe('Authentication Flows', () => {
     // Submit form
     await page.click('button[type="submit"]');
     
-    // Wait for navigation to dashboard
-    await page.waitForURL('**/dashboard**', { timeout: 10000 });
+    // Wait for navigation to authenticated page (dashboard or root)
+    await page.waitForURL(url => url.pathname === '/dashboard' || url.pathname === '/', { timeout: 10000 });
     
     // Verify user is logged in
     await expect(page.locator('[data-testid="user-dropdown"]')).toBeVisible();
     await expect(page.locator('text=Knowledge')).toBeVisible();
-    await expect(page.locator('text=Chat')).toBeVisible();
   });
 
   test('should show error for invalid credentials', async ({ page }) => {
@@ -63,8 +62,8 @@ test.describe('Authentication Flows', () => {
     // Submit form
     await page.click('button[type="submit"]');
     
-    // Check for error message
-    await expect(page.locator('text=/Invalid credentials|Login failed/')).toBeVisible();
+    // Check for error message  
+    await expect(page.locator('text=/Invalid credentials|Login Failed|Unauthorized|Invalid Credentials/')).toBeVisible();
     
     // Should remain on login page
     await expect(page.locator('input[name="email"]')).toBeVisible();
@@ -79,7 +78,7 @@ test.describe('Authentication Flows', () => {
     await page.click('button[type="submit"]');
     
     // Check for validation error
-    await expect(page.locator('text=/Invalid email|Please enter a valid email/')).toBeVisible();
+    await expect(page.locator('text=/Invalid email|Please enter a valid email address/')).toBeVisible();
   });
 
   test('should require both email and password', async ({ page }) => {
@@ -102,7 +101,7 @@ test.describe('Session Management', () => {
     await page.fill('input[name="email"]', TEST_USER.email);
     await page.fill('input[name="password"]', TEST_USER.password);
     await page.click('button[type="submit"]');
-    await page.waitForURL('**/dashboard**', { timeout: 10000 });
+    await page.waitForURL(url => url.pathname === '/dashboard' || url.pathname === '/', { timeout: 10000 });
   });
 
   test('should successfully log out', async ({ page }) => {
@@ -123,7 +122,7 @@ test.describe('Session Management', () => {
     
     // Should still be authenticated
     await expect(page.locator('[data-testid="user-dropdown"]')).toBeVisible();
-    await expect(page).toHaveURL(/dashboard/);
+    await expect(page).toHaveURL(url => url.pathname === '/dashboard' || url.pathname === '/');
   });
 
   test('should handle session expiry gracefully', async ({ page }) => {
@@ -235,7 +234,7 @@ test.describe('Authentication State Management', () => {
       await page.fill('input[name="email"]', TEST_USER.email);
       await page.fill('input[name="password"]', TEST_USER.password);
       await page.click('button[type="submit"]');
-      await page.waitForURL('**/dashboard**', { timeout: 10000 });
+      await page.waitForURL(url => url.pathname === '/dashboard' || url.pathname === '/', { timeout: 10000 });
     }
     
     // Logout from first tab

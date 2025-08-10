@@ -13,6 +13,7 @@ import {
 import { useTheme } from 'next-themes'
 import { useArketicStore } from '@/lib/state-manager'
 import { useDebounce } from '@/lib/hooks'
+import { useAuth } from '@/lib/auth-context'
 import { cn } from '@/lib/utils'
 
 interface TopBarProps {
@@ -21,6 +22,7 @@ interface TopBarProps {
 
 export const TopBar = memo(function TopBar({ className }: TopBarProps) {
   const { theme, setTheme } = useTheme()
+  const { logout } = useAuth()
   
   // Global search state
   const searchQuery = useArketicStore(state => state.searchQuery)
@@ -75,7 +77,7 @@ export const TopBar = memo(function TopBar({ className }: TopBarProps) {
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+            <Button variant="ghost" className="relative h-9 w-9 rounded-full" data-testid="user-dropdown">
               <SmartAvatar 
                 src="/placeholder-user.jpg" 
                 alt="User" 
@@ -93,8 +95,8 @@ export const TopBar = memo(function TopBar({ className }: TopBarProps) {
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer text-red-600">
-              <span>Log out</span>
+            <DropdownMenuItem className="cursor-pointer text-red-600" data-testid="logout-button" onClick={logout}>
+              <span>Logout</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

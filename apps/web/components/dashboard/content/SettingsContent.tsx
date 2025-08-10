@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { Slider } from '@/components/ui/slider'
 import { useToast } from '@/hooks/use-toast'
-import { Settings, Key, Eye, EyeOff, Save, Shield, TestTube, CheckCircle, Loader2, AlertCircle, Sparkles, Heart, Zap } from 'lucide-react'
+import { Settings, Key, Eye, EyeOff, Save, Shield, TestTube, CheckCircle, Loader2, AlertCircle, Sparkles, Heart, Zap, Lock, UserCheck, Clock, RefreshCw } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { settingsApi } from '@/lib/api-client'
+import { settingsApi, systemSettingsApi, SystemSettings, SystemSettingsUpdate } from '@/lib/api-client'
 
 interface SettingsContentProps {
   className?: string
@@ -25,11 +27,16 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
   const [language, setLanguage] = useState<'en' | 'tr'>('en')
   const [hasStoredKey, setHasStoredKey] = useState(false)
   const [testStatus, setTestStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null)
+  const [isLoadingSystemSettings, setIsLoadingSystemSettings] = useState(false)
+  const [isSavingSystemSettings, setIsSavingSystemSettings] = useState(false)
+  const [systemSettingsSaved, setSystemSettingsSaved] = useState(false)
   const { toast } = useToast()
 
   // Load settings from backend on component mount
   useEffect(() => {
     loadSettings()
+    loadSystemSettings()
     // Detect language preference (could be from user settings or browser)
     const browserLang = navigator.language.toLowerCase()
     if (browserLang.startsWith('tr')) {
@@ -126,6 +133,116 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
       } else {
         setHasStoredKey(false)
       }
+    }
+  }
+
+  const loadSystemSettings = async () => {
+    setIsLoadingSystemSettings(true)
+    try {
+      const response = await systemSettingsApi.getSystemSettings()
+      if (response.success && response.data) {
+        setSystemSettings(response.data)
+        console.log('✅ Loaded system settings:', response.data)
+      }
+    } catch (error: any) {
+      console.error('Error loading system settings:', error)
+      // Only admins can access system settings, so this is expected for regular users
+      if (error.status === 403 || error.status === 401) {
+        console.log('🔐 Admin privileges required for system settings')
+      }
+    } finally {
+      setIsLoadingSystemSettings(false)
+    }
+  }
+
+  const handleSystemSettingChange = (key: keyof SystemSettingsUpdate, value: any) => {
+    if (systemSettings) {
+      setSystemSettings({
+        ...systemSettings,
+        [key]: value
+      })
+    }
+  }
+
+  const saveSystemSettings = async () => {
+    if (!systemSettings) return
+    
+    setIsSavingSystemSettings(true)
+    setSystemSettingsSaved(false)
+    try {
+      const response = await systemSettingsApi.updateSystemSettings(systemSettings)
+      if (response.success) {
+        setSystemSettingsSaved(true)
+        toast({
+          title: (
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-green-500" />
+              <span className="font-semibold">
+                {language === 'tr' ? 'Başarılı' : 'Success'}
+              </span>
+            </div>
+          ),
+          description: language === 'tr' 
+            ? 'Sistem ayarları başarıyla güncellendi'
+            : 'System settings updated successfully',
+          className: "border-green-200 bg-green-50 text-green-900"
+        })
+        // Reload settings to get the updated values
+        await loadSystemSettings()
+        
+        // Reset saved state after 3 seconds
+        setTimeout(() => {
+          setSystemSettingsSaved(false)
+        }, 3000)
+      }
+    } catch (error: any) {
+      console.error('Error saving system settings:', error)
+      setSystemSettingsSaved(false)
+      toast({
+        title: "Error",
+        description: error.message || (language === 'tr' 
+          ? 'Sistem ayarları kaydedilemedi'
+          : 'Failed to save system settings'),
+        variant: "destructive"
+      })
+    } finally {
+      setIsSavingSystemSettings(false)
+    }
+  }
+
+  const resetSystemSettings = async () => {
+    setIsSavingSystemSettings(true)
+    try {
+      const response = await systemSettingsApi.resetToDefaults()
+      if (response.success) {
+        toast({
+          title: (
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-blue-500" />
+              <span className="font-semibold">
+                {language === 'tr' ? 'Başarılı' : 'Success'}
+              </span>
+            </div>
+          ),
+          description: language === 'tr' 
+            ? 'Sistem ayarları varsayılan değerlere döndürüldü'
+            : 'System settings reset to defaults',
+          className: "border-blue-200 bg-blue-50 text-blue-900"
+        })
+        // Reload settings to get the default values
+        await loadSystemSettings()
+      }
+    } catch (error: any) {
+      console.error('Error resetting system settings:', error)
+      toast({
+        title: "Error",
+        description: error.message || (language === 'tr' 
+          ? 'Sistem ayarları sıfırlanamadı'
+          : 'Failed to reset system settings'),
+        variant: "destructive"
+      })
+    } finally {
+      setIsSavingSystemSettings(false)
     }
   }
 
@@ -727,12 +844,208 @@ const SettingsContent = memo(function SettingsContent({ className }: SettingsCon
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Settings className="h-5 w-5" />
-            Platform Settings
+            {language === 'tr' ? 'Platform Ayarları' : 'Platform Settings'}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="text-center text-slate-500 dark:text-slate-400 py-8">
-            Additional platform settings will be implemented here
+        <CardContent className="space-y-6">
+          {/* Security Settings Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-lg font-semibold">
+              <Shield className="h-5 w-5" />
+              {language === 'tr' ? 'Güvenlik Ayarları' : 'Security Settings'}
+            </div>
+            
+            {isLoadingSystemSettings ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
+              </div>
+            ) : systemSettings ? (
+              <div className="space-y-4">
+                {/* Account Lockout Settings */}
+                <div className="border rounded-lg p-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Lock className="h-4 w-4" />
+                        <Label className="text-base font-medium">
+                          {language === 'tr' ? 'Hesap Kilitleme' : 'Account Lockout'}
+                        </Label>
+                      </div>
+                      <p className="text-sm text-slate-500">
+                        {language === 'tr' 
+                          ? 'Başarısız giriş denemelerinden sonra hesapları otomatik olarak kilitle'
+                          : 'Automatically lock accounts after failed login attempts'}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={systemSettings.enable_account_lockout}
+                      onCheckedChange={(checked) => handleSystemSettingChange('enable_account_lockout', checked)}
+                    />
+                  </div>
+                  
+                  {systemSettings.enable_account_lockout && (
+                    <div className="space-y-4 pl-6 animate-in slide-in-from-top-1">
+                      <div className="space-y-2">
+                        <Label className="text-sm">
+                          {language === 'tr' ? 'Maksimum Başarısız Deneme Sayısı' : 'Maximum Failed Login Attempts'}
+                        </Label>
+                        <div className="flex items-center gap-4">
+                          <Slider
+                            value={[systemSettings.max_failed_login_attempts]}
+                            onValueChange={([value]) => handleSystemSettingChange('max_failed_login_attempts', value)}
+                            min={1}
+                            max={10}
+                            step={1}
+                            className="flex-1"
+                          />
+                          <span className="w-12 text-center font-mono">
+                            {systemSettings.max_failed_login_attempts}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-sm">
+                          {language === 'tr' ? 'Kilitleme Süresi (Dakika)' : 'Lockout Duration (Minutes)'}
+                        </Label>
+                        <div className="flex items-center gap-4">
+                          <Slider
+                            value={[systemSettings.lockout_duration_minutes]}
+                            onValueChange={([value]) => handleSystemSettingChange('lockout_duration_minutes', value)}
+                            min={5}
+                            max={1440}
+                            step={5}
+                            className="flex-1"
+                          />
+                          <span className="w-16 text-center font-mono">
+                            {systemSettings.lockout_duration_minutes}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500">
+                          {language === 'tr' 
+                            ? `${systemSettings.lockout_duration_minutes} dakika (${Math.floor(systemSettings.lockout_duration_minutes / 60)} saat ${systemSettings.lockout_duration_minutes % 60} dakika)`
+                            : `${systemSettings.lockout_duration_minutes} minutes (${Math.floor(systemSettings.lockout_duration_minutes / 60)} hours ${systemSettings.lockout_duration_minutes % 60} minutes)`}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Rate Limiting Settings */}
+                <div className="border rounded-lg p-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        <Label className="text-base font-medium">
+                          {language === 'tr' ? 'Hız Sınırlaması' : 'Rate Limiting'}
+                        </Label>
+                      </div>
+                      <p className="text-sm text-slate-500">
+                        {language === 'tr' 
+                          ? 'API isteklerini sınırlayarak kötüye kullanımı önle'
+                          : 'Prevent abuse by limiting API requests'}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={systemSettings.enable_rate_limiting}
+                      onCheckedChange={(checked) => handleSystemSettingChange('enable_rate_limiting', checked)}
+                    />
+                  </div>
+                  
+                  {systemSettings.enable_rate_limiting && (
+                    <div className="space-y-4 pl-6 animate-in slide-in-from-top-1">
+                      <div className="space-y-2">
+                        <Label className="text-sm">
+                          {language === 'tr' ? 'Dakika Başına İstek Limiti' : 'Requests Per Minute Limit'}
+                        </Label>
+                        <div className="flex items-center gap-4">
+                          <Slider
+                            value={[systemSettings.rate_limit_requests_per_minute]}
+                            onValueChange={([value]) => handleSystemSettingChange('rate_limit_requests_per_minute', value)}
+                            min={10}
+                            max={1000}
+                            step={10}
+                            className="flex-1"
+                          />
+                          <span className="w-16 text-center font-mono">
+                            {systemSettings.rate_limit_requests_per_minute}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Email Verification Settings */}
+                <div className="border rounded-lg p-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <UserCheck className="h-4 w-4" />
+                        <Label className="text-base font-medium">
+                          {language === 'tr' ? 'E-posta Doğrulama' : 'Email Verification'}
+                        </Label>
+                      </div>
+                      <p className="text-sm text-slate-500">
+                        {language === 'tr' 
+                          ? 'Yeni kullanıcılar için e-posta doğrulaması gerektir'
+                          : 'Require email verification for new users'}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={systemSettings.require_email_verification}
+                      onCheckedChange={(checked) => handleSystemSettingChange('require_email_verification', checked)}
+                    />
+                  </div>
+                </div>
+                
+                {/* Save and Reset Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    onClick={saveSystemSettings}
+                    disabled={isSavingSystemSettings}
+                    className={cn(
+                      "flex items-center gap-2 transition-all duration-300",
+                      systemSettingsSaved && "bg-green-500 hover:bg-green-600 text-white shadow-green-200 shadow-lg"
+                    )}
+                    variant={systemSettingsSaved ? "default" : "default"}
+                  >
+                    {isSavingSystemSettings ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        {language === 'tr' ? 'Kaydediliyor...' : 'Saving...'}
+                      </>
+                    ) : systemSettingsSaved ? (
+                      <>
+                        <CheckCircle className="h-4 w-4" />
+                        {language === 'tr' ? 'Kaydedildi!' : 'Saved!'}
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4" />
+                        {language === 'tr' ? 'Ayarları Kaydet' : 'Save Settings'}
+                      </>
+                    )}
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={resetSystemSettings}
+                    className="flex items-center gap-2"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    {language === 'tr' ? 'Varsayılanlara Dön' : 'Reset to Defaults'}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center text-slate-500 dark:text-slate-400 py-8">
+                {language === 'tr' 
+                  ? 'Sistem ayarları yüklenemedi. Yönetici haklarına ihtiyacınız olabilir.'
+                  : 'Unable to load system settings. You may need administrator privileges.'}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

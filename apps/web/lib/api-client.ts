@@ -1268,6 +1268,83 @@ export const settingsApi = {
     settingsApiClient.post<ConnectionTestResponse>("/api/v1/openai-settings/settings/test-openai"),
 }
 
+// System Settings API interfaces
+export interface SystemSettings {
+  enable_account_lockout: boolean
+  max_failed_login_attempts: number
+  lockout_duration_minutes: number
+  min_password_length: number
+  require_uppercase: boolean
+  require_lowercase: boolean
+  require_numbers: boolean
+  require_special_chars: boolean
+  password_expiry_days: number | null
+  session_timeout_minutes: number
+  max_sessions_per_user: number
+  enable_rate_limiting: boolean
+  rate_limit_requests_per_minute: number
+  require_2fa_for_admins: boolean
+  allow_2fa_for_users: boolean
+  require_email_verification: boolean
+  email_verification_expiry_hours: number
+  enable_ip_whitelist: boolean
+  ip_whitelist: string[] | null
+  enable_ip_blacklist: boolean
+  ip_blacklist: string[] | null
+  enable_audit_logging: boolean
+  audit_retention_days: number
+  id?: string
+  created_at?: string
+  updated_at?: string
+  updated_by?: string | null
+}
+
+export interface SystemSettingsUpdate {
+  enable_account_lockout?: boolean
+  max_failed_login_attempts?: number
+  lockout_duration_minutes?: number
+  min_password_length?: number
+  require_uppercase?: boolean
+  require_lowercase?: boolean
+  require_numbers?: boolean
+  require_special_chars?: boolean
+  password_expiry_days?: number | null
+  session_timeout_minutes?: number
+  max_sessions_per_user?: number
+  enable_rate_limiting?: boolean
+  rate_limit_requests_per_minute?: number
+  require_2fa_for_admins?: boolean
+  allow_2fa_for_users?: boolean
+  require_email_verification?: boolean
+  email_verification_expiry_hours?: number
+  enable_ip_whitelist?: boolean
+  ip_whitelist?: string[] | null
+  enable_ip_blacklist?: boolean
+  ip_blacklist?: string[] | null
+  enable_audit_logging?: boolean
+  audit_retention_days?: number
+}
+
+const systemSettingsApiClient = new ApiClient()
+
+export const systemSettingsApi = {
+  // Get system settings
+  getSystemSettings: () =>
+    systemSettingsApiClient.get<SystemSettings>("/api/v1/settings/system"),
+  
+  // Update system settings
+  updateSystemSettings: (data: SystemSettingsUpdate) =>
+    systemSettingsApiClient.put<SystemSettings>("/api/v1/settings/system", data),
+  
+  // Get security settings
+  getSecuritySettings: () =>
+    systemSettingsApiClient.get<any>("/api/v1/settings/system/security"),
+  
+  // Reset to default settings
+  resetToDefaults: () =>
+    systemSettingsApiClient.post<SystemSettings>("/api/v1/settings/system/reset-defaults"),
+}
+
 // Chat API interfaces
 export interface CreateChatRequest {
   title: string

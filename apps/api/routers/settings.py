@@ -15,8 +15,15 @@ from sqlalchemy.orm import selectinload
 
 from core.database import get_db
 from core.security import SecurityManager
-from core.dependencies import get_current_user_dict, get_security_manager
+from core.dependencies import get_current_user_dict, get_security_manager, get_current_user, require_admin
 from models.user import User, UserApiKey
+from typing import Dict, Any
+from schemas.settings import (
+    SystemSettingsResponse,
+    SystemSettingsUpdate,
+    SecuritySettingsResponse
+)
+from services.system_settings_service import get_system_settings_service
 
 logger = logging.getLogger(__name__)
 
@@ -481,6 +488,98 @@ async def validate_api_key(
             message="API key validation error",
             details={"error": str(e)}
         )
+
+
+# System Settings Routes
+@router.get("/system", response_model=SystemSettingsResponse)
+async def get_system_settings(
+    session: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(require_admin)
+):
+    """
+    Get system settings (admin only)
+    """
+    settings_service = get_system_settings_service()
+    settings = await settings_service.get_system_settings(session)
+    return settings
+
+
+@router.put("/system", response_model=SystemSettingsResponse)
+async def update_system_settings(
+    settings_data: SystemSettingsUpdate,
+    session: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(require_admin)
+):
+    """
+    Update system settings (admin only)
+    """
+    settings_service = get_system_settings_service()
+    settings = await settings_service.update_system_settings(
+        session, 
+        settings_data,
+        updated_by=current_user.get("user_id")
+    )
+    await session.commit()
+    return settings
+
+
+@router.get("/system/security", response_model=SecuritySettingsResponse)
+async def get_security_settings(
+    session: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(require_admin)
+):
+    """
+    Get security-related system settings (admin only)
+    """
+    settings_service = get_system_settings_service()
+    settings = await settings_service.get_security_settings(session)
+    return settings
+
+
+@router.post("/system/reset-defaults", response_model=SystemSettingsResponse)
+async def reset_system_settings_to_defaults(
+    session: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(require_admin)
+):
+    """
+    Reset system settings to default values (admin only)
+    """
+    settings_service = get_system_settings_service()
+    
+    # Create a settings update with default values
+    default_settings = SystemSettingsUpdate(
+        enable_account_lockout=False,  # Default: disabled
+        max_failed_login_attempts=5,
+        lockout_duration_minutes=30,
+        min_password_length=8,
+        require_uppercase=True,
+        require_lowercase=True,
+        require_numbers=True,
+        require_special_chars=False,
+        password_expiry_days=None,
+        session_timeout_minutes=60,
+        max_sessions_per_user=5,
+        enable_rate_limiting=True,
+        rate_limit_requests_per_minute=60,
+        require_2fa_for_admins=False,
+        allow_2fa_for_users=True,
+        require_email_verification=True,
+        email_verification_expiry_hours=24,
+        enable_ip_whitelist=False,
+        ip_whitelist=None,
+        enable_ip_blacklist=False,
+        ip_blacklist=None,
+        enable_audit_logging=True,
+        audit_retention_days=90
+    )
+    
+    settings = await settings_service.update_system_settings(
+        session,
+        default_settings,
+        updated_by=current_user.get("user_id")
+    )
+    await session.commit()
+    return settings
 
 
 # Helper function for other services to get decrypted API keys

@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 from models.user import User, UserProfile, UserPreferences, UserRole, UserStatus
 from schemas.user import UserCreate, UserUpdate, UserProfileUpdate, UserPreferencesUpdate
 from core.security import get_security_manager
+from .system_settings_service import get_system_settings_service
 
 
 class UserService:
@@ -23,6 +24,7 @@ class UserService:
     
     def __init__(self):
         self._security_manager = None
+        self.system_settings_service = get_system_settings_service()
     
     @property
     def security_manager(self):
@@ -296,9 +298,10 @@ class UserService:
         
         user.failed_login_attempts += 1
         
-        # Lock account after 5 failed attempts
-        if user.failed_login_attempts >= 5:
-            await self.lock_user_account(session, user_id, 30)  # Lock for 30 minutes
+        # Check if lockout is enabled and if threshold is reached
+        lockout_settings = await self.system_settings_service.get_lockout_settings(session)
+        if lockout_settings["enabled"] and user.failed_login_attempts >= lockout_settings["max_attempts"]:
+            await self.lock_user_account(session, user_id, lockout_settings["lockout_duration_minutes"])
         
         await session.commit()
         return user.failed_login_attempts

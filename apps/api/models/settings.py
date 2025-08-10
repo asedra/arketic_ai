@@ -23,6 +23,7 @@ class SettingsCategory(str, PyEnum):
     PLATFORM = "platform"
     AI_MODELS = "ai_models"
     NOTIFICATIONS = "notifications"
+    SECURITY = "security"
 
 
 class UserSettings(Base):
@@ -179,3 +180,84 @@ class PlatformSettings(Base):
     
     def __repr__(self):
         return f"<PlatformSettings(id={self.id}, user_id={self.user_id}, theme={self.theme})>"
+
+
+class SystemSettings(Base):
+    """System-wide security and configuration settings"""
+    __tablename__ = "system_settings"
+    
+    # Primary key
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    
+    # Security Settings
+    enable_account_lockout = Column(Boolean, default=False, nullable=False)
+    max_failed_login_attempts = Column(Integer, default=5, nullable=False)
+    lockout_duration_minutes = Column(Integer, default=30, nullable=False)
+    
+    # Password Policy
+    min_password_length = Column(Integer, default=8, nullable=False)
+    require_uppercase = Column(Boolean, default=True, nullable=False)
+    require_lowercase = Column(Boolean, default=True, nullable=False)
+    require_numbers = Column(Boolean, default=True, nullable=False)
+    require_special_chars = Column(Boolean, default=False, nullable=False)
+    password_expiry_days = Column(Integer, nullable=True)  # null means no expiry
+    
+    # Session Settings
+    session_timeout_minutes = Column(Integer, default=60, nullable=False)
+    max_sessions_per_user = Column(Integer, default=5, nullable=False)
+    
+    # Rate Limiting
+    enable_rate_limiting = Column(Boolean, default=True, nullable=False)
+    rate_limit_requests_per_minute = Column(Integer, default=60, nullable=False)
+    
+    # Two-Factor Authentication
+    require_2fa_for_admins = Column(Boolean, default=False, nullable=False)
+    allow_2fa_for_users = Column(Boolean, default=True, nullable=False)
+    
+    # Email Verification
+    require_email_verification = Column(Boolean, default=True, nullable=False)
+    email_verification_expiry_hours = Column(Integer, default=24, nullable=False)
+    
+    # IP Security
+    enable_ip_whitelist = Column(Boolean, default=False, nullable=False)
+    ip_whitelist = Column(JSON, nullable=True)  # List of allowed IPs
+    enable_ip_blacklist = Column(Boolean, default=False, nullable=False)
+    ip_blacklist = Column(JSON, nullable=True)  # List of blocked IPs
+    
+    # Audit Settings
+    enable_audit_logging = Column(Boolean, default=True, nullable=False)
+    audit_retention_days = Column(Integer, default=90, nullable=False)
+    
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    updated_by = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=True)
+    
+    # Indexes
+    __table_args__ = (
+        Index('idx_system_settings_updated', 'updated_at'),
+    )
+    
+    @validates('max_failed_login_attempts')
+    def validate_max_failed_attempts(self, key, value):
+        """Validate max failed login attempts"""
+        if not 1 <= value <= 10:
+            raise ValueError("Max failed login attempts must be between 1 and 10")
+        return value
+    
+    @validates('lockout_duration_minutes')
+    def validate_lockout_duration(self, key, value):
+        """Validate lockout duration"""
+        if not 5 <= value <= 1440:  # 5 minutes to 24 hours
+            raise ValueError("Lockout duration must be between 5 and 1440 minutes")
+        return value
+    
+    @validates('min_password_length')
+    def validate_min_password_length(self, key, value):
+        """Validate minimum password length"""
+        if not 6 <= value <= 128:
+            raise ValueError("Minimum password length must be between 6 and 128")
+        return value
+    
+    def __repr__(self):
+        return f"<SystemSettings(id={self.id}, lockout={self.enable_account_lockout})>"

@@ -14,8 +14,9 @@ WORKDIR /app
 # Install dependencies only when needed
 FROM base AS deps
 
-# Copy workspace configuration
-COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+# Copy workspace configuration (pnpm-lock.yaml might not exist on first clone)
+COPY pnpm-workspace.yaml ./
+COPY pnpm-lock.yaml* ./
 
 # Create directory structure
 RUN mkdir -p apps/web apps/langchain packages/types packages/ui packages/utils
@@ -27,8 +28,8 @@ COPY packages/types/package.json ./packages/types/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/utils/package.json ./packages/utils/
 
-# Install all workspace dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+# Install all workspace dependencies (create lock file if not exists)
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
 # Development stage with hot reloading
 FROM base AS development
@@ -40,7 +41,8 @@ COPY --from=deps /app/apps ./apps
 COPY --from=deps /app/packages ./packages
 
 # Copy workspace files
-COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY pnpm-workspace.yaml ./
+COPY pnpm-lock.yaml* ./
 
 # Copy entrypoint script
 COPY apps/web/docker-entrypoint.sh /usr/local/bin/
@@ -77,7 +79,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
 
 # Copy workspace files
-COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY pnpm-workspace.yaml ./
+COPY pnpm-lock.yaml* ./
 COPY apps/web ./apps/web
 
 # Next.js collects completely anonymous telemetry data about general usage.

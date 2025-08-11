@@ -1,4 +1,49 @@
 import winston from 'winston';
+import fs from 'fs';
+import path from 'path';
+
+// Create logs directory if it doesn't exist
+const logsDir = path.join(process.cwd(), 'logs');
+if (!fs.existsSync(logsDir)) {
+  try {
+    fs.mkdirSync(logsDir, { recursive: true });
+  } catch (error) {
+    console.warn('Could not create logs directory, using console logging only:', error.message);
+  }
+}
+
+// Configure transports based on environment and permissions
+const transports = [
+  new winston.transports.Console({
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.simple()
+    )
+  })
+];
+
+// Only add file transports if logs directory exists and is writable
+if (fs.existsSync(logsDir)) {
+  try {
+    // Test write permissions
+    const testFile = path.join(logsDir, '.test');
+    fs.writeFileSync(testFile, 'test');
+    fs.unlinkSync(testFile);
+    
+    // Add file transports if write test succeeds
+    transports.push(
+      new winston.transports.File({ 
+        filename: path.join(logsDir, 'error.log'), 
+        level: 'error' 
+      }),
+      new winston.transports.File({ 
+        filename: path.join(logsDir, 'combined.log') 
+      })
+    );
+  } catch (error) {
+    console.warn('Logs directory is not writable, using console logging only:', error.message);
+  }
+}
 
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
@@ -7,21 +52,7 @@ const logger = winston.createLogger({
     winston.format.errors({ stack: true }),
     winston.format.json()
   ),
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      )
-    }),
-    new winston.transports.File({ 
-      filename: 'logs/error.log', 
-      level: 'error' 
-    }),
-    new winston.transports.File({ 
-      filename: 'logs/combined.log' 
-    })
-  ]
+  transports
 });
 
 export const errorHandler = (err, req, res, next) => {

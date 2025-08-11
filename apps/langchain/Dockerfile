@@ -21,6 +21,10 @@ RUN npm install && \
 # Copy application code
 COPY --chown=nodejs:nodejs . .
 
+# Create logs directory with proper permissions
+RUN mkdir -p /app/logs && \
+    chown -R nodejs:nodejs /app/logs
+
 # Create a volume mount point for node_modules
 VOLUME ["/app/node_modules"]
 

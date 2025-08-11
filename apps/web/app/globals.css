@@ -1,9 +1,9 @@
+/* Import form styles - must be before tailwind */
+@import '../styles/forms.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import form styles */
-@import '../styles/forms.css';
 
 @layer base {
   :root {

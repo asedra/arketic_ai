@@ -3,20 +3,44 @@ FROM node:20-alpine AS base
 
 # Install dependencies and tools needed for both dev and prod
 RUN apk add --no-cache libc6-compat curl
+
+# Install pnpm globally
+RUN corepack enable && corepack prepare pnpm@latest --activate
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 WORKDIR /app
 
 # Install dependencies only when needed
 FROM base AS deps
-# Copy package files
-COPY package*.json ./
-# Install all dependencies (including devDependencies for builds)
-RUN npm install --legacy-peer-deps
+
+# Copy workspace configuration
+COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Create directory structure
+RUN mkdir -p apps/web apps/langchain packages/types packages/ui packages/utils
+
+# Copy all package.json files
+COPY apps/web/package.json ./apps/web/
+COPY apps/langchain/package.json ./apps/langchain/
+COPY packages/types/package.json ./packages/types/
+COPY packages/ui/package.json ./packages/ui/
+COPY packages/utils/package.json ./packages/utils/
+
+# Install all workspace dependencies
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Development stage with hot reloading
 FROM base AS development
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY package*.json ./
+WORKDIR /app/apps/web
+
+# Copy node_modules from deps stage
+COPY --from=deps /app/node_modules /app/node_modules
+COPY --from=deps /app/apps/web/node_modules ./node_modules
+
+# Copy workspace files
+COPY pnpm-lock.yaml pnpm-workspace.yaml /app/
+COPY apps/web/package.json ./
 
 # Development environment variables
 ENV NODE_ENV=development
@@ -31,14 +55,20 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
   CMD curl -f http://localhost:3000/api/health || exit 1
 
-# Development command
-CMD ["npm", "run", "dev"]
+# Development command - use pnpm
+CMD ["pnpm", "run", "dev"]
 
 # Build stage for production
 FROM base AS builder
 WORKDIR /app
+
+# Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+
+# Copy workspace files
+COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/web ./apps/web
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -53,8 +83,10 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_ENV=$NEXT_PUBLIC_APP_ENV
 ENV NODE_ENV=$NODE_ENV
 
+WORKDIR /app/apps/web
+
 # Build application
-RUN npm run build
+RUN pnpm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -68,7 +100,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy the public folder
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/apps/web/public ./public
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
@@ -76,8 +108,8 @@ RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
 
 USER nextjs
 

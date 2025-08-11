@@ -4,7 +4,7 @@
 
 Backend dokümantasyonu aşağıdaki dizinlerde bulunmaktadır:
 
-- **Ana Dokümantasyon Dizini:** `/home/ali/arketic/apps/api/docs`
+- **Ana Dokümantasyon Dizini:** `/home/ali/arketic_ai/apps/api/docs`
   - `api/` - API endpoint dokümantasyonları
     - ASSISTANTS.md - Asistan API'leri
     - AUTH.md - Kimlik doğrulama API'leri  
@@ -23,7 +23,7 @@ Backend dokümantasyonu aşağıdaki dizinlerde bulunmaktadır:
 Arketic platformu için kapsamlı test altyapısı şu bileşenlerden oluşur:
 
 #### 🎭 Frontend E2E Tests (Playwright MCP)
-- **Lokasyon:** `/home/ali/arketic/apps/web/tests/playwright/`
+- **Lokasyon:** `/home/ali/arketic_ai/apps/web/tests/playwright/`
 - **Test Suites:**
   - `auth/auth.spec.ts` - Kimlik doğrulama ve oturum yönetimi
   - `knowledge/knowledge-upload.spec.ts` - Bilgi yönetimi ve dosya yükleme
@@ -32,7 +32,7 @@ Arketic platformu için kapsamlı test altyapısı şu bileşenlerden oluşur:
   - `settings/settings.spec.ts` - Ayarlar ve kullanıcı tercihleri
 
 #### 🔧 Backend API Tests
-- **Mevcut Testler:** `/home/ali/arketic/apps/api/docs/`
+- **Mevcut Testler:** `/home/ali/arketic_ai/apps/api/docs/`
   - `auth_test.py` - Kimlik doğrulama API testleri
   - `chat_test.py` - Sohbet API testleri
   - `assistant_test.py` - Asistan API testleri
@@ -83,7 +83,7 @@ cd apps/web/tests/playwright
 #### 3. Backend API Tests (Ayrı)
 ```bash
 # Docker container içinde backend testleri çalıştır
-docker exec -it arketic-api-1 bash
+docker exec -it arketic_ai-api-1 bash
 
 # Mevcut API testleri
 cd /app/docs
@@ -207,14 +207,14 @@ npx playwright test --screenshot=only-on-failure
 #### Backend Test Issues  
 ```bash
 # Container logs
-docker logs arketic-api-1 -f
+docker logs arketic_ai-api-1 -f
 
 # Service health
 curl http://localhost:8000/health
 curl http://localhost:3001/health
 
 # Database connection
-docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -c "SELECT 1;"
+docker exec arketic_ai-postgres-1 psql -U arketic -d arketic_dev -c "SELECT 1;"
 ```
 
 ## Docker Kullanımı - ÖNEMLİ
@@ -262,7 +262,7 @@ Servisleri yönetmek için Docker Compose komutlarını kullanın:
 ## Proje Yapısı
 
 ```
-/home/ali/arketic/
+/home/ali/arketic_ai/
 ├── apps/
 │   ├── api/          # FastAPI backend
 │   ├── langchain/    # LangChain servisi
@@ -276,7 +276,7 @@ Servisleri yönetmek için Docker Compose komutlarını kullanın:
 
 ### 📊 Test Raporları ve Sonuçları
 
-Backend API testlerinin detaylı raporları `/home/ali/arketic/apps/api/docs` dizininde JSON formatında saklanmaktadır:
+Backend API testlerinin detaylı raporları `/home/ali/arketic_ai/apps/api/docs` dizininde JSON formatında saklanmaktadır:
 
 #### Test Raporları:
 - **auth_test_report.json** - Kimlik doğrulama testleri
@@ -301,7 +301,7 @@ Backend API testlerinin detaylı raporları `/home/ali/arketic/apps/api/docs` di
 #### Backend (API) Testleri:
 ```bash
 # Docker konteyner içinde testleri çalıştır
-docker exec -it arketic-api-1 bash
+docker exec -it arketic_ai-api-1 bash
 
 # Tüm API testlerini çalıştır
 cd /app
@@ -323,7 +323,7 @@ python3 apps/api/test_rag_integration.py
 #### Frontend (Web) Testleri:
 ```bash
 # Docker konteyner içinde testleri çalıştır
-docker exec -it arketic-web-1 bash
+docker exec -it arketic_ai-web-1 bash
 
 # Jest testlerini çalıştır
 npm test
@@ -341,7 +341,7 @@ npm run test:coverage  # Coverage raporu ile
 #### LangChain Servisi Testleri:
 ```bash
 # Docker konteyner içinde
-docker exec -it arketic-langchain-1 bash
+docker exec -it arketic-langchain bash
 
 # Servis sağlık kontrolü
 curl http://localhost:3001/health
@@ -436,7 +436,7 @@ docker compose logs web -f
 2. **Redis Connection Issues**:
    ```bash
    # Redis durumunu kontrol et
-   docker exec -it arketic-redis-1 redis-cli ping
+   docker exec -it arketic_ai-redis-1 redis-cli ping
    ```
 
 3. **Port Conflicts**:
@@ -448,7 +448,7 @@ docker compose logs web -f
 4. **Test Database Reset**:
    ```bash
    # Test veritabanını sıfırla
-   docker exec -it arketic-api-1 bash
+   docker exec -it arketic_ai-api-1 bash
    alembic downgrade base
    alembic upgrade head
    ```
@@ -458,7 +458,7 @@ docker compose logs web -f
 ### Alembic Migrations:
 ```bash
 # Docker konteyner içinde
-docker exec -it arketic-api-1 bash
+docker exec -it arketic_ai-api-1 bash
 
 # Yeni migration oluştur
 alembic revision --autogenerate -m "Description of changes"
@@ -484,6 +484,6 @@ alembic current
 
 ## Klasör Mimarisi Dokümantasyonu
 
-Detaylı klasör yapısı için bakınız: `/home/ali/arketic/FOLDER_ARCHITECTURE.md`
+Detaylı klasör yapısı için bakınız: `/home/ali/arketic_ai/FOLDER_ARCHITECTURE.md`
 
 Bu dosya `/apps` dizinindeki tüm servislerin (API, LangChain, Web) detaylı klasör yapısını, dosya organizasyonunu ve modül açıklamalarını içermektedir.

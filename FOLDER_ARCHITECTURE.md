@@ -3,7 +3,7 @@
 ## 📁 Proje Kök Dizin Yapısı
 
 ```
-/home/ali/arketic/
+/home/ali/arketic_ai/
 ├── apps/                 # Ana uygulama servisleri
 │   ├── api/             # FastAPI backend servisi
 │   ├── langchain/       # LangChain Node.js servisi

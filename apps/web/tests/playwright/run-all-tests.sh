@@ -114,7 +114,7 @@ run_test_suite() {
     local exit_code=0
     npx playwright test \
         "$test_file" \
-        --config="/home/ali/arketic/apps/web/playwright.config.ts" \
+        --config="/home/ali/arketic_ai/apps/web/playwright.config.ts" \
         --reporter=html,json,junit \
         --retries="$RETRIES" \
         --workers="$WORKERS" \

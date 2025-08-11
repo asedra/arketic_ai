@@ -46,7 +46,7 @@ print_header() {
 check_services() {
     print_header "Checking Services"
     
-    services=("arketic-api-1" "arketic-postgres-1" "arketic-redis-1" "arketic-web-1" "arketic-langchain-1")
+    services=("arketic_ai-api-1" "arketic_ai-postgres-1" "arketic_ai-redis-1" "arketic_ai-web-1" "arketic-langchain")
     all_running=true
     
     for service in "${services[@]}"; do

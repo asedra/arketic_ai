@@ -447,7 +447,7 @@ def main():
     # Determine if tests should be added to main suite
     if report["summary"]["failed"] == 0:
         print("\n✅ All tests passed! These tests are ready to be integrated into knowledge_test.py")
-        print("   Run: python3 /home/ali/arketic/apps/api/docs/integrate_tests.py")
+        print("   Run: python3 /home/ali/arketic_ai/apps/api/docs/integrate_tests.py")
     else:
         print("\n⚠️ Some tests failed. Please fix the issues before integrating into main test suite.")
     

@@ -154,7 +154,7 @@ verify_services() {
 run_migrations() {
     echo -e "${BLUE}📊 Running database migrations...${NC}"
     
-    docker exec arketic-api-1 alembic upgrade head
+    docker exec arketic_ai-api-1 alembic upgrade head
     
     echo -e "${GREEN}✅ Database migrations completed${NC}"
 }
@@ -187,7 +187,7 @@ run_backend_tests() {
         if [[ -f "$test" ]]; then
             echo -e "${YELLOW}Running $test...${NC}"
             
-            if docker exec arketic-api-1 python "/app/docs/$test"; then
+            if docker exec arketic_ai-api-1 python "/app/docs/$test"; then
                 echo -e "${GREEN}✅ $test passed${NC}"
                 ((passed++))
             else
@@ -203,7 +203,7 @@ run_backend_tests() {
     done
     
     # Run integration tests
-    if docker exec arketic-api-1 python /app/docs/integrate_tests.py; then
+    if docker exec arketic_ai-api-1 python /app/docs/integrate_tests.py; then
         echo -e "${GREEN}✅ Integration tests passed${NC}"
         ((passed++))
     else
@@ -271,14 +271,14 @@ run_performance_tests() {
     cd "$PROJECT_ROOT/apps/api/tests"
     
     # Run pgvector benchmark
-    if docker exec arketic-api-1 python /app/tests/test_pgvector_benchmark.py; then
+    if docker exec arketic_ai-api-1 python /app/tests/test_pgvector_benchmark.py; then
         echo -e "${GREEN}✅ PGVector performance tests passed${NC}"
     else
         echo -e "${RED}❌ PGVector performance tests failed${NC}"
     fi
     
     # Run RAG integration performance tests
-    if docker exec arketic-api-1 python /app/tests/test_rag_integration.py; then
+    if docker exec arketic_ai-api-1 python /app/tests/test_rag_integration.py; then
         echo -e "${GREEN}✅ RAG integration performance tests passed${NC}"
     else
         echo -e "${RED}❌ RAG integration performance tests failed${NC}"

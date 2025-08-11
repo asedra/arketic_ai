@@ -15,47 +15,47 @@ NC='\033[0m' # No Color
 
 # Wait for PostgreSQL to be ready
 echo "⏳ Waiting for PostgreSQL to be ready..."
-until docker exec arketic-postgres-1 pg_isready -U arketic -d arketic_dev > /dev/null 2>&1; do
+until docker exec arketic_ai-postgres-1 pg_isready -U arketic -d arketic_dev > /dev/null 2>&1; do
     sleep 1
 done
 echo -e "${GREEN}✓ PostgreSQL is ready${NC}"
 
 # Enable pgvector extension
 echo "🔧 Enabling pgvector extension..."
-docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -c "CREATE EXTENSION IF NOT EXISTS vector;" || true
+docker exec arketic_ai-postgres-1 psql -U arketic -d arketic_dev -c "CREATE EXTENSION IF NOT EXISTS vector;" || true
 echo -e "${GREEN}✓ PgVector extension enabled${NC}"
 
 # Check if alembic_version table exists
 echo "🔍 Checking migration status..."
-if docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -t -c "SELECT to_regclass('public.alembic_version');" | grep -q 'alembic_version'; then
+if docker exec arketic_ai-postgres-1 psql -U arketic -d arketic_dev -t -c "SELECT to_regclass('public.alembic_version');" | grep -q 'alembic_version'; then
     echo -e "${YELLOW}ℹ️  Alembic version table exists, checking current version...${NC}"
     
     # Get current version
-    CURRENT_VERSION=$(docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -t -c "SELECT version_num FROM alembic_version LIMIT 1;" | xargs)
+    CURRENT_VERSION=$(docker exec arketic_ai-postgres-1 psql -U arketic -d arketic_dev -t -c "SELECT version_num FROM alembic_version LIMIT 1;" | xargs)
     
     if [ -n "$CURRENT_VERSION" ]; then
         echo -e "${GREEN}✓ Database is at version: $CURRENT_VERSION${NC}"
         
         # Run any pending migrations
         echo "📦 Checking for pending migrations..."
-        docker exec arketic-api-1 bash -c "cd /app && alembic upgrade head" 2>&1 | grep -v "INFO" || true
+        docker exec arketic_ai-api-1 bash -c "cd /app && alembic upgrade head" 2>&1 | grep -v "INFO" || true
         echo -e "${GREEN}✓ Migrations are up to date${NC}"
     else
         echo -e "${YELLOW}⚠️  Version table exists but is empty, stamping current state...${NC}"
-        docker exec arketic-api-1 bash -c "cd /app && alembic stamp head" || true
+        docker exec arketic_ai-api-1 bash -c "cd /app && alembic stamp head" || true
         echo -e "${GREEN}✓ Database stamped with current version${NC}"
     fi
 else
     echo -e "${YELLOW}⚠️  No migration history found, initializing...${NC}"
     
     # Check if tables exist
-    TABLE_COUNT=$(docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'arketic';" | xargs)
+    TABLE_COUNT=$(docker exec arketic_ai-postgres-1 psql -U arketic -d arketic_dev -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'arketic';" | xargs)
     
     if [ "$TABLE_COUNT" -gt "0" ]; then
         echo -e "${YELLOW}ℹ️  Existing tables found, stamping current state...${NC}"
         
         # Create alembic_version table and stamp as current
-        docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -c "
+        docker exec arketic_ai-postgres-1 psql -U arketic -d arketic_dev -c "
             CREATE TABLE IF NOT EXISTS alembic_version (
                 version_num VARCHAR(32) NOT NULL,
                 CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num)
@@ -63,23 +63,23 @@ else
         " || true
         
         # Stamp with the latest migration
-        docker exec arketic-api-1 bash -c "cd /app && alembic stamp head" || true
+        docker exec arketic_ai-api-1 bash -c "cd /app && alembic stamp head" || true
         echo -e "${GREEN}✓ Database stamped with current version${NC}"
     else
         echo "📦 Running initial migrations..."
-        docker exec arketic-api-1 bash -c "cd /app && alembic upgrade head" || {
+        docker exec arketic_ai-api-1 bash -c "cd /app && alembic upgrade head" || {
             echo -e "${RED}❌ Migration failed, attempting recovery...${NC}"
             
             # If migrations fail, try to create tables manually and stamp
             echo "🔧 Creating tables manually..."
-            docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -c "
+            docker exec arketic_ai-postgres-1 psql -U arketic -d arketic_dev -c "
                 CREATE TABLE IF NOT EXISTS alembic_version (
                     version_num VARCHAR(32) NOT NULL,
                     CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num)
                 );
             " || true
             
-            docker exec arketic-api-1 bash -c "cd /app && alembic stamp head" || true
+            docker exec arketic_ai-api-1 bash -c "cd /app && alembic stamp head" || true
         }
         echo -e "${GREEN}✓ Initial migrations completed${NC}"
     fi
@@ -89,7 +89,7 @@ fi
 echo "🔍 Verifying critical tables..."
 
 # Check and create knowledge_embeddings if missing
-docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -c "
+docker exec arketic_ai-postgres-1 psql -U arketic -d arketic_dev -c "
 DO \$\$
 BEGIN
     IF NOT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'arketic' AND tablename = 'knowledge_embeddings') THEN
@@ -121,7 +121,7 @@ END\$\$;
 " 2>/dev/null || echo -e "${YELLOW}⚠️  knowledge_embeddings table check skipped (dependencies may be missing)${NC}"
 
 # Check and create other potentially missing tables
-docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -c "
+docker exec arketic_ai-postgres-1 psql -U arketic -d arketic_dev -c "
 DO \$\$
 BEGIN
     -- Check semantic_cache table
@@ -202,7 +202,7 @@ echo -e "${GREEN}✓ All critical tables verified${NC}"
 
 # Final verification
 echo "🔍 Final verification..."
-EMBEDDINGS_EXISTS=$(docker exec arketic-postgres-1 psql -U arketic -d arketic_dev -t -c "SELECT COUNT(*) FROM pg_tables WHERE schemaname = 'arketic' AND tablename = 'knowledge_embeddings';" | xargs)
+EMBEDDINGS_EXISTS=$(docker exec arketic_ai-postgres-1 psql -U arketic -d arketic_dev -t -c "SELECT COUNT(*) FROM pg_tables WHERE schemaname = 'arketic' AND tablename = 'knowledge_embeddings';" | xargs)
 
 if [ "$EMBEDDINGS_EXISTS" = "1" ]; then
     echo -e "${GREEN}✅ Database initialization completed successfully!${NC}"
@@ -214,6 +214,6 @@ fi
 
 echo ""
 echo "💡 Tips:"
-echo "  - To reset the database: docker exec arketic-api-1 bash -c 'cd /app && alembic downgrade base && alembic upgrade head'"
-echo "  - To check migration status: docker exec arketic-api-1 bash -c 'cd /app && alembic current'"
-echo "  - To view migration history: docker exec arketic-api-1 bash -c 'cd /app && alembic history'"
+echo "  - To reset the database: docker exec arketic_ai-api-1 bash -c 'cd /app && alembic downgrade base && alembic upgrade head'"
+echo "  - To check migration status: docker exec arketic_ai-api-1 bash -c 'cd /app && alembic current'"
+echo "  - To view migration history: docker exec arketic_ai-api-1 bash -c 'cd /app && alembic history'"

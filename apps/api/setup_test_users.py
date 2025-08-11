@@ -28,6 +28,14 @@ TEST_USERS = [
         "role": UserRole.USER
     },
     {
+        "email": "admin@arketic.com",
+        "password": "testpass123",
+        "first_name": "Admin",
+        "last_name": "User",
+        "username": "adminuser",
+        "role": UserRole.ADMIN
+    },
+    {
         "email": "playwright@arketic.com",
         "password": "Playwright123!",
         "first_name": "Playwright",

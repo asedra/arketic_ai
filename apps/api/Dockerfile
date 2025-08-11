@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrender1 \
     libgl1-mesa-glx \
     ca-certificates \
+    netcat-traditional \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && apt-get autoremove -y
@@ -52,7 +53,13 @@ FROM deps AS development
 COPY --chown=arketic:arketic . ./
 RUN mkdir -p uploads logs temp && \
     chmod 755 uploads logs temp
+
+# Copy and setup entrypoint script
+COPY --chown=arketic:arketic entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8000
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--log-level", "debug"]
 
 # Production stage
@@ -66,6 +73,10 @@ COPY --chown=arketic:arketic . ./
 RUN mkdir -p uploads logs temp && \
     chmod 755 uploads logs temp
 
+# Copy and setup entrypoint script
+COPY --chown=arketic:arketic entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 # Expose port
 EXPOSE 8000
 
@@ -74,4 +85,5 @@ HEALTHCHECK --interval=30s --timeout=15s --start-period=40s --retries=3 \
   CMD python healthcheck.py || exit 1
 
 # Run the application with production settings and performance optimizations
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4", "--access-log", "--log-level", "info"]

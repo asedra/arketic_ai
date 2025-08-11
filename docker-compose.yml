@@ -14,6 +14,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U arketic -d arketic_dev"]
       interval: 30s
@@ -30,6 +38,14 @@ services:
       - redis_data:/data
       - ./redis/dev.conf:/etc/redis/redis.conf
     command: redis-server /etc/redis/redis.conf
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -43,10 +59,18 @@ services:
     build:
       context: ./apps/api
       dockerfile: Dockerfile
-      target: runner
+      target: development  # Use development target for single worker
     restart: unless-stopped
     ports:
       - "8000:8000"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '1'
+          memory: 512M
     environment:
       - ENVIRONMENT=development
       - DATABASE_URL=postgresql://arketic:arketic_dev_password@postgres:5432/arketic_dev
@@ -90,13 +114,24 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2G
+        reservations:
+          cpus: '2'
+          memory: 1G
     environment:
       - NODE_ENV=development
       - NEXT_PUBLIC_API_URL=http://localhost:8000
       - NEXT_PUBLIC_APP_ENV=development
       - DOCKER_ENV=true
-      - WATCHPACK_POLLING=true
-      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=false
+      - CHOKIDAR_USEPOLLING=false
+      - WATCHPACK_WATCHER_LIMIT=0
+      - CHOKIDAR_INTERVAL=3000
+      - CHOKIDAR_AWAITWRITEFINISH_STABILITYTH=2000
       - NEXT_TELEMETRY_DISABLED=1
     volumes:
       - ./apps/web:/app
@@ -122,6 +157,14 @@ services:
     restart: unless-stopped
     ports:
       - "3001:3001"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
     environment:
       - NODE_ENV=development
       - PORT=3001

@@ -1,12 +1,34 @@
+// Bundle analyzer configuration (optional)
+let withBundleAnalyzer = (config) => config;
+try {
+  const bundleAnalyzer = await import('@next/bundle-analyzer');
+  withBundleAnalyzer = bundleAnalyzer.default({
+    enabled: process.env.ANALYZE === 'true',
+  });
+} catch (e) {
+  console.log('Bundle analyzer not installed, skipping...');
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
   poweredByHeader: false,
   compress: true,
   generateEtags: false,
+  productionBrowserSourceMaps: false,
   experimental: {
     // React 19 optimizations (stable features only)
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    optimizePackageImports: [
+      'lucide-react', 
+      '@radix-ui/react-icons',
+      '@radix-ui/*',
+      'sonner',
+      'react-hook-form',
+      '@hookform/resolvers',
+      'zod',
+      'clsx',
+      'tailwind-merge'
+    ],
     // Improve Fast Refresh performance
     webVitalsAttribution: ['CLS', 'LCP'],
     // Turbo for faster builds
@@ -100,19 +122,47 @@ const nextConfig = {
   // Webpack configuration for better development experience
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
-      // Enable polling for file watching only in Docker environment
-      if (process.env.DOCKER_ENV === 'true') {
-        config.watchOptions = {
-          poll: 2000,
-          aggregateTimeout: 600,
-        };
-      } else {
-        // Use native file watching in local development for better performance
-        config.watchOptions = {
-          aggregateTimeout: 300,
-          ignored: /node_modules/,
-        };
-      }
+      // Optimized file watching configuration
+      config.watchOptions = {
+        poll: false,
+        aggregateTimeout: 1000,
+        ignored: [
+          '**/node_modules',
+          '**/.git',
+          '**/.next',
+          '**/dist',
+          '**/build',
+          '**/.turbo',
+          '**/*.log',
+          '**/coverage',
+          '**/.env*',
+          '**/public/uploads',
+          '**/temp',
+          '**/tmp',
+          '**/.cache'
+        ],
+      };
+      
+      config.watchOptions.followSymlinks = false;
+      
+      // Development optimizations
+      config.optimization = {
+        removeAvailableModules: false,
+        removeEmptyChunks: false,
+        splitChunks: false,
+        minimize: false,
+        concatenateModules: false,
+        usedExports: false,
+        providedExports: false,
+        sideEffects: false,
+        realContentHash: false,
+        innerGraph: false,
+        mangleExports: false,
+      };
+      
+      config.performance = {
+        hints: false,
+      };
       
       // Optimize Fast Refresh
       config.cache = {
@@ -124,25 +174,6 @@ const nextConfig = {
       
       // Better source maps for development
       config.devtool = 'eval-cheap-module-source-map';
-      
-      // Optimize HMR by reducing excessive chunk splitting
-      config.optimization.splitChunks = {
-        chunks: 'async',
-        minSize: 20000,
-        maxSize: 244000,
-        cacheGroups: {
-          default: false,
-          vendors: false,
-          // Keep framework chunks separate for better caching
-          framework: {
-            chunks: 'all',
-            name: 'framework',
-            test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-            priority: 40,
-            enforce: true,
-          },
-        },
-      };
       
       // Reduce HMR update frequency
       if (config.devServer) {
@@ -180,4 +211,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

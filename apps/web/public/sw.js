@@ -1,11 +1,17 @@
-// Service Worker for Arketic PWA
-const CACHE_NAME = 'arketic-v1'
-const STATIC_CACHE = 'arketic-static-v1'
-const DYNAMIC_CACHE = 'arketic-dynamic-v1'
+// Service Worker for Arketic PWA with Comprehensive Cache Strategy
+const CACHE_VERSION = 'v1.1.0'
+const CACHE_NAMES = {
+  static: `arketic-static-${CACHE_VERSION}`,
+  dynamic: `arketic-dynamic-${CACHE_VERSION}`,
+  images: `arketic-images-${CACHE_VERSION}`,
+  api: `arketic-api-${CACHE_VERSION}`,
+  fonts: `arketic-fonts-${CACHE_VERSION}`
+}
 
 // Resources to cache immediately
 const STATIC_ASSETS = [
   '/',
+  '/login',
   '/manifest.json',
   '/favicon.ico',
   '/placeholder.svg',
@@ -19,20 +25,32 @@ const STATIC_ASSETS = [
 const API_ENDPOINTS = [
   '/api/people',
   '/api/organization',
-  '/api/compliance'
+  '/api/compliance',
+  '/api/auth/me',
+  '/api/chat/chats',
+  '/api/knowledge/documents'
 ]
 
-// Install event - cache static assets
+// Cache TTL settings (in milliseconds)
+const CACHE_TTL = {
+  api: 5 * 60 * 1000,      // 5 minutes for API responses
+  images: 7 * 24 * 60 * 60 * 1000, // 7 days for images
+  static: 30 * 24 * 60 * 60 * 1000, // 30 days for static assets
+  dynamic: 24 * 60 * 60 * 1000 // 24 hours for dynamic content
+}
+
+// Install event - cache static assets with versioning
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installing...')
+  console.log(`Service Worker ${CACHE_VERSION} installing...`)
   
   event.waitUntil(
-    caches.open(STATIC_CACHE)
+    caches.open(CACHE_NAMES.static)
       .then((cache) => {
         console.log('Caching static assets...')
         return cache.addAll(STATIC_ASSETS)
       })
       .then(() => {
+        console.log('Static assets cached successfully')
         return self.skipWaiting()
       })
       .catch((error) => {
@@ -41,9 +59,9 @@ self.addEventListener('install', (event) => {
   )
 })
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches with version management
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activating...')
+  console.log(`Service Worker ${CACHE_VERSION} activating...`)
   
   event.waitUntil(
     caches.keys()
@@ -51,8 +69,8 @@ self.addEventListener('activate', (event) => {
         return Promise.all(
           cacheNames
             .filter((cacheName) => {
-              return cacheName !== STATIC_CACHE && 
-                     cacheName !== DYNAMIC_CACHE
+              // Delete caches that don't match current version
+              return !Object.values(CACHE_NAMES).includes(cacheName)
             })
             .map((cacheName) => {
               console.log('Deleting old cache:', cacheName)
@@ -61,6 +79,7 @@ self.addEventListener('activate', (event) => {
         )
       })
       .then(() => {
+        console.log('Old caches cleaned up')
         return self.clients.claim()
       })
   )
@@ -76,70 +95,89 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Handle different types of requests
+  // Handle different types of requests with appropriate strategies and TTL
   if (request.method === 'GET') {
     if (isStaticAsset(request.url)) {
-      // Cache-first strategy for static assets
-      event.respondWith(cacheFirst(request, STATIC_CACHE))
+      // Cache-first strategy for static assets with long TTL
+      event.respondWith(cacheFirst(request, CACHE_NAMES.static, CACHE_TTL.static))
+    } else if (url.pathname.match(/\.(png|jpg|jpeg|svg|webp|avif|gif|ico)$/i)) {
+      // Images with dedicated cache and TTL
+      event.respondWith(cacheFirst(request, CACHE_NAMES.images, CACHE_TTL.images))
     } else if (isAPIRequest(request.url)) {
-      // Network-first strategy for API requests
-      event.respondWith(networkFirst(request, DYNAMIC_CACHE))
+      // Network-first strategy for API requests with short TTL
+      event.respondWith(networkFirst(request, CACHE_NAMES.api, CACHE_TTL.api))
     } else if (isPageRequest(request)) {
-      // Stale-while-revalidate for pages
-      event.respondWith(staleWhileRevalidate(request, DYNAMIC_CACHE))
+      // Stale-while-revalidate for pages with moderate TTL
+      event.respondWith(staleWhileRevalidate(request, CACHE_NAMES.dynamic, CACHE_TTL.dynamic))
+    } else {
+      // Default strategy for other requests
+      event.respondWith(staleWhileRevalidate(request, CACHE_NAMES.dynamic, CACHE_TTL.dynamic))
     }
   }
 })
 
-// Caching strategies
-async function cacheFirst(request, cacheName) {
+// Enhanced caching strategies with TTL
+async function cacheFirst(request, cacheName, ttl = null) {
   try {
     const cachedResponse = await caches.match(request)
     if (cachedResponse) {
+      // Check if cache is still valid based on TTL
+      if (ttl && isCacheExpired(cachedResponse, ttl)) {
+        // Cache expired, try to fetch new version in background
+        fetchAndCache(request, cacheName)
+      }
       return cachedResponse
     }
 
     const networkResponse = await fetch(request)
     if (networkResponse.ok) {
       const cache = await caches.open(cacheName)
-      cache.put(request, networkResponse.clone())
+      const responseWithTimestamp = await addTimestamp(networkResponse.clone())
+      cache.put(request, responseWithTimestamp)
     }
     return networkResponse
   } catch (error) {
     console.error('Cache-first strategy failed:', error)
+    const cachedResponse = await caches.match(request)
+    if (cachedResponse) return cachedResponse
     return new Response('Offline', { status: 503 })
   }
 }
 
-async function networkFirst(request, cacheName) {
+async function networkFirst(request, cacheName, ttl = null) {
   try {
     const networkResponse = await fetch(request)
     if (networkResponse.ok) {
       const cache = await caches.open(cacheName)
-      cache.put(request, networkResponse.clone())
+      const responseWithTimestamp = await addTimestamp(networkResponse.clone())
+      cache.put(request, responseWithTimestamp)
     }
     return networkResponse
   } catch (error) {
     console.log('Network failed, trying cache:', error)
     const cachedResponse = await caches.match(request)
     if (cachedResponse) {
-      return cachedResponse
+      // Check if cached response is still valid
+      if (!ttl || !isCacheExpired(cachedResponse, ttl)) {
+        return cachedResponse
+      }
     }
-    return new Response(JSON.stringify({ error: 'Offline' }), {
+    return new Response(JSON.stringify({ error: 'Offline', timestamp: Date.now() }), {
       status: 503,
       headers: { 'Content-Type': 'application/json' }
     })
   }
 }
 
-async function staleWhileRevalidate(request, cacheName) {
+async function staleWhileRevalidate(request, cacheName, ttl = null) {
   const cache = await caches.open(cacheName)
   const cachedResponse = await cache.match(request)
 
   // Fetch in background to update cache
-  const fetchPromise = fetch(request).then((networkResponse) => {
+  const fetchPromise = fetch(request).then(async (networkResponse) => {
     if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone())
+      const responseWithTimestamp = await addTimestamp(networkResponse.clone())
+      cache.put(request, responseWithTimestamp)
     }
     return networkResponse
   }).catch(() => {
@@ -148,7 +186,50 @@ async function staleWhileRevalidate(request, cacheName) {
   })
 
   // Return cached response immediately if available
-  return cachedResponse || fetchPromise
+  if (cachedResponse) {
+    // Check if revalidation is needed based on TTL
+    if (ttl && isCacheExpired(cachedResponse, ttl)) {
+      return fetchPromise // Force fresh fetch if expired
+    }
+    return cachedResponse
+  }
+  
+  return fetchPromise
+}
+
+// Cache helper functions
+function isCacheExpired(response, ttl) {
+  const dateHeader = response.headers.get('sw-cache-date')
+  if (!dateHeader) return true
+  
+  const cacheTime = new Date(dateHeader).getTime()
+  const now = Date.now()
+  return (now - cacheTime) > ttl
+}
+
+async function addTimestamp(response) {
+  const headers = new Headers(response.headers)
+  headers.set('sw-cache-date', new Date().toISOString())
+  
+  const blob = await response.blob()
+  return new Response(blob, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: headers
+  })
+}
+
+async function fetchAndCache(request, cacheName) {
+  try {
+    const response = await fetch(request)
+    if (response.ok) {
+      const cache = await caches.open(cacheName)
+      const responseWithTimestamp = await addTimestamp(response.clone())
+      cache.put(request, responseWithTimestamp)
+    }
+  } catch (error) {
+    console.log('Background fetch failed:', error)
+  }
 }
 
 // Helper functions
@@ -245,3 +326,50 @@ self.addEventListener('notificationclick', (event) => {
     )
   }
 })
+
+// Cache management message handlers
+self.addEventListener('message', (event) => {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting()
+  }
+  
+  if (event.data.action === 'clearCache') {
+    event.waitUntil(
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => caches.delete(cacheName))
+        )
+      }).then(() => {
+        console.log('All caches cleared')
+      })
+    )
+  }
+
+  if (event.data.action === 'getCacheStats') {
+    event.waitUntil(
+      getCacheStats().then(stats => {
+        event.ports[0].postMessage(stats)
+      })
+    )
+  }
+})
+
+async function getCacheStats() {
+  const cacheNames = await caches.keys()
+  const stats = {
+    version: CACHE_VERSION,
+    caches: {}
+  }
+  
+  for (const cacheName of cacheNames) {
+    const cache = await caches.open(cacheName)
+    const keys = await cache.keys()
+    stats.caches[cacheName] = {
+      count: keys.length,
+      size: 0, // Size calculation would require iterating through responses
+      urls: keys.slice(0, 10).map(req => req.url) // Sample of cached URLs
+    }
+  }
+  
+  return stats
+}

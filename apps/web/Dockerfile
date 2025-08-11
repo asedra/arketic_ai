@@ -32,15 +32,22 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Development stage with hot reloading
 FROM base AS development
-WORKDIR /app/apps/web
+WORKDIR /app
 
 # Copy node_modules from deps stage
-COPY --from=deps /app/node_modules /app/node_modules
-COPY --from=deps /app/apps/web/node_modules ./node_modules
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps ./apps
+COPY --from=deps /app/packages ./packages
 
 # Copy workspace files
-COPY pnpm-lock.yaml pnpm-workspace.yaml /app/
-COPY apps/web/package.json ./
+COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Copy entrypoint script
+COPY apps/web/docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Switch to web app directory
+WORKDIR /app/apps/web
 
 # Development environment variables
 ENV NODE_ENV=development
@@ -54,6 +61,9 @@ EXPOSE 3000
 # Health check for development
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
   CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Set entrypoint to ensure dependencies are installed
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 # Development command - use pnpm
 CMD ["pnpm", "run", "dev"]

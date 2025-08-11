@@ -114,6 +114,9 @@ services:
         - NEXT_PUBLIC_API_URL=http://localhost:8000
         - NEXT_PUBLIC_APP_ENV=development
         - NODE_ENV=development
+    entrypoint: ["/usr/local/bin/docker-entrypoint.sh"]
+    command: ["pnpm", "run", "dev"]
+    working_dir: /app/apps/web
     restart: unless-stopped
     ports:
       - "3000:3000"

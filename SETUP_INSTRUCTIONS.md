@@ -13,7 +13,7 @@ cp .env.example .env
 ### 2. Docker Compose ile Servisleri Başlatın
 
 ```bash
-# Tüm servisleri başlat ve test kullanıcılarını otomatik oluştur
+# Tüm servisleri başlat (bağımlılıklar otomatik yüklenir)
 docker compose up -d
 
 # Logları takip etmek için
